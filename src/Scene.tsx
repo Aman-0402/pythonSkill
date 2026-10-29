@@ -116,7 +116,7 @@ export default function Scene() {
       clearcoatRoughness: 0.08,
       envMapIntensity: 1.4,
     })
-    new FontLoader().load('/fonts/helvetiker_bold.typeface.json', (font) => {
+    new FontLoader().load(import.meta.env.BASE_URL + 'fonts/helvetiker_bold.typeface.json', (font) => {
       if (disposed) return
       const geo = new TextGeometry('Python', {
         font,
