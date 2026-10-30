@@ -14,7 +14,7 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 4. **Suggest improvements.** When there is a better idea, say so briefly alongside the work, and let the owner decide.
 5. Run `npx tsc -b` before committing.
 6. **Ask before creating notes for any session.** When the owner pastes notes or mentions a new session, first ask what to create (a website lesson, a PDF, or both) and whether pictures should be included, then wait for the answer. Do not create session notes unprompted. (This rule was added after sessions 2 and 3 were added to the site straight from pasted notes.)
-7. **Session PDFs go in the `Notes pdf/` folder, one PDF per session**, named `Session N - <title>.pdf`. If the session's notes use pictures, the PDF includes them. So far only session 1 has a PDF; sessions 2 and 3 have none until the owner asks.
+7. **Session PDFs go in the `Notes pdf/` folder, one PDF per session**, named `Session N - <title>.pdf`. If the session's notes use pictures, the PDF includes them. Sessions 1, 2 and 3 have PDFs (the owner asked for them). A new session gets a PDF only when the owner asks.
 
 ## What this is
 
@@ -163,7 +163,8 @@ node --experimental-strip-types scripts/notes-pdf.mjs 1      # session number, o
 - **Pictures.** For each section and sub-section, the script looks in `src/slides/` for a file named after the slide id (`<id>.webp`, `<id>-2.webp`, ...), the same files the website shows, and puts them under that heading (side by side when there are two). They are shrunk to at most 1100px wide JPEG in the page before printing, which keeps a PDF with two pictures under 1 MB (unshrunk it was 5 MB). The drawn illustrations on slides 1 and 2 of lesson 1 are not images, so they are not in the PDF.
 - **What is not in the PDF:** the interactive "Try it" boxes become ordinary code blocks, and the website's slide layout, title-screen animation and zoom are not reproduced.
 - **Previewing without a PDF viewer.** Set `NOTES_PREVIEW=<path prefix>` and the script also saves `<prefix>_1.png`, `<prefix>_2.png`, ... (A4-sized pictures of the page). The real PDF page breaks can differ slightly (the preview ignores the page margins).
-- If a lesson is edited after its PDF was made, regenerate the PDF (only when the owner has asked for one for that session).
+- **Current PDFs:** `Session 1 - Introduction to Python and Setup.pdf` (about 730 KB, includes the two History pictures), `Session 2 - Variables and Data Types.pdf` (about 280 KB) and `Session 3 - Strings and Operators.pdf` (about 330 KB). Sessions 2 and 3 have no pictures yet, so their PDFs have none; if the owner adds pictures to `src/slides/` for them, regenerate.
+- If a lesson is edited after its PDF was made, regenerate that PDF.
 
 ## Slide pictures (Art.tsx and src/slides/)
 
@@ -249,6 +250,7 @@ The whole site is built to work on a phone (tested at 390x844, 360x740 and 820x1
 27. Added lesson 3, "Strings and Operators" (third card on the Contents page). Tables got smaller text and tighter cells (and no wrapping of code cells) so long ones fit on one screen; ordered lists accept `start`; table rows use index keys.
 28. Mobile pass: no sideways scrolling anywhere, fixed phone type sizes, slides as normal sections on phones, Contents cards fit the width, landing logos avoid the title, code boxes scroll instead of wrapping, floating counter and arrows hidden on phones.
 29. Session 1 PDF created in `Notes pdf/` (with the History pictures) using the new `scripts/notes-pdf.mjs`; new owner rules: ask before creating any session notes, PDFs per session in `Notes pdf/`, include pictures.
+30. Session 2 and Session 3 PDFs created in `Notes pdf/` at the owner's request (no pictures in them yet).
 
 ## Gotchas and lessons learned
 
