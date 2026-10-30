@@ -8,7 +8,9 @@ Example: `installation-windows.png` shows on the "Windows" slide. Remove the fil
 
 The picture appears under the slide title, in the left column. It keeps its proportions and is limited to the column width (about 520px) and 52% of the screen height, so portrait and landscape pictures both work. Use WebP where you can (much smaller files).
 
-Currently in use: `history.webp` (Guido van Rossum).
+Several pictures on one slide: add `-2`, `-3`, ... to the name (`history.webp`, `history-2.webp`). They stack top to bottom; click any picture to zoom.
+
+Currently in use: `history.webp` (Guido van Rossum) and `history-2.webp` (Monty Python collage).
 
 ## Slide ids
 

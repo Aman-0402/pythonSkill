@@ -10,8 +10,18 @@ const pictures = import.meta.glob<string>('./slides/*.{png,jpg,jpeg,webp,gif,svg
   query: '?url',
   import: 'default',
 })
-const pictureFor = (id: string) =>
-  Object.entries(pictures).find(([path]) => (path.split('/').pop() ?? '').replace(/\.[^.]+$/, '') === id)?.[1]
+// A slide can have several pictures: <id>.webp is the first, then <id>-2.webp, <id>-3.webp, and so on (shown top to bottom).
+const picturesFor = (id: string) =>
+  Object.entries(pictures)
+    .map(([path, src]) => {
+      const name = (path.split('/').pop() ?? '').replace(/\.[^.]+$/, '')
+      if (name === id) return { n: 1, src }
+      const m = name.match(/^(.*)-(\d+)$/)
+      return m && m[1] === id ? { n: Number(m[2]), src } : null
+    })
+    .filter((p): p is { n: number; src: string } => p !== null)
+    .sort((a, b) => a.n - b.n)
+    .map((p) => p.src)
 
 const icon = (name: string) => `${import.meta.env.BASE_URL}icons/${name}.svg`
 
@@ -82,11 +92,13 @@ function Zoomable({ src }: { src: string }) {
 }
 
 export default function Art({ name, id }: { name?: string; id: string }) {
-  const picture = pictureFor(id)
-  if (picture) {
+  const own = picturesFor(id)
+  if (own.length) {
     return (
-      <div className="art">
-        <Zoomable src={picture} />
+      <div className={own.length > 1 ? 'art art-multi' : 'art'}>
+        {own.map((src) => (
+          <Zoomable key={src} src={src} />
+        ))}
       </div>
     )
   }
