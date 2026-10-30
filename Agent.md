@@ -18,7 +18,7 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 
 A small learning website for Python beginners. Three screens:
 
-1. **Landing (`/`)** — dark, premium page: a flat 2D "Python" title, a green 3D snake wandering randomly in the background, floating data-analyst icons, and a glass "Start your journey" button. No mouse interaction.
+1. **Landing (`/`)** — dark, premium page: a flat 2D "Python" title, a green 3D snake wandering randomly in the background, floating programming-language logos, and a glass "Start your journey" button. No mouse interaction.
 2. **Contents (`/contents`)** — white page with a grid of topic cards. Today there is one card: "Introduction to Python and Setup".
 3. **Notes (`/contents/<slug>`)** — the lesson, shown as full-screen scroll-snapping slides, one per sub-topic, each with its own colour.
 
@@ -54,13 +54,14 @@ index.html                  Fonts, title "Learn Python", mounts #root
 vite.config.ts              base = '/pythonSkill/' only when GITHUB_ACTIONS is set
 public/
   favicon.svg               Python-style logo
+  icons/*.svg               10 language logos (Devicon, MIT): javascript, python, java, rust, typescript, csharp, cplusplus, go, php, swift
 src/
   main.tsx                  React entry
   App.tsx                   Picks a page from the URL path
   router.tsx                usePath, navigate, <Link>, base-path aware
   Landing.tsx               Scene + FloatingIcons + flat 2D "Python" title + CTA link to /contents
   Scene.tsx                 three.js: green snake, lights, dust (no text, no mouse input)
-  FloatingIcons.tsx         10 floating data-analyst icon tiles
+  FloatingIcons.tsx         10 floating programming-language logo tiles (real SVG files)
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
   TryIt.tsx                 Editable code box that runs Python in the browser (Pyodide)
@@ -90,7 +91,7 @@ src/
 
 ## Floating icons
 
-`FloatingIcons.tsx` renders 10 glass tiles with inline SVG icons (bar chart, line chart, pie chart, database, table, search, scatter plot, filter, SQL, sum). Positions, tilt, speed and delay come from `.floater:nth-child(n)` rules in the CSS. Three are tinted green. Animation is off under `prefers-reduced-motion`.
+`FloatingIcons.tsx` renders 10 white rounded tiles, each holding one real programming-language logo (JavaScript, Python, Java, Rust, TypeScript, C#, C++, Go, PHP, Swift) as an `<img>` of a self-hosted SVG in `public/icons/`. The files come from the open-source Devicon set (MIT licence, `*-original.svg`, v2.16.0); the logos remain trademarks of their owners. Tiles are white so every brand colour, including the black Rust logo, stays visible on the dark page. Paths use `import.meta.env.BASE_URL`. To add a language, download its Devicon SVG into `public/icons/`, add one entry to `languages` and one more `.floater:nth-child(n)` position rule. Positions, tilt, speed and delay come from those rules. Animation is off under `prefers-reduced-motion`.
 
 ## Lesson content model (content.ts)
 
@@ -159,13 +160,14 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 1. Scaffolded Vite + React + TypeScript in this folder (copied from a temp scaffold so the existing `.vscode` was kept).
 2. Replaced the demo with a Python landing page, then reduced it to just a centred "Python" word and a "Start your journey" button.
 3. Made the word 3D (three.js) with a snake moving randomly behind it; later restyled for a premium look (navy gradient, chrome text, glass button) and made the snake green.
-4. Added floating data-analyst icons.
+4. Added floating data-analyst icons (replaced in step 11 by language logos).
 5. Added the Contents page (grid, one topic) and a small custom router, because the network was down and `wouter` could not be installed.
 6. Added the notes page from the pasted lesson, without timings, then iterated: removed the "On this page" menu, switched to a white, 1450px-wide layout, bigger fonts, more colour.
 7. Rebuilt the notes as per-sub-topic colour bands, then as full-screen scroll-snap slides with dots and a counter; added size-by-content scaling and bold key phrases; replaced the bold highlight strip with accent-coloured bold.
 8. Pushed to GitHub and set up GitHub Pages with the base-path-aware router and the 404 fallback.
 9. Landing page edit: replaced the 3D chrome "Python" text with a flat 2D title and removed all mouse interaction (snake, icons and button kept). Deleted the now-unused 3D font file.
 10. Added slide navigation (Prev/Next buttons, Left/Right/Home/End keys) and the in-browser "Try it" Python runner (Pyodide) on four code blocks.
+11. Landing page: replaced the data-analyst icon glyphs with real programming-language logo SVGs (10 languages) on white tiles.
 
 ## Gotchas and lessons learned
 
