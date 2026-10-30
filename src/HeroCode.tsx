@@ -2,13 +2,20 @@ import { useEffect, useState } from 'react'
 import { Highlight } from './Highlight'
 
 // Animated code window and floating tool logos for the notes title screen.
-const lines = ['# your first program', 'print("Hello, World!")']
+export type HeroSnippet = { file: string; lines: string[]; output: string }
+
+const DEFAULT_SNIPPET: HeroSnippet = {
+  file: 'hello.py',
+  lines: ['# your first program', 'print("Hello, World!")'],
+  output: 'Hello, World!',
+}
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const icon = (name: string) => `${import.meta.env.BASE_URL}icons/${name}.svg`
 
-export default function HeroCode() {
+export default function HeroCode({ snippet = DEFAULT_SNIPPET }: { snippet?: HeroSnippet }) {
+  const { file, lines, output } = snippet
   const [typed, setTyped] = useState<string[]>(reduced ? lines : [''])
   const [done, setDone] = useState(reduced)
 
@@ -23,7 +30,7 @@ export default function HeroCode() {
           for (let c = 1; c <= lines[l].length; c++) {
             if (!alive) return
             setTyped((t) => [...t.slice(0, l), lines[l].slice(0, c)])
-            await wait(l === 0 ? 35 : 70)
+            await wait(l === 0 ? 45 : 70)
           }
           await wait(350)
           if (l < lines.length - 1) setTyped((t) => [...t, ''])
@@ -38,7 +45,7 @@ export default function HeroCode() {
     return () => {
       alive = false
     }
-  }, [])
+  }, [lines])
 
   return (
     <div className="hero-stage" aria-hidden="true">
@@ -47,7 +54,7 @@ export default function HeroCode() {
           <i />
           <i />
           <i />
-          <span>hello.py</span>
+          <span>{file}</span>
         </div>
         <div className="hero-win-body">
           {typed.map((text, i) => (
@@ -60,7 +67,7 @@ export default function HeroCode() {
         </div>
         <div className={done ? 'hero-win-out on' : 'hero-win-out'}>
           <small>OUTPUT</small>
-          <div>Hello, World!</div>
+          <div>{output}</div>
         </div>
       </div>
 

@@ -53,7 +53,10 @@ export default function TryIt({ code, label }: { code: string; label?: string })
       setResult({ text: lines.join('\n') || '(no output)', error: false })
     } catch (e) {
       // keep only the useful tail of the traceback: the line number and the error type
-      const msg = (e instanceof Error ? e.message : String(e)).trim().split('\n').slice(-4).join('\n')
+      // Pyodide adds its own internal frames first; start from the learner's code ("<exec>") and rename it.
+      const all = (e instanceof Error ? e.message : String(e)).trim().split('\n')
+      const from = all.findLastIndex((l) => l.includes('File "<exec>"'))
+      const msg = (from >= 0 ? all.slice(from) : all.slice(-4)).join('\n').replace('File "<exec>"', 'File "your code"')
       setResult({ text: [...lines, msg].join('\n'), error: true })
     } finally {
       setStatus('idle')

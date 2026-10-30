@@ -218,11 +218,11 @@ function Slides({ lesson }: { lesson: LessonData }) {
               <ul className="hero-facts">
                 <li><b>{bands.length}</b> slides</li>
                 <li><b>{tryItCount}</b> code boxes to run</li>
-                <li>Windows, macOS and Linux</li>
+                {lesson.tag && <li>{lesson.tag}</li>}
               </ul>
               <a href={'#' + bands[0].id} className="scroll-cue">Start reading ↓</a>
             </div>
-            <HeroCode />
+            <HeroCode snippet={lesson.hero} />
           </div>
         </div>
       </header>

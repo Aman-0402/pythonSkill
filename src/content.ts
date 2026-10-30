@@ -13,6 +13,10 @@ export type Lesson = {
   slug: string
   title: string
   summary: string
+  // optional third pill on the notes title screen
+  tag?: string
+  // code shown typing on the notes title screen (defaults to a hello.py example)
+  hero?: { file: string; lines: string[]; output: string }
   sections: Section[]
 }
 
@@ -21,6 +25,7 @@ const raw = String.raw
 export const lessons: Lesson[] = [
   {
     slug: 'introduction-to-python-and-setup',
+    tag: 'Windows, macOS and Linux',
     title: 'Introduction to Python and Setup',
     summary: 'Install Python, set up your editor, and run your first program.',
     sections: [
@@ -414,6 +419,388 @@ prnt("Hi")`,
             tone: 'tip',
             title: 'Next class',
             text: 'Variables and data types.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'variables-and-data-types',
+    title: 'Variables and Data Types',
+    summary: 'Store values in variables, learn the data types, take input and convert between types.',
+    hero: { file: 'variables.py', lines: ['name = "Aman"', 'print(name)'], output: 'Aman' },
+    sections: [
+      {
+        id: 's2-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What did we run last class?',
+              'What does `print()` do?',
+              'What is the difference between a comment and a statement?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's2-what-is-a-variable',
+        title: 'What is a variable?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A variable is a **named container that stores a value in memory**.',
+          },
+          {
+            type: 'p',
+            text: 'Think of a labelled box: the label is the **variable name** and the thing inside is the **value**.',
+          },
+          {
+            type: 'code',
+            label: 'variables.py',
+            runnable: true,
+            code: raw`name = "Aman"
+age = 25
+print(name)
+print(age)`,
+          },
+          { type: 'h3', text: 'The = sign' },
+          {
+            type: 'p',
+            text: '`=` is the **assignment operator**. It means “store the right side in the left side”. It does **not** mean “equal” as in maths.',
+          },
+          { type: 'h3', text: 'Changing a variable' },
+          { type: 'p', text: 'A variable can be changed at any time. The newest value replaces the old one.' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 25
+age = 26
+print(age)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What will `print(age)` show after `age = 26`?',
+          },
+          { type: 'h3', text: 'Assign several at once' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b, c = 1, 2, 3
+x = y = 0
+print(a, b, c)
+print(x, y)`,
+          },
+        ],
+      },
+      {
+        id: 's2-naming-rules',
+        title: 'Rules for naming variables',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Must start with a **letter or underscore** (`_`), never a digit.',
+              'Can contain **letters, digits and underscores** only, with no spaces or special characters.',
+              '**Case-sensitive:** `Name` and `name` are different variables.',
+              'Cannot be a **keyword** such as `if`, `for`, `class` or `True`.',
+            ],
+          },
+          { type: 'h3', text: 'Valid and invalid names' },
+          {
+            type: 'table',
+            head: ['Valid', 'Invalid'],
+            rows: [
+              ['`student_name`', '`1student`'],
+              ['`_count`', '`my name`'],
+              ['`marks2`', '`total-marks`'],
+              ['`Age`', '`class`'],
+            ],
+          },
+          { type: 'h3', text: 'Naming convention' },
+          {
+            type: 'p',
+            text: 'Use **snake_case** (`total_marks`) and give variables **meaningful names** (`price`, not `p`).',
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Is `my_age` valid? What about `my-age`?',
+          },
+        ],
+      },
+      {
+        id: 's2-data-types',
+        title: 'Data types',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Python decides the type **from the value**. Check it with `type()`.',
+          },
+          {
+            type: 'table',
+            head: ['Type', 'Meaning', 'Example'],
+            rows: [
+              ['`int`', 'whole numbers', '`10`, `-5`, `0`'],
+              ['`float`', 'decimal numbers', '`3.14`, `-0.5`'],
+              ['`str`', 'text', '`"Python"`, `\'A\'`'],
+              ['`bool`', 'True or False', '`True`, `False`'],
+              ['`NoneType`', 'no value', '`None`'],
+            ],
+          },
+          { type: 'h3', text: 'Checking the type' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = 10
+b = 3.14
+c = "Hello"
+d = True
+e = None
+
+print(type(a))
+print(type(b))
+print(type(c))
+print(type(d))
+print(type(e))`,
+          },
+          { type: 'h3', text: 'Things to remember' },
+          {
+            type: 'ul',
+            items: [
+              '`10` is an `int`, but `"10"` is a `str`.',
+              '`True` and `False` start with a **capital letter**.',
+              'Python is **dynamically typed**, so one variable can hold different types at different times.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`x = 5
+print(type(x))
+x = "five"
+print(type(x))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What is the type of `"3.14"`? Of `3.0`?',
+          },
+        ],
+      },
+      {
+        id: 's2-input',
+        title: 'Taking input from the user',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Run this one in VS Code or a terminal',
+            code: raw`name = input("Enter your name: ")
+print("Hello", name)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Important',
+            text: '`input()` **always returns a string**, even when the user types a number.',
+          },
+          { type: 'h3', text: 'input() always gives a string' },
+          {
+            type: 'code',
+            label: 'Run this one in VS Code or a terminal',
+            code: raw`a = input("Enter a number: ")
+print(type(a))`,
+          },
+          {
+            type: 'p',
+            text: 'Enter `5` and the type is still `str`.',
+          },
+        ],
+      },
+      {
+        id: 's2-type-conversion',
+        title: 'Type conversion (type casting)',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Convert one type into another with `int()`, `float()`, `str()` and `bool()`.',
+          },
+          {
+            type: 'code',
+            label: 'Run this one in VS Code or a terminal',
+            code: raw`age = int(input("Enter your age: "))
+price = float(input("Enter price: "))
+print(age + 1)
+print(price * 2)`,
+          },
+          { type: 'h3', text: 'More examples' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(int("25"))
+print(float(7))
+print(str(100))
+print(int(9.99))
+print(bool(0))
+print(bool("hi"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`int(9.99)` gives `9`. It **truncates**, it does not round.',
+              '`bool(0)`, `bool("")` and `bool(None)` are `False`. **Everything else is True.**',
+            ],
+          },
+          { type: 'h3', text: 'A common error' },
+          {
+            type: 'p',
+            text: 'Text and numbers cannot be added. Run this to see the `TypeError`, then fix it with `int(a) + 5`.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: run, read the error, then fix it',
+            runnable: true,
+            code: raw`a = "5"          # input() gives you text like this
+print(a + 5)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Why does `"5" + "5"` give `55`?',
+          },
+        ],
+      },
+      {
+        id: 's2-operators',
+        title: 'Basic operators',
+        blocks: [
+          { type: 'h3', text: 'Arithmetic' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b = 10, 3
+print(a + b)
+print(a - b)
+print(a * b)
+print(a / b)
+print(a // b)
+print(a % b)
+print(a ** b)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`/` **always returns a float**.',
+              '`//` is **floor division**.',
+              '`%` is the **remainder**.',
+              '`**` is the **power**.',
+            ],
+          },
+          { type: 'h3', text: 'Assignment operators' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`x = 10
+x += 5
+x -= 3
+x *= 2
+x /= 4
+print(x)`,
+          },
+          { type: 'h3', text: 'Operator precedence' },
+          {
+            type: 'p',
+            text: 'Python works in this order: `()`, then `**`, then `* / // %`, then `+ -`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(2 + 3 * 4)
+print((2 + 3) * 4)`,
+          },
+        ],
+      },
+      {
+        id: 's2-extras',
+        title: 'Useful extras',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`name = "Aman"
+print(5 + 3, "is the sum")
+print("Age:", 25)
+print("Name: " + name)
+print("Age: " + str(25))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Remember',
+            text: 'Mixing a string and a number with `+` needs `str()`. Using a **comma** in `print()` does not.',
+          },
+        ],
+      },
+      {
+        id: 's2-practice',
+        title: 'Practice questions',
+        blocks: [
+          {
+            type: 'ol',
+            items: [
+              'Store your name, age, height and student status in variables and print each with its type.',
+              'Take two numbers from the user and print their sum, difference, product and division.',
+              'Take the radius of a circle and print its area (`3.14 * r * r`).',
+              'Take marks in 3 subjects and print the total and average.',
+              'Swap two variables without using a third variable (`a, b = b, a`).',
+              'Take a temperature in Celsius and convert it to Fahrenheit (`F = C * 9/5 + 32`).',
+              'Find the error and fix it (see the next slide).',
+            ],
+          },
+          { type: 'h3', text: 'Find the error and fix it' },
+          {
+            type: 'code',
+            label: 'Your turn: fix it and press Run',
+            runnable: true,
+            code: raw`age = "20"     # imagine this came from input()
+print(age + 1)`,
+          },
+          { type: 'h3', text: 'Try the swap' },
+          {
+            type: 'code',
+            label: 'Your turn: swap a and b, then press Run',
+            runnable: true,
+            code: raw`a = 5
+b = 10
+# swap a and b without a third variable
+print(a, b)`,
+          },
+        ],
+      },
+      {
+        id: 's2-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a simple **bill calculator**: take the item price and quantity, and print the total.',
+              'Write a program that takes **name, age and city**, and prints one formatted introduction line.',
+              'Revise the **naming rules** and **data types**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Strings and operators.',
           },
         ],
       },
