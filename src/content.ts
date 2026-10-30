@@ -1,13 +1,13 @@
 export type Block =
   | { type: 'p'; text: string }
-  | { type: 'h3'; text: string }
+  | { type: 'h3'; text: string; art?: string }
   | { type: 'ul'; items: string[] }
   | { type: 'ol'; items: string[] }
   | { type: 'code'; code: string; output?: string; label?: string; runnable?: boolean }
   | { type: 'note'; tone: 'tip' | 'warn'; title: string; text: string }
   | { type: 'table'; head: string[]; rows: string[][] }
 
-export type Section = { id: string; title: string; blocks: Block[] }
+export type Section = { id: string; title: string; art?: string; blocks: Block[] }
 
 export type Lesson = {
   slug: string
@@ -26,6 +26,7 @@ export const lessons: Lesson[] = [
     sections: [
       {
         id: 'what-is-python',
+        art: 'hello-bubble',
         title: 'What is Python?',
         blocks: [
           {
@@ -41,7 +42,7 @@ export const lessons: Lesson[] = [
               '**General-purpose:** one language, many jobs, instead of being limited to one kind of software.',
             ],
           },
-          { type: 'h3', text: 'What Python is used for' },
+          { type: 'h3', text: 'What Python is used for', art: 'uses' },
           {
             type: 'ul',
             items: [

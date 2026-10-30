@@ -65,6 +65,9 @@ src/
   FloatingIcons.tsx         10 floating Python data-science logo tiles (real SVG files)
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
+  Art.tsx                   Picture under a slide title: drawn illustration (slides 1 and 2 only) or your own file from src/slides/
+  Highlight.tsx             Tiny Python syntax colouring used by code blocks and illustrations
+  slides/README.md          How to add your own slide pictures, plus every slide id
   TryIt.tsx                 Editable code box that runs Python in the browser (Pyodide)
   content.ts                ALL lesson text and its types (the only place to edit content)
   index.css                 All styles
@@ -136,6 +139,15 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 - Right-edge dots jump to a slide; they are hidden under 900px.
 - **Navigation:** round up/down buttons at the bottom right go to the previous/next slide (`goTo()`), disabled at the ends. Keyboard: Left/Right arrows and Home/End move between slides. Up/Down and Page keys keep their normal scrolling (the snap settles on the next slide). Key handling is ignored while typing in a textarea/input.
 
+## Slide pictures (Art.tsx and src/slides/)
+
+Under each slide title (left column) there can be a picture. The left column is sticky, so the picture stays visible while a tall slide scrolls.
+
+- **Drawn illustrations: only slides 1 and 2.** "What is Python?" (`hello-bubble`: Python logo plus a `print("Hello, World!")` speech bubble) and "What Python is used for" (`uses`: four labelled tiles with the Pandas, TensorFlow, Django and Bash logos). They are chosen in `content.ts` with `art: 'name'` on a section or on an `h3` block, and drawn by `Art.tsx`. The owner asked to remove the other illustrations I had drawn (installer window, terminals, editor, timeline, notebook, error cards, and so on), so do not re-add them unless asked.
+- **The owner's own pictures (preferred).** The owner said they will supply the images. Drop a file into `src/slides/` named after the slide id, with extension png, jpg, jpeg, webp, gif, svg or avif, for example `installation-windows.png`. `Art.tsx` finds it with `import.meta.glob('./slides/*.{...}', { eager: true, query: '?url' })`, so Vite hashes it and adds the base path for GitHub Pages. A picture overrides a drawn illustration on the same slide. `src/slides/README.md` lists every slide id; keep it in sync when slides change (sub-slide id = `<section id>-<h3 title lowercased, non-alphanumerics to dashes, trimmed>`).
+- Pictures render in `.art-image`: full column width (max about 520px), max height 42vh, `object-fit: contain`, rounded with an accent-tinted shadow.
+- `public/icons/` holds the Devicon logos used on the landing page and on slides 1 and 2 (python, pandas, numpy, tensorflow, matplotlib, scikitlearn, jupyter, pytorch, plotly, opencv, django, bash). Other logos that were downloaded for removed illustrations were deleted.
+
 ## Try it: Python in the browser (TryIt.tsx)
 
 - Any `code` block with `runnable: true` renders as an editable textarea with **Run** and **Reset** buttons and an output panel. Currently marked: the `hello.py` first program, the "Broken on purpose" errors example, the calculator example, and the "Your turn" box on the Practice slide.
@@ -185,6 +197,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 17. Colour fix: the vignette was moved behind the content (it had been greying out tiles, snake and button) and the background was made more vivid (brighter blue, violet and green glows).
 18. Notes: added Windows terminal install commands (winget) as their own slide, a `py` launcher tip and a Microsoft Store alias fix.
 19. Notes: added a VS Code terminal install slide (winget, extension, practice folder) and a `code` not-recognised fix.
+20. Slide pictures: tried drawn illustrations on every slide, then, at the owner's request, kept only slides 1 and 2 and added the `src/slides/` folder so the owner can supply their own images per slide (named after the slide id).
 
 ## Gotchas and lessons learned
 

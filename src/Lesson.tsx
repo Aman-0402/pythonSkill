@@ -1,6 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from './router'
 import TryIt from './TryIt'
+import Art from './Art'
+import { Highlight } from './Highlight'
 import { lessons, type Block, type Lesson as LessonData, type Section } from './content'
 
 function Inline({ text }: { text: string }) {
@@ -10,21 +12,6 @@ function Inline({ text }: { text: string }) {
       {parts.map((part, i) => {
         if (part.startsWith('`')) return <code key={i}>{part.slice(1, -1)}</code>
         if (part.startsWith('**')) return <strong key={i}>{part.slice(2, -2)}</strong>
-        return part
-      })}
-    </>
-  )
-}
-
-function Highlight({ line }: { line: string }) {
-  const parts = line.split(/(#.*$|"[^"]*"|'[^']*'|\b(?:print|exit|Print|prnt)(?=\()|\b\d+(?:\.\d+)?\b)/)
-  return (
-    <>
-      {parts.map((part, i) => {
-        if (part.startsWith('#')) return <span className="tok-com" key={i}>{part}</span>
-        if (/^["']/.test(part)) return <span className="tok-str" key={i}>{part}</span>
-        if (/^(print|exit|Print|prnt)$/.test(part)) return <span className="tok-fn" key={i}>{part}</span>
-        if (/^\d/.test(part)) return <span className="tok-num" key={i}>{part}</span>
         return part
       })}
     </>
@@ -104,7 +91,7 @@ function BlockView({ block }: { block: Block }): ReactNode {
   }
 }
 
-type Band = { id: string; eyebrow?: string; title: string; blocks: Block[] }
+type Band = { id: string; eyebrow?: string; title: string; art?: string; blocks: Block[] }
 
 // Each top-level section becomes one band; every sub-heading inside it becomes its own band.
 function toBands(sections: Section[]): Band[] {
@@ -114,14 +101,14 @@ function toBands(sections: Section[]): Band[] {
     let intro: Block[] = []
     for (const b of s.blocks) {
       if (b.type === 'h3') {
-        if (!current && intro.length) bands.push({ id: s.id, title: s.title, blocks: intro })
-        const slug = b.text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-        current = { id: `${s.id}-${slug}`, eyebrow: s.title, title: b.text, blocks: [] }
+        if (!current && intro.length) bands.push({ id: s.id, title: s.title, art: s.art, blocks: intro })
+        const slug = b.text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+        current = { id: `${s.id}-${slug}`, eyebrow: s.title, title: b.text, art: b.art, blocks: [] }
         bands.push(current)
       } else if (current) current.blocks.push(b)
       else intro.push(b)
     }
-    if (!current) bands.push({ id: s.id, title: s.title, blocks: intro })
+    if (!current) bands.push({ id: s.id, title: s.title, art: s.art, blocks: intro })
   }
   return bands
 }
@@ -228,6 +215,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
             <div className="band-head">
               {b.eyebrow && <p className="band-eyebrow">{b.eyebrow}</p>}
               <h2 className="band-title">{b.title}</h2>
+              <Art name={b.art} id={b.id} />
             </div>
             <div className="notes">
               {b.blocks.map((blk, k) => (
