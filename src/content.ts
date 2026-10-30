@@ -187,6 +187,45 @@ python3 --version`,
             title: 'No-install backup: Google Colab',
             text: 'Google Colab (colab.research.google.com) runs Python in any browser, with nothing to install. It is useful if your laptop is slow or locked down.',
           },
+          { type: 'h3', text: 'VS Code: install from the terminal' },
+          {
+            type: 'p',
+            text: 'On Windows you can install VS Code with **winget** too. Open **PowerShell** and run:',
+          },
+          {
+            type: 'code',
+            label: 'PowerShell',
+            code: raw`winget install -e --id Microsoft.VisualStudioCode`,
+          },
+          {
+            type: 'p',
+            text: 'Open a **new terminal**, then check the `code` command works and add the Python extension from the terminal:',
+          },
+          {
+            type: 'code',
+            label: 'PowerShell',
+            code: raw`code --version
+code --install-extension ms-python.python`,
+          },
+          {
+            type: 'p',
+            text: 'Make a practice folder, create `hello.py`, open the folder in VS Code, and run the file:',
+          },
+          {
+            type: 'code',
+            label: 'PowerShell',
+            code: raw`mkdir python-practice
+cd python-practice
+New-Item hello.py
+code .
+python hello.py`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'macOS and Linux',
+            text: 'On macOS use `brew install --cask visual-studio-code`. On Ubuntu use `sudo snap install code --classic`. The `code` commands above work the same.',
+          },
           { type: 'h3', text: 'Common problems' },
           {
             type: 'table',
@@ -199,6 +238,10 @@ python3 --version`,
               [
                 '`python` opens the Microsoft Store',
                 'Turn off the Python entries in Settings > Apps > Advanced app settings > App execution aliases, or use `py` instead.',
+              ],
+              [
+                '`code` is not recognized',
+                'Open a new terminal first. If it still fails, reinstall VS Code and keep **Add to PATH** ticked.',
               ],
               ['Command not found on Mac or Linux', 'Use `python3` instead of `python`.'],
             ],
