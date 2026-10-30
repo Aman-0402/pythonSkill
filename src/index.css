@@ -424,3 +424,14 @@ body::after { z-index: 4; }
 @media (prefers-reduced-motion: reduce) {
   .floater.eaten, .floater.back { animation: none; }
 }
+
+/* vivid landing: edge shading goes behind everything (it used to grey out tiles and snake) */
+body::after { z-index: 0; background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.38) 100%); }
+body {
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 45%, rgba(40, 120, 235, 0.55), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 88% 12%, rgba(130, 90, 240, 0.3), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 125%, rgba(46, 227, 138, 0.2), transparent 60%),
+    linear-gradient(180deg, #0a1a3f 0%, #060e24 100%);
+}
+.floater { background: #fff; }

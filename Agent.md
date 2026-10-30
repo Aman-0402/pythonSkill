@@ -96,7 +96,7 @@ src/
 
 ### Landing layers
 
-The `.landing` container does not create a stacking context (`z-index: auto`) so its children can interleave with the 3D canvas: floating tiles and `.hero-title` at z-index 1, the three.js `.scene` canvas at 2, the `.cta` button at 3, the vignette (`body::after`) at 4. The canvas has `pointer-events: none`, so clicks pass through to the button and links. If you add landing content, pick its z-index from this list.
+The `.landing` container does not create a stacking context (`z-index: auto`) so its children can interleave with the 3D canvas: floating tiles and `.hero-title` at z-index 1, the three.js `.scene` canvas at 2, the `.cta` button at 3, the edge-shading vignette (`body::after`) at 0, **behind everything**. It was briefly at 4, above the tiles and snake, and greyed the whole page; keep it at the back. The canvas has `pointer-events: none`, so clicks pass through to the button and links. If you add landing content, pick its z-index from this list.
 
 ## Floating icons
 
@@ -149,7 +149,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 
 ## Styling notes
 
-- Landing page palette: navy `#060d1a` to `#08122a`, chrome white, green accent `#2ee38a`, snake greens. Yellow appears only in the favicon.
+- Landing page palette: vivid navy (`#0a1a3f` to `#060e24`) with a bright blue centre glow, a violet glow at the top right and a green glow at the bottom; pure white logo tiles; green accent `#2ee38a`; snake greens. Yellow appears only in the favicon.
 - Contents and notes pages are light: white page, dark navy text.
 - Type scales with the screen using `clamp()` with `vw` and `vh` terms. Sizes are large on purpose; the user repeatedly asked for bigger fonts and less empty space.
 - `index.css` is layered: later blocks intentionally override earlier ones (for example "section bands", "fill the slide", "short slides"). When changing a style, search for every rule that targets the same selector and edit the last one, or the change will appear to do nothing.
@@ -182,6 +182,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 14. Snake made bigger (150 segments, radius 0.85, head 1.65x) and it now chases the mouse cursor, wandering again after 3.5 s of idle.
 15. Snake now slithers in front of the title (layer order change) and eats the floating logo tiles on contact; they pop and respawn after 2.5 s.
 16. Logo tiles appear at random places on every visit and respawn at a new random place after being eaten (`placement.ts`).
+17. Colour fix: the vignette was moved behind the content (it had been greying out tiles, snake and button) and the background was made more vivid (brighter blue, violet and green glows).
 
 ## Gotchas and lessons learned
 
