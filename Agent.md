@@ -125,14 +125,14 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 
 ### Current lesson
 
-"Introduction to Python and Setup" has 8 sections: What is Python?, History, Installation, Ways to run Python, First programs, Python as a calculator, Practice, Homework and wrap-up. All timings from the original notes were deliberately removed. Output samples, the history timeline table and the operator table were added on top of the original text. Key phrases are bolded.
+"Introduction to Python and Setup" has 8 sections: What is Python?, History, Installation, Ways to run Python, First programs, Python as a calculator, Practice, Homework and wrap-up. All timings from the original notes were deliberately removed. Output samples, the history timeline table and the operator table were added on top of the original text. Key phrases are bolded. The Installation section has a "Windows: install from the terminal" slide (winget commands: install, version check, search/upgrade) and a Common problems row for `python` opening the Microsoft Store.
 
 ## Slides (Lesson.tsx)
 
-- `toBands()` turns sections into slides: the content before the first `h3` is one slide titled with the section name; every `h3` starts a new slide (its title is the slide title, the section name becomes a small label). The 8 sections currently produce 20 slides.
+- `toBands()` turns sections into slides: the content before the first `h3` is one slide titled with the section name; every `h3` starts a new slide (its title is the slide title, the section name becomes a small label). The 8 sections currently produce 21 slides.
 - A title slide comes first and fills the screen (`min-height: 100vh`) with a "Start reading" button.
 - `html.snap-page` (added while the notes page is mounted) turns on `scroll-snap-type: y mandatory`; each slide is `min-height: 100vh` with `scroll-snap-align: start`.
-- Slide content fades and rises in via an `IntersectionObserver` (`.in-view`). A second observer, watching the middle line of the screen, drives the active dot and the "n / 20" counter. This works even for slides taller than the screen.
+- Slide content fades and rises in via an `IntersectionObserver` (`.in-view`). A second observer, watching the middle line of the screen, drives the active dot and the "n / 21" counter. This works even for slides taller than the screen.
 - Right-edge dots jump to a slide; they are hidden under 900px.
 - **Navigation:** round up/down buttons at the bottom right go to the previous/next slide (`goTo()`), disabled at the ends. Keyboard: Left/Right arrows and Home/End move between slides. Up/Down and Page keys keep their normal scrolling (the snap settles on the next slide). Key handling is ignored while typing in a textarea/input.
 
@@ -183,6 +183,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 15. Snake now slithers in front of the title (layer order change) and eats the floating logo tiles on contact; they pop and respawn after 2.5 s.
 16. Logo tiles appear at random places on every visit and respawn at a new random place after being eaten (`placement.ts`).
 17. Colour fix: the vignette was moved behind the content (it had been greying out tiles, snake and button) and the background was made more vivid (brighter blue, violet and green glows).
+18. Notes: added Windows terminal install commands (winget) as their own slide, a `py` launcher tip and a Microsoft Store alias fix.
 
 ## Gotchas and lessons learned
 

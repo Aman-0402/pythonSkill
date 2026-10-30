@@ -115,7 +115,44 @@ export const lessons: Lesson[] = [
             title: 'Most common beginner mistake',
             text: 'Forgetting to tick “Add python.exe to PATH” on the first installer screen. Without it, the terminal cannot find Python.',
           },
-          { type: 'code', label: 'Command Prompt', code: 'python --version', output: 'Python 3.13.0' },
+          { type: 'code', label: 'Command Prompt', code: 'python --version', output: 'Python 3.14.0' },
+          { type: 'h3', text: 'Windows: install from the terminal' },
+          {
+            type: 'p',
+            text: 'Windows 10 and 11 include **winget**, so you can install Python with one command and skip the website. Open **PowerShell** or **Command Prompt** and run:',
+          },
+          {
+            type: 'code',
+            label: 'PowerShell',
+            code: raw`winget install -e --id Python.Python.3.14`,
+          },
+          {
+            type: 'p',
+            text: 'Close the terminal and **open a new one** so it picks up the new PATH. Then check the install worked:',
+          },
+          {
+            type: 'code',
+            label: 'PowerShell',
+            code: raw`python --version
+pip --version`,
+            output: 'Python 3.14.0',
+          },
+          {
+            type: 'p',
+            text: 'To see which versions are available, or to update later:',
+          },
+          {
+            type: 'code',
+            label: 'PowerShell',
+            code: raw`winget search Python.Python
+winget upgrade --id Python.Python.3.14`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Try py if python is not found',
+            text: 'Windows also installs the `py` launcher. If `python` is not recognised, `py --version` often works.',
+          },
           { type: 'h3', text: 'macOS' },
           {
             type: 'p',
@@ -158,6 +195,10 @@ python3 --version`,
               [
                 '`python` is not recognized',
                 'PATH was not ticked during install. Reinstall and tick it, or add Python to PATH manually.',
+              ],
+              [
+                '`python` opens the Microsoft Store',
+                'Turn off the Python entries in Settings > Apps > Advanced app settings > App execution aliases, or use `py` instead.',
               ],
               ['Command not found on Mac or Linux', 'Use `python3` instead of `python`.'],
             ],
