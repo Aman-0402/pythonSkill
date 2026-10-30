@@ -82,6 +82,7 @@ export default function TryIt({ code, label }: { code: string; label?: string })
         className="try-editor"
         value={source}
         spellCheck={false}
+        wrap="off"
         aria-label="Python code you can edit and run"
         rows={Math.max(3, source.split('\n').length)}
         onChange={(e) => setSource(e.target.value)}

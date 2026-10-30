@@ -172,6 +172,18 @@ Under each slide title (left column) there can be a picture. The left column is 
 - Each slide gets one of 8 soft background colours with a matching accent (blue, green, orange, purple, pink, teal, amber, indigo), cycling with `.band:nth-of-type(8n + k)`. The accent colours the eyebrow, title bar, bullets, bold text, table headers, code-block header and callout borders.
 - Bold text is the slide's accent colour at heavier weight, with no highlight strip (the strip was tried and rejected).
 
+## Mobile (phones and small tablets)
+
+The whole site is built to work on a phone (tested at 390x844, 360x740 and 820x1180 with touch emulation: no sideways scrolling on any page). The rules live in the **last blocks of `index.css`** ("phones and small tablets", at 900px and 700px/420px breakpoints):
+
+- **Grid columns use `minmax(0, 1fr)`** (`.hero-grid`, `.band-inner`). A plain `1fr` lets wide code, tables or long words push the column wider than the screen and makes the whole page scroll sideways. `.topic-grid` uses `minmax(min(100%, 380px), 1fr)` for the same reason. `html, body` also get `overflow-x: hidden` on small screens as a safety net.
+- **Slides become ordinary sections** on phones: `min-height: auto`, `scroll-snap-type: y proximity` (mandatory snapping fights with slides taller than a phone), and the title screen uses `100svh`.
+- **Type sizes are fixed rem values** on phones (body 1.1rem, slide titles 2.1rem, code 0.9rem, tables 0.92rem) instead of the vw/vh formulas used on desktop.
+- **Code boxes** do not wrap long lines (`wrap="off"`, `white-space: pre`); they scroll sideways. Tables scroll sideways inside `.table-wrap`.
+- **Floating controls are hidden at 700px and below:** the slide counter and the up/down buttons covered the text. Swiping is the navigation on phones (the dots are hidden at 900px and below).
+- **Landing logos:** on screens narrower than 700px `placeTile()` keeps the whole middle band (26% to 76% of the height) free, because the title fills the width; tiles go above and below it.
+- To check a change on a phone: emulate a mobile device in Chrome DevTools, or in a script call `Emulation.setDeviceMetricsOverride` with `mobile: true`, and compare `document.documentElement.scrollWidth` with `clientWidth` (they must be equal).
+
 ## Styling notes
 
 - Landing page palette: vivid navy (`#0a1a3f` to `#060e24`) with a bright blue centre glow, a violet glow at the top right and a green glow at the bottom; pure white logo tiles; green accent `#2ee38a`; snake greens. Yellow appears only in the favicon.
@@ -218,6 +230,7 @@ Under each slide title (left column) there can be a picture. The left column is 
 25. Notes title screen redesigned (it looked boring): dark vivid hero with a typing code window, floating tool logos, fact pills and a yellow call-to-action.
 26. Added lesson 2, "Variables and Data Types" (second card on the Contents page); per-lesson `hero` code and `tag` on the title screen; the Try it error output now shows only the learner's line and the error type (internal Pyodide frames are hidden).
 27. Added lesson 3, "Strings and Operators" (third card on the Contents page). Tables got smaller text and tighter cells (and no wrapping of code cells) so long ones fit on one screen; ordered lists accept `start`; table rows use index keys.
+28. Mobile pass: no sideways scrolling anywhere, fixed phone type sizes, slides as normal sections on phones, Contents cards fit the width, landing logos avoid the title, code boxes scroll instead of wrapping, floating counter and arrows hidden on phones.
 
 ## Gotchas and lessons learned
 

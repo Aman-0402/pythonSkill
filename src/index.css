@@ -586,3 +586,78 @@ body {
 .notes th { font-size: clamp(0.8rem, calc(0.3vw + 0.6vh), 1.1rem); }
 .notes td code { white-space: nowrap; }
 .notes td:first-child { white-space: nowrap; }
+
+/* ===== phones and small tablets ===== */
+.topic-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); }
+
+@media (max-width: 900px) {
+  /* columns must be allowed to shrink below their content, or wide code and tables push the page sideways */
+  .hero-grid, .band-inner { grid-template-columns: minmax(0, 1fr); }
+  html, body { overflow-x: hidden; }
+
+  /* slides become normal sections that grow with their content; snapping only nudges */
+  html.snap-page { scroll-snap-type: y proximity; }
+  .notes-hero, .hero-wrap { min-height: 100vh; min-height: 100svh; }
+  .band { min-height: auto; padding: 56px 0 84px; display: block; }
+  .band .wrap { padding-right: 20px; padding-left: 20px; }
+  .wrap { padding-inline: 20px; }
+
+  /* type sizes tuned for a small screen */
+  .band-eyebrow { font-size: 0.8rem; }
+  .band .band-title { font-size: 2.1rem; }
+  .band-title::after { width: 56px; height: 6px; margin-top: 16px; }
+  .band .notes p, .band .notes li, .band .callout { font-size: 1.1rem; line-height: 1.6; }
+  .callout { padding: 14px 16px; }
+  .notes th, .notes td { padding: 0.55em 0.7em; font-size: 0.92rem; }
+  .notes th { font-size: 0.72rem; }
+  .codeblock pre, .try-editor { padding: 14px; font-size: 0.9rem; }
+  .codeblock figcaption { padding: 10px 14px; font-size: 0.8rem; }
+  .codeblock-out span { padding: 10px 14px 0; font-size: 0.7rem; }
+  .try-run, .try-reset { padding: 8px 16px; font-size: 0.9rem; }
+  .try-hint { padding: 0 14px 14px; }
+  .art { margin-top: 20px; }
+
+  /* title screen */
+  .hero-wrap { padding-block: 24px 40px; }
+  .notes-hero h1 { font-size: clamp(2.3rem, 11vw, 3.4rem); }
+  .hero-sub { font-size: 1.1rem; margin: 16px 0 20px; }
+  .hero-eyebrow { font-size: 0.75rem; margin-bottom: 14px; }
+  .hero-facts li { font-size: 0.85rem; padding: 6px 12px; }
+  .notes-hero .scroll-cue { padding: 14px 24px; font-size: 1.05rem; }
+  .hero-win-body, .hero-win-out { font-size: 0.95rem; }
+  .hero-win-body { padding: 14px 16px 4px; min-height: 6.6em; }
+  .hero-win-out { padding: 10px 16px 14px; }
+  .hero-win-bar { padding: 10px 14px; }
+  .hero-stage { padding: 20px 46px; }
+  .hero-tile { width: 52px; height: 52px; border-radius: 14px; }
+
+  /* contents page */
+  .contents { padding-block: 24px 64px; }
+  .contents-head h1 { font-size: clamp(2.4rem, 11vw, 3.4rem); }
+  .contents-head p { font-size: 1.15rem; }
+  .back { font-size: 1rem; margin-bottom: 28px; }
+  .topic { padding: 24px; }
+  .topic h2 { font-size: 1.5rem; }
+  .topic p { font-size: 1.05rem; }
+  .topic-icon { width: 56px; height: 56px; }
+  .topic-icon svg { width: 28px; height: 28px; }
+
+  /* floating controls stay small and out of the way */
+  .slide-nav { right: 10px; bottom: 10px; gap: 8px; }
+  .slide-nav button { width: 40px; height: 40px; font-size: 1.1rem; background: rgba(255, 255, 255, 0.92); }
+  .counter { left: 10px; bottom: 14px; font-size: 0.78rem; padding: 4px 10px; }
+  .lightbox { padding: 12px; }
+  .lightbox-close { top: 10px; right: 10px; width: 42px; height: 42px; }
+}
+
+@media (max-width: 420px) {
+  .band .band-title { font-size: 1.9rem; }
+  .hero-stage { padding: 16px 40px; }
+  .hero-tile { width: 46px; height: 46px; }
+}
+
+/* phones: no wrapping inside the code editor (it scrolls sideways instead), and no floating controls over the text */
+.try-editor { white-space: pre; overflow-x: auto; }
+@media (max-width: 700px) {
+  .slide-nav, .counter { display: none; }
+}
