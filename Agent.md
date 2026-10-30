@@ -66,6 +66,7 @@ src/
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
   Art.tsx                   Picture under a slide title: drawn illustration (slides 1 and 2 only) or your own file from src/slides/
+  HeroCode.tsx              Animated code window and floating logos on the notes title screen
   Highlight.tsx             Tiny Python syntax colouring used by code blocks and illustrations
   slides/README.md          How to add your own slide pictures, plus every slide id
   TryIt.tsx                 Editable code box that runs Python in the browser (Pyodide)
@@ -133,7 +134,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 ## Slides (Lesson.tsx)
 
 - `toBands()` turns sections into slides: the content before the first `h3` is one slide titled with the section name; every `h3` starts a new slide (its title is the slide title, the section name becomes a small label). The 8 sections currently produce 22 slides.
-- A title slide comes first and fills the screen (`min-height: 100vh`) with a "Start reading" button.
+- **Title screen (slide 0)** is a full-screen dark hero (`.notes-hero`, same navy, blue, violet and green glows as the landing page, plus a faint dot grid). Left: a "Python for beginners" chip, the lesson title with the word "Python" in a yellow-to-green gradient, the summary, three fact pills (slide count, number of runnable code boxes, "Windows, macOS and Linux"; the numbers are computed from `content.ts`) and a yellow "Start reading" button. Right: `HeroCode.tsx`, a code window that types `# your first program` and `print("Hello, World!")` and then shows the output "Hello, World!" (loops every few seconds; static under reduced motion), with four floating white logo tiles (Python, Pandas, NumPy, Jupyter) placed in the side margins so they never cover the code. The old plain white title (`.lesson-head` / `.contents-head` styles) is no longer used by this page; `.contents-head` is still used by the Contents page and the "Topic not found" page.
 - `html.snap-page` (added while the notes page is mounted) turns on `scroll-snap-type: y mandatory`; each slide is `min-height: 100vh` with `scroll-snap-align: start`.
 - Slide content fades and rises in via an `IntersectionObserver` (`.in-view`). A second observer, watching the middle line of the screen, drives the active dot and the "n / 22" counter. This works even for slides taller than the screen.
 - Right-edge dots jump to a slide; they are hidden under 900px.
@@ -206,6 +207,7 @@ Under each slide title (left column) there can be a picture. The left column is 
 22. Click-to-zoom lightbox for slide pictures; History picture replaced by the owner's updated landscape version.
 23. History slide got a second picture (Monty Python collage, `history-2.webp`); slides can now have several stacked pictures via `<id>-2`, `<id>-3` file names.
 24. Slide pictures: square corners, fill the column on wide screens, full width / two columns on narrow screens.
+25. Notes title screen redesigned (it looked boring): dark vivid hero with a typing code window, floating tool logos, fact pills and a yellow call-to-action.
 
 ## Gotchas and lessons learned
 

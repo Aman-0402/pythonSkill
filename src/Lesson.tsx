@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from './router'
 import TryIt from './TryIt'
 import Art from './Art'
+import HeroCode from './HeroCode'
 import { Highlight } from './Highlight'
 import { lessons, type Block, type Lesson as LessonData, type Section } from './content'
 
@@ -145,6 +146,7 @@ export default function Lesson({ slug }: { slug: string }) {
 
 function Slides({ lesson }: { lesson: LessonData }) {
   const bands = toBands(lesson.sections)
+  const tryItCount = lesson.sections.flatMap((s) => s.blocks).filter((b) => b.type === 'code' && b.runnable).length
   const [active, setActive] = useState(0)
 
   // snap the whole page slide by slide while this page is open
@@ -201,14 +203,29 @@ function Slides({ lesson }: { lesson: LessonData }) {
 
   return (
     <div className="light-page">
-      <div className="contents lesson-head wrap in-view" data-slide={0}>
-        <Link href="/contents" className="back">← Contents</Link>
-        <header className="contents-head">
-          <h1>{lesson.title}</h1>
-          <p>{lesson.summary}</p>
-        </header>
-        <a href={'#' + bands[0].id} className="scroll-cue">Start reading ↓</a>
-      </div>
+      <header className="notes-hero in-view" data-slide={0}>
+        <div className="wrap hero-wrap">
+          <Link href="/contents" className="back">← Contents</Link>
+          <div className="hero-grid">
+            <div className="hero-copy">
+              <p className="hero-eyebrow">Python for beginners</p>
+              <h1>
+                {lesson.title.split(/(Python)/).map((part, i) =>
+                  part === 'Python' ? <span className="hl" key={i}>{part}</span> : part,
+                )}
+              </h1>
+              <p className="hero-sub">{lesson.summary}</p>
+              <ul className="hero-facts">
+                <li><b>{bands.length}</b> slides</li>
+                <li><b>{tryItCount}</b> code boxes to run</li>
+                <li>Windows, macOS and Linux</li>
+              </ul>
+              <a href={'#' + bands[0].id} className="scroll-cue">Start reading ↓</a>
+            </div>
+            <HeroCode />
+          </div>
+        </div>
+      </header>
 
       {bands.map((b, i) => (
         <section className="band" key={b.id} id={b.id} data-slide={i + 1} data-size={sizeOf(b.blocks)}>
