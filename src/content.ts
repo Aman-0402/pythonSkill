@@ -2,7 +2,7 @@ export type Block =
   | { type: 'p'; text: string }
   | { type: 'h3'; text: string; art?: string }
   | { type: 'ul'; items: string[] }
-  | { type: 'ol'; items: string[] }
+  | { type: 'ol'; items: string[]; start?: number }
   | { type: 'code'; code: string; output?: string; label?: string; runnable?: boolean }
   | { type: 'note'; tone: 'tip' | 'warn'; title: string; text: string }
   | { type: 'table'; head: string[]; rows: string[][] }
@@ -801,6 +801,493 @@ print(a, b)`,
             tone: 'tip',
             title: 'Next class',
             text: 'Strings and operators.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'strings-and-operators',
+    title: 'Strings and Operators',
+    summary: 'Work with text using indexing, slicing, string methods and f-strings, then compare values with operators.',
+    hero: { file: 'strings.py', lines: ['text = "Python"', 'print(text[0:2])'], output: 'Py' },
+    sections: [
+      {
+        id: 's3-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `input()` always return?',
+              'What is the output of `int("5") + 5`?',
+              'What is the difference between `/` and `//`?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's3-what-is-a-string',
+        title: 'What is a string?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A string is a **sequence of characters** inside quotes.',
+          },
+          {
+            type: 'code',
+            label: 'strings.py',
+            runnable: true,
+            code: raw`a = 'Python'
+b = "Python"
+c = """This is
+a multi-line
+string"""
+print(a, b)
+print(c)`,
+          },
+          { type: 'h3', text: 'Quotes' },
+          {
+            type: 'ul',
+            items: [
+              '**Single and double quotes** work the same way.',
+              'Use **triple quotes** for multi-line text.',
+              'You can **mix quotes** to put one kind inside the other.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("It's a good day")
+print('He said "Hello"')`,
+          },
+          { type: 'h3', text: 'Escape characters' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("Line 1\nLine 2")
+print("Name\tAge")
+print("He said \"Hi\"")
+print("C:\\Users")`,
+          },
+          { type: 'h3', text: 'Escape table' },
+          {
+            type: 'table',
+            head: ['Escape', 'Meaning'],
+            rows: [
+              ['`\\n`', 'new line'],
+              ['`\\t`', 'tab'],
+              ['`\\\\`', 'backslash'],
+              ['`\\"`', 'double quote'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'How do you print `I\'m "happy"`?',
+          },
+        ],
+      },
+      {
+        id: 's3-indexing',
+        title: 'Indexing',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Every character has a position, called its **index**, and counting starts from **0**.',
+          },
+          {
+            type: 'code',
+            label: 'Index positions',
+            code: raw` P   y   t   h   o   n
+ 0   1   2   3   4   5
+-6  -5  -4  -3  -2  -1`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = "Python"
+print(s[0])
+print(s[3])
+print(s[-1])
+print(s[-3])`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What is `s[-2]`?',
+          },
+          { type: 'h3', text: 'Two errors to know' },
+          {
+            type: 'ul',
+            items: [
+              '`s[6]` gives an **IndexError**, because there is no position 6.',
+              'Strings are **immutable**: `s[0] = "J"` gives a **TypeError**. You cannot change a character in place.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: read the error',
+            runnable: true,
+            code: raw`s = "Python"
+print(s[6])`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: read the error',
+            runnable: true,
+            code: raw`s = "Python"
+s[0] = "J"`,
+          },
+        ],
+      },
+      {
+        id: 's3-slicing',
+        title: 'Slicing',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Syntax: `string[start:stop:step]`. The **stop index is not included**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = "Python Programming"
+print(s[0:6])
+print(s[:6])
+print(s[7:])
+print(s[:])
+print(s[::2])
+print(s[::-1])
+print(s[-11:])`,
+          },
+          { type: 'h3', text: 'How slicing works' },
+          {
+            type: 'ul',
+            items: [
+              'Leaving out **start** means from the beginning.',
+              'Leaving out **stop** means up to the end.',
+              'A step of **-1** reverses the string.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's3-methods',
+        title: 'Common string functions and methods',
+        blocks: [
+          {
+            type: 'p',
+            text: '`len()` is a **function**. The rest are **methods**, called with a dot.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = "  Hello Python  "
+print(len(s))`,
+          },
+          { type: 'h3', text: 'Changing the text' },
+          {
+            type: 'table',
+            head: ['Method', 'Purpose', 'Example'],
+            rows: [
+              ['`upper()`', 'all capitals', '`"abc".upper()` gives `ABC`'],
+              ['`lower()`', 'all small', '`"ABC".lower()` gives `abc`'],
+              ['`title()`', 'first letter of each word capital', '`"hello world".title()`'],
+              ['`capitalize()`', 'first letter of the string capital', '`"hello world".capitalize()`'],
+              ['`strip()`', 'remove spaces at both ends', '`"  hi  ".strip()`'],
+              ['`lstrip()` / `rstrip()`', 'remove left or right spaces', ''],
+              ['`replace(a, b)`', 'replace text', '`"cat".replace("c", "b")`'],
+            ],
+          },
+          { type: 'h3', text: 'Searching and checking' },
+          {
+            type: 'table',
+            head: ['Method', 'Purpose', 'Example'],
+            rows: [
+              ['`find(x)`', 'first index, or -1 if not found', '`"hello".find("l")`'],
+              ['`count(x)`', 'number of occurrences', '`"banana".count("a")`'],
+              ['`startswith(x)`', 'True or False', '`"python".startswith("py")`'],
+              ['`endswith(x)`', 'True or False', '`"file.py".endswith(".py")`'],
+              ['`isdigit()`', 'only digits?', '`"123".isdigit()`'],
+              ['`isalpha()`', 'only letters?', '`"abc".isalpha()`'],
+            ],
+          },
+          { type: 'h3', text: 'Splitting and joining' },
+          {
+            type: 'table',
+            head: ['Method', 'Purpose', 'Example'],
+            rows: [
+              ['`split()`', 'break into a list', '`"a b c".split()`'],
+              ['`join()`', 'join a list into a string', '`"-".join(["a","b"])`'],
+            ],
+          },
+          { type: 'h3', text: 'Try the methods' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`text = "python is easy"
+print(text.upper())
+print(text.title())
+print(text.replace("easy", "powerful"))
+print(text.split())
+print(text.count("s"))`,
+          },
+          { type: 'h3', text: 'Methods return a new string' },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Important',
+            text: 'Methods **return a new string**. They do not change the original.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`name = "aman"
+name.upper()
+print(name)
+name = name.upper()
+print(name)`,
+          },
+        ],
+      },
+      {
+        id: 's3-operations',
+        title: 'String operations',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = "Hello"
+b = "World"
+print(a + b)
+print(a + " " + b)
+print(a * 3)
+print("a" in "apple")
+print("z" not in "apple")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`+` is **concatenation**.',
+              '`*` is **repetition**.',
+              '`in` checks whether something is **present**.',
+            ],
+          },
+          { type: 'h3', text: 'Mixing a string and a number' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 25
+print("Age: " + str(age))`,
+          },
+        ],
+      },
+      {
+        id: 's3-fstrings',
+        title: 'f-strings (formatted strings)',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The **cleanest way** to mix text and variables.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`name = "Aman"
+age = 25
+print(f"My name is {name} and I am {age} years old")
+print(f"Next year I will be {age + 1}")`,
+          },
+          { type: 'h3', text: 'Formatting numbers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`price = 49.5678
+print(f"Price: {price:.2f}")
+print(f"{1000000:,}")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`.2f` shows **2 decimal places**.',
+              '`,` adds **thousand separators**.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's3-operators',
+        title: 'Operators',
+        blocks: [
+          { type: 'h3', text: 'Arithmetic (quick revision)' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(10 + 3, 10 - 3, 10 * 3, 10 / 3, 10 // 3, 10 % 3, 10 ** 3)`,
+          },
+          { type: 'h3', text: 'Comparison operators' },
+          {
+            type: 'p',
+            text: 'The result is always **True or False**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b = 10, 20
+print(a == b)
+print(a != b)
+print(a > b)
+print(a < b)
+print(a >= 10)
+print(a <= 5)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Classic beginner mistake',
+            text: '`=` **assigns** and `==` **compares**. Do not mix them up.',
+          },
+          { type: 'h3', text: 'Logical operators' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 22
+marks = 80
+print(age > 18 and marks > 75)
+print(age > 25 or marks > 75)
+print(not age > 18)`,
+          },
+          {
+            type: 'table',
+            head: ['Operator', 'Meaning'],
+            rows: [
+              ['`and`', 'True only if both are True'],
+              ['`or`', 'True if at least one is True'],
+              ['`not`', 'reverses the result'],
+            ],
+          },
+          { type: 'h3', text: 'Truth table' },
+          {
+            type: 'table',
+            head: ['A', 'B', 'A and B', 'A or B'],
+            rows: [
+              ['T', 'T', 'T', 'T'],
+              ['T', 'F', 'F', 'T'],
+              ['F', 'T', 'F', 'T'],
+              ['F', 'F', 'F', 'F'],
+            ],
+          },
+          { type: 'h3', text: 'Comparing strings' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("apple" == "apple")
+print("Apple" == "apple")
+print("a" < "b")`,
+          },
+          {
+            type: 'p',
+            text: 'Comparison is **case-sensitive**.',
+          },
+          { type: 'h3', text: 'Membership and identity (brief)' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("py" in "python")
+x = None
+print(x is None)`,
+          },
+          { type: 'h3', text: 'Operator precedence (high to low)' },
+          {
+            type: 'ol',
+            items: [
+              '`()`',
+              '`**`',
+              '`* / // %`',
+              '`+ -`',
+              'comparison operators',
+              '`not`',
+              '`and`',
+              '`or`',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(5 + 3 > 7 and 10 % 3 == 1)`,
+          },
+        ],
+      },
+      {
+        id: 's3-practice',
+        title: 'Practice questions',
+        blocks: [
+          { type: 'h3', text: 'Strings' },
+          {
+            type: 'ol',
+            items: [
+              'Take a name and print its length, uppercase, lowercase and reversed form.',
+              'Take a name and print the first letter, the last letter and the middle character.',
+              'Take a sentence and print the number of words (use `split()` and `len()`).',
+              'Take an email address and print the username and domain (use `split("@")`).',
+              'Count how many times `a` appears in a user-entered word.',
+              'Take a string with extra spaces and print it cleaned and in title case.',
+            ],
+          },
+          { type: 'h3', text: 'f-strings and operators' },
+          {
+            type: 'ol',
+            start: 7,
+            items: [
+              'Print `Name: ... | Age: ... | City: ...` using an f-string.',
+              'Take two numbers and print whether the first is greater, equal, or smaller, as True/False values.',
+              'Take age and print whether the person is eligible to vote (`age >= 18`).',
+              'Take a number and check whether it is even (`n % 2 == 0`).',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`s = "Programming"
+print(s[2:6])
+print(s[::-1])
+print(s[-3:])`,
+          },
+          { type: 'h3', text: 'Try the first question' },
+          {
+            type: 'code',
+            label: 'Your turn: finish the program, then press Run',
+            runnable: true,
+            code: raw`name = "Aman"
+# print the length, uppercase, lowercase and reversed form
+print(len(name))`,
+          },
+        ],
+      },
+      {
+        id: 's3-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Take a full name (for example `aman kumar raj`) and print it in **title case**, then print the **initials** (`A.K.R.`).',
+              'Write a program that takes a word and prints the **first 3 and last 3 letters**.',
+              'Write a program that takes marks in 3 subjects, prints the **average with 2 decimals** using an f-string, and prints `True` or `False` for whether the average is **at least 40**.',
+              'Revise the **string methods** table.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Conditional statements (`if`, `elif`, `else`).',
           },
         ],
       },

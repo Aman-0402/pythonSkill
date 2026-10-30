@@ -35,7 +35,7 @@ function BlockView({ block }: { block: Block }): ReactNode {
       )
     case 'ol':
       return (
-        <ol>
+        <ol start={block.start}>
           {block.items.map((t) => (
             <li key={t}><Inline text={t} /></li>
           ))}
@@ -78,8 +78,8 @@ function BlockView({ block }: { block: Block }): ReactNode {
               </tr>
             </thead>
             <tbody>
-              {block.rows.map((row) => (
-                <tr key={row[0]}>
+              {block.rows.map((row, r) => (
+                <tr key={r}>
                   {row.map((cell, i) => (
                     <td key={i}><Inline text={cell} /></td>
                   ))}

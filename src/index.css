@@ -580,3 +580,9 @@ body {
 @media (max-width: 900px) {
   .hero-stage { padding: 24px 60px; }
 }
+
+/* tables: more compact so long ones (like the string methods) fit on one screen */
+.notes th, .notes td { padding: 0.65em 1em; font-size: clamp(1rem, calc(0.55vw + 0.9vh), 1.5rem); }
+.notes th { font-size: clamp(0.8rem, calc(0.3vw + 0.6vh), 1.1rem); }
+.notes td code { white-space: nowrap; }
+.notes td:first-child { white-space: nowrap; }

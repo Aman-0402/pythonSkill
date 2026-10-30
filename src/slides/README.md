@@ -12,7 +12,9 @@ Several pictures on one slide: add `-2`, `-3`, ... to the name (`history.webp`, 
 
 Currently in use: `history.webp` (Guido van Rossum) and `history-2.webp` (Monty Python collage).
 
-## Slide ids
+## Slide ids (lesson 1)
+
+Lessons 2 and 3 use the same rule with the prefixes `s2-` and `s3-` (for example `s2-data-types`, `s3-slicing`). To list every id, check the section `id` values in `src/content.ts`; a sub-slide id is `<section id>-<title in lowercase with dashes>`.
 
 | File name (without extension) | Slide |
 |---|---|
