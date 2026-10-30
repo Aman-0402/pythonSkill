@@ -18,7 +18,7 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 
 A small learning website for Python beginners. Three screens:
 
-1. **Landing (`/`)** — dark, premium page: a flat 2D "Python" title, a green 3D snake wandering randomly in the background, floating programming-language logos, and a glass "Start your journey" button. No mouse interaction.
+1. **Landing (`/`)** — dark, premium page: a flat 2D "Python" title, a green 3D snake wandering randomly in the background, floating Python data-science and analysis logos, and a glass "Start your journey" button. No mouse interaction.
 2. **Contents (`/contents`)** — white page with a grid of topic cards. Today there is one card: "Introduction to Python and Setup".
 3. **Notes (`/contents/<slug>`)** — the lesson, shown as full-screen scroll-snapping slides, one per sub-topic, each with its own colour.
 
@@ -54,14 +54,14 @@ index.html                  Fonts, title "Learn Python", mounts #root
 vite.config.ts              base = '/pythonSkill/' only when GITHUB_ACTIONS is set
 public/
   favicon.svg               Python-style logo
-  icons/*.svg               10 language logos (Devicon, MIT): javascript, python, java, rust, typescript, csharp, cplusplus, go, php, swift
+  icons/*.svg               10 Python data-science logos (Devicon, MIT): pandas, python, numpy, tensorflow, matplotlib, scikitlearn, jupyter, pytorch, plotly, opencv
 src/
   main.tsx                  React entry
   App.tsx                   Picks a page from the URL path
   router.tsx                usePath, navigate, <Link>, base-path aware
   Landing.tsx               Scene + FloatingIcons + flat 2D "Python" title + CTA link to /contents
   Scene.tsx                 three.js: green snake, lights, dust (no text, no mouse input)
-  FloatingIcons.tsx         10 floating programming-language logo tiles (real SVG files)
+  FloatingIcons.tsx         10 floating Python data-science logo tiles (real SVG files)
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
   TryIt.tsx                 Editable code box that runs Python in the browser (Pyodide)
@@ -91,7 +91,7 @@ src/
 
 ## Floating icons
 
-`FloatingIcons.tsx` renders 10 white rounded tiles, each holding one real programming-language logo (JavaScript, Python, Java, Rust, TypeScript, C#, C++, Go, PHP, Swift) as an `<img>` of a self-hosted SVG in `public/icons/`. The files come from the open-source Devicon set (MIT licence, `*-original.svg`, v2.16.0); the logos remain trademarks of their owners. Tiles are white so every brand colour, including the black Rust logo, stays visible on the dark page. Paths use `import.meta.env.BASE_URL`. To add a language, download its Devicon SVG into `public/icons/`, add one entry to `languages` and one more `.floater:nth-child(n)` position rule. Positions, tilt, speed and delay come from those rules. Animation is off under `prefers-reduced-motion`.
+`FloatingIcons.tsx` renders 10 white rounded tiles, each holding the real logo of a Python data-science or data-analysis tool: Pandas, Python, NumPy, TensorFlow, Matplotlib, scikit-learn, Jupyter, PyTorch, Plotly, OpenCV. Only tools used with Python appear here, by the owner's request (no other programming languages). Each is an `<img>` of a self-hosted SVG in `public/icons/`, from the open-source Devicon set (MIT licence, `*-original.svg`, v2.16.0); the logos remain trademarks of their owners. Tiles are white so every brand colour stays visible on the dark page. Paths use `import.meta.env.BASE_URL`. To add a tool, download its Devicon SVG into `public/icons/`, add one entry to `tools` and one more `.floater:nth-child(n)` position rule (Devicon has no SciPy or Seaborn logo). Positions, tilt, speed and delay come from those rules. Animation is off under `prefers-reduced-motion`.
 
 ## Lesson content model (content.ts)
 
@@ -168,6 +168,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 9. Landing page edit: replaced the 3D chrome "Python" text with a flat 2D title and removed all mouse interaction (snake, icons and button kept). Deleted the now-unused 3D font file.
 10. Added slide navigation (Prev/Next buttons, Left/Right/Home/End keys) and the in-browser "Try it" Python runner (Pyodide) on four code blocks.
 11. Landing page: replaced the data-analyst icon glyphs with real programming-language logo SVGs (10 languages) on white tiles.
+12. Landing page logos changed again: only Python data-science and analysis tools (Pandas, NumPy, Matplotlib, scikit-learn, TensorFlow, PyTorch, Jupyter, Plotly, OpenCV plus Python). Removed the other language logos.
 
 ## Gotchas and lessons learned
 
