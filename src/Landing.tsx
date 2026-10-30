@@ -8,7 +8,7 @@ export default function Landing() {
       <Scene />
       <FloatingIcons />
       <main className="landing">
-        <h1 className="sr-only">Python</h1>
+        <h1 className="hero-title">Python</h1>
         <Link href="/contents" className="cta">
           <span className="cta-prompt">&gt;&gt;&gt;</span>
           Start your journey

@@ -1,7 +1,5 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 const SEGMENTS = 46
@@ -16,7 +14,6 @@ export default function Scene() {
 
   useEffect(() => {
     const el = mount.current!
-    let disposed = false
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -104,38 +101,6 @@ export default function Scene() {
     }
     scene.add(eyes)
 
-    /* text */
-    const textGroup = new THREE.Group()
-    scene.add(textGroup)
-    let textWidth = 1
-    const textMat = new THREE.MeshPhysicalMaterial({
-      color: 0xe9eff7,
-      metalness: 1,
-      roughness: 0.16,
-      clearcoat: 1,
-      clearcoatRoughness: 0.08,
-      envMapIntensity: 1.4,
-    })
-    new FontLoader().load(import.meta.env.BASE_URL + 'fonts/helvetiker_bold.typeface.json', (font) => {
-      if (disposed) return
-      const geo = new TextGeometry('Python', {
-        font,
-        size: 3,
-        depth: 1.2,
-        curveSegments: 10,
-        bevelEnabled: true,
-        bevelThickness: 0.14,
-        bevelSize: 0.09,
-        bevelSegments: 5,
-      })
-      geo.computeBoundingBox()
-      const b = geo.boundingBox!
-      geo.translate(-(b.max.x + b.min.x) / 2, -(b.max.y + b.min.y) / 2, -(b.max.z + b.min.z) / 2)
-      textWidth = b.max.x - b.min.x
-      textGroup.add(new THREE.Mesh(geo, textMat))
-      layout()
-    })
-
     /* layout */
     let viewW = 1
     let viewH = 1
@@ -147,20 +112,9 @@ export default function Scene() {
       camera.updateProjectionMatrix()
       viewH = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * CAMERA_Z
       viewW = viewH * camera.aspect
-      const s = Math.min(viewW * 0.78, 24) / textWidth
-      textGroup.scale.setScalar(s)
-      textGroup.position.y = viewH * 0.09
     }
     layout()
     window.addEventListener('resize', layout)
-
-    /* pointer tilt */
-    const pointer = { x: 0, y: 0 }
-    const onMove = (e: PointerEvent) => {
-      pointer.x = (e.clientX / window.innerWidth) * 2 - 1
-      pointer.y = (e.clientY / window.innerHeight) * 2 - 1
-    }
-    window.addEventListener('pointermove', onMove)
 
     /* loop */
     let heading = Math.random() * Math.PI * 2
@@ -201,9 +155,6 @@ export default function Scene() {
           cur.copy(prev).add(d.setLength(SPACING))
         }
 
-        textGroup.rotation.y += (pointer.x * 0.35 - textGroup.rotation.y) * 0.06
-        textGroup.rotation.x += (pointer.y * 0.2 - textGroup.rotation.x) * 0.06
-        textGroup.position.z = Math.sin(t * 0.9) * 0.3
         dust.rotation.y = t * 0.01
         dust.position.y = Math.sin(t * 0.2) * 0.4
       }
@@ -217,10 +168,8 @@ export default function Scene() {
     tick()
 
     return () => {
-      disposed = true
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', layout)
-      window.removeEventListener('pointermove', onMove)
       scene.traverse((o) => {
         if (o instanceof THREE.Mesh) {
           o.geometry.dispose()

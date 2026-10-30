@@ -337,3 +337,19 @@ html.snap-page { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 @media (max-width: 900px) {
   .band { --scale: 1 !important; --tscale: 1 !important; }
 }
+
+/* landing: flat 2D title */
+.landing { justify-content: center; gap: clamp(32px, 6vh, 64px); padding: 24px; }
+.hero-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(4.5rem, 17vw, 14rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  background: linear-gradient(180deg, #ffffff 25%, #9fc6ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 12px 40px rgba(46, 140, 255, 0.35));
+}
