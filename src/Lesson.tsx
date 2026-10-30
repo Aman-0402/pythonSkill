@@ -163,6 +163,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement
       if (t.closest('textarea, input, select') || e.altKey || e.ctrlKey || e.metaKey) return
+      if (document.querySelector('.lightbox')) return // a picture is open: keys belong to it
       const to = { ArrowRight: active + 1, ArrowLeft: active - 1, Home: 0, End: bands.length }[e.key]
       if (to === undefined) return
       e.preventDefault()

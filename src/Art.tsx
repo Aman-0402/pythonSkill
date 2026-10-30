@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Highlight } from './Highlight'
 
 // Picture shown under a slide title. Two slides have a drawn illustration (see `art` below);
@@ -49,12 +50,43 @@ const art: Record<string, () => ReactNode> = {
   ),
 }
 
+// Click a picture to see it large, centred on the screen. Click again, or press Esc, to close.
+function Zoomable({ src }: { src: string }) {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
+  return (
+    <>
+      <button type="button" className="art-zoom" aria-label="Enlarge picture" onClick={() => setOpen(true)}>
+        <img className="art-image" src={src} alt="" draggable={false} />
+      </button>
+      {open &&
+        // portal to <body>: the sticky slide column would otherwise trap the overlay below the page controls
+        createPortal(
+          <div className="lightbox" role="dialog" aria-modal="true" aria-label="Picture" onClick={() => setOpen(false)}>
+            <img src={src} alt="" draggable={false} />
+            <button type="button" className="lightbox-close" aria-label="Close picture" autoFocus>
+              ✕
+            </button>
+          </div>,
+          document.body,
+        )}
+    </>
+  )
+}
+
 export default function Art({ name, id }: { name?: string; id: string }) {
   const picture = pictureFor(id)
   if (picture) {
     return (
       <div className="art">
-        <img className="art-image" src={picture} alt="" draggable={false} />
+        <Zoomable src={picture} />
       </div>
     )
   }
