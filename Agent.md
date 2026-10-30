@@ -13,6 +13,8 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 3. **No co-author lines.** Commit messages contain no `Co-Authored-By` trailer and no tool attribution.
 4. **Suggest improvements.** When there is a better idea, say so briefly alongside the work, and let the owner decide.
 5. Run `npx tsc -b` before committing.
+6. **Ask before creating notes for any session.** When the owner pastes notes or mentions a new session, first ask what to create (a website lesson, a PDF, or both) and whether pictures should be included, then wait for the answer. Do not create session notes unprompted. (This rule was added after sessions 2 and 3 were added to the site straight from pasted notes.)
+7. **Session PDFs go in the `Notes pdf/` folder, one PDF per session**, named `Session N - <title>.pdf`. If the session's notes use pictures, the PDF includes them. So far only session 1 has a PDF; sessions 2 and 3 have none until the owner asks.
 
 ## What this is
 
@@ -66,6 +68,7 @@ src/
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
   Art.tsx                   Picture under a slide title: drawn illustration (slides 1 and 2 only) or your own file from src/slides/
+  ../scripts/notes-pdf.mjs   Builds a session PDF into "Notes pdf/" (see "Session PDFs")
   HeroCode.tsx              Animated code window and floating logos on the notes title screen
   Highlight.tsx             Tiny Python syntax colouring used by code blocks and illustrations
   slides/README.md          How to add your own slide pictures, plus every slide id
@@ -147,6 +150,20 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 - Slide content fades and rises in via an `IntersectionObserver` (`.in-view`). A second observer, watching the middle line of the screen, drives the active dot and the "n / 22" counter. This works even for slides taller than the screen.
 - Right-edge dots jump to a slide; they are hidden under 900px.
 - **Navigation:** round up/down buttons at the bottom right go to the previous/next slide (`goTo()`), disabled at the ends. Keyboard: Left/Right arrows and Home/End move between slides. Up/Down and Page keys keep their normal scrolling (the snap settles on the next slide). Key handling is ignored while typing in a textarea/input.
+
+## Session PDFs (`Notes pdf/`)
+
+Printable notes for each session live in `Notes pdf/` (committed). Generate or refresh one with:
+
+```bash
+node --experimental-strip-types scripts/notes-pdf.mjs 1      # session number, or a lesson slug
+```
+
+- **How it works.** `scripts/notes-pdf.mjs` reads the lesson from `src/content.ts` (session N = the Nth lesson in the `lessons` array), builds a styled A4 HTML page (coloured title block, one colour per section like the website, code blocks with outputs, tables, tip and warning boxes, page numbers in the footer) and prints it to PDF with headless Chrome over the DevTools protocol. No packages are installed. Set `CHROME_PATH` if Chrome is not at the usual Windows path.
+- **Pictures.** For each section and sub-section, the script looks in `src/slides/` for a file named after the slide id (`<id>.webp`, `<id>-2.webp`, ...), the same files the website shows, and puts them under that heading (side by side when there are two). They are shrunk to at most 1100px wide JPEG in the page before printing, which keeps a PDF with two pictures under 1 MB (unshrunk it was 5 MB). The drawn illustrations on slides 1 and 2 of lesson 1 are not images, so they are not in the PDF.
+- **What is not in the PDF:** the interactive "Try it" boxes become ordinary code blocks, and the website's slide layout, title-screen animation and zoom are not reproduced.
+- **Previewing without a PDF viewer.** Set `NOTES_PREVIEW=<path prefix>` and the script also saves `<prefix>_1.png`, `<prefix>_2.png`, ... (A4-sized pictures of the page). The real PDF page breaks can differ slightly (the preview ignores the page margins).
+- If a lesson is edited after its PDF was made, regenerate the PDF (only when the owner has asked for one for that session).
 
 ## Slide pictures (Art.tsx and src/slides/)
 
@@ -231,6 +248,7 @@ The whole site is built to work on a phone (tested at 390x844, 360x740 and 820x1
 26. Added lesson 2, "Variables and Data Types" (second card on the Contents page); per-lesson `hero` code and `tag` on the title screen; the Try it error output now shows only the learner's line and the error type (internal Pyodide frames are hidden).
 27. Added lesson 3, "Strings and Operators" (third card on the Contents page). Tables got smaller text and tighter cells (and no wrapping of code cells) so long ones fit on one screen; ordered lists accept `start`; table rows use index keys.
 28. Mobile pass: no sideways scrolling anywhere, fixed phone type sizes, slides as normal sections on phones, Contents cards fit the width, landing logos avoid the title, code boxes scroll instead of wrapping, floating counter and arrows hidden on phones.
+29. Session 1 PDF created in `Notes pdf/` (with the History pictures) using the new `scripts/notes-pdf.mjs`; new owner rules: ask before creating any session notes, PDFs per session in `Notes pdf/`, include pictures.
 
 ## Gotchas and lessons learned
 
