@@ -482,3 +482,18 @@ body {
 /* several pictures on one slide: stacked, each a bit smaller so they all fit on screen */
 .art-multi { display: grid; gap: clamp(12px, 2vh, 20px); justify-items: start; }
 .art-multi .art-image { max-height: clamp(130px, 25vh, 240px); }
+
+/* slide pictures: square corners, and they adjust to the space available */
+.art-image, .art-zoom, .lightbox img { border-radius: 0; }
+
+@media (max-width: 900px) {
+  .art { max-width: 640px; }
+  .art .art-zoom { width: 100%; }
+  .art .art-image { width: 100%; max-height: none; }
+  .art-multi { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+
+/* wide screens: let stacked pictures grow until they fill the column (height still limited so both fit on screen) */
+@media (min-width: 901px) {
+  .art-multi .art-image { max-height: clamp(130px, 34vh, 320px); }
+}
