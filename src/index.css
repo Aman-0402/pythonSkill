@@ -353,3 +353,27 @@ html.snap-page { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
   background-clip: text;
   filter: drop-shadow(0 12px 40px rgba(46, 140, 255, 0.35));
 }
+
+/* slide arrows */
+.slide-nav { position: fixed; right: 24px; bottom: 20px; z-index: 5; display: flex; gap: 10px; }
+.slide-nav button { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #10203a; background: #fff; color: #10203a; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: transform 0.15s, background 0.15s, color 0.15s; }
+.slide-nav button:hover:not(:disabled) { background: #10203a; color: #fff; transform: translateY(-2px); }
+.slide-nav button:disabled { opacity: 0.3; cursor: default; }
+.slide-nav button:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 3px; }
+
+/* try it: run Python in the browser */
+.codeblock figcaption { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.try-actions { display: inline-flex; gap: 10px; }
+.try-run, .try-reset { font: 600 clamp(0.95rem, calc(0.4vw + 0.8vh), 1.3rem) var(--body); padding: 8px 20px; border-radius: 999px; border: 0; cursor: pointer; }
+.try-run { background: #2ee38a; color: #04210f; }
+.try-run:hover:not(:disabled) { background: #5cf0a8; }
+.try-reset { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.try-reset:hover:not(:disabled) { background: rgba(255, 255, 255, 0.26); }
+.try-run:disabled, .try-reset:disabled { opacity: 0.6; cursor: default; }
+.try-run:focus-visible, .try-reset:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.try-editor { display: block; width: 100%; padding: 26px; border: 0; resize: vertical; background: transparent; color: #f2f7ff; font: clamp(1.2rem, calc(0.8vw + 1.3vh), 2rem)/1.7 var(--mono); tab-size: 4; }
+.try-editor:focus-visible { outline: 2px solid #2ee38a; outline-offset: -2px; }
+.try-hint { margin: 0; padding: 0 26px 18px; color: #ffd966; font-size: 1rem; }
+.try-error { color: #ff9a9a !important; }
+
+@media (max-width: 900px) { .slide-nav { right: 12px; bottom: 12px; } }

@@ -3,7 +3,7 @@ export type Block =
   | { type: 'h3'; text: string }
   | { type: 'ul'; items: string[] }
   | { type: 'ol'; items: string[] }
-  | { type: 'code'; code: string; output?: string; label?: string }
+  | { type: 'code'; code: string; output?: string; label?: string; runnable?: boolean }
   | { type: 'note'; tone: 'tip' | 'warn'; title: string; text: string }
   | { type: 'table'; head: string[]; rows: string[][] }
 
@@ -202,6 +202,7 @@ python3 --version`,
           {
             type: 'code',
             label: 'hello.py',
+            runnable: true,
             code: raw`print("Hello, World!")
 print("My name is Aman")
 print("Python", "is", "easy")
@@ -245,6 +246,7 @@ This is a multi-line comment
           {
             type: 'code',
             label: 'Broken on purpose',
+            runnable: true,
             code: raw`print("Hello)        # SyntaxError: missing quote
 Print("Hello")       # NameError: wrong case`,
           },
@@ -260,6 +262,7 @@ Print("Hello")       # NameError: wrong case`,
         blocks: [
           {
             type: 'code',
+            runnable: true,
             code: raw`print(10 + 5)
 print(10 / 3)
 print(10 // 3)
@@ -296,6 +299,16 @@ print(2 ** 3)`,
               'Print the result of `(25 * 4) + 10`.',
               'Fix the broken code: `prnt("Hi")`.',
             ],
+          },
+          {
+            type: 'code',
+            label: 'Your turn: write your answers here, then press Run',
+            runnable: true,
+            code: raw`# 1. Your name, college and branch
+print("Your name")
+
+# 4. Fix this line
+prnt("Hi")`,
           },
         ],
       },

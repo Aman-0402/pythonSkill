@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from './router'
+import TryIt from './TryIt'
 import { lessons, type Block, type Lesson as LessonData, type Section } from './content'
 
 function Inline({ text }: { text: string }) {
@@ -53,6 +54,7 @@ function BlockView({ block }: { block: Block }): ReactNode {
         </ol>
       )
     case 'code':
+      if (block.runnable) return <TryIt code={block.code} label={block.label} />
       return (
         <figure className="codeblock">
           {block.label && <figcaption>{block.label}</figcaption>}
@@ -164,6 +166,25 @@ function Slides({ lesson }: { lesson: LessonData }) {
     return () => document.documentElement.classList.remove('snap-page')
   }, [])
 
+  const goTo = (i: number) => {
+    const n = Math.min(Math.max(i, 0), bands.length)
+    document.querySelector(`[data-slide="${n}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  // Left/Right arrows and Home/End move between slides; Up/Down keep their normal scrolling
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement
+      if (t.closest('textarea, input, select') || e.altKey || e.ctrlKey || e.metaKey) return
+      const to = { ArrowRight: active + 1, ArrowLeft: active - 1, Home: 0, End: bands.length }[e.key]
+      if (to === undefined) return
+      e.preventDefault()
+      goTo(to)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   // reveal the slide in view and track which one is current
   useEffect(() => {
     const slides = Array.from(document.querySelectorAll<HTMLElement>('[data-slide]'))
@@ -224,6 +245,10 @@ function Slides({ lesson }: { lesson: LessonData }) {
         ))}
       </nav>
       <p className="counter" aria-hidden="true">{active} / {bands.length}</p>
+      <div className="slide-nav">
+        <button type="button" aria-label="Previous slide" disabled={active === 0} onClick={() => goTo(active - 1)}>↑</button>
+        <button type="button" aria-label="Next slide" disabled={active === bands.length} onClick={() => goTo(active + 1)}>↓</button>
+      </div>
     </div>
   )
 }

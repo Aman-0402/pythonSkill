@@ -62,7 +62,8 @@ src/
   Scene.tsx                 three.js: green snake, lights, dust (no text, no mouse input)
   FloatingIcons.tsx         10 floating data-analyst icon tiles
   Contents.tsx              Topic grid, built from `lessons`
-  Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI
+  Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
+  TryIt.tsx                 Editable code box that runs Python in the browser (Pyodide)
   content.ts                ALL lesson text and its types (the only place to edit content)
   index.css                 All styles
 .github/workflows/deploy.yml   Build and deploy to Pages
@@ -100,7 +101,7 @@ A lesson is `{ slug, title, summary, sections[] }`. A section is `{ id, title, b
 | `p` | `text` |
 | `h3` | `text` |
 | `ul`, `ol` | `items[]` |
-| `code` | `code`, optional `output`, optional `label` |
+| `code` | `code`, optional `output`, optional `label`, optional `runnable` (true = editable "Try it" box with a Run button) |
 | `note` | `tone` (`tip` or `warn`), `title`, `text` |
 | `table` | `head[]`, `rows[][]` |
 
@@ -123,6 +124,15 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 - `html.snap-page` (added while the notes page is mounted) turns on `scroll-snap-type: y mandatory`; each slide is `min-height: 100vh` with `scroll-snap-align: start`.
 - Slide content fades and rises in via an `IntersectionObserver` (`.in-view`). A second observer, watching the middle line of the screen, drives the active dot and the "n / 20" counter. This works even for slides taller than the screen.
 - Right-edge dots jump to a slide; they are hidden under 900px.
+- **Navigation:** round up/down buttons at the bottom right go to the previous/next slide (`goTo()`), disabled at the ends. Keyboard: Left/Right arrows and Home/End move between slides. Up/Down and Page keys keep their normal scrolling (the snap settles on the next slide). Key handling is ignored while typing in a textarea/input.
+
+## Try it: Python in the browser (TryIt.tsx)
+
+- Any `code` block with `runnable: true` renders as an editable textarea with **Run** and **Reset** buttons and an output panel. Currently marked: the `hello.py` first program, the "Broken on purpose" errors example, the calculator example, and the "Your turn" box on the Practice slide.
+- Python runs client-side with **Pyodide 0.26.4** (WebAssembly), loaded from `cdn.jsdelivr.net` the first time someone presses Run (a few MB; shows "Loading Python…"). Nothing is installed through npm and nothing runs on a server. If the user is offline the box shows "Could not load Python. Check your internet connection."
+- stdout and stderr are captured into the output panel; errors show only the last 4 lines of the traceback (line number and error type) and are drawn in red.
+- Tab inserts 4 spaces; Ctrl/Cmd+Enter runs the code. The Pyodide version is the constant `PYODIDE_VERSION` at the top of the file.
+- `input()` is not supported in this box.
 - `sizeOf()` picks `data-size` = `xl`, `l` or `m` from how much text a slide has. Short slides get bigger type (`--scale` 1.5 / 1.2 / 1) so they fill the screen. Slides containing code or a table always stay `m`.
 - Each slide gets one of 8 soft background colours with a matching accent (blue, green, orange, purple, pink, teal, amber, indigo), cycling with `.band:nth-of-type(8n + k)`. The accent colours the eyebrow, title bar, bullets, bold text, table headers, code-block header and callout borders.
 - Bold text is the slide's accent colour at heavier weight, with no highlight strip (the strip was tried and rejected).
@@ -155,6 +165,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 7. Rebuilt the notes as per-sub-topic colour bands, then as full-screen scroll-snap slides with dots and a counter; added size-by-content scaling and bold key phrases; replaced the bold highlight strip with accent-coloured bold.
 8. Pushed to GitHub and set up GitHub Pages with the base-path-aware router and the 404 fallback.
 9. Landing page edit: replaced the 3D chrome "Python" text with a flat 2D title and removed all mouse interaction (snake, icons and button kept). Deleted the now-unused 3D font file.
+10. Added slide navigation (Prev/Next buttons, Left/Right/Home/End keys) and the in-browser "Try it" Python runner (Pyodide) on four code blocks.
 
 ## Gotchas and lessons learned
 
@@ -170,6 +181,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 ## Open items and ideas
 
 - The "Start your journey" button leads to Contents. Topic cards open notes. There is only one topic; add more in `content.ts`.
-- Not yet done: previous/next buttons or arrow-key navigation between slides, a progress bar, a quiz or "try it" code runner, a per-slide share link (slides already have anchor ids, e.g. `#installation-windows`).
+- Not yet done: a progress bar and remembering the last slide read, a quiz, a per-slide share link (slides already have anchor ids, e.g. `#installation-windows`), and `input()` support in the Try it box.
+- Suggested next: make the Try it box check answers (for example expect a given output) so Practice can say "correct".
 - The JS bundle is about 820 kB (mostly three.js). Code-splitting the landing scene with a dynamic `import()` would speed up the Contents and notes pages.
 - The brand name "PyJourney" and all copy were written by the assistant; change them freely.
