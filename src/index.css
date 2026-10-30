@@ -395,3 +395,32 @@ html.snap-page { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
   .floater { width: 56px; height: 56px; border-radius: 16px; }
   .floater img { width: 32px; height: 32px; }
 }
+
+/* landing layers: title < snake < button < vignette, so the snake slithers in front of the title */
+.landing { z-index: auto; }
+.hero-title { position: relative; z-index: 1; }
+.cta { position: relative; z-index: 3; }
+.scene { z-index: 2; }
+body::after { z-index: 4; }
+
+/* a logo tile gets eaten: it pops and vanishes, then pops back in */
+.floater.eaten {
+  animation: float var(--dur) ease-in-out var(--delay) infinite, eat-pop 0.35s ease-in forwards;
+  pointer-events: none;
+}
+.floater.back {
+  animation: float var(--dur) ease-in-out var(--delay) infinite, eat-back 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+@keyframes eat-pop {
+  0% { scale: 1; opacity: 1; }
+  40% { scale: 1.35; opacity: 1; }
+  100% { scale: 0; opacity: 0; }
+}
+@keyframes eat-back {
+  0% { scale: 0; opacity: 0; }
+  100% { scale: 1; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floater.eaten, .floater.back { animation: none; }
+}

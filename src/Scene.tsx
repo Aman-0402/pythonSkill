@@ -6,6 +6,7 @@ const SEGMENTS = 150
 const SPACING = 0.15
 const SPEED = 4.2
 const IDLE_MS = 3500
+const EAT_RESPAWN_MS = 2500
 const CAMERA_Z = 18
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -253,11 +254,42 @@ export default function Scene() {
       const flick = reduced ? 0 : Math.pow(Math.max(0, Math.sin(t * 2.4)), 8)
       tongue.scale.x = 0.001 + flick
 
+      if (!reduced) eatLogos()
+
       renderer.render(scene, camera)
+    }
+
+    /* eat: when the mouth reaches a floating logo tile it pops, then comes back a bit later */
+    const readyAt = new Map<Element, number>()
+    const timers: number[] = []
+    const mouth = new THREE.Vector3()
+    function eatLogos() {
+      const now = performance.now()
+      const a = head.rotation.z
+      mouth.set(head.position.x + Math.cos(a) * 1.8, head.position.y + Math.sin(a) * 1.8, head.position.z).project(camera)
+      const sx = (mouth.x * 0.5 + 0.5) * el.clientWidth
+      const sy = (-mouth.y * 0.5 + 0.5) * el.clientHeight
+      const pxPerUnit = el.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (CAMERA_Z - head.position.z))
+      for (const tile of document.querySelectorAll<HTMLElement>('.floater')) {
+        if (now < (readyAt.get(tile) ?? 0)) continue
+        const r = tile.getBoundingClientRect()
+        if (Math.hypot(sx - (r.left + r.width / 2), sy - (r.top + r.height / 2)) > r.width * 0.5 + pxPerUnit * 0.6) continue
+        tile.classList.remove('back')
+        tile.classList.add('eaten')
+        readyAt.set(tile, now + EAT_RESPAWN_MS + 1500) // hidden, then briefly safe after it returns
+        timers.push(
+          window.setTimeout(() => {
+            tile.classList.remove('eaten')
+            tile.classList.add('back')
+          }, EAT_RESPAWN_MS),
+        )
+      }
     }
     tick()
 
     return () => {
+      timers.forEach((id) => window.clearTimeout(id))
+      document.querySelectorAll('.floater').forEach((n) => n.classList.remove('eaten', 'back'))
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', layout)
       window.removeEventListener('pointermove', onMove)
