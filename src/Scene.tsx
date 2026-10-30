@@ -2,9 +2,10 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
-const SEGMENTS = 130
+const SEGMENTS = 150
 const SPACING = 0.15
 const SPEED = 4.2
+const IDLE_MS = 3500
 const CAMERA_Z = 18
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -14,7 +15,7 @@ function radius(i: number) {
   const t = i / (SEGMENTS - 1)
   const neck = Math.min(1, 0.62 + (t / 0.1) * 0.38)
   const tail = t < 0.5 ? 1 : Math.pow((1 - t) / 0.5, 0.75)
-  return Math.max(0.06, 0.62 * neck * tail)
+  return Math.max(0.06, 0.85 * neck * tail)
 }
 
 function ellipsoid(sx: number, sy: number, sz: number, material: THREE.Material) {
@@ -102,7 +103,7 @@ export default function Scene() {
 
     /* head: wedge-shaped skull, snout, golden slit eyes, forked tongue */
     const head = new THREE.Group()
-    head.scale.setScalar(1.2)
+    head.scale.setScalar(1.65)
     scene.add(head)
     const skin = new THREE.MeshPhysicalMaterial({
       color: 0x1fa84a,
@@ -168,6 +169,15 @@ export default function Scene() {
     layout()
     window.addEventListener('resize', layout)
 
+    /* pointer: the snake chases the cursor while it is moving, and wanders again after a few idle seconds */
+    const pointer = { x: 0, y: 0, last: -Infinity }
+    const onMove = (e: PointerEvent) => {
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1
+      pointer.y = -((e.clientY / window.innerHeight) * 2 - 1)
+      pointer.last = performance.now()
+    }
+    window.addEventListener('pointermove', onMove)
+
     /* loop */
     let heading = Math.random() * Math.PI * 2
     const phase = [Math.random() * 10, Math.random() * 10, Math.random() * 10]
@@ -189,15 +199,25 @@ export default function Scene() {
         const lead = pos[0]
         const mx = viewW * 0.46
         const my = viewH * 0.46
-        if (Math.abs(lead.x) > mx || Math.abs(lead.y) > my) {
+        let speed = SPEED
+        if (performance.now() - pointer.last < IDLE_MS) {
+          // chase the cursor: aim at it on the snake's plane, faster when far, slower when close
+          const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (CAMERA_Z - lead.z)
+          const tx = pointer.x * halfH * camera.aspect
+          const ty = pointer.y * halfH
+          const aim = Math.atan2(ty - lead.y, tx - lead.x) - heading
+          const diff = Math.atan2(Math.sin(aim), Math.cos(aim))
+          turn = THREE.MathUtils.clamp(diff * 4, -3.6, 3.6)
+          speed = THREE.MathUtils.clamp(Math.hypot(tx - lead.x, ty - lead.y) * 1.6, 2.5, 8)
+        } else if (Math.abs(lead.x) > mx || Math.abs(lead.y) > my) {
           const want = Math.atan2(-lead.y, -lead.x)
           let diff = want - heading
           diff = Math.atan2(Math.sin(diff), Math.cos(diff))
           turn = diff * 2.5
         }
         heading += turn * dt
-        lead.x += Math.cos(heading) * SPEED * dt
-        lead.y += Math.sin(heading) * SPEED * dt
+        lead.x += Math.cos(heading) * speed * dt
+        lead.y += Math.sin(heading) * speed * dt
         lead.z = -3 + Math.sin(t * 0.8) * 0.5
 
         for (let i = 1; i < SEGMENTS; i++) {
@@ -215,7 +235,7 @@ export default function Scene() {
         const b = pos[Math.min(i + 1, SEGMENTS - 1)]
         dir.copy(a).sub(b).normalize()
         const k = i / (SEGMENTS - 1)
-        const side = reduced ? 0 : Math.sin(i * 0.2 - t * 4.2) * 0.3 * (0.2 + 0.8 * k)
+        const side = reduced ? 0 : Math.sin(i * 0.2 - t * 4.2) * 0.42 * (0.2 + 0.8 * k)
         out.set(pos[i].x - dir.y * side, pos[i].y + dir.x * side, pos[i].z)
         const r = radius(i)
         dummy.position.copy(out)
@@ -240,6 +260,7 @@ export default function Scene() {
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', layout)
+      window.removeEventListener('pointermove', onMove)
       body.dispose()
       scene.traverse((o) => {
         if (o instanceof THREE.Mesh) {

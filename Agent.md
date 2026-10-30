@@ -18,7 +18,7 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 
 A small learning website for Python beginners. Three screens:
 
-1. **Landing (`/`)** — dark, premium page: a flat 2D "Python" title, a green 3D snake wandering randomly in the background, floating Python data-science and analysis logos, and a glass "Start your journey" button. No mouse interaction.
+1. **Landing (`/`)** — dark, premium page: a flat 2D "Python" title, a big green 3D snake that wanders on its own and chases the mouse cursor, floating Python data-science and analysis logos, and a glass "Start your journey" button. The snake is the only thing that reacts to the mouse.
 2. **Contents (`/contents`)** — white page with a grid of topic cards. Today there is one card: "Introduction to Python and Setup".
 3. **Notes (`/contents/<slug>`)** — the lesson, shown as full-screen scroll-snapping slides, one per sub-topic, each with its own colour.
 
@@ -60,7 +60,7 @@ src/
   App.tsx                   Picks a page from the URL path
   router.tsx                usePath, navigate, <Link>, base-path aware
   Landing.tsx               Scene + FloatingIcons + flat 2D "Python" title + CTA link to /contents
-  Scene.tsx                 three.js: green snake, lights, dust (no text, no mouse input)
+  Scene.tsx                 three.js: green snake, lights, dust (snake follows the pointer; no 3D text)
   FloatingIcons.tsx         10 floating Python data-science logo tiles (real SVG files)
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
@@ -83,9 +83,9 @@ src/
 ## Landing page (Scene.tsx)
 
 - Renderer is transparent; the page background is CSS (navy gradient + vignette via `body::after`).
-- **Title:** the "Python" heading is plain HTML/CSS (`.hero-title`): flat 2D, white-to-light-blue gradient text with a soft blue glow. It was a 3D chrome text earlier; it was removed on request, along with all mouse interaction. The page ignores the pointer.
+- **Title:** the "Python" heading is plain HTML/CSS (`.hero-title`): flat 2D, white-to-light-blue gradient text with a soft blue glow. It was a 3D chrome text earlier; it was removed on request, along with all mouse interaction. The 3D title tilt was removed; the pointer now only steers the snake (see below).
 - **Lighting:** a `RoomEnvironment` reflection map plus a warm key light, a blue rim light and a green point light, used for the snake's glossy look.
-- **Snake:** the body is one `InstancedMesh` of 130 small overlapping spheres (spacing 0.15), so it reads as a smooth, scaly body instead of a chain of beads. Thickness comes from `radius(i)`: narrow neck, full belly, long tapering tail (max radius 0.62). Colouring is a diamond-back pattern set per instance: dark green saddles with pale-green edges on a green body, with slight random brightness per scale. The head wanders: its turn rate is a sum of sines (smooth, random-looking) and near the screen edge it steers back toward the centre; every segment follows the one in front at a fixed spacing. For **slithering**, each segment is pushed sideways along a travelling sine wave (amplitude grows toward the tail), applied only when rendering, not to the path. The **head** is a separate group: a flattened wedge skull plus snout, a dark stripe on top, golden eyes with slit pupils, and a red forked tongue that flicks out for a moment every couple of seconds. It is scaled 1.2x and faces the direction of travel. It sits behind the title text (z about -3). Reduced motion: no wander, no wave, no tongue flick.
+- **Snake:** the body is one `InstancedMesh` of 150 small overlapping spheres (spacing 0.15), so it reads as a smooth, scaly body instead of a chain of beads. Thickness comes from `radius(i)`: narrow neck, full belly, long tapering tail (max radius 0.85). Colouring is a diamond-back pattern set per instance: dark green saddles with pale-green edges on a green body, with slight random brightness per scale. The head wanders: its turn rate is a sum of sines (smooth, random-looking) and near the screen edge it steers back toward the centre; every segment follows the one in front at a fixed spacing. For **slithering**, each segment is pushed sideways along a travelling sine wave (amplitude grows toward the tail), applied only when rendering, not to the path. The **head** is a separate group: a flattened wedge skull plus snout, a dark stripe on top, golden eyes with slit pupils, and a red forked tongue that flicks out for a moment every couple of seconds. It is scaled 1.65x and faces the direction of travel. It sits behind the title text (z about -3). **Mouse follow:** a `pointermove` listener on `window` stores the cursor (NDC). While the cursor moved within the last `IDLE_MS` (3.5 s) the head aims at it, projected onto the snake's plane: turn rate is clamped (about 3.6 rad/s) so it curves like a real snake, and speed scales with distance (2.5 to 8). After the cursor is idle it goes back to random wandering. Reduced motion: no wander, no follow, no wave, no tongue flick.
 - **Reduced motion:** snake and dust stop; scene renders once.
 - The scene is mounted only on the landing page and disposes its renderer, geometries and listeners on unmount.
 
@@ -165,11 +165,12 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 6. Added the notes page from the pasted lesson, without timings, then iterated: removed the "On this page" menu, switched to a white, 1450px-wide layout, bigger fonts, more colour.
 7. Rebuilt the notes as per-sub-topic colour bands, then as full-screen scroll-snap slides with dots and a counter; added size-by-content scaling and bold key phrases; replaced the bold highlight strip with accent-coloured bold.
 8. Pushed to GitHub and set up GitHub Pages with the base-path-aware router and the 404 fallback.
-9. Landing page edit: replaced the 3D chrome "Python" text with a flat 2D title and removed all mouse interaction (snake, icons and button kept). Deleted the now-unused 3D font file.
+9. Landing page edit: replaced the 3D chrome "Python" text with a flat 2D title and removed all mouse interaction (snake, icons and button kept). Deleted the now-unused 3D font file. (Mouse follow for the snake was added later, in step 14.)
 10. Added slide navigation (Prev/Next buttons, Left/Right/Home/End keys) and the in-browser "Try it" Python runner (Pyodide) on four code blocks.
 11. Landing page: replaced the data-analyst icon glyphs with real programming-language logo SVGs (10 languages) on white tiles.
 12. Landing page logos changed again: only Python data-science and analysis tools (Pandas, NumPy, Matplotlib, scikit-learn, TensorFlow, PyTorch, Jupyter, Plotly, OpenCV plus Python). Removed the other language logos.
 13. Rebuilt the snake: smooth instanced body with a diamond-back pattern, slithering wave, proper head with eyes and a flicking forked tongue (it used to look like a worm).
+14. Snake made bigger (150 segments, radius 0.85, head 1.65x) and it now chases the mouse cursor, wandering again after 3.5 s of idle.
 
 ## Gotchas and lessons learned
 
