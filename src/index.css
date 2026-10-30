@@ -458,4 +458,4 @@ body {
 }
 
 /* a picture you added in src/slides/ */
-.art-image { display: block; width: 100%; max-height: clamp(220px, 42vh, 440px); object-fit: contain; object-position: left top; border-radius: 20px; box-shadow: 0 18px 40px color-mix(in srgb, var(--accent) 28%, transparent), 0 4px 10px rgba(11, 18, 32, 0.2); background: #fff; }
+.art-image { display: block; width: auto; height: auto; max-width: 100%; max-height: clamp(260px, 52vh, 520px); border-radius: 20px; box-shadow: 0 18px 40px color-mix(in srgb, var(--accent) 28%, transparent), 0 4px 10px rgba(11, 18, 32, 0.2); }

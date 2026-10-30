@@ -6,7 +6,9 @@ Drop a picture in this folder and it replaces the drawn illustration on that sli
 
 Example: `installation-windows.png` shows on the "Windows" slide. Remove the file to get the drawn illustration back.
 
-The picture appears under the slide title, in the left column. It is scaled to fit that column (about 520px wide) and keeps its proportions. A wide picture (roughly 4:3 or 16:9) fits best.
+The picture appears under the slide title, in the left column. It keeps its proportions and is limited to the column width (about 520px) and 52% of the screen height, so portrait and landscape pictures both work. Use WebP where you can (much smaller files).
+
+Currently in use: `history.webp` (Guido van Rossum).
 
 ## Slide ids
 
