@@ -61,6 +61,7 @@ src/
   router.tsx                usePath, navigate, <Link>, base-path aware
   Landing.tsx               Scene + FloatingIcons + flat 2D "Python" title + CTA link to /contents
   Scene.tsx                 three.js: green snake, lights, dust (snake follows the pointer; no 3D text)
+  placement.ts              placeTile(): random on-screen spot for a logo tile
   FloatingIcons.tsx         10 floating Python data-science logo tiles (real SVG files)
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
@@ -89,13 +90,17 @@ src/
 - **Reduced motion:** snake and dust stop; scene renders once.
 - The scene is mounted only on the landing page and disposes its renderer, geometries and listeners on unmount.
 
+### Random logo placement
+
+`placeTile()` in `src/placement.ts` sets inline `left`/`top` percentages on a tile: anywhere from 4 to 92% across and 6 to 90% down, except the middle band (x 26 to 74%, y 28 to 74%) where the title and button live, and not within about 11% across / 14% down of another tile (after 60 tries it accepts an overlap rather than loop forever). `FloatingIcons` calls it in a `useLayoutEffect` on mount, so every visit has a new layout and tiles never jump after first paint; it also randomises `--r` (tilt), `--dur` and `--delay`. When the snake eats a tile, the tile is re-placed with `placeTile()` just before it pops back, so it returns somewhere else. The fixed `left`/`top` values were removed from the CSS.
+
 ### Landing layers
 
 The `.landing` container does not create a stacking context (`z-index: auto`) so its children can interleave with the 3D canvas: floating tiles and `.hero-title` at z-index 1, the three.js `.scene` canvas at 2, the `.cta` button at 3, the vignette (`body::after`) at 4. The canvas has `pointer-events: none`, so clicks pass through to the button and links. If you add landing content, pick its z-index from this list.
 
 ## Floating icons
 
-`FloatingIcons.tsx` renders 10 white rounded tiles, each holding the real logo of a Python data-science or data-analysis tool: Pandas, Python, NumPy, TensorFlow, Matplotlib, scikit-learn, Jupyter, PyTorch, Plotly, OpenCV. Only tools used with Python appear here, by the owner's request (no other programming languages). Each is an `<img>` of a self-hosted SVG in `public/icons/`, from the open-source Devicon set (MIT licence, `*-original.svg`, v2.16.0); the logos remain trademarks of their owners. Tiles are white so every brand colour stays visible on the dark page. Paths use `import.meta.env.BASE_URL`. To add a tool, download its Devicon SVG into `public/icons/`, add one entry to `tools` and one more `.floater:nth-child(n)` position rule (Devicon has no SciPy or Seaborn logo). Positions, tilt, speed and delay come from those rules. Animation is off under `prefers-reduced-motion`.
+`FloatingIcons.tsx` renders 10 white rounded tiles, each holding the real logo of a Python data-science or data-analysis tool: Pandas, Python, NumPy, TensorFlow, Matplotlib, scikit-learn, Jupyter, PyTorch, Plotly, OpenCV. Only tools used with Python appear here, by the owner's request (no other programming languages). Each is an `<img>` of a self-hosted SVG in `public/icons/`, from the open-source Devicon set (MIT licence, `*-original.svg`, v2.16.0); the logos remain trademarks of their owners. Tiles are white so every brand colour stays visible on the dark page. Paths use `import.meta.env.BASE_URL`. To add a tool, download its Devicon SVG into `public/icons/`, add one entry to `tools` and (optionally) one more `.floater:nth-child(n)` rule for default tilt and speed (Devicon has no SciPy or Seaborn logo). Positions are random (see below). Tilt, speed and delay start from those rules but are overridden at random on every visit. Animation is off under `prefers-reduced-motion`.
 
 ## Lesson content model (content.ts)
 
@@ -176,6 +181,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 13. Rebuilt the snake: smooth instanced body with a diamond-back pattern, slithering wave, proper head with eyes and a flicking forked tongue (it used to look like a worm).
 14. Snake made bigger (150 segments, radius 0.85, head 1.65x) and it now chases the mouse cursor, wandering again after 3.5 s of idle.
 15. Snake now slithers in front of the title (layer order change) and eats the floating logo tiles on contact; they pop and respawn after 2.5 s.
+16. Logo tiles appear at random places on every visit and respawn at a new random place after being eaten (`placement.ts`).
 
 ## Gotchas and lessons learned
 

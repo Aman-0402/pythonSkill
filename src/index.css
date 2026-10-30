@@ -67,16 +67,16 @@ body::after {
 .floater svg { width: 32px; height: 32px; }
 .floater .icon-text { font: 700 8px var(--mono); fill: currentColor; stroke: none; }
 
-.floater:nth-child(1)  { left: 7%;  top: 13%; --r: -8deg; --dur: 7s;   --delay: -1s; }
-.floater:nth-child(2)  { left: 80%; top: 11%; --r: 7deg;  --dur: 8s;   --delay: -3s;  color: #7ef2b0; }
-.floater:nth-child(3)  { left: 17%; top: 68%; --r: 6deg;  --dur: 9s;   --delay: -5s; }
-.floater:nth-child(4)  { left: 88%; top: 60%; --r: -6deg; --dur: 7.5s; --delay: -2s; }
-.floater:nth-child(5)  { left: 5%;  top: 40%; --r: 5deg;  --dur: 8.5s; --delay: -4s;  color: #7ef2b0; }
-.floater:nth-child(6)  { left: 90%; top: 34%; --r: -9deg; --dur: 6.5s; --delay: -6s; }
-.floater:nth-child(7)  { left: 30%; top: 12%; --r: 9deg;  --dur: 9.5s; --delay: -2.5s; }
-.floater:nth-child(8)  { left: 70%; top: 74%; --r: -5deg; --dur: 8s;   --delay: -7s;  color: #7ef2b0; }
-.floater:nth-child(9)  { left: 12%; top: 86%; --r: 8deg;  --dur: 7s;   --delay: -3.5s; }
-.floater:nth-child(10) { left: 76%; top: 88%; --r: -7deg; --dur: 9s;   --delay: -1.5s; }
+.floater:nth-child(1)  { --r: -8deg; --dur: 7s;   --delay: -1s; }
+.floater:nth-child(2)  { --r: 7deg;  --dur: 8s;   --delay: -3s;  color: #7ef2b0; }
+.floater:nth-child(3)  { --r: 6deg;  --dur: 9s;   --delay: -5s; }
+.floater:nth-child(4)  { --r: -6deg; --dur: 7.5s; --delay: -2s; }
+.floater:nth-child(5)  { --r: 5deg;  --dur: 8.5s; --delay: -4s;  color: #7ef2b0; }
+.floater:nth-child(6)  { --r: -9deg; --dur: 6.5s; --delay: -6s; }
+.floater:nth-child(7)  { --r: 9deg;  --dur: 9.5s; --delay: -2.5s; }
+.floater:nth-child(8)  { --r: -5deg; --dur: 8s;   --delay: -7s;  color: #7ef2b0; }
+.floater:nth-child(9)  { --r: 8deg;  --dur: 7s;   --delay: -3.5s; }
+.floater:nth-child(10) { --r: -7deg; --dur: 9s;   --delay: -1.5s; }
 
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(var(--r)); }

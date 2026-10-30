@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { placeTile } from './placement'
 
 const SEGMENTS = 150
 const SPACING = 0.15
@@ -279,6 +280,8 @@ export default function Scene() {
         readyAt.set(tile, now + EAT_RESPAWN_MS + 1500) // hidden, then briefly safe after it returns
         timers.push(
           window.setTimeout(() => {
+            // it comes back somewhere else on the screen
+            placeTile(tile, Array.from(document.querySelectorAll<HTMLElement>('.floater')))
             tile.classList.remove('eaten')
             tile.classList.add('back')
           }, EAT_RESPAWN_MS),
