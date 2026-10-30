@@ -85,7 +85,7 @@ src/
 - Renderer is transparent; the page background is CSS (navy gradient + vignette via `body::after`).
 - **Title:** the "Python" heading is plain HTML/CSS (`.hero-title`): flat 2D, white-to-light-blue gradient text with a soft blue glow. It was a 3D chrome text earlier; it was removed on request, along with all mouse interaction. The page ignores the pointer.
 - **Lighting:** a `RoomEnvironment` reflection map plus a warm key light, a blue rim light and a green point light, used for the snake's glossy look.
-- **Snake:** 46 sphere segments, each following the one before it at a fixed spacing. The head's turn rate is a sum of sines (smooth, random-looking); near the screen edge it steers back to the centre. Colour runs bright green (`#16c455`) at the head to dark green (`#0b5a26`) at the tail, with a darker band every 4th segment. Sits behind the text (z around -3).
+- **Snake:** the body is one `InstancedMesh` of 130 small overlapping spheres (spacing 0.15), so it reads as a smooth, scaly body instead of a chain of beads. Thickness comes from `radius(i)`: narrow neck, full belly, long tapering tail (max radius 0.62). Colouring is a diamond-back pattern set per instance: dark green saddles with pale-green edges on a green body, with slight random brightness per scale. The head wanders: its turn rate is a sum of sines (smooth, random-looking) and near the screen edge it steers back toward the centre; every segment follows the one in front at a fixed spacing. For **slithering**, each segment is pushed sideways along a travelling sine wave (amplitude grows toward the tail), applied only when rendering, not to the path. The **head** is a separate group: a flattened wedge skull plus snout, a dark stripe on top, golden eyes with slit pupils, and a red forked tongue that flicks out for a moment every couple of seconds. It is scaled 1.2x and faces the direction of travel. It sits behind the title text (z about -3). Reduced motion: no wander, no wave, no tongue flick.
 - **Reduced motion:** snake and dust stop; scene renders once.
 - The scene is mounted only on the landing page and disposes its renderer, geometries and listeners on unmount.
 
@@ -169,6 +169,7 @@ Add one object to the `lessons` array in `content.ts`. It appears on the Content
 10. Added slide navigation (Prev/Next buttons, Left/Right/Home/End keys) and the in-browser "Try it" Python runner (Pyodide) on four code blocks.
 11. Landing page: replaced the data-analyst icon glyphs with real programming-language logo SVGs (10 languages) on white tiles.
 12. Landing page logos changed again: only Python data-science and analysis tools (Pandas, NumPy, Matplotlib, scikit-learn, TensorFlow, PyTorch, Jupyter, Plotly, OpenCV plus Python). Removed the other language logos.
+13. Rebuilt the snake: smooth instanced body with a diamond-back pattern, slithering wave, proper head with eyes and a flicking forked tongue (it used to look like a worm).
 
 ## Gotchas and lessons learned
 
