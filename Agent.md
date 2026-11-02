@@ -15,7 +15,8 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 5. Run `npx tsc -b` before committing.
 6. **Ask before creating notes for any session.** When the owner pastes notes or mentions a new session, first ask what to create (a website lesson, a PDF, or both) and whether pictures should be included, then wait for the answer. Do not create session notes unprompted. (This rule was added after sessions 2 and 3 were added to the site straight from pasted notes.)
 7. **When the owner picks "I draft it" for a session:** write the notes in the style of the earlier sessions (recap with "Ask" prompts, short slides, runnable examples that work without `input()`, practice questions, homework), build the lesson and the PDF **locally**, run every code box in the browser, then tell the owner where to review it and which choices were the assistant's own (invented numbers, guessed next class). **Publish (Agent.md, commit, push) only after the owner says so.**
-8. **Session PDFs go in the `Notes pdf/` folder, one PDF per session**, named `Session N - <title>.pdf`. If the session's notes use pictures, the PDF includes them. Sessions 1 to 7 have PDFs (the owner asked for them). A new session gets a PDF only when the owner asks.
+8. **Every session also gets a quiz CSV** in `Quiz in CSV/` (the owner asked for one per session, see "Session quizzes"). When the owner asks for a new session, include the quiz in the question about what to create.
+9. **Session PDFs go in the `Notes pdf/` folder, one PDF per session**, named `Session N - <title>.pdf`. If the session's notes use pictures, the PDF includes them. Sessions 1 to 7 have PDFs (the owner asked for them). A new session gets a PDF only when the owner asks.
 
 ## What this is
 
@@ -69,6 +70,7 @@ src/
   Contents.tsx              Topic grid, built from `lessons`
   Lesson.tsx                Notes page: block renderer, toBands(), sizeOf(), slides UI, arrow keys, Prev/Next buttons
   Art.tsx                   Picture under a slide title: drawn illustration (slides 1 and 2 only) or your own file from src/slides/
+  ../scripts/quiz-csv.mjs    Builds the quiz CSV files into "Quiz in CSV/" from scripts/quiz-data/ (see "Session quizzes")
   ../scripts/notes-pdf.mjs   Builds a session PDF into "Notes pdf/" (see "Session PDFs")
   HeroCode.tsx              Animated code window and floating logos on the notes title screen
   Highlight.tsx             Tiny Python syntax colouring used by code blocks and illustrations
@@ -169,6 +171,25 @@ node --experimental-strip-types scripts/notes-pdf.mjs 1      # session number, o
 - **Previewing without a PDF viewer.** Set `NOTES_PREVIEW=<path prefix>` and the script also saves `<prefix>_1.png`, `<prefix>_2.png`, ... (A4-sized pictures of the page). The real PDF page breaks can differ slightly (the preview ignores the page margins).
 - **Current PDFs:** `Session 7 - Lists.pdf` (about 390 KB), `Session 6 - Loop Practice.pdf` (about 320 KB), `Session 5 - Loops.pdf` (about 330 KB), `Session 4 - Conditional Statements.pdf` (about 310 KB), `Session 1 - Introduction to Python and Setup.pdf` (about 730 KB, includes the two History pictures), `Session 2 - Variables and Data Types.pdf` (about 280 KB) and `Session 3 - Strings and Operators.pdf` (about 330 KB). Sessions 2 to 7 have no pictures yet, so their PDFs have none; if the owner adds pictures to `src/slides/` for them, regenerate.
 - If a lesson is edited after its PDF was made, regenerate that PDF.
+
+## Session quizzes (`Quiz in CSV/`)
+
+One multiple-choice quiz per session, as a CSV file, ready to import into the owner's quiz app: `Quiz in CSV/Session N - <title>.csv` (committed).
+
+- **Format (the owner's required format).** One row is one question. Columns, in this order: `Question`, `Option A`, `Option B`, `Option C`, `Option D`, `Option E`, `Option F`, `Correct`, `Explanation`. Each question has 2 to 6 options (unused option cells are empty). `Correct` holds the **letter** (A to F) of the right option. The students see the options in a random order, so the order in the file does not matter. Questions per session: between 5 and 50, enough to cover every topic of the session.
+- **Current files and sizes:** Session 1 (35 questions), Session 2 (37), Session 3 (49), Session 4 (36), Session 5 (39), Session 6 (36), Session 7 (45): 277 in total. Almost all have 4 options; a few have 2 (true or false) or 5.
+- **Where the questions live.** `scripts/quiz-data/sN.mjs` (one file per session) holds the questions as arrays: `[question, right answer, [wrong answers], explanation, optionalPython]`. `scripts/quiz-csv.mjs` turns them into the CSV files:
+
+```bash
+node --experimental-strip-types scripts/quiz-csv.mjs        # all sessions
+node --experimental-strip-types scripts/quiz-csv.mjs 3      # one session
+```
+
+- **What the script does.** It places the right answer on the least-used letter so far (ties broken with a seeded random generator, so the same input always gives the same file) and shuffles the wrong answers around it, so the correct letters are evenly spread (A, B, C and D each about a quarter). It checks: 2 to 6 options, no duplicate or empty options, no duplicate questions, an explanation on every row, and **ASCII characters only** (no curly quotes or symbols, to avoid encoding problems when importing). The file is written with quotes around any cell that contains a comma, quote or line break, and CRLF line endings, no BOM.
+- **Every output answer is verified.** If a question has the fifth element (Python code), the script runs it with the local `python` and fails unless its printed output equals the right answer exactly. Use the `flat(code)` helper (defined at the top of s5 to s7) when the code prints several lines: it prints them on one line separated by spaces. A check must print the answer **text**; do not add code to questions whose answer is a line of code or an explanation. Questions describe code in one line (the CSV cells have no line breaks); the real multi-line code lives only in the check.
+- **Writing rules for questions.** Cover every topic of the lesson; mix concept questions with "what does this print?"; wrong answers must be plausible (typical beginner mistakes), never "all of the above" or "both A and B" (the options are shuffled). Keep to ASCII. Write a one-sentence explanation that teaches why.
+- **Adding or editing.** Edit `scripts/quiz-data/sN.mjs`, run the script, check that it reports no errors, and commit the CSV together with the data file. A new session needs a new `sN.mjs`. The script reads the session title from `src/content.ts`, so the file name follows the lesson order.
+- Pitfall seen while writing: a stray expression after a check (for example `&& undefined`) silently disables or changes the check. The checks must be plain strings of Python.
 
 ## Slide pictures (Art.tsx and src/slides/)
 
@@ -272,6 +293,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 31. Added lesson 4, "Conditional Statements" (fourth Contents card) and its PDF; turned off code ligatures site-wide; new rule 7 about the draft-then-review flow.
 32. Added lesson 5, "Loops" (fifth Contents card) and its PDF.
 33. Added lessons 6 ("Loop Practice") and 7 ("Lists") with their PDFs. The PDF script now runs every runnable example and prints its real output; all seven PDFs were regenerated. Fixed stray backticks inside bold text in the notes.
+34. Quiz CSV files created for all seven sessions in `Quiz in CSV/` (277 questions) with `scripts/quiz-csv.mjs` and the question lists in `scripts/quiz-data/`; every "what does this print" answer is checked by running Python.
 
 ## Gotchas and lessons learned
 
