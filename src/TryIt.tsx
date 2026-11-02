@@ -6,8 +6,8 @@ const PYODIDE_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`
 
 type Pyodide = {
   runPythonAsync(code: string): Promise<unknown>
-  setStdout(o: { batched: (s: string) => void }): void
-  setStderr(o: { batched: (s: string) => void }): void
+  setStdout(o: { write: (bytes: Uint8Array) => number }): void
+  setStderr(o: { write: (bytes: Uint8Array) => number }): void
 }
 
 declare global {
@@ -34,6 +34,10 @@ function loadPython(): Promise<Pyodide> {
   return pyodide
 }
 
+// Python keeps text without a newline (for example print(i, end=" ")) in its own buffer until it is flushed.
+const flushOutput = (py: Pyodide) =>
+  py.runPythonAsync('import sys\nsys.stdout.flush()\nsys.stderr.flush()').catch(() => undefined)
+
 type Result = { text: string; error: boolean }
 
 export default function TryIt({ code, label }: { code: string; label?: string }) {
@@ -42,22 +46,32 @@ export default function TryIt({ code, label }: { code: string; label?: string })
   const [status, setStatus] = useState<'idle' | 'loading' | 'running'>('idle')
 
   const run = async () => {
-    const lines: string[] = []
+    // Raw output capture: unlike the line-by-line mode it keeps text that has no newline yet, such as print(i, end=" ").
+    let out = ''
+    const decoder = new TextDecoder()
+    const capture = {
+      write: (bytes: Uint8Array) => {
+        out += decoder.decode(bytes, { stream: true })
+        return bytes.length
+      },
+    }
     try {
       setStatus(pyodide ? 'running' : 'loading')
       const py = await loadPython()
       setStatus('running')
-      py.setStdout({ batched: (s) => lines.push(s) })
-      py.setStderr({ batched: (s) => lines.push(s) })
+      py.setStdout(capture)
+      py.setStderr(capture)
       await py.runPythonAsync(source)
-      setResult({ text: lines.join('\n') || '(no output)', error: false })
+      await flushOutput(py)
+      setResult({ text: out.replace(/\n$/, '') || '(no output)', error: false })
     } catch (e) {
-      // keep only the useful tail of the traceback: the line number and the error type
+      const ready = await pyodide?.catch(() => null)
+      if (ready) await flushOutput(ready)
       // Pyodide adds its own internal frames first; start from the learner's code ("<exec>") and rename it.
       const all = (e instanceof Error ? e.message : String(e)).trim().split('\n')
-      const from = all.findLastIndex((l) => l.includes('File "<exec>"'))
-      const msg = (from >= 0 ? all.slice(from) : all.slice(-4)).join('\n').replace('File "<exec>"', 'File "your code"')
-      setResult({ text: [...lines, msg].join('\n'), error: true })
+      const first = all.findLastIndex((l) => l.includes('File "<exec>"'))
+      const msg = (first >= 0 ? all.slice(first) : all.slice(-4)).join('\n').replace('File "<exec>"', 'File "your code"')
+      setResult({ text: [out.replace(/\n$/, ''), msg].filter(Boolean).join('\n'), error: true })
     } finally {
       setStatus('idle')
     }
