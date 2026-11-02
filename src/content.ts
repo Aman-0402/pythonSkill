@@ -5563,4 +5563,710 @@ print("Zed" in students)`,
       },
     ],
   },
+  {
+    slug: 'functions',
+    title: 'Functions',
+    summary: 'Pack code into reusable named blocks: def, parameters, return values and scope.',
+    hero: {
+      file: 'functions.py',
+      lines: ['def square(n):', '    return n * n', 'print(square(7))'],
+      output: '49',
+    },
+    sections: [
+      {
+        id: 's11-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'In the marks manager, which code did we **repeat** for every command?',
+              'What does `max(d, key=d.get)` give?',
+              'Why did `int(input())` crash when the user typed a word?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's11-what-is-a-function',
+        title: 'What is a function?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A function is a **named block of code** that you can run **again and again**. You have already used many: `print()`, `len()`, `input()`, `sum()`.',
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Reuse:** write the code once, use it many times.',
+              '**Tidy:** a long program becomes small named pieces.',
+              '**Easy to fix:** a mistake is fixed in one place.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'You write `len("hello")` without knowing how `len` works inside. Why is that useful?',
+          },
+        ],
+      },
+      {
+        id: 's11-def',
+        title: 'Defining and calling',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Use the keyword **`def`**, a **name**, round brackets, a **colon**, and an **indented body**.',
+          },
+          {
+            type: 'code',
+            label: 'functions.py',
+            runnable: true,
+            code: raw`def greet():
+    print("Hello!")
+    print("Welcome to Python")
+
+greet()
+greet()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`def` only **defines** the function. Nothing runs yet.',
+              'Writing **`greet()`** (with brackets) **calls** it, and the body runs.',
+              'A function must be **defined before** it is called.',
+            ],
+          },
+          { type: 'h3', text: 'Forgetting the brackets' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def greet():
+    print("Hello!")
+
+greet
+print(type(greet))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: '`greet` without brackets is just the **function itself**. It does **not** run.',
+          },
+        ],
+      },
+      {
+        id: 's11-parameters',
+        title: 'Parameters and arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **parameter** is a name inside the brackets of `def`. An **argument** is the real value you pass when you call.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def greet(name):
+    print("Hello,", name)
+
+greet("Aman")
+greet("Riya")`,
+          },
+          { type: 'h3', text: 'More than one parameter' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def add(a, b):
+    print(a + b)
+
+add(3, 4)
+add("Py", "thon")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Arguments match the parameters **by position**: the first argument goes to the first parameter.',
+              'The number of arguments must **match** the number of parameters.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: wrong number of arguments',
+            runnable: true,
+            code: raw`def add(a, b):
+    print(a + b)
+
+add(3)`,
+          },
+        ],
+      },
+      {
+        id: 's11-return',
+        title: 'return',
+        blocks: [
+          {
+            type: 'p',
+            text: '`return` **sends a value back** to the place where the function was called, and **ends** the function.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def square(n):
+    return n * n
+
+result = square(7)
+print(result)
+print(square(3) + square(4))`,
+          },
+          { type: 'h3', text: 'print() is not return' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def show_double(n):
+    print(n * 2)
+
+def get_double(n):
+    return n * 2
+
+a = show_double(5)
+b = get_double(5)
+print(a)
+print(b)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`print()` only **shows** a value on the screen.',
+              '`return` **gives** the value back so you can **keep using it**.',
+              'A function with **no return** gives back **`None`**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Why is `show_double(5) + 1` an error but `get_double(5) + 1` works?',
+          },
+        ],
+      },
+      {
+        id: 's11-return-more',
+        title: 'return ends the function',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Code **after** a `return` never runs. A function can have **several** `return` lines, but only **one** runs.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def sign(n):
+    if n > 0:
+        return "positive"
+    elif n < 0:
+        return "negative"
+    return "zero"
+
+print(sign(5), sign(-2), sign(0))`,
+          },
+          { type: 'h3', text: 'Returning many values' },
+          {
+            type: 'p',
+            text: 'Returning several values with commas gives **one tuple**. Unpack it, like in Session 8.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def min_max(nums):
+    return min(nums), max(nums)
+
+print(min_max([4, 9, 2, 7]))
+low, high = min_max([4, 9, 2, 7])
+print(low, high)`,
+          },
+          { type: 'h3', text: 'Functions that answer yes or no' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def is_even(n):
+    return n % 2 == 0
+
+print(is_even(10), is_even(7))
+if is_even(4):
+    print("4 is even")`,
+          },
+        ],
+      },
+      {
+        id: 's11-defaults',
+        title: 'Default and keyword arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A parameter can have a **default value**. It is used when the caller does **not** give that argument.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def greet(name, greeting="Hello"):
+    return greeting + ", " + name
+
+print(greet("Aman"))
+print(greet("Aman", "Good morning"))`,
+          },
+          { type: 'h3', text: 'Keyword arguments' },
+          {
+            type: 'p',
+            text: 'You can name the argument when you call. The **order then does not matter**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def power(base, exponent=2):
+    return base ** exponent
+
+print(power(5))
+print(power(2, 10))
+print(power(exponent=3, base=2))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: 'Parameters **with** a default must come **after** those without one: `def f(a, b=1)` is fine, `def f(a=1, b)` is an error.',
+          },
+          { type: 'h3', text: 'Built-in functions use this too' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("a", "b", "c", sep="-")
+print("no new line", end="!")
+print()
+print(round(3.14159, 2))`,
+          },
+        ],
+      },
+      {
+        id: 's11-args',
+        title: 'Any number of arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A parameter with a **star** collects **all the extra arguments** into a **tuple**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def total(*nums):
+    print(nums)
+    return sum(nums)
+
+print(total(1, 2, 3))
+print(total(10, 20))
+print(total())`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Note',
+            text: 'This is the same `*` idea as star unpacking in Session 8. `print()` itself works this way.',
+          },
+        ],
+      },
+      {
+        id: 's11-docstring',
+        title: 'Docstrings and good names',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A string on the **first line** of a function describes what it does. It is called a **docstring**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def average(marks):
+    """Return the average of a list of marks."""
+    return sum(marks) / len(marks)
+
+print(average([90, 80, 70]))
+print(average.__doc__)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Name a function by what it **does**: `average`, `is_even`, `get_grade`.',
+              'Use **lowercase with underscores**, like variable names.',
+              'Keep each function to **one job**.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's11-scope',
+        title: 'Scope: local and global',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Scope** is where a variable can be **seen**. A variable made **inside** a function is **local**: it only exists while the function runs.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: a local variable is not visible outside',
+            runnable: true,
+            code: raw`def make():
+    secret = 42
+    print("inside:", secret)
+
+make()
+print("outside:", secret)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Local:** made inside a function, gone when it ends.',
+              '**Global:** made outside every function, can be **read** anywhere.',
+              'Parameters are local variables too.',
+            ],
+          },
+          { type: 'h3', text: 'Reading a global' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`rate = 10
+
+def price(qty):
+    return qty * rate
+
+print(price(5))`,
+          },
+        ],
+      },
+      {
+        id: 's11-shadowing',
+        title: 'Same name, different variable',
+        blocks: [
+          {
+            type: 'p',
+            text: 'If a function **assigns** to a name, Python makes a **new local** variable, even if a global with the same name exists. The global stays **unchanged**.',
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`x = 10
+
+def change():
+    x = 99
+    print("inside:", x)
+
+change()
+print("outside:", x)`,
+          },
+          { type: 'h3', text: 'The global keyword' },
+          {
+            type: 'p',
+            text: 'To really change a global from inside a function, say **`global`** first.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`count = 0
+
+def add_one():
+    global count
+    count += 1
+
+add_one()
+add_one()
+print(count)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Better habit',
+            text: 'Avoid `global`. Pass values **in** as arguments and send results **out** with `return`. The code is then easier to understand and test.',
+          },
+          {
+            type: 'code',
+            label: 'The better way',
+            runnable: true,
+            code: raw`def add_one(count):
+    return count + 1
+
+count = 0
+count = add_one(count)
+count = add_one(count)
+print(count)`,
+          },
+        ],
+      },
+      {
+        id: 's11-lists-arguments',
+        title: 'Lists and functions',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A function gets the **same list**, not a copy. Changing it inside **changes it outside** too (lists are mutable). Numbers and strings cannot be changed this way.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def add_item(items):
+    items.append("new")
+
+def add_ten(n):
+    n = n + 10
+
+stuff = ["a", "b"]
+add_item(stuff)
+print(stuff)
+
+x = 5
+add_ten(x)
+print(x)`,
+          },
+          { type: 'h3', text: 'Passing a copy' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def add_item(items):
+    items.append("new")
+
+stuff = ["a", "b"]
+add_item(stuff.copy())
+print(stuff)`,
+          },
+        ],
+      },
+      {
+        id: 's11-calling-functions',
+        title: 'Functions calling functions',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Small functions can be **combined**. Each one does one job.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def average(marks):
+    return sum(marks) / len(marks)
+
+def grade(avg):
+    if avg >= 85:
+        return "A"
+    elif avg >= 70:
+        return "B"
+    elif avg >= 50:
+        return "C"
+    return "F"
+
+def report(name, marks):
+    avg = average(marks)
+    return f"{name}: {avg:.1f} ({grade(avg)})"
+
+print(report("Aman", [90, 80, 70]))
+print(report("Riya", [85, 95, 88]))`,
+          },
+          { type: 'h3', text: 'A function that calls itself' },
+          {
+            type: 'p',
+            text: 'A function can call **itself**. This is called **recursion**. It needs a **stopping case**, or it never ends.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+print(factorial(5))`,
+          },
+        ],
+      },
+      {
+        id: 's11-marks-manager',
+        title: 'Back to the marks manager',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Last class the commands were one **long block**. With functions each job gets a **name**, and the main loop becomes **short and clear**.',
+          },
+          {
+            type: 'code',
+            label: 'marks_manager.py (with functions)',
+            runnable: true,
+            code: raw`students = {}
+
+def add_marks(name, marks):
+    students.setdefault(name, []).extend(marks)
+
+def average(marks):
+    return sum(marks) / len(marks)
+
+def topper():
+    return max(students, key=lambda n: average(students[n]))
+
+def show_report():
+    for name, marks in students.items():
+        print(f"{name:<8}{sum(marks):>6}{average(marks):>9.1f}")
+
+add_marks("Aman", [90, 80, 70])
+add_marks("Riya", [85, 95, 88])
+add_marks("Aman", [100])
+show_report()
+print("Topper:", topper())`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which version is easier to **read**, last class or this one? Which is easier to **fix**?',
+          },
+        ],
+      },
+      {
+        id: 's11-safe-input',
+        title: 'A safe number reader',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Remember `int(input())` crashing on a word? A function can read a number **until the user types a valid one**. This is for your computer, because it uses `input()`.',
+          },
+          {
+            type: 'code',
+            label: 'read_number.py (run on your computer)',
+            code: raw`def read_number(prompt):
+    while True:
+        text = input(prompt)
+        if text.isdigit():
+            return int(text)
+        print("Please type a whole number")
+
+age = read_number("Age: ")
+print("Next year you will be", age + 1)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`isdigit()` checks that the text is only digits.',
+              '`return` ends the function **and the loop** as soon as the input is good.',
+              'Use `read_number()` in the marks manager instead of `int(input())`.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's11-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Forgetting the **brackets** when calling: `greet` instead of `greet()`.',
+              'Using **`print`** when you meant **`return`**, then getting `None`.',
+              'Forgetting the **colon** or the **indentation** after `def`.',
+              'Using a **local** variable outside its function.',
+              'Calling a function **before** defining it.',
+              'Giving the **wrong number** of arguments.',
+              'A function with **no `return` on some paths** quietly gives `None`.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: why does this print None?',
+            runnable: true,
+            code: raw`def double(n):
+    n * 2
+
+print(double(4))`,
+          },
+        ],
+      },
+      {
+        id: 's11-practice',
+        title: 'Practice',
+        blocks: [
+          { type: 'h3', text: 'Warm-up questions' },
+          {
+            type: 'ol',
+            items: [
+              'Write a function `cube(n)` that **returns** the cube of a number.',
+              'Write a function `is_positive(n)` that returns `True` or `False`.',
+              'Write a function `greet(name, greeting="Hello")` and call it both ways.',
+              'Write a function that **returns the larger** of two numbers without using `max()`.',
+              'Write a function `count_vowels(text)` that returns the number of vowels.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Write `is_prime(n)` and use it to print all primes up to 50.',
+              'Write `fibonacci(n)` that returns a **list** of the first `n` Fibonacci numbers.',
+              'Write `reverse_words(sentence)` that returns the sentence with the words in **reverse order**.',
+              'Write `stats(nums)` that returns the **minimum, maximum and average** together.',
+              'Rewrite the **contact book** from last class using one function for each command.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`def f(a, b=2):
+    return a * b
+
+def g(items):
+    items.append(0)
+
+x = 3
+print(f(x), f(x, 5), f(b=4, a=1))
+nums = [1]
+g(nums)
+g(nums)
+print(nums)
+print(f(f(2)))`,
+          },
+          { type: 'h3', text: 'Try the even-numbers question' },
+          {
+            type: 'code',
+            label: 'Your turn: finish evens() so it returns the even numbers of a list, then press Run',
+            runnable: true,
+            code: raw`def evens(nums):
+    # return a new list with only the even numbers
+    pass
+
+print(evens([1, 2, 3, 4, 5, 6]))`,
+          },
+        ],
+      },
+      {
+        id: 's11-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a **calculator** with one function for each of `add`, `subtract`, `multiply` and `divide`, and a function that picks one by the operator typed.',
+              'Write a function `is_palindrome(text)` and test it with 5 words.',
+              'Rewrite the **marks manager** or the **contact book** so every command is a **function**.',
+              'Write a function that takes a list and returns a **new list without duplicates**, keeping the order.',
+              'Revise: **def**, **parameters**, **return**, **default arguments** and **scope**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Files and error handling.',
+          },
+        ],
+      },
+    ],
+  },
 ]
