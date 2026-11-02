@@ -1798,4 +1798,507 @@ else:
       },
     ],
   },
+  {
+    slug: 'loops',
+    title: 'Loops',
+    summary: 'Repeat work with for and while, count with range(), and control a loop with break and continue.',
+    hero: {
+      file: 'loop.py',
+      lines: ['for i in range(1, 4):', '    print(i)'],
+      output: '1\n2\n3',
+    },
+    sections: [
+      {
+        id: 's5-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between `if` and `elif`?',
+              'What is the output of `print(10 > 5 and 3 > 8)`?',
+              'Why does indentation matter in Python?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's5-why-loops',
+        title: 'Why do we need loops?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **loop** repeats a block of code. Without a loop, repeating a task means **copying the same line again and again**.',
+          },
+          {
+            type: 'code',
+            label: 'Without a loop',
+            runnable: true,
+            code: raw`print("Hello")
+print("Hello")
+print("Hello")
+print("Hello")
+print("Hello")`,
+          },
+          {
+            type: 'code',
+            label: 'With a loop: same result, and it still works for 5000 times',
+            runnable: true,
+            code: raw`for i in range(5):
+    print("Hello")`,
+          },
+          { type: 'h3', text: 'Two kinds of loop' },
+          {
+            type: 'table',
+            head: ['Loop', 'Use it when'],
+            rows: [
+              ['`for`', 'you know **how many times**, or you want to go through **every item**'],
+              ['`while`', 'you want to repeat **until a condition becomes False**'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's5-for',
+        title: 'The for loop',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Syntax',
+            code: raw`for variable in sequence:
+    statement`,
+          },
+          {
+            type: 'p',
+            text: 'The loop **takes one item at a time** from the sequence, stores it in the variable, and runs the indented block. When the items run out, the loop ends.',
+          },
+          { type: 'h3', text: 'Looping through a string' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for letter in "Python":
+    print(letter)`,
+          },
+          { type: 'h3', text: 'Looping through a list (preview)' },
+          {
+            type: 'p',
+            text: 'A **list** holds several values in square brackets. You will study lists later; for now, see that a loop can go through one.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+for fruit in fruits:
+    print("I like", fruit)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What is the loop variable in `for letter in "Python":`? What value does it hold in the third round?',
+          },
+          { type: 'h3', text: 'Printing on one line' },
+          {
+            type: 'p',
+            text: '`print()` normally ends with a new line. `end=" "` changes that.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 6):
+    print(i, end=" ")`,
+          },
+        ],
+      },
+      {
+        id: 's5-range',
+        title: 'The range() function',
+        blocks: [
+          {
+            type: 'p',
+            text: '`range()` makes a **sequence of numbers** for a loop. It has three forms: `range(stop)`, `range(start, stop)` and `range(start, stop, step)`.',
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Numbers it gives'],
+            rows: [
+              ['`range(5)`', '0, 1, 2, 3, 4'],
+              ['`range(1, 6)`', '1, 2, 3, 4, 5'],
+              ['`range(0, 10, 2)`', '0, 2, 4, 6, 8'],
+              ['`range(10, 0, -2)`', '10, 8, 6, 4, 2'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              '`start` is **0** if you leave it out.',
+              '`step` is **1** if you leave it out.',
+              'The **stop number is never included**, just like in slicing.',
+              'A **negative step** counts down.',
+            ],
+          },
+          { type: 'h3', text: 'See the numbers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(list(range(5)))
+print(list(range(1, 6)))
+print(list(range(0, 10, 2)))
+print(list(range(10, 0, -2)))`,
+          },
+          { type: 'h3', text: 'Sum of 1 to 10' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`total = 0
+for n in range(1, 11):
+    total += n
+print(total)`,
+          },
+          { type: 'h3', text: 'A multiplication table' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`number = 5
+for i in range(1, 11):
+    print(number, "x", i, "=", number * i)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'How would you print the numbers from 10 down to 1?',
+          },
+        ],
+      },
+      {
+        id: 's5-while',
+        title: 'The while loop',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Syntax',
+            code: raw`while condition:
+    statement`,
+          },
+          {
+            type: 'p',
+            text: 'Python **checks the condition before every round**. While it is True, the block runs again. When it becomes False, the loop ends.',
+          },
+          {
+            type: 'code',
+            label: 'Counting with while',
+            runnable: true,
+            code: raw`count = 1
+while count <= 5:
+    print(count)
+    count += 1
+print("Done")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Start** the counter before the loop (`count = 1`).',
+              '**Test** it in the condition (`count <= 5`).',
+              '**Change** it inside the loop (`count += 1`). Without this the loop never ends.',
+            ],
+          },
+          { type: 'h3', text: 'The loop may run zero times' },
+          {
+            type: 'p',
+            text: 'If the condition is False at the very start, the block **never runs**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`count = 10
+while count <= 5:
+    print("This never prints")
+print("Finished")`,
+          },
+          { type: 'h3', text: 'Sum of the digits of a number' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`n = 1234
+total = 0
+while n > 0:
+    total += n % 10
+    n //= 10
+print(total)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'In the digits program, what are the values of `n` after each round?',
+          },
+        ],
+      },
+      {
+        id: 's5-infinite',
+        title: 'Infinite loops',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A loop whose condition **never becomes False** runs forever. This is called an **infinite loop**.',
+          },
+          {
+            type: 'code',
+            label: 'Do NOT run this: it never stops',
+            code: raw`count = 1
+while count <= 5:
+    print(count)
+    # count never changes, so count <= 5 is always True`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'If your program gets stuck',
+            text: 'Press **Ctrl + C** in the terminal to stop it. In the browser boxes on this site, close and reopen the tab.',
+          },
+          { type: 'h3', text: 'Waiting for the right answer' },
+          {
+            type: 'p',
+            text: 'A `while` loop is perfect when you do not know how many tries the user needs.',
+          },
+          {
+            type: 'code',
+            label: 'Run this one in VS Code or a terminal',
+            code: raw`password = ""
+while password != "python123":
+    password = input("Enter password: ")
+print("Access granted")`,
+          },
+          { type: 'h3', text: 'for or while?' },
+          {
+            type: 'table',
+            head: ['Situation', 'Better choice'],
+            rows: [
+              ['Repeat exactly 10 times', '`for`'],
+              ['Go through every letter of a word', '`for`'],
+              ['Keep asking until the answer is correct', '`while`'],
+              ['Repeat until a number reaches 0', '`while`'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's5-break',
+        title: 'The break statement',
+        blocks: [
+          {
+            type: 'p',
+            text: '`break` **stops the loop immediately** and jumps to the first line after it.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for number in range(1, 20):
+    if number % 7 == 0:
+        print("First multiple of 7:", number)
+        break
+print("Loop ended")`,
+          },
+          { type: 'h3', text: 'while True with break' },
+          {
+            type: 'p',
+            text: '`while True` repeats **forever**, so a `break` inside decides when to stop. This is a common pattern.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`count = 0
+while True:
+    count += 1
+    if count == 3:
+        break
+print(count)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What would the first program print without the `break` line?',
+          },
+        ],
+      },
+      {
+        id: 's5-continue',
+        title: 'The continue statement',
+        blocks: [
+          {
+            type: 'p',
+            text: '`continue` **skips the rest of the current round** and goes straight to the next one. The loop does **not** stop.',
+          },
+          {
+            type: 'code',
+            label: 'Skip the even numbers',
+            runnable: true,
+            code: raw`for i in range(1, 8):
+    if i % 2 == 0:
+        continue
+    print(i)`,
+          },
+          { type: 'h3', text: 'break and continue together' },
+          {
+            type: 'table',
+            head: ['Statement', 'What it does'],
+            rows: [
+              ['`break`', 'ends the **whole loop**'],
+              ['`continue`', 'ends only the **current round**'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 10):
+    if i == 3:
+        continue
+    if i == 6:
+        break
+    print(i)`,
+          },
+        ],
+      },
+      {
+        id: 's5-nested',
+        title: 'Loops inside loops',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A loop can sit **inside another loop**. For every round of the outer loop, the inner loop runs **completely**.',
+          },
+          {
+            type: 'code',
+            label: 'A star triangle',
+            runnable: true,
+            code: raw`for i in range(1, 5):
+    print("*" * i)`,
+          },
+          { type: 'h3', text: 'A multiplication grid' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 4):
+    for j in range(1, 4):
+        print(i * j, end=" ")
+    print()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The inner loop is indented **one more level**.',
+              '`print()` with nothing inside **ends the line** after each row.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's5-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Mistake', 'What happens', 'Fix'],
+            rows: [
+              ['Forgetting the colon', 'SyntaxError', 'end the `for` or `while` line with `:`'],
+              ['`range(1, 5)` expecting 5', 'stops at 4', 'use `range(1, 6)`'],
+              ['Not changing the counter in `while`', 'infinite loop', 'update it inside the loop'],
+              ['Wrong indentation', 'a line runs once, or every round', 'indent only what must repeat'],
+            ],
+          },
+          { type: 'h3', text: 'Off by one' },
+          {
+            type: 'code',
+            label: 'Try it: change it so that 5 is printed too',
+            runnable: true,
+            code: raw`for i in range(1, 5):
+    print(i)`,
+          },
+          { type: 'h3', text: 'Inside or outside?' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(3):
+    print("inside", i)
+print("outside")`,
+          },
+        ],
+      },
+      {
+        id: 's5-practice',
+        title: 'Practice questions',
+        blocks: [
+          { type: 'h3', text: 'Basic questions' },
+          {
+            type: 'ol',
+            items: [
+              'Print the numbers from 1 to 10.',
+              'Print the even numbers from 1 to 50.',
+              'Print the sum of the numbers from 1 to 100.',
+              'Take a number and print its multiplication table up to 10.',
+              'Take a number and print its factorial.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Take a word and count how many vowels it has.',
+              'Print a word in reverse using a loop (do not use slicing).',
+              'Print a star triangle with 5 rows.',
+              'Take a number and find the sum of its digits using a `while` loop.',
+              'Keep asking for a password until the user types the right one, then print "Welcome".',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`for i in range(1, 6):
+    if i == 3:
+        continue
+    if i == 5:
+        break
+    print(i)`,
+          },
+          { type: 'h3', text: 'Try the sum question' },
+          {
+            type: 'code',
+            label: 'Your turn: add the numbers 1 to 100, then press Run',
+            runnable: true,
+            code: raw`total = 0
+# add the numbers 1 to 100 using a for loop
+print(total)`,
+          },
+        ],
+      },
+      {
+        id: 's5-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Print a **multiplication table** in this format: `5 x 3 = 15`, using an f-string.',
+              'Write a **number guessing game**: keep a secret number, keep asking for guesses, print "too high" or "too low", and stop with `break` when the guess is right.',
+              'Write **FizzBuzz**: for the numbers 1 to 50, print "Fizz" for multiples of 3, "Buzz" for multiples of 5, "FizzBuzz" for multiples of both, and the number otherwise.',
+              'Take a number and **count its digits** using a `while` loop.',
+              'Revise the **difference between `break` and `continue`**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Lists.',
+          },
+        ],
+      },
+    ],
+  },
 ]

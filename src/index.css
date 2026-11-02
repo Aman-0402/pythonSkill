@@ -666,3 +666,5 @@ body {
 body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; }
 /* the `font:` shorthand used by the code styles resets the setting above, so apply it to every element */
 *, *::before, *::after { font-variant-ligatures: none !important; font-feature-settings: 'liga' 0, 'calt' 0 !important; }
+/* multi-line sample output on the notes title screen */
+.hero-win-out div { white-space: pre-line; }
