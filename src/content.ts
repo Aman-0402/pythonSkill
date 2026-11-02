@@ -3291,4 +3291,765 @@ print(len(nums))`,
       },
     ],
   },
+  {
+    slug: 'tuples-and-sets',
+    title: 'Tuples and Sets',
+    summary: 'Data that cannot change and data without duplicates: tuples, immutability, unpacking and set operations.',
+    hero: {
+      file: 'tuples_sets.py',
+      lines: ['a = {1, 2, 3}', 'b = {3, 4, 5}', 'print(a & b)'],
+      output: '{3}',
+    },
+    sections: [
+      {
+        id: 's8-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `nums[::-1]` do to a list?',
+              'What is the difference between `append()` and `extend()`?',
+              'Which list method **returns None**?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's8-what-is-a-tuple',
+        title: 'What is a tuple?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A tuple is an **ordered collection** inside round brackets `( )`. It looks like a list, but it **cannot be changed** after it is made.',
+          },
+          {
+            type: 'code',
+            label: 'tuples.py',
+            runnable: true,
+            code: raw`point = (3, 4)
+colors = ("red", "green", "blue")
+mixed = (1, "two", 3.0)
+empty = ()
+print(point, colors, mixed, empty)
+print(len(colors))
+print(type(point))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Ordered:** every item has an index, starting from 0.',
+              '**Immutable:** items cannot be changed, added or removed.',
+              '**Mixed types allowed** and **duplicates allowed**, like a list.',
+            ],
+          },
+          { type: 'h3', text: 'The one-item tuple' },
+          {
+            type: 'p',
+            text: 'The **comma** makes the tuple, not the brackets. A single item needs a **trailing comma**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = (5)
+b = (5,)
+c = 5,
+print(type(a), type(b), type(c))`,
+          },
+          { type: 'h3', text: 'Making a tuple from other things' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(tuple("abc"))
+print(tuple([1, 2, 3]))
+print(tuple(range(3)))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What type is `(5)`? Why is `(5,)` different?',
+          },
+        ],
+      },
+      {
+        id: 's8-tuple-access',
+        title: 'Indexing, slicing and methods',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Reading a tuple works **exactly like a list or a string**: indexes, negative indexes and slices all work.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`days = ("Mon", "Tue", "Wed", "Thu", "Fri")
+print(days[0], days[-1])
+print(days[1:3])
+print(days[::-1])
+print("Tue" in days)`,
+          },
+          { type: 'h3', text: 'Only two methods' },
+          {
+            type: 'p',
+            text: 'Because a tuple cannot change, it has only **two methods**, and both just read.',
+          },
+          {
+            type: 'table',
+            head: ['Method', 'What it does'],
+            rows: [
+              ['`count(x)`', 'how many times `x` appears'],
+              ['`index(x)`', 'position of the **first** `x`'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`t = (1, 2, 2, 3, 2)
+print(t.count(2))
+print(t.index(3))`,
+          },
+        ],
+      },
+      {
+        id: 's8-immutability',
+        title: 'Immutability',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Immutable** means the tuple cannot be changed after it is created. Any try to change it gives an **error**.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: read the error',
+            runnable: true,
+            code: raw`t = (10, 20, 30)
+t[0] = 99`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: no append either',
+            runnable: true,
+            code: raw`t = (10, 20, 30)
+t.append(40)`,
+          },
+          { type: 'h3', text: 'How to "change" a tuple' },
+          {
+            type: 'p',
+            text: 'You cannot change it, but you can **build a new tuple** and give it the same name.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`t = (10, 20, 30)
+t = t + (40,)
+print(t)
+t = t[:2] + (99,) + t[3:]
+print(t)`,
+          },
+          { type: 'h3', text: 'Strings are immutable too' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = "Python"
+print(s.upper())
+print(s)
+nums = [1, 2, 3]
+nums[0] = 100
+print(nums)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: 'A tuple can hold a **list**, and that list can still change. The tuple only guarantees that it keeps the **same objects**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`t = (1, [2, 3])
+t[1].append(4)
+print(t)`,
+          },
+        ],
+      },
+      {
+        id: 's8-why-tuples',
+        title: 'Tuple or list?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Use a **list** when the data will change. Use a **tuple** when the data should stay fixed.',
+          },
+          {
+            type: 'table',
+            head: ['', 'List', 'Tuple'],
+            rows: [
+              ['Brackets', '`[ ]`', '`( )`'],
+              ['Can be changed', '**Yes**', '**No**'],
+              ['Methods', 'many', 'only `count`, `index`'],
+              ['Good for', 'a shopping list, marks that grow', 'a point `(x, y)`, a date, fixed settings'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Safe:** nobody can change the data by mistake.',
+              '**Slightly faster** and smaller than a list.',
+              'Tuples can be **dictionary keys**, lists cannot (next class).',
+              'A function that **returns many values** returns a tuple.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Would you store the days of the week in a list or a tuple? Why?',
+          },
+        ],
+      },
+      {
+        id: 's8-unpacking',
+        title: 'Unpacking',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Unpacking** copies the items of a tuple into separate variables in one line. The number of variables must **match** the number of items.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`point = (3, 4)
+x, y = point
+print(x, y)
+
+name, age, city = ("Aman", 20, "Delhi")
+print(name, age, city)`,
+          },
+          {
+            type: 'p',
+            text: 'Unpacking works with **lists and strings** too, and the brackets can be left out.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: wrong number of variables',
+            runnable: true,
+            code: raw`a, b = (1, 2, 3)`,
+          },
+          { type: 'h3', text: 'Swapping two variables' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b = 1, 2
+a, b = b, a
+print(a, b)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'In most languages swapping needs a third variable. Why does Python not?',
+          },
+        ],
+      },
+      {
+        id: 's8-star-unpacking',
+        title: 'Unpacking with *',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A variable with a **star** `*` collects all the **extra items** into a **list**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`first, *rest = (1, 2, 3, 4)
+print(first, rest)
+
+*start, last = (1, 2, 3, 4)
+print(start, last)
+
+a, *mid, z = (1, 2, 3, 4, 5)
+print(a, mid, z)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Only **one** starred variable is allowed in one unpacking.',
+              'The starred variable is always a **list**, even if it gets nothing (`[]`).',
+            ],
+          },
+          { type: 'h3', text: 'Unpacking in loops' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`pairs = [(1, "one"), (2, "two"), (3, "three")]
+for n, word in pairs:
+    print(n, word)
+
+for i, ch in enumerate("abc"):
+    print(i, ch)`,
+          },
+          { type: 'h3', text: 'Returning many values' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def min_max(nums):
+    return min(nums), max(nums)
+
+result = min_max([4, 9, 2, 7])
+print(result, type(result))
+
+low, high = min_max([4, 9, 2, 7])
+print(low, high)`,
+          },
+        ],
+      },
+      {
+        id: 's8-tuple-operations',
+        title: 'Tuple operations',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Operators **build new tuples**; the old ones stay the same.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = (1, 2)
+b = (3, 4)
+print(a + b)
+print(a * 3)
+print(max(a + b), min(a + b), sum(a + b))
+print((1, 2) < (1, 3))`,
+          },
+          { type: 'h3', text: 'Looping over a tuple' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`colors = ("red", "green", "blue")
+for c in colors:
+    print(c)
+
+for i in range(len(colors)):
+    print(i, colors[i])`,
+          },
+          { type: 'h3', text: 'Tuple to list and back' },
+          {
+            type: 'p',
+            text: 'To change a tuple the long way: **convert to a list**, change it, **convert back**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`t = (3, 1, 2)
+items = list(t)
+items.sort()
+t = tuple(items)
+print(t)
+print(sorted((3, 1, 2)))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Note',
+            text: '`sorted()` always gives a **list**, even for a tuple.',
+          },
+        ],
+      },
+      {
+        id: 's8-what-is-a-set',
+        title: 'What is a set?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A set is a collection of **unique items** inside curly brackets `{ }`. Duplicates are **removed automatically**, and there is **no order**.',
+          },
+          {
+            type: 'code',
+            label: 'sets.py',
+            runnable: true,
+            code: raw`s = {3, 1, 2, 3, 1}
+print(s)
+print(len(s))
+print(type(s))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Unique:** every value appears only once.',
+              '**Unordered:** no index, so `s[0]` is an error.',
+              '**Mutable:** you can add and remove items.',
+              'Items must be **immutable**: numbers, strings and tuples are fine, lists are not.',
+            ],
+          },
+          { type: 'h3', text: 'Making a set' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(sorted(set("hello")))
+print(list(set([1, 2, 2, 3, 3, 3])))
+
+print(type({}), type(set()))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: '`{}` is an empty **dictionary**, not an empty set. Use **`set()`** for an empty set.',
+          },
+        ],
+      },
+      {
+        id: 's8-set-basics',
+        title: 'Using a set',
+        blocks: [
+          {
+            type: 'p',
+            text: 'There are no indexes, but you can **check membership** and **loop**. Checking `in` on a set is very **fast**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = {1, 2, 3}
+print(2 in s, 9 in s)
+print(len(s))
+for n in s:
+    print(n)`,
+          },
+          { type: 'h3', text: 'What can go inside a set' },
+          {
+            type: 'code',
+            label: 'Try it: a list cannot go inside a set',
+            runnable: true,
+            code: raw`s = {[1, 2], 3}`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: a tuple can',
+            runnable: true,
+            code: raw`s = {(1, 2), 3}
+print(len(s))`,
+          },
+          { type: 'h3', text: 'Removing duplicates from a list' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [1, 2, 2, 3, 4, 4, 5]
+print(sorted(set(nums)))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: 'A set has **no order**, so use `sorted()` when you need the items in order.',
+          },
+        ],
+      },
+      {
+        id: 's8-set-methods',
+        title: 'Set methods',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Set methods **change the set itself**, like list methods.',
+          },
+          {
+            type: 'table',
+            head: ['Method', 'What it does'],
+            rows: [
+              ['`add(x)`', 'adds one item (nothing happens if it is already there)'],
+              ['`update(items)`', 'adds **many** items'],
+              ['`remove(x)`', 'removes `x`, **error** if missing'],
+              ['`discard(x)`', 'removes `x`, **no error** if missing'],
+              ['`pop()`', 'removes and returns **any** item'],
+              ['`clear()`', 'removes everything'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = {1, 2}
+s.add(3)
+s.add(2)
+print(s)
+s.update([3, 4, 5])
+print(s)
+s.remove(5)
+s.discard(99)
+print(s)`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: remove vs discard',
+            runnable: true,
+            code: raw`s = {1, 2, 3}
+s.discard(99)
+print("discard is quiet")
+s.remove(99)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which one would you use when you are **not sure** the item is in the set?',
+          },
+        ],
+      },
+      {
+        id: 's8-set-operations',
+        title: 'Set operations',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Sets follow **school maths**. Every operation has an **operator** and a **method**, and gives a **new set**.',
+          },
+          {
+            type: 'table',
+            head: ['Operation', 'Operator', 'Method', 'Gives'],
+            rows: [
+              ['Union', '`a | b`', '`a.union(b)`', 'everything in **either**'],
+              ['Intersection', '`a & b`', '`a.intersection(b)`', 'only what is in **both**'],
+              ['Difference', '`a - b`', '`a.difference(b)`', 'in `a` but **not** in `b`'],
+              ['Symmetric difference', '`a ^ b`', '`a.symmetric_difference(b)`', 'in **one but not both**'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+print(a | b)
+print(a & b)
+print(a - b)
+print(b - a)
+print(a ^ b)`,
+          },
+          {
+            type: 'code',
+            label: 'Same thing with methods',
+            runnable: true,
+            code: raw`a = {1, 2, 3, 4}
+b = {3, 4, 5, 6}
+print(a.union(b))
+print(a.intersection(b))
+print(a.difference(b))
+print(a.symmetric_difference(b))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: '`a - b` and `b - a` are **different**. The order matters for difference, not for union or intersection.',
+          },
+        ],
+      },
+      {
+        id: 's8-set-compare',
+        title: 'Comparing sets',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Sets can be compared as **subsets** and **supersets**.',
+          },
+          {
+            type: 'table',
+            head: ['Check', 'Operator', 'Method'],
+            rows: [
+              ['`x` is inside `y`', '`x <= y`', '`x.issubset(y)`'],
+              ['`y` contains `x`', '`y >= x`', '`y.issuperset(x)`'],
+              ['nothing in common', '', '`x.isdisjoint(y)`'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`x = {1, 2}
+y = {1, 2, 3}
+print(x <= y, x.issubset(y))
+print(y >= x, y.issuperset(x))
+print({1, 2}.isdisjoint({3, 4}))
+print({1, 2}.isdisjoint({2, 3}))
+print({1, 2, 3} == {3, 2, 1})`,
+          },
+          { type: 'h3', text: 'Updating in place' },
+          {
+            type: 'p',
+            text: 'Each operator has an **in-place** form that changes the set: `|=`, `&=`, `-=`, `^=`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = {1, 2, 3}
+a |= {4}
+print(a)
+a &= {1, 2, 4, 9}
+print(a)
+a -= {1}
+print(a)
+a ^= {2, 7}
+print(a)`,
+          },
+          { type: 'h3', text: 'frozenset' },
+          {
+            type: 'p',
+            text: 'A **frozenset** is an **immutable set**. It cannot change, so it can go inside another set.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fs = frozenset([1, 2, 3])
+print(fs)
+fs.add(4)`,
+          },
+        ],
+      },
+      {
+        id: 's8-real-use',
+        title: 'Sets in real life',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Two classes, and we want to know who is in **both**, in **either**, or in **only one**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`maths = {"Aman", "Riya", "Kabir"}
+science = {"Riya", "Kabir", "Meera"}
+
+print("Both:", sorted(maths & science))
+print("Either:", sorted(maths | science))
+print("Only maths:", sorted(maths - science))
+print("Only one:", sorted(maths ^ science))`,
+          },
+          { type: 'h3', text: 'Unique letters' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`word = "mississippi"
+print(len(word))
+print(len(set(word)))
+print(sorted(set(word)))`,
+          },
+          { type: 'h3', text: 'Common items of two lists' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3, 3]
+b = [3, 4, 5]
+print(sorted(set(a) & set(b)))`,
+          },
+        ],
+      },
+      {
+        id: 's8-compare-all',
+        title: 'List, tuple or set?',
+        blocks: [
+          {
+            type: 'table',
+            head: ['', 'List', 'Tuple', 'Set'],
+            rows: [
+              ['Brackets', '`[ ]`', '`( )`', '`{ }`'],
+              ['Ordered', '**Yes**', '**Yes**', '**No**'],
+              ['Duplicates', 'allowed', 'allowed', '**removed**'],
+              ['Can change', '**Yes**', '**No**', '**Yes**'],
+              ['Indexing', '`x[0]`', '`x[0]`', '**no**'],
+              ['Empty one', '`[]`', '`()`', '`set()`'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              'Need an **ordered, changing** collection? Use a **list**.',
+              'Need **fixed** data that must not change? Use a **tuple**.',
+              'Need **unique** items or fast membership checks and maths between groups? Use a **set**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which one would you pick for: the months of the year, the unique visitors to a site, a shopping cart?',
+          },
+        ],
+      },
+      {
+        id: 's8-practice',
+        title: 'Practice',
+        blocks: [
+          { type: 'h3', text: 'Warm-up questions' },
+          {
+            type: 'ol',
+            items: [
+              'Make a tuple of 5 numbers and print its length, first and last item.',
+              'Unpack `(10, 20, 30)` into three variables and print their sum.',
+              'Swap two variables without a third variable.',
+              'Print the unique items of the list `[5, 3, 5, 1, 3]`.',
+              'Print the common items of two sets.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Write a function that returns the minimum, maximum and average of a list as a tuple.',
+              'Find the items that are in the first list but not in the second.',
+              'Check whether a string has **all unique** characters.',
+              'Count how many different words are in a sentence.',
+              'Given `(1, 2, 3, 4, 5)`, use `*` to print the first, the last and the middle items.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`t = (1, 2, 3, 4, 5)
+a, *b, c = t
+print(a, b, c)
+s = {1, 2, 3}
+s.add(3)
+s.add(4)
+print(len(s))
+print({1, 2, 3} & {2, 3, 4})
+print({1, 2, 3} - {2, 3, 4})`,
+          },
+          { type: 'h3', text: 'Try the unique-word question' },
+          {
+            type: 'code',
+            label: 'Your turn: count the different words, then press Run',
+            runnable: true,
+            code: raw`sentence = "the cat and the dog and the bird"
+# print how many different words there are
+`,
+          },
+        ],
+      },
+      {
+        id: 's8-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a program that stores a **student record** `(name, age, marks)` as a tuple and prints it with **unpacking**.',
+              'Write a program that removes the **duplicates** from a list and keeps the **original order**.',
+              'Write a program that finds the **union, intersection and difference** of two sets typed by the user.',
+              'Write a program that checks whether two strings are **anagrams** using `sorted()`.',
+              'Revise the **list, tuple and set** comparison table.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Dictionaries.',
+          },
+        ],
+      },
+    ],
+  },
 ]
