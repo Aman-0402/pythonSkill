@@ -4052,4 +4052,728 @@ print({1, 2, 3} - {2, 3, 4})`,
       },
     ],
   },
+  {
+    slug: 'dictionaries',
+    title: 'Dictionaries',
+    summary: 'Look values up by name: key-value pairs, methods, nested dictionaries and counting with dictionaries.',
+    hero: {
+      file: 'dictionaries.py',
+      lines: ['marks = {"maths": 90, "science": 85}', 'marks["english"] = 78', 'print(marks["maths"])'],
+      output: '90',
+    },
+    sections: [
+      {
+        id: 's9-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'Why can a tuple not be changed, but a list can?',
+              'How do you make an **empty set**?',
+              'What does `{1, 2, 3} & {2, 3, 4}` give?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's9-what-is-a-dictionary',
+        title: 'What is a dictionary?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A dictionary stores **key-value pairs** inside curly brackets `{ }`. You find a value by its **key**, not by a position, like looking up a word in a real dictionary.',
+          },
+          {
+            type: 'code',
+            label: 'dictionaries.py',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "age": 20, "city": "Delhi"}
+print(student)
+print(len(student))
+print(type(student))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Pairs:** each item is `key: value`, separated by commas.',
+              '**Keys are unique:** a repeated key keeps only the **last** value.',
+              '**Keys must be immutable:** strings, numbers and tuples work, lists do not.',
+              '**Values can be anything:** numbers, text, lists, even other dictionaries.',
+              '**Ordered:** a dictionary remembers the order the items were added.',
+              '**Mutable:** you can add, change and remove pairs.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'In a list you find an item by its **position**. How do you find it in a dictionary?',
+          },
+        ],
+      },
+      {
+        id: 's9-creating',
+        title: 'Making a dictionary',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`empty = {}
+a = {"x": 1, "y": 2}
+b = dict(x=1, y=2)
+c = dict([("x", 1), ("y", 2)])
+print(empty, a, b, c)
+print(a == b == c)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`{}` is an **empty dictionary** (that is why an empty set needs `set()`).',
+              '`dict(x=1, y=2)` works when the keys are simple names.',
+              '`dict()` also accepts a list of **(key, value) tuples**.',
+            ],
+          },
+          { type: 'h3', text: 'Repeated keys' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`d = {"a": 1, "b": 2, "a": 3}
+print(d)
+print(len(d))`,
+          },
+          { type: 'h3', text: 'What can be a key' },
+          {
+            type: 'code',
+            label: 'Try it: a list cannot be a key',
+            runnable: true,
+            code: raw`d = {[1, 2]: "list"}`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: a tuple can',
+            runnable: true,
+            code: raw`d = {(1, 2): "point", 5: "number", "k": "text"}
+print(d[(1, 2)])`,
+          },
+        ],
+      },
+      {
+        id: 's9-access',
+        title: 'Reading a value',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Put the **key** in square brackets: `d[key]`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "age": 20, "city": "Delhi"}
+print(student["name"])
+print(student["age"] + 1)`,
+          },
+          { type: 'h3', text: 'A missing key' },
+          {
+            type: 'code',
+            label: 'Try it: read the error',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "age": 20}
+print(student["city"])`,
+          },
+          { type: 'h3', text: 'get() is safer' },
+          {
+            type: 'p',
+            text: '`d.get(key)` gives **None** instead of an error when the key is missing, and you can give a **default** value.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "age": 20}
+print(student.get("name"))
+print(student.get("city"))
+print(student.get("city", "Unknown"))`,
+          },
+          { type: 'h3', text: 'Checking for a key' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "age": 20}
+print("name" in student)
+print("city" in student)
+print("Aman" in student)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: '`in` checks the **keys**, not the values. `"Aman" in student` is `False`.',
+          },
+        ],
+      },
+      {
+        id: 's9-change',
+        title: 'Adding and changing',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The **same line** adds a new pair or changes an old one: `d[key] = value`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "age": 20}
+student["city"] = "Delhi"
+student["age"] = 21
+print(student)`,
+          },
+          { type: 'h3', text: 'update() adds many at once' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`student = {"name": "Aman"}
+student.update({"age": 20, "city": "Delhi"})
+student.update(age=21)
+print(student)`,
+          },
+          { type: 'h3', text: 'setdefault()' },
+          {
+            type: 'p',
+            text: '`setdefault(key, value)` adds the pair **only if the key is missing**, and returns the value that is stored.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`d = {"a": 1}
+print(d.setdefault("a", 99))
+print(d.setdefault("b", 2))
+print(d)`,
+          },
+        ],
+      },
+      {
+        id: 's9-remove',
+        title: 'Removing pairs',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Way', 'What it does'],
+            rows: [
+              ['`pop(key)`', 'removes the key and **returns its value**'],
+              ['`pop(key, default)`', 'same, but **no error** if the key is missing'],
+              ['`del d[key]`', 'removes the key'],
+              ['`popitem()`', 'removes and returns the **last** pair'],
+              ['`clear()`', 'removes **everything**'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`d = {"a": 1, "b": 2, "c": 3, "d": 4}
+print(d.pop("a"))
+print(d.pop("z", "not found"))
+del d["b"]
+print(d)
+print(d.popitem())
+print(d)
+d.clear()
+print(d)`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: pop with a missing key',
+            runnable: true,
+            code: raw`d = {"a": 1}
+d.pop("z")`,
+          },
+        ],
+      },
+      {
+        id: 's9-methods',
+        title: 'keys(), values() and items()',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Three methods give you the **parts** of a dictionary.',
+          },
+          {
+            type: 'table',
+            head: ['Method', 'Gives'],
+            rows: [
+              ['`d.keys()`', 'all the **keys**'],
+              ['`d.values()`', 'all the **values**'],
+              ['`d.items()`', 'all the **(key, value) pairs**'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
+print(list(marks.keys()))
+print(list(marks.values()))
+print(list(marks.items()))`,
+          },
+          { type: 'h3', text: 'Handy functions on the values' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
+print(sum(marks.values()))
+print(max(marks.values()))
+print(sum(marks.values()) / len(marks))
+print(sorted(marks))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What does `sorted(marks)` sort, the keys or the values?',
+          },
+        ],
+      },
+      {
+        id: 's9-loops',
+        title: 'Looping over a dictionary',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A plain `for` loop goes through the **keys**. Use `items()` to get **keys and values** together, with **unpacking** from last class.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
+
+for subject in marks:
+    print(subject)
+
+for value in marks.values():
+    print(value)
+
+for subject, mark in marks.items():
+    print(subject, "->", mark)`,
+          },
+          { type: 'h3', text: 'Finding the best' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
+best = None
+for subject, mark in marks.items():
+    if best is None or mark > marks[best]:
+        best = subject
+print(best, marks[best])
+print(max(marks, key=marks.get))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: 'Do not **add or remove keys** while looping over a dictionary. Loop over a copy: `list(d)`.',
+          },
+        ],
+      },
+      {
+        id: 's9-copy',
+        title: 'Copying and joining',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Like lists, `b = a` does **not** copy a dictionary. Both names point to the **same** dictionary.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = {"x": 1}
+b = a
+b["x"] = 99
+print(a)
+
+c = a.copy()
+c["x"] = 5
+print(a, c)`,
+          },
+          { type: 'h3', text: 'Joining two dictionaries' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = {"x": 1, "y": 2}
+b = {"y": 20, "z": 30}
+print(a | b)
+print({**a, **b})`,
+          },
+          {
+            type: 'p',
+            text: 'When the same key is in both, the **second** dictionary wins.',
+          },
+        ],
+      },
+      {
+        id: 's9-nested',
+        title: 'Nested dictionaries',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A value can be **another dictionary**. Use **one pair of brackets for each level**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`students = {
+    "Aman": {"age": 20, "city": "Delhi"},
+    "Riya": {"age": 19, "city": "Mumbai"},
+}
+print(students["Riya"])
+print(students["Riya"]["city"])`,
+          },
+          { type: 'h3', text: 'Changing a nested value' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`students = {
+    "Aman": {"age": 20, "city": "Delhi"},
+    "Riya": {"age": 19, "city": "Mumbai"},
+}
+students["Aman"]["age"] = 21
+students["Kabir"] = {"age": 22, "city": "Pune"}
+print(students["Aman"])
+print(len(students))`,
+          },
+          { type: 'h3', text: 'Looping through nested data' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`students = {
+    "Aman": {"age": 20, "city": "Delhi"},
+    "Riya": {"age": 19, "city": "Mumbai"},
+}
+for name, info in students.items():
+    print(name, "lives in", info["city"])`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'How would you read Riya\'s age from `students`?',
+          },
+        ],
+      },
+      {
+        id: 's9-list-of-dicts',
+        title: 'Lists and dictionaries together',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Real data is often a **list of dictionaries**: one dictionary for each row.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`people = [
+    {"name": "Aman", "marks": 90},
+    {"name": "Riya", "marks": 85},
+    {"name": "Kabir", "marks": 70},
+]
+for p in people:
+    print(p["name"], p["marks"])
+
+total = 0
+for p in people:
+    total += p["marks"]
+print("Average:", total / len(people))`,
+          },
+          { type: 'h3', text: 'A dictionary with lists as values' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`scores = {"Aman": [90, 80], "Riya": [85, 95]}
+scores["Aman"].append(70)
+print(scores["Aman"])
+for name, marks in scores.items():
+    print(name, sum(marks) / len(marks))`,
+          },
+        ],
+      },
+      {
+        id: 's9-counting',
+        title: 'Counting with a dictionary',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A very common job: **count how many times** each item appears. The item is the **key** and the count is the **value**.',
+          },
+          {
+            type: 'code',
+            label: 'Count the letters',
+            runnable: true,
+            code: raw`word = "banana"
+count = {}
+for ch in word:
+    if ch in count:
+        count[ch] += 1
+    else:
+        count[ch] = 1
+print(count)`,
+          },
+          { type: 'h3', text: 'The shorter way with get()' },
+          {
+            type: 'p',
+            text: '`count.get(ch, 0)` gives `0` for a new letter, so one line does the whole job.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`word = "banana"
+count = {}
+for ch in word:
+    count[ch] = count.get(ch, 0) + 1
+print(count)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Think',
+            text: 'Walk through the loop for `"banana"` on paper. What is `count` after each letter?',
+          },
+        ],
+      },
+      {
+        id: 's9-counting-words',
+        title: 'Counting words',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Use `split()` to get the words, then count them the same way.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`text = "the cat and the dog and the bird"
+words = text.split()
+count = {}
+for w in words:
+    count[w] = count.get(w, 0) + 1
+print(count)
+print(len(count))`,
+          },
+          { type: 'h3', text: 'The most common word' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`text = "the cat and the dog and the bird"
+count = {}
+for w in text.split():
+    count[w] = count.get(w, 0) + 1
+
+top = max(count, key=count.get)
+print(top, count[top])`,
+          },
+          { type: 'h3', text: 'Showing the result neatly' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`text = "the cat and the dog and the bird"
+count = {}
+for w in text.split():
+    count[w] = count.get(w, 0) + 1
+
+for w in sorted(count):
+    print(w, "-", count[w])`,
+          },
+        ],
+      },
+      {
+        id: 's9-grouping',
+        title: 'Grouping with a dictionary',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Instead of a number, the value can be a **list**, so the dictionary **groups** items together.',
+          },
+          {
+            type: 'code',
+            label: 'Group the words by their first letter',
+            runnable: true,
+            code: raw`words = ["apple", "avocado", "banana", "blueberry", "cherry"]
+groups = {}
+for w in words:
+    groups.setdefault(w[0], []).append(w)
+print(groups)`,
+          },
+          { type: 'h3', text: 'Even and odd' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`groups = {"even": [], "odd": []}
+for n in range(1, 8):
+    if n % 2 == 0:
+        groups["even"].append(n)
+    else:
+        groups["odd"].append(n)
+print(groups)`,
+          },
+        ],
+      },
+      {
+        id: 's9-comprehension',
+        title: 'A quick look at dictionary comprehensions',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Just like list comprehensions, you can build a dictionary in **one line**: `{key: value for ... in ...}`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`squares = {n: n * n for n in range(1, 6)}
+print(squares)
+
+names = ["Aman", "Riya"]
+lengths = {name: len(name) for name in names}
+print(lengths)`,
+          },
+          { type: 'h3', text: 'Swapping keys and values' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`d = {"a": 1, "b": 2}
+flipped = {v: k for k, v in d.items()}
+print(flipped)`,
+          },
+          { type: 'h3', text: 'Sorting a dictionary' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
+print(sorted(marks.items()))
+print(sorted(marks.items(), key=lambda pair: pair[1]))`,
+          },
+        ],
+      },
+      {
+        id: 's9-compare',
+        title: 'List, tuple, set or dictionary?',
+        blocks: [
+          {
+            type: 'table',
+            head: ['', 'List', 'Tuple', 'Set', 'Dictionary'],
+            rows: [
+              ['Brackets', '`[ ]`', '`( )`', '`{ }`', '`{k: v}`'],
+              ['Find by', 'index', 'index', 'membership', '**key**'],
+              ['Duplicates', 'allowed', 'allowed', '**removed**', 'keys **unique**'],
+              ['Can change', '**Yes**', '**No**', '**Yes**', '**Yes**'],
+              ['Empty one', '`[]`', '`()`', '`set()`', '`{}`'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which one would you use for: a phone book, the days of the week, the unique words in a story, a shopping cart?',
+          },
+        ],
+      },
+      {
+        id: 's9-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Using `d[key]` for a key that may be missing: use **`d.get(key)`** instead.',
+              'Thinking `in` checks the **values**: it checks the **keys**.',
+              'Using a **list as a key**: it is not allowed, use a tuple.',
+              'Writing `{}` and expecting a **set**: it is an empty **dictionary**.',
+              'Thinking `b = a` makes a copy: use **`a.copy()`**.',
+              'Changing the dictionary **while looping** over it.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: which line is the mistake?',
+            runnable: true,
+            code: raw`prices = {"apple": 40, "mango": 80}
+print(prices["apple"])
+print(prices["banana"])`,
+          },
+        ],
+      },
+      {
+        id: 's9-practice',
+        title: 'Practice',
+        blocks: [
+          { type: 'h3', text: 'Warm-up questions' },
+          {
+            type: 'ol',
+            items: [
+              'Make a dictionary of a book with `title`, `author` and `price`, then print the author.',
+              'Add a new key `year` to the dictionary, then change the `price`.',
+              'Print every key and value of a dictionary on its own line.',
+              'Print the sum of all the values of a dictionary of marks.',
+              'Check whether the key `"email"` is in a dictionary, without getting an error.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Count how many times each **letter** appears in a word.',
+              'Count how many times each **word** appears in a sentence, and print the most common one.',
+              'Make a dictionary of the squares of the numbers 1 to 5.',
+              'Swap the keys and values of a dictionary.',
+              'Merge two dictionaries and add the values of keys that appear in both.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`d = {"a": 1, "b": 2}
+d["c"] = 3
+d["a"] = 10
+print(d.get("z", 0))
+print(list(d.values()))
+print("b" in d, 2 in d)
+d.pop("b")
+print(len(d))`,
+          },
+          { type: 'h3', text: 'Try the count question' },
+          {
+            type: 'code',
+            label: 'Your turn: count the vowels in the word, then press Run',
+            runnable: true,
+            code: raw`word = "education"
+# make a dictionary that counts each vowel
+`,
+          },
+        ],
+      },
+      {
+        id: 's9-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a program that stores the **names and marks** of 5 students in a dictionary, and prints the **topper** and the **average**.',
+              'Write a program that takes a sentence from the user and prints the **count of each word**.',
+              'Write a program for a small **phone book**: add a contact, search for a contact, and print all contacts.',
+              'Write a program that finds the **first letter that appears only once** in a word, using a dictionary.',
+              'Revise the **list, tuple, set and dictionary** comparison table.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Functions.',
+          },
+        ],
+      },
+    ],
+  },
 ]
