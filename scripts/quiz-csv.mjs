@@ -4,6 +4,7 @@
 //   node --experimental-strip-types scripts/quiz-csv.mjs          all sessions
 //   node --experimental-strip-types scripts/quiz-csv.mjs 3        one session
 //
+// The files follow quiz-template.csv in the project root: UTF-8 with a BOM, CRLF line endings, every field in quotes.
 // CSV format (one row = one question):
 //   Question, Option A ... Option F, Correct, Explanation
 // Each question has 2 to 6 options. Correct is the letter of the right option. The students see the options in a
@@ -32,7 +33,8 @@ const rng = (seed) => () => {
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296
 }
 
-const csvCell = (s) => (/[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s)
+// the owner's quiz-template.csv quotes every field, so every field is quoted here too
+const csvCell = (s) => `"${s.replace(/"/g, '""')}"`
 
 let failed = false
 const fail = (msg) => {
@@ -91,7 +93,7 @@ for (let n = 1; n <= lessons.length; n++) {
 
   fs.mkdirSync(outDir, { recursive: true })
   const name = `Session ${n} - ${lessons[n - 1].title}.csv`
-  fs.writeFileSync(path.join(outDir, name), [HEADER.join(','), ...rows].join('\r\n') + '\r\n')
+  fs.writeFileSync(path.join(outDir, name), '\ufeff' + [HEADER.map(csvCell).join(','), ...rows].join('\r\n') + '\r\n') // starts with a UTF-8 BOM, like the template
   console.log(`  wrote "Quiz in CSV/${name}": ${rows.length} questions; right answers by letter ${JSON.stringify(tally)}`)
 }
 

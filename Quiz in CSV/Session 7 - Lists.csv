@@ -1,46 +1,46 @@
-Question,Option A,Option B,Option C,Option D,Option E,Option F,Correct,Explanation
-What is a list in Python?,A single number with decimals,A loop that repeats,An ordered collection of items inside square brackets,A block of text inside quotes,,,C,One variable can hold many values in a list.
-Which of these is a list?,"(10, 20, 30)","""10, 20, 30""",{10 20 30},"[10, 20, 30]",,,D,"Lists are written with square brackets, with commas between the items."
-Which statements about lists are true?,They can only hold numbers,"They are ordered, they can hold mixed types, and they can be changed",They cannot be changed after creation,Every item must have a different value,They cannot hold text,,B,"Lists are ordered, allow duplicates and mixed types, and are mutable."
-"What does len([10, 20, 30]) give?",3,2,30,60,,,A,len() gives the number of items.
-"What does list(""Python"") give?","['P', 'y', 't', 'h', 'o', 'n']","""Python""","['P', 'y', 't', 'h', 'o']",['Python'],,,A,list() turns the characters of a string into separate items.
-What is the index of the first item in a list?,-1,1,0,It depends on the list,,,C,"Indexing starts from 0, like strings."
-"What does fruits[-1] give when fruits = [""apple"", ""banana"", ""mango"", ""kiwi""]?",apple,mango,An error,kiwi,,,D,-1 is the last item.
-"What does fruits[2] give when fruits = [""apple"", ""banana"", ""mango"", ""kiwi""]?",apple,mango,banana,kiwi,,,B,"Index 0 is apple, 1 is banana and 2 is mango."
-What error appears for fruits[4] when the list has 4 items?,IndexError,NameError,ValueError,TypeError,,,A,The valid indexes are 0 to 3.
-Lists are mutable. Which line proves it?,print(fruits),len(fruits),"s[0] = ""J"" on a string","fruits[1] = ""orange""",,,D,You can replace an item by assigning to its index. Strings cannot be changed this way.
-"What does nums[1:4] give when nums = [10, 20, 30, 40, 50, 60]?","[10, 20, 30]","[10, 20, 30, 40]","[20, 30, 40]","[20, 30, 40, 50]",,,C,The stop index is not included.
-"What does nums[::-1] give when nums = [10, 20, 30]?",[30],"[30, 20, 10]","[20, 10]","[10, 20, 30]",,,B,A step of -1 reverses the list.
-"What does nums[-2:] give when nums = [10, 20, 30, 40, 50, 60]?",[60],"[50, 60]","[40, 50, 60]","[10, 20]",,,B,"-2 means the second item from the end, and the missing stop means to the end."
-What does nums[:] do?,Makes a copy of the whole list,Reverses the list,Deletes the list,Gives an error,,,A,"A slice gives a new list, so nums[:] is a copy."
-"What is the list after nums = [10, 20, 30, 40, 50]; nums[1:3] = [21, 31]?","[10, 21, 31, 30, 40, 50]","[10, 20, 21, 31, 40, 50]","[10, 21, 31, 40, 50]","[21, 31]",,,C,Assigning to a slice replaces those items.
-Which method adds an item at the end of a list?,push(),insert(),add(),append(),,,D,append(x) adds x at the end.
-"What does fruits.insert(1, ""kiwi"") do?",Adds kiwi at position 1,Adds kiwi at the end,Replaces the item at position 1,Removes kiwi,,,A,"insert(i, x) puts x at position i and moves the rest along."
-"What is fruits after fruits = [""apple"", ""banana""]; fruits.extend([""grapes"", ""orange""])?","['apple', 'grapes', 'banana', 'orange']","['apple', 'banana', 'grapes', 'orange']","['apple', 'banana', ['grapes', 'orange']]","['grapes', 'orange']",,,B,extend() adds every item of another list at the end.
-"What is the difference between append([3, 4]) and extend([3, 4]) on the list [1, 2]?","Both give [1, 2, [3, 4]]","append gives [1, 2, 3, 4] and extend gives [1, 2, [3, 4]]","append gives [1, 2, [3, 4]] and extend gives [1, 2, 3, 4]","Both give [1, 2, 3, 4]",,,C,"append adds one item, which here is a list. extend adds each item."
-"What is nums after nums = [10, 20, 30, 20, 40]; nums.remove(20)?","[10, 30, 40]","[10, 20, 30, 40]","[10, 20, 30, 20]","[10, 30, 20, 40]",,,D,remove(x) removes only the first x.
-What does pop() do with no number?,Removes and returns the first item,Removes every item,Removes and returns the last item,Returns None and changes nothing,,,C,pop(i) takes the item at position i instead.
-"What is printed? nums = [10, 30, 20, 40]; last = nums.pop(); print(last)",20,10,"[10, 30, 20]",40,,,D,pop() returns the item it removes.
-What does nums.clear() do?,Deletes the variable nums,Removes every item from the list,Removes only the last item,Sorts the list,,,B,"The list stays, but it becomes empty."
-"What error does nums.remove(10) cause when nums = [1, 2, 3]?",ValueError,TypeError,KeyError,IndexError,,,A,You can check with 10 in nums before removing.
-"What does colors.index(""blue"") give when colors = [""red"", ""green"", ""blue"", ""green""]?",3,1,-1,2,,,D,index() gives the position of the first match.
-"What does colors.count(""green"") give when colors = [""red"", ""green"", ""blue"", ""green""]?",2,4,1,3,,,A,count() gives how many times the item appears.
-"What does ""pink"" in colors give when colors = [""red"", ""green"", ""blue""]?",An error,False,None,True,,,B,in checks whether a value is present in the list.
-"What is nums after nums = [5, 2, 9, 1]; nums.sort(reverse=True)?","[1, 2, 5, 9]","[5, 2, 9, 1]","[9, 5, 2, 1]","[1, 9, 2, 5]",,,C,reverse=True sorts from the biggest to the smallest.
-What is the difference between sort() and sorted()?,"sort() gives a new list, sorted() changes the list","sort() changes the list, sorted() gives a new sorted list",sorted() only works on strings,They are exactly the same,,,B,sorted() leaves the original list alone.
-"What does print(len(marks), min(marks), max(marks), sum(marks)) show for marks = [72, 85, 60, 91]?",4 60 91 308,3 60 91 308,4 72 91 308,4 60 91 240,,,A,"len is 4, the smallest is 60, the biggest is 91, and the total is 308."
-"What is the average of marks = [72, 85, 60, 91] found with sum(marks) / len(marks)?",77,308,77.0,76.5,,,C,"308 divided by 4 is 77.0, as a float."
-"What is printed? nums = [3, 1, 2]; result = nums.sort(); print(result)",An error,"[1, 2, 3]","[3, 1, 2]",None,,,D,sort() changes the list and returns None. Do not write nums = nums.sort().
-"What does [1, 2, 3] + [4, 5] give?","[[1, 2, 3], [4, 5]]","[1, 2, 3, 4, 5]","[5, 7, 3]",An error,,,B,+ joins two lists into a new one.
-"What does [4, 5] * 3 give?","[4, 5, 3]","[12, 15]","[4, 5, 4, 5, 4, 5]","[[4, 5], 3]",,,C,* repeats a list.
-"What happens after a = [1, 2, 3]; b = a; b.append(4); print(a)?","[1, 2, 3, 4]","[1, 2, 3]",[4],An error,,,A,b = a does not copy the list. Both names point to the same list.
-Which line makes a real copy of the list a?,len(a),a == a,b = a,a.copy(),,,D,a[:] also makes a copy.
-Which loop goes through every item of a list called fruits?,for fruit in fruits:,for (fruit in fruits),loop fruit in fruits:,for fruit of fruits,,,A,The loop variable takes one item at a time.
-What does enumerate(fruits) give you in a loop?,The length of the list,Only the items,Only the indexes in reverse,The index and the item together,,,D,"for i, fruit in enumerate(fruits): gives both."
-"What is squares after squares = []; for n in range(1, 6): squares.append(n * n)?","[2, 4, 6, 8, 10]","[1, 2, 3, 4, 5]","[1, 4, 9, 16, 25]","[0, 1, 4, 9, 16]",,,C,"Start with an empty list, then append inside the loop."
-"What is evens after going through nums = [4, 7, 10, 3, 8] and appending the even numbers?","[4, 7, 10, 3, 8]","[4, 10, 8]","[10, 8]","[7, 3]",,,B,Only items with n % 2 == 0 are appended.
-"What does [n * n for n in range(1, 6)] give?","[2, 4, 6, 8, 10]",An error,"[1, 2, 3, 4, 5]","[1, 4, 9, 16, 25]",,,D,"This is a list comprehension, a one-line way to build a list."
-"What does matrix[1][2] give when matrix = [[1, 2, 3], [4, 5, 6]]?",3,2,6,5,,,C,"matrix[1] is the second row [4, 5, 6], and index 2 is its third item."
-"What does print(matrix[0]) show when matrix = [[1, 2, 3], [4, 5, 6]]?","[[1, 2, 3]]","[1, 2, 3]",1,"[1, 4]",,,B,matrix[0] is the first row.
-"What is printed? nums = [10, 20, 30, 40, 50]; nums.append(60); nums.pop(0); print(len(nums))",5,4,6,7,,,A,"Appending makes 6 items, and pop(0) removes one, so 5 remain."
-True or false: nums = nums.append(5) is the correct way to add 5 to nums.,True,False,,,,,B,"append() returns None, so nums would become None. Just write nums.append(5)."
+﻿"Question","Option A","Option B","Option C","Option D","Option E","Option F","Correct","Explanation"
+"What is a list in Python?","A single number with decimals","A loop that repeats","An ordered collection of items inside square brackets","A block of text inside quotes","","","C","One variable can hold many values in a list."
+"Which of these is a list?","(10, 20, 30)","""10, 20, 30""","{10 20 30}","[10, 20, 30]","","","D","Lists are written with square brackets, with commas between the items."
+"Which statements about lists are true?","They can only hold numbers","They are ordered, they can hold mixed types, and they can be changed","They cannot be changed after creation","Every item must have a different value","They cannot hold text","","B","Lists are ordered, allow duplicates and mixed types, and are mutable."
+"What does len([10, 20, 30]) give?","3","2","30","60","","","A","len() gives the number of items."
+"What does list(""Python"") give?","['P', 'y', 't', 'h', 'o', 'n']","""Python""","['P', 'y', 't', 'h', 'o']","['Python']","","","A","list() turns the characters of a string into separate items."
+"What is the index of the first item in a list?","-1","1","0","It depends on the list","","","C","Indexing starts from 0, like strings."
+"What does fruits[-1] give when fruits = [""apple"", ""banana"", ""mango"", ""kiwi""]?","apple","mango","An error","kiwi","","","D","-1 is the last item."
+"What does fruits[2] give when fruits = [""apple"", ""banana"", ""mango"", ""kiwi""]?","apple","mango","banana","kiwi","","","B","Index 0 is apple, 1 is banana and 2 is mango."
+"What error appears for fruits[4] when the list has 4 items?","IndexError","NameError","ValueError","TypeError","","","A","The valid indexes are 0 to 3."
+"Lists are mutable. Which line proves it?","print(fruits)","len(fruits)","s[0] = ""J"" on a string","fruits[1] = ""orange""","","","D","You can replace an item by assigning to its index. Strings cannot be changed this way."
+"What does nums[1:4] give when nums = [10, 20, 30, 40, 50, 60]?","[10, 20, 30]","[10, 20, 30, 40]","[20, 30, 40]","[20, 30, 40, 50]","","","C","The stop index is not included."
+"What does nums[::-1] give when nums = [10, 20, 30]?","[30]","[30, 20, 10]","[20, 10]","[10, 20, 30]","","","B","A step of -1 reverses the list."
+"What does nums[-2:] give when nums = [10, 20, 30, 40, 50, 60]?","[60]","[50, 60]","[40, 50, 60]","[10, 20]","","","B","-2 means the second item from the end, and the missing stop means to the end."
+"What does nums[:] do?","Makes a copy of the whole list","Reverses the list","Deletes the list","Gives an error","","","A","A slice gives a new list, so nums[:] is a copy."
+"What is the list after nums = [10, 20, 30, 40, 50]; nums[1:3] = [21, 31]?","[10, 21, 31, 30, 40, 50]","[10, 20, 21, 31, 40, 50]","[10, 21, 31, 40, 50]","[21, 31]","","","C","Assigning to a slice replaces those items."
+"Which method adds an item at the end of a list?","push()","insert()","add()","append()","","","D","append(x) adds x at the end."
+"What does fruits.insert(1, ""kiwi"") do?","Adds kiwi at position 1","Adds kiwi at the end","Replaces the item at position 1","Removes kiwi","","","A","insert(i, x) puts x at position i and moves the rest along."
+"What is fruits after fruits = [""apple"", ""banana""]; fruits.extend([""grapes"", ""orange""])?","['apple', 'grapes', 'banana', 'orange']","['apple', 'banana', 'grapes', 'orange']","['apple', 'banana', ['grapes', 'orange']]","['grapes', 'orange']","","","B","extend() adds every item of another list at the end."
+"What is the difference between append([3, 4]) and extend([3, 4]) on the list [1, 2]?","Both give [1, 2, [3, 4]]","append gives [1, 2, 3, 4] and extend gives [1, 2, [3, 4]]","append gives [1, 2, [3, 4]] and extend gives [1, 2, 3, 4]","Both give [1, 2, 3, 4]","","","C","append adds one item, which here is a list. extend adds each item."
+"What is nums after nums = [10, 20, 30, 20, 40]; nums.remove(20)?","[10, 30, 40]","[10, 20, 30, 40]","[10, 20, 30, 20]","[10, 30, 20, 40]","","","D","remove(x) removes only the first x."
+"What does pop() do with no number?","Removes and returns the first item","Removes every item","Removes and returns the last item","Returns None and changes nothing","","","C","pop(i) takes the item at position i instead."
+"What is printed? nums = [10, 30, 20, 40]; last = nums.pop(); print(last)","20","10","[10, 30, 20]","40","","","D","pop() returns the item it removes."
+"What does nums.clear() do?","Deletes the variable nums","Removes every item from the list","Removes only the last item","Sorts the list","","","B","The list stays, but it becomes empty."
+"What error does nums.remove(10) cause when nums = [1, 2, 3]?","ValueError","TypeError","KeyError","IndexError","","","A","You can check with 10 in nums before removing."
+"What does colors.index(""blue"") give when colors = [""red"", ""green"", ""blue"", ""green""]?","3","1","-1","2","","","D","index() gives the position of the first match."
+"What does colors.count(""green"") give when colors = [""red"", ""green"", ""blue"", ""green""]?","2","4","1","3","","","A","count() gives how many times the item appears."
+"What does ""pink"" in colors give when colors = [""red"", ""green"", ""blue""]?","An error","False","None","True","","","B","in checks whether a value is present in the list."
+"What is nums after nums = [5, 2, 9, 1]; nums.sort(reverse=True)?","[1, 2, 5, 9]","[5, 2, 9, 1]","[9, 5, 2, 1]","[1, 9, 2, 5]","","","C","reverse=True sorts from the biggest to the smallest."
+"What is the difference between sort() and sorted()?","sort() gives a new list, sorted() changes the list","sort() changes the list, sorted() gives a new sorted list","sorted() only works on strings","They are exactly the same","","","B","sorted() leaves the original list alone."
+"What does print(len(marks), min(marks), max(marks), sum(marks)) show for marks = [72, 85, 60, 91]?","4 60 91 308","3 60 91 308","4 72 91 308","4 60 91 240","","","A","len is 4, the smallest is 60, the biggest is 91, and the total is 308."
+"What is the average of marks = [72, 85, 60, 91] found with sum(marks) / len(marks)?","77","308","77.0","76.5","","","C","308 divided by 4 is 77.0, as a float."
+"What is printed? nums = [3, 1, 2]; result = nums.sort(); print(result)","An error","[1, 2, 3]","[3, 1, 2]","None","","","D","sort() changes the list and returns None. Do not write nums = nums.sort()."
+"What does [1, 2, 3] + [4, 5] give?","[[1, 2, 3], [4, 5]]","[1, 2, 3, 4, 5]","[5, 7, 3]","An error","","","B","+ joins two lists into a new one."
+"What does [4, 5] * 3 give?","[4, 5, 3]","[12, 15]","[4, 5, 4, 5, 4, 5]","[[4, 5], 3]","","","C","* repeats a list."
+"What happens after a = [1, 2, 3]; b = a; b.append(4); print(a)?","[1, 2, 3, 4]","[1, 2, 3]","[4]","An error","","","A","b = a does not copy the list. Both names point to the same list."
+"Which line makes a real copy of the list a?","len(a)","a == a","b = a","a.copy()","","","D","a[:] also makes a copy."
+"Which loop goes through every item of a list called fruits?","for fruit in fruits:","for (fruit in fruits)","loop fruit in fruits:","for fruit of fruits","","","A","The loop variable takes one item at a time."
+"What does enumerate(fruits) give you in a loop?","The length of the list","Only the items","Only the indexes in reverse","The index and the item together","","","D","for i, fruit in enumerate(fruits): gives both."
+"What is squares after squares = []; for n in range(1, 6): squares.append(n * n)?","[2, 4, 6, 8, 10]","[1, 2, 3, 4, 5]","[1, 4, 9, 16, 25]","[0, 1, 4, 9, 16]","","","C","Start with an empty list, then append inside the loop."
+"What is evens after going through nums = [4, 7, 10, 3, 8] and appending the even numbers?","[4, 7, 10, 3, 8]","[4, 10, 8]","[10, 8]","[7, 3]","","","B","Only items with n % 2 == 0 are appended."
+"What does [n * n for n in range(1, 6)] give?","[2, 4, 6, 8, 10]","An error","[1, 2, 3, 4, 5]","[1, 4, 9, 16, 25]","","","D","This is a list comprehension, a one-line way to build a list."
+"What does matrix[1][2] give when matrix = [[1, 2, 3], [4, 5, 6]]?","3","2","6","5","","","C","matrix[1] is the second row [4, 5, 6], and index 2 is its third item."
+"What does print(matrix[0]) show when matrix = [[1, 2, 3], [4, 5, 6]]?","[[1, 2, 3]]","[1, 2, 3]","1","[1, 4]","","","B","matrix[0] is the first row."
+"What is printed? nums = [10, 20, 30, 40, 50]; nums.append(60); nums.pop(0); print(len(nums))","5","4","6","7","","","A","Appending makes 6 items, and pop(0) removes one, so 5 remain."
+"True or false: nums = nums.append(5) is the correct way to add 5 to nums.","True","False","","","","","B","append() returns None, so nums would become None. Just write nums.append(5)."

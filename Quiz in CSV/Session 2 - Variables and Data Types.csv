@@ -1,38 +1,38 @@
-Question,Option A,Option B,Option C,Option D,Option E,Option F,Correct,Explanation
-What is a variable?,A kind of loop,A comment in the code,A fixed number that can never change,A named container that stores a value in memory,,,D,"A variable has a name (the label) and a value (the thing inside), like a labelled box."
-What does the = sign mean in Python?,Store the right side in the left side (assignment),Add two values,"Both sides are equal, as in maths",Compare two values,,,A,= is the assignment operator. To compare values you use ==.
-What is printed? age = 25; age = 26; print(age),51,An error,26,25,,,C,A variable can be changed at any time. The newest value replaces the old one.
-"What does print(b) show after a, b, c = 1, 2, 3 ?",3,2,1,"(1, 2, 3)",,,B,"Each name gets the value in the same position: a is 1, b is 2 and c is 3."
-What does print(x + y) show after x = y = 0 ?,1,An error,0,00,,,C,x = y = 0 gives both variables the value 0.
-Which of these is a valid variable name?,student_name,1student,my name,total-marks,,,A,"Names cannot start with a digit, and cannot contain spaces or hyphens."
-Which of these is NOT a valid variable name?,_count,Age,marks2,class,,,D,"class is a keyword, so it cannot be used as a variable name."
-A variable name must start with...,A digit,A letter or an underscore,A hyphen,A space,,,B,After the first character it can also contain digits.
-Are the variables Name and name the same in Python?,"No, Python is case-sensitive","No, but only for numbers","Yes, but only inside functions","Yes, case does not matter",,,A,Name and name are two different variables.
-Which naming style is recommended for Python variables?,Hyphens between words,"snake_case, such as total_marks",All digits,Spaces between words,,,B,"Use snake_case and give meaningful names, for example price, not p."
-What is the data type of the value 10?,bool,float,str,int,,,D,Whole numbers are int.
-What is the data type of the value 3.0?,int,bool,float,str,,,C,"Any number with a decimal point is a float, even 3.0."
-"What is the data type of the value ""3.14"" (with quotes)?",float,bool,str,int,,,C,"Anything inside quotes is text (str), even if it looks like a number."
-What is the data type of True?,int only,bool,str,NoneType,,,B,True and False are bool values.
-What is the data type of None?,bool,str,int,NoneType,,,D,"None means no value, and its type is NoneType."
-Which one is written correctly as a Python boolean?,True,TRUE,yes,true,,,A,True and False start with a capital letter.
-Which function tells you the type of a value?,kind(),typeof(),type(),class(),,,C,type(10) shows the type of 10.
-"What is printed? x = 5; x = ""five""; print(type(x).__name__)",float,str,An error,int,,,B,"Python is dynamically typed, so one variable can hold different types at different times."
-What type of value does input() always return?,A boolean,A float,An integer,A string (str),,,D,"Even if the user types 5, input() gives the text ""5"". Convert it with int() or float() when you need a number."
-"What does int(""5"") + 5 give?",10,55,An error,"""10""",,,A,"int(""5"") turns the text into the number 5, so the sum is 10."
-"What does ""5"" + ""5"" give?",10,55,An error,"""10""",,,B,"+ joins two strings together, so the result is the text 55."
-"What error does print(""5"" + 5) cause?",SyntaxError,"No error, it prints 10",TypeError,NameError,,,C,"Text and numbers cannot be added. Use int(""5"") + 5 or ""5"" + str(5)."
-What does int(9.99) give?,9,9.99,10,9.0,,,A,int() truncates: it cuts off the decimals and does not round.
-What does float(7) give?,0.7,7,"""7""",7.0,,,D,float() converts a whole number into a decimal number.
-What is the type of str(100)?,bool,int,float,str,,,D,"str() turns a value into text, so str(100) is the text ""100""."
-What does bool(0) give?,False,True,None,0,,,A,"0, an empty string and None are False. Everything else is True."
-"What does bool(""hi"") give?","""hi""",False,True,An error,,,C,Any non-empty string is True.
-What does print(10 // 3) show?,4,3,1,3.3333333333333335,,,B,// is floor division.
-What does print(4 / 2) show?,"""2""",0.5,2,2.0,,,D,"/ always returns a float, even when the answer is a whole number."
-What is printed? x = 10; x += 5; x *= 2; print(x),25,15,30,20,,,C,"x += 5 makes it 15, and then x *= 2 makes it 30."
-What does print(2 + 3 * 4) show?,24,14,20,9,,,B,"Multiplication comes before addition: 3 * 4 is 12, plus 2 is 14."
-What does print((2 + 3) * 4) show?,20,24,9,14,,,A,"Brackets come first: 2 + 3 is 5, times 4 is 20."
-What is the correct order of operator precedence from highest to lowest?,"* / first, then brackets, then ** , then + -","+ -, then * / // %, then **, then brackets","Brackets, then **, then * / // %, then + -","** first, then brackets, then + -, then * /",,,C,"Brackets are first. The power operator ** comes next, then multiplication, division, floor division and remainder, and last addition and subtraction."
-Which line prints Age: 25 without an error?,"print(""Age: "" + str(25))",print(Age: 25),"print(""Age:"" ++ 25)","print(""Age: "" + 25)",,,A,"Mixing a string and a number with + needs str(). A comma in print() works without it: print(""Age:"", 25)."
-"What is printed? a, b = 1, 2; a, b = b, a; print(a, b)",2 2,1 1,1 2,2 1,,,D,"a, b = b, a swaps the two values without a third variable."
-"What does print(a ** b) show for a, b = 10, 3 ?",100,1000,13,30,,,B,** is power: 10 to the power 3 is 1000.
-True or false: a variable can be changed after it is created.,True,False,,,,,A,A variable can be changed at any time by assigning a new value.
+﻿"Question","Option A","Option B","Option C","Option D","Option E","Option F","Correct","Explanation"
+"What is a variable?","A kind of loop","A comment in the code","A fixed number that can never change","A named container that stores a value in memory","","","D","A variable has a name (the label) and a value (the thing inside), like a labelled box."
+"What does the = sign mean in Python?","Store the right side in the left side (assignment)","Add two values","Both sides are equal, as in maths","Compare two values","","","A","= is the assignment operator. To compare values you use ==."
+"What is printed? age = 25; age = 26; print(age)","51","An error","26","25","","","C","A variable can be changed at any time. The newest value replaces the old one."
+"What does print(b) show after a, b, c = 1, 2, 3 ?","3","2","1","(1, 2, 3)","","","B","Each name gets the value in the same position: a is 1, b is 2 and c is 3."
+"What does print(x + y) show after x = y = 0 ?","1","An error","0","00","","","C","x = y = 0 gives both variables the value 0."
+"Which of these is a valid variable name?","student_name","1student","my name","total-marks","","","A","Names cannot start with a digit, and cannot contain spaces or hyphens."
+"Which of these is NOT a valid variable name?","_count","Age","marks2","class","","","D","class is a keyword, so it cannot be used as a variable name."
+"A variable name must start with...","A digit","A letter or an underscore","A hyphen","A space","","","B","After the first character it can also contain digits."
+"Are the variables Name and name the same in Python?","No, Python is case-sensitive","No, but only for numbers","Yes, but only inside functions","Yes, case does not matter","","","A","Name and name are two different variables."
+"Which naming style is recommended for Python variables?","Hyphens between words","snake_case, such as total_marks","All digits","Spaces between words","","","B","Use snake_case and give meaningful names, for example price, not p."
+"What is the data type of the value 10?","bool","float","str","int","","","D","Whole numbers are int."
+"What is the data type of the value 3.0?","int","bool","float","str","","","C","Any number with a decimal point is a float, even 3.0."
+"What is the data type of the value ""3.14"" (with quotes)?","float","bool","str","int","","","C","Anything inside quotes is text (str), even if it looks like a number."
+"What is the data type of True?","int only","bool","str","NoneType","","","B","True and False are bool values."
+"What is the data type of None?","bool","str","int","NoneType","","","D","None means no value, and its type is NoneType."
+"Which one is written correctly as a Python boolean?","True","TRUE","yes","true","","","A","True and False start with a capital letter."
+"Which function tells you the type of a value?","kind()","typeof()","type()","class()","","","C","type(10) shows the type of 10."
+"What is printed? x = 5; x = ""five""; print(type(x).__name__)","float","str","An error","int","","","B","Python is dynamically typed, so one variable can hold different types at different times."
+"What type of value does input() always return?","A boolean","A float","An integer","A string (str)","","","D","Even if the user types 5, input() gives the text ""5"". Convert it with int() or float() when you need a number."
+"What does int(""5"") + 5 give?","10","55","An error","""10""","","","A","int(""5"") turns the text into the number 5, so the sum is 10."
+"What does ""5"" + ""5"" give?","10","55","An error","""10""","","","B","+ joins two strings together, so the result is the text 55."
+"What error does print(""5"" + 5) cause?","SyntaxError","No error, it prints 10","TypeError","NameError","","","C","Text and numbers cannot be added. Use int(""5"") + 5 or ""5"" + str(5)."
+"What does int(9.99) give?","9","9.99","10","9.0","","","A","int() truncates: it cuts off the decimals and does not round."
+"What does float(7) give?","0.7","7","""7""","7.0","","","D","float() converts a whole number into a decimal number."
+"What is the type of str(100)?","bool","int","float","str","","","D","str() turns a value into text, so str(100) is the text ""100""."
+"What does bool(0) give?","False","True","None","0","","","A","0, an empty string and None are False. Everything else is True."
+"What does bool(""hi"") give?","""hi""","False","True","An error","","","C","Any non-empty string is True."
+"What does print(10 // 3) show?","4","3","1","3.3333333333333335","","","B","// is floor division."
+"What does print(4 / 2) show?","""2""","0.5","2","2.0","","","D","/ always returns a float, even when the answer is a whole number."
+"What is printed? x = 10; x += 5; x *= 2; print(x)","25","15","30","20","","","C","x += 5 makes it 15, and then x *= 2 makes it 30."
+"What does print(2 + 3 * 4) show?","24","14","20","9","","","B","Multiplication comes before addition: 3 * 4 is 12, plus 2 is 14."
+"What does print((2 + 3) * 4) show?","20","24","9","14","","","A","Brackets come first: 2 + 3 is 5, times 4 is 20."
+"What is the correct order of operator precedence from highest to lowest?","* / first, then brackets, then ** , then + -","+ -, then * / // %, then **, then brackets","Brackets, then **, then * / // %, then + -","** first, then brackets, then + -, then * /","","","C","Brackets are first. The power operator ** comes next, then multiplication, division, floor division and remainder, and last addition and subtraction."
+"Which line prints Age: 25 without an error?","print(""Age: "" + str(25))","print(Age: 25)","print(""Age:"" ++ 25)","print(""Age: "" + 25)","","","A","Mixing a string and a number with + needs str(). A comma in print() works without it: print(""Age:"", 25)."
+"What is printed? a, b = 1, 2; a, b = b, a; print(a, b)","2 2","1 1","1 2","2 1","","","D","a, b = b, a swaps the two values without a third variable."
+"What does print(a ** b) show for a, b = 10, 3 ?","100","1000","13","30","","","B","** is power: 10 to the power 3 is 1000."
+"True or false: a variable can be changed after it is created.","True","False","","","","","A","A variable can be changed at any time by assigning a new value."

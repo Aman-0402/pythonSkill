@@ -1,36 +1,36 @@
-Question,Option A,Option B,Option C,Option D,Option E,Option F,Correct,Explanation
-Who created Python?,Dennis Ritchie,James Gosling,Guido van Rossum,Bjarne Stroustrup,,,C,Python was created by Guido van Rossum in the Netherlands.
-In which year did the first public release of Python come?,1991,2000,2008,1989,,,A,"Guido started work in late 1989, and the first release came in 1991."
-Where does the name Python come from?,A famous programming book,A Greek myth,The python snake,The comedy show Monty Python's Flying Circus,,,D,"The name comes from the British comedy show, not from the snake. The snake logo came later."
-Python is an interpreted language. What does that mean?,The code can only run on the internet,The code runs line by line with no separate compile step,The code must be compiled into an .exe file before it can run,The code can only run inside VS Code,,,B,"An interpreter reads and runs your code line by line, so you write it, run it and see the result straight away."
-Python is dynamically typed. What does that mean?,Variables cannot be changed after they are created,You do not have to declare the type of a variable,A variable can only hold numbers,Every variable must be declared with a type first,,,B,"Python works out whether a value is a number, text or something else, so no type declaration is needed."
-Which of these is a Python library for working with tables of data?,jQuery,Bootstrap,React,Pandas,,,D,Pandas is used for data analysis. NumPy and Matplotlib are other popular Python libraries.
-Which version of Python should a beginner install?,Any beta version,Python 2.7,The latest stable Python 3,Python 1.0,,,C,"Python 2 is no longer supported, so everyone uses Python 3 now."
-When did Python 2 reach its end of life?,1 January 2020,1 January 2015,1 January 2025,1 January 2008,,,A,Python 2 reached end of life on 1 Jan 2020. Python 3.0 had come out in 2008.
-Which of these is a common use of Python?,Only repairing hardware,Only drawing pictures by hand,Only writing printed books,Data analysis and machine learning,,,D,"Python is used for data analysis, AI and machine learning, web development, automation, games and cybersecurity."
-What is the most common mistake when installing Python on Windows?,Choosing the latest version,"Forgetting to tick ""Add python.exe to PATH""",Clicking Install Now,Closing the installer after it finishes,,,B,"Without PATH ticked, the terminal cannot find Python. Reinstall and tick it, or add Python to PATH by hand."
-Which command checks the installed Python version on Windows?,py --update,version python,python --version,python check,,,C,Open Command Prompt and run python --version. It prints something like Python 3.14.0.
-"On macOS or Linux, which command usually starts Python 3?",python3,run python,start python,pyt3,,,A,"On Mac and Linux, use python3 instead of python."
-Which tool on Windows 10 and 11 can install Python from the terminal?,winget,gcc,notepad,npm,,,A,winget is the Windows package manager. For example: winget install -e --id Python.Python.3.14.
-Which VS Code extension do you install to work with Python?,Docker,Live Server,The Python extension by Microsoft,The Java extension pack,,,C,Open the Extensions panel and install the Python extension by Microsoft.
-Which option lets you run Python in a browser with nothing to install?,Command Prompt,Notepad,VS Code on your desktop,Google Colab,,,D,Colab runs in any browser. It is useful for slow or locked laptops.
-"You type python in Command Prompt and see ""'python' is not recognized"". What is the likely cause?",VS Code is closed,Python was not added to PATH during installation,Python is too old to run,Your file is missing a colon,,,B,"Reinstall Python and tick Add python.exe to PATH, or add it manually. On Windows you can also try py --version."
-What does the >>> prompt mean in the terminal?,Python has crashed,A comment has started,You are in the interactive Python mode (REPL),You are in Command Prompt,,,C,The REPL runs each line the moment you press Enter. It is good for trying small ideas.
-How do you leave the Python interactive mode?,exit(),stop,end(),close,,,A,Type exit() and press Enter.
-How do you run a Python file called hello.py from the terminal?,hello.py python,python hello.py,run hello,open hello.py,,,B,Script mode runs the whole file: python hello.py.
-Which kind of environment runs code in small pieces called cells?,Command Prompt,The REPL,Notepad,Jupyter or Colab,,,D,Notebooks are cell-based. We use them later in the Data Analyst track.
-"What does print(""Python"", ""is"", ""easy"") show?",Pythoniseasy,Python is easy,"Python,is,easy","(""Python"", ""is"", ""easy"")",,,B,print() puts a space between the values by default.
-"What does print(""Python"", ""is"", ""easy"", sep=""-"") show?",Python is easy,-Python-is-easy-,Python--is--easy,Python-is-easy,,,D,The sep argument changes what goes between the values.
-"What happens when you run Print(""Hello"") with a capital P?",NameError,It prints Hello,SyntaxError,TypeError,,,A,"Case matters in Python. Print is not a known name, so you get a NameError."
-"What error does print(""Hello) cause, because the closing quote is missing?",ZeroDivisionError,ValueError,SyntaxError,NameError,,,C,"A missing quote breaks the structure of the code, which is a SyntaxError."
-"In a Python string, what does \n mean?",A double quote,A tab,A new line,A backslash,,,C,\n starts a new line and \t inserts a tab.
-"In a Python string, what does \t mean?",A new line,A tab,A backslash,The letter t,,,B,\t inserts a tab (a wide space).
-Which symbol starts a single-line comment in Python?,--,//,/*,#,,,D,Everything after # on that line is ignored by Python.
-Which of these can be used for a multi-line comment in Python?,Triple quotes,Double slashes,Angle brackets,Three dashes,,,A,"Text inside triple quotes is not used by the program, so it works as a multi-line comment."
-What does Python do with a comment?,Reports an error,Ignores it,Prints it,Runs it as code,,,B,Comments are notes for people. Python skips them.
-What is print()?,A comment,A variable,A keyword that ends a program,A built-in function,,,D,print() is a built-in function that shows values on the screen.
-What does print(10 / 3) show?,3.0,1,3.3333333333333335,3,,,C,The / operator divides and always gives a decimal result.
-What does print(10 // 3) show?,3,1,4,3.33,,,A,// is floor division: it keeps only the whole part.
-What does print(10 % 3) show?,10,3,1,0,,,C,% gives the remainder after dividing.
-What does print(2 ** 3) show?,8,9,6,5,,,A,** is the power operator: 2 to the power 3 is 8.
-"When Python shows an error, which two things should you read first?","Nothing, errors cannot be read",The line number and the error type,The date and the file size,The first letter of the file name,,,B,"The error message tells you the line number and the kind of error, such as SyntaxError or NameError."
+﻿"Question","Option A","Option B","Option C","Option D","Option E","Option F","Correct","Explanation"
+"Who created Python?","Dennis Ritchie","James Gosling","Guido van Rossum","Bjarne Stroustrup","","","C","Python was created by Guido van Rossum in the Netherlands."
+"In which year did the first public release of Python come?","1991","2000","2008","1989","","","A","Guido started work in late 1989, and the first release came in 1991."
+"Where does the name Python come from?","A famous programming book","A Greek myth","The python snake","The comedy show Monty Python's Flying Circus","","","D","The name comes from the British comedy show, not from the snake. The snake logo came later."
+"Python is an interpreted language. What does that mean?","The code can only run on the internet","The code runs line by line with no separate compile step","The code must be compiled into an .exe file before it can run","The code can only run inside VS Code","","","B","An interpreter reads and runs your code line by line, so you write it, run it and see the result straight away."
+"Python is dynamically typed. What does that mean?","Variables cannot be changed after they are created","You do not have to declare the type of a variable","A variable can only hold numbers","Every variable must be declared with a type first","","","B","Python works out whether a value is a number, text or something else, so no type declaration is needed."
+"Which of these is a Python library for working with tables of data?","jQuery","Bootstrap","React","Pandas","","","D","Pandas is used for data analysis. NumPy and Matplotlib are other popular Python libraries."
+"Which version of Python should a beginner install?","Any beta version","Python 2.7","The latest stable Python 3","Python 1.0","","","C","Python 2 is no longer supported, so everyone uses Python 3 now."
+"When did Python 2 reach its end of life?","1 January 2020","1 January 2015","1 January 2025","1 January 2008","","","A","Python 2 reached end of life on 1 Jan 2020. Python 3.0 had come out in 2008."
+"Which of these is a common use of Python?","Only repairing hardware","Only drawing pictures by hand","Only writing printed books","Data analysis and machine learning","","","D","Python is used for data analysis, AI and machine learning, web development, automation, games and cybersecurity."
+"What is the most common mistake when installing Python on Windows?","Choosing the latest version","Forgetting to tick ""Add python.exe to PATH""","Clicking Install Now","Closing the installer after it finishes","","","B","Without PATH ticked, the terminal cannot find Python. Reinstall and tick it, or add Python to PATH by hand."
+"Which command checks the installed Python version on Windows?","py --update","version python","python --version","python check","","","C","Open Command Prompt and run python --version. It prints something like Python 3.14.0."
+"On macOS or Linux, which command usually starts Python 3?","python3","run python","start python","pyt3","","","A","On Mac and Linux, use python3 instead of python."
+"Which tool on Windows 10 and 11 can install Python from the terminal?","winget","gcc","notepad","npm","","","A","winget is the Windows package manager. For example: winget install -e --id Python.Python.3.14."
+"Which VS Code extension do you install to work with Python?","Docker","Live Server","The Python extension by Microsoft","The Java extension pack","","","C","Open the Extensions panel and install the Python extension by Microsoft."
+"Which option lets you run Python in a browser with nothing to install?","Command Prompt","Notepad","VS Code on your desktop","Google Colab","","","D","Colab runs in any browser. It is useful for slow or locked laptops."
+"You type python in Command Prompt and see ""'python' is not recognized"". What is the likely cause?","VS Code is closed","Python was not added to PATH during installation","Python is too old to run","Your file is missing a colon","","","B","Reinstall Python and tick Add python.exe to PATH, or add it manually. On Windows you can also try py --version."
+"What does the >>> prompt mean in the terminal?","Python has crashed","A comment has started","You are in the interactive Python mode (REPL)","You are in Command Prompt","","","C","The REPL runs each line the moment you press Enter. It is good for trying small ideas."
+"How do you leave the Python interactive mode?","exit()","stop","end()","close","","","A","Type exit() and press Enter."
+"How do you run a Python file called hello.py from the terminal?","hello.py python","python hello.py","run hello","open hello.py","","","B","Script mode runs the whole file: python hello.py."
+"Which kind of environment runs code in small pieces called cells?","Command Prompt","The REPL","Notepad","Jupyter or Colab","","","D","Notebooks are cell-based. We use them later in the Data Analyst track."
+"What does print(""Python"", ""is"", ""easy"") show?","Pythoniseasy","Python is easy","Python,is,easy","(""Python"", ""is"", ""easy"")","","","B","print() puts a space between the values by default."
+"What does print(""Python"", ""is"", ""easy"", sep=""-"") show?","Python is easy","-Python-is-easy-","Python--is--easy","Python-is-easy","","","D","The sep argument changes what goes between the values."
+"What happens when you run Print(""Hello"") with a capital P?","NameError","It prints Hello","SyntaxError","TypeError","","","A","Case matters in Python. Print is not a known name, so you get a NameError."
+"What error does print(""Hello) cause, because the closing quote is missing?","ZeroDivisionError","ValueError","SyntaxError","NameError","","","C","A missing quote breaks the structure of the code, which is a SyntaxError."
+"In a Python string, what does \n mean?","A double quote","A tab","A new line","A backslash","","","C","\n starts a new line and \t inserts a tab."
+"In a Python string, what does \t mean?","A new line","A tab","A backslash","The letter t","","","B","\t inserts a tab (a wide space)."
+"Which symbol starts a single-line comment in Python?","--","//","/*","#","","","D","Everything after # on that line is ignored by Python."
+"Which of these can be used for a multi-line comment in Python?","Triple quotes","Double slashes","Angle brackets","Three dashes","","","A","Text inside triple quotes is not used by the program, so it works as a multi-line comment."
+"What does Python do with a comment?","Reports an error","Ignores it","Prints it","Runs it as code","","","B","Comments are notes for people. Python skips them."
+"What is print()?","A comment","A variable","A keyword that ends a program","A built-in function","","","D","print() is a built-in function that shows values on the screen."
+"What does print(10 / 3) show?","3.0","1","3.3333333333333335","3","","","C","The / operator divides and always gives a decimal result."
+"What does print(10 // 3) show?","3","1","4","3.33","","","A","// is floor division: it keeps only the whole part."
+"What does print(10 % 3) show?","10","3","1","0","","","C","% gives the remainder after dividing."
+"What does print(2 ** 3) show?","8","9","6","5","","","A","** is the power operator: 2 to the power 3 is 8."
+"When Python shows an error, which two things should you read first?","Nothing, errors cannot be read","The line number and the error type","The date and the file size","The first letter of the file name","","","B","The error message tells you the line number and the kind of error, such as SyntaxError or NameError."
