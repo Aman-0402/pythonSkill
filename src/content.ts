@@ -1293,4 +1293,509 @@ print(len(name))`,
       },
     ],
   },
+  {
+    slug: 'conditional-statements',
+    title: 'Conditional Statements',
+    summary: 'Make your programs decide with if, elif, else and nested conditions.',
+    hero: {
+      file: 'age.py',
+      lines: ['age = 20', 'if age >= 18:', '    print("Adult")'],
+      output: 'Adult',
+    },
+    sections: [
+      {
+        id: 's4-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between `=` and `==`?',
+              'What is the output of `"Apple" == "apple"`?',
+              'What does `age > 18 and marks > 75` give when both parts are True?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's4-why-conditions',
+        title: 'Why do we need conditions?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'So far every line of our programs ran, **one after another**. Real programs need to **make decisions**: allow the login only if the password is right, give a discount only if the bill is large enough.',
+          },
+          {
+            type: 'p',
+            text: 'A **condition** is an expression that gives **True or False**, such as `age >= 18`. A conditional statement runs a block of code **only when the condition is True**.',
+          },
+          {
+            type: 'table',
+            head: ['Statement', 'Use it when'],
+            rows: [
+              ['`if`', 'one thing needs a check'],
+              ['`if` ... `else`', 'there are two ways to go'],
+              ['`if` ... `elif` ... `else`', 'there are several ways to go'],
+              ['nested `if`', 'a decision depends on an earlier decision'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's4-if',
+        title: 'The if statement',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Syntax',
+            code: raw`if condition:
+    statement`,
+          },
+          {
+            type: 'code',
+            label: 'age.py',
+            runnable: true,
+            code: raw`age = 20
+if age >= 18:
+    print("You can vote")
+print("Done")`,
+          },
+          { type: 'h3', text: 'Colon and indentation' },
+          {
+            type: 'ul',
+            items: [
+              'The line ends with a **colon** (`:`).',
+              'The code that belongs to the `if` is **indented**, normally by **4 spaces**.',
+              'Python uses **indentation instead of brackets**. Every indented line is inside the block.',
+              'The first line that is **not indented** (`print("Done")`) runs every time.',
+            ],
+          },
+          { type: 'h3', text: 'A block can have many lines' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = 72
+if marks >= 40:
+    print("Pass")
+    print("Well done")
+print("Result checked")`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What is printed if `marks = 30`?',
+          },
+          { type: 'h3', text: 'Forgetting the indentation' },
+          {
+            type: 'code',
+            label: 'Try it: read the error, then indent the print line',
+            runnable: true,
+            code: raw`age = 20
+if age >= 18:
+print("You can vote")`,
+          },
+        ],
+      },
+      {
+        id: 's4-if-else',
+        title: 'The if ... else statement',
+        blocks: [
+          {
+            type: 'p',
+            text: '`else` runs when the condition is **False**. Exactly **one** of the two blocks runs.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`number = 7
+if number % 2 == 0:
+    print("Even")
+else:
+    print("Odd")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`else` has **no condition** of its own.',
+              '`else` also ends with a **colon** and has an **indented block**.',
+              '`else` lines up with the `if` it belongs to.',
+            ],
+          },
+          { type: 'h3', text: 'Try it yourself' },
+          {
+            type: 'code',
+            label: 'Your turn: change the age, then press Run',
+            runnable: true,
+            code: raw`age = 16
+if age >= 18:
+    print("Eligible to vote")
+else:
+    print("Not eligible to vote")`,
+          },
+        ],
+      },
+      {
+        id: 's4-elif',
+        title: 'The if ... elif ... else ladder',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Use `elif` (short for **else if**) when there are **more than two choices**. Python checks from the top and runs the **first block whose condition is True**, then skips the rest.',
+          },
+          {
+            type: 'code',
+            label: 'Grade ladder',
+            runnable: true,
+            code: raw`marks = 82
+if marks >= 90:
+    print("Grade A+")
+elif marks >= 75:
+    print("Grade A")
+elif marks >= 60:
+    print("Grade B")
+elif marks >= 40:
+    print("Grade C")
+else:
+    print("Fail")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'You can have **as many** `elif` blocks as you need.',
+              '`else` is **optional** and always comes **last**.',
+              'Only **one** block in the whole ladder runs.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What grade does `marks = 75` give? What about `marks = 74`?',
+          },
+          { type: 'h3', text: 'Order matters' },
+          {
+            type: 'p',
+            text: 'Put the **most specific** condition first. Here the first test is True for 82, so the better grade is never reached.',
+          },
+          {
+            type: 'code',
+            label: 'Run it and spot the bug',
+            runnable: true,
+            code: raw`marks = 82
+if marks >= 40:
+    print("Grade C")
+elif marks >= 75:
+    print("Grade A")`,
+          },
+          { type: 'h3', text: 'Separate ifs or elif?' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`x = 15
+print("Separate ifs:")
+if x > 10:
+    print("more than 10")
+if x > 5:
+    print("more than 5")
+print("With elif:")
+if x > 10:
+    print("more than 10")
+elif x > 5:
+    print("more than 5")`,
+          },
+          {
+            type: 'p',
+            text: 'Separate `if` statements are **all checked**. An `elif` is checked **only if the earlier ones were False**.',
+          },
+        ],
+      },
+      {
+        id: 's4-nested',
+        title: 'Nested conditions',
+        blocks: [
+          {
+            type: 'p',
+            text: 'An `if` **inside another `if`** is called a nested condition. The inner check happens **only if the outer one is True**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 25
+has_id = True
+if age >= 18:
+    if has_id:
+        print("Entry allowed")
+    else:
+        print("Show your ID")
+else:
+    print("Too young")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Each level is indented **4 more spaces**.',
+              'An `else` belongs to the `if` at the **same indentation**.',
+            ],
+          },
+          { type: 'h3', text: 'Nested or and?' },
+          {
+            type: 'p',
+            text: 'When you only need **both** checks to pass, `and` is shorter and easier to read.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 25
+has_id = True
+if age >= 18 and has_id:
+    print("Entry allowed")
+else:
+    print("Not allowed")`,
+          },
+          {
+            type: 'p',
+            text: 'Use nesting when you need a **different message for each failure**, as in the first example.',
+          },
+          { type: 'h3', text: 'Largest of three numbers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b, c = 12, 45, 30
+if a >= b:
+    if a >= c:
+        print(a, "is largest")
+    else:
+        print(c, "is largest")
+else:
+    if b >= c:
+        print(b, "is largest")
+    else:
+        print(c, "is largest")`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Can you write the same program with `and` and `elif`? Which is easier to read?',
+          },
+        ],
+      },
+      {
+        id: 's4-conditions',
+        title: 'Writing good conditions',
+        blocks: [
+          { type: 'h3', text: 'Combining with and, or, not' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 30
+income = 25000
+if age >= 18 and income > 20000:
+    print("Loan approved")
+if age < 18 or age > 60:
+    print("Special ticket")
+else:
+    print("Normal ticket")`,
+          },
+          { type: 'h3', text: 'Chained comparison' },
+          {
+            type: 'p',
+            text: 'Python lets you write a range check the way you would in maths.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 30
+print(18 <= age <= 60)
+print(18 <= age and age <= 60)`,
+          },
+          { type: 'h3', text: 'Checking membership' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`letter = "e"
+if letter in "aeiou":
+    print("Vowel")
+else:
+    print("Consonant")`,
+          },
+          { type: 'h3', text: 'Truthy and falsy values' },
+          {
+            type: 'p',
+            text: 'A condition does not have to be a comparison. **Empty or zero values count as False**, and everything else counts as True.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`name = ""
+if name:
+    print("Hello", name)
+else:
+    print("Name is empty")`,
+          },
+          { type: 'h3', text: 'Comparing text safely' },
+          {
+            type: 'p',
+            text: 'Text comparison is **case-sensitive**. Convert first with `lower()` so `YES`, `Yes` and `yes` all work.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`answer = "YES"
+if answer.lower() == "yes":
+    print("Confirmed")
+else:
+    print("Cancelled")`,
+          },
+        ],
+      },
+      {
+        id: 's4-one-line',
+        title: 'One-line if (conditional expression)',
+        blocks: [
+          {
+            type: 'p',
+            text: 'When a decision only **picks one of two values**, you can write it on **one line**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`age = 20
+status = "adult" if age >= 18 else "minor"
+print(status)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Pattern',
+            text: '`value_if_true if condition else value_if_false`. Keep it for **short, simple** choices. Use a normal `if` block for anything longer.',
+          },
+        ],
+      },
+      {
+        id: 's4-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Mistake', 'Example', 'Fix'],
+            rows: [
+              ['`=` instead of `==`', '`if age = 18:`', '`if age == 18:`'],
+              ['Missing colon', '`if age >= 18`', '`if age >= 18:`'],
+              ['Missing indentation', 'body on the same level as `if`', 'indent the body by 4 spaces'],
+              ['Uneven indentation', '3 spaces on one line, 4 on the next', 'use the same amount for the whole block'],
+              ['Text compared with a number', '`"20" >= 18`', '`int("20") >= 18`'],
+              ['`elif` or `else` with no `if`', '`else:` on its own', 'start with `if`'],
+            ],
+          },
+          { type: 'h3', text: 'Assignment or comparison?' },
+          {
+            type: 'code',
+            label: 'Try it: read the error, then fix it',
+            runnable: true,
+            code: raw`age = 18
+if age = 18:
+    print("Eighteen")`,
+          },
+          { type: 'h3', text: 'Text and numbers' },
+          {
+            type: 'p',
+            text: '`input()` always gives text, so convert before comparing.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: read the error, then fix it with int()',
+            runnable: true,
+            code: raw`age = "20"     # imagine this came from input()
+if age >= 18:
+    print("Adult")`,
+          },
+          {
+            type: 'code',
+            label: 'Run this one in VS Code or a terminal',
+            code: raw`age = int(input("Enter your age: "))
+if age >= 18:
+    print("Adult")
+else:
+    print("Minor")`,
+          },
+        ],
+      },
+      {
+        id: 's4-practice',
+        title: 'Practice questions',
+        blocks: [
+          { type: 'h3', text: 'Basic questions' },
+          {
+            type: 'ol',
+            items: [
+              'Take an age and print whether the person is eligible to vote.',
+              'Take a number and print whether it is positive, negative or zero.',
+              'Take a number and print whether it is even or odd.',
+              'Take marks and print the grade: A for 90 or more, B for 75 or more, C for 60 or more, D for 40 or more, otherwise Fail.',
+              'Take a letter and print whether it is a vowel or a consonant.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Take three numbers and print the largest.',
+              'Take a year and check whether it is a leap year. A year is a leap year if it is divisible by 4 and not by 100, or if it is divisible by 400.',
+              'Ticket price: free for age below 5, half price from 5 to 12, full price above 12. Take the age and print the price.',
+              'Simple calculator: take two numbers and an operator (`+`, `-`, `*`, `/`) and print the result. Print a message if the user divides by zero.',
+              'Login check: take a username and password and print "Login successful" only if both are correct.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`x = 7
+if x > 5:
+    if x > 10:
+        print("A")
+    else:
+        print("B")
+else:
+    print("C")`,
+          },
+          { type: 'h3', text: 'Try the leap year question' },
+          {
+            type: 'code',
+            label: 'Your turn: finish the program, change the year and press Run',
+            runnable: true,
+            code: raw`year = 2024
+# print "Leap year" or "Not a leap year"
+`,
+          },
+        ],
+      },
+      {
+        id: 's4-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Take marks in **3 subjects**, work out the **average**, and print the **grade** and whether the student has passed (average of at least 40).',
+              'Write an **electricity bill** program: up to 100 units cost 5 per unit, and each unit above 100 costs 8.',
+              'Take the **three sides** of a triangle. Check that it is a valid triangle (each side is shorter than the sum of the other two), then print whether it is equilateral, isosceles or scalene.',
+              'Revise the **indentation rules** and why the **order of `elif` blocks matters**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Loops: `while` and `for`.',
+          },
+        ],
+      },
+    ],
+  },
 ]

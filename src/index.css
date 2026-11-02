@@ -661,3 +661,8 @@ body {
 @media (max-width: 700px) {
   .slide-nav, .counter { display: none; }
 }
+
+/* the code font turns >= != == into single symbols; learners must see exactly what they type */
+body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; }
+/* the `font:` shorthand used by the code styles resets the setting above, so apply it to every element */
+*, *::before, *::after { font-variant-ligatures: none !important; font-feature-settings: 'liga' 0, 'calt' 0 !important; }
