@@ -1517,7 +1517,7 @@ elif x > 5:
         blocks: [
           {
             type: 'p',
-            text: 'An `if` **inside another `if`** is called a nested condition. The inner check happens **only if the outer one is True**.',
+            text: 'An `if` **inside another** `if` is called a nested condition. The inner check happens **only if the outer one is True**.',
           },
           {
             type: 'code',
@@ -1785,7 +1785,7 @@ else:
               'Take marks in **3 subjects**, work out the **average**, and print the **grade** and whether the student has passed (average of at least 40).',
               'Write an **electricity bill** program: up to 100 units cost 5 per unit, and each unit above 100 costs 8.',
               'Take the **three sides** of a triangle. Check that it is a valid triangle (each side is shorter than the sum of the other two), then print whether it is equilateral, isosceles or scalene.',
-              'Revise the **indentation rules** and why the **order of `elif` blocks matters**.',
+              'Revise the **indentation rules** and why **the order of elif blocks matters**.',
             ],
           },
           {
@@ -2288,7 +2288,7 @@ print(total)`,
               'Write a **number guessing game**: keep a secret number, keep asking for guesses, print "too high" or "too low", and stop with `break` when the guess is right.',
               'Write **FizzBuzz**: for the numbers 1 to 50, print "Fizz" for multiples of 3, "Buzz" for multiples of 5, "FizzBuzz" for multiples of both, and the number otherwise.',
               'Take a number and **count its digits** using a `while` loop.',
-              'Revise the **difference between `break` and `continue`**.',
+              'Revise the **difference between break and continue**.',
             ],
           },
           {
@@ -2296,6 +2296,996 @@ print(total)`,
             tone: 'tip',
             title: 'Next class',
             text: 'Lists.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'loop-practice',
+    title: 'Loop Practice',
+    summary: 'Practise nested loops, print patterns, and write number programs: factorial, prime numbers and Fibonacci.',
+    hero: {
+      file: 'pattern.py',
+      lines: ['for i in range(1, 4):', '    print("*" * i)'],
+      output: '*\n**\n***',
+    },
+    sections: [
+      {
+        id: 's6-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between `break` and `continue`?',
+              'Which numbers does `range(1, 5)` give?',
+              'When do you choose a `while` loop instead of a `for` loop?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's6-nested',
+        title: 'Nested loops: how they run',
+        blocks: [
+          {
+            type: 'p',
+            text: 'For **every round of the outer loop**, the inner loop runs **from start to finish**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 3):
+    for j in range(1, 4):
+        print("i =", i, " j =", j)`,
+          },
+          {
+            type: 'table',
+            head: ['Outer i', 'Inner j runs', 'Lines printed'],
+            rows: [
+              ['1', '1, 2, 3', '3'],
+              ['2', '1, 2, 3', '3'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              'The outer loop handles the **rows**.',
+              'The inner loop handles the **columns** in each row.',
+              'Total rounds = outer rounds x inner rounds (here 2 x 3 = 6).',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'How many lines would print if the outer loop was `range(1, 6)` and the inner loop was `range(1, 5)`?',
+          },
+        ],
+      },
+      {
+        id: 's6-patterns',
+        title: 'Pattern programs',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Every pattern is built the same way: the **outer loop counts the rows**, and **inside each row** you print spaces, stars or numbers and then move to the next line.',
+          },
+          { type: 'h3', text: 'A rectangle of stars' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for row in range(3):
+    for col in range(5):
+        print("*", end="")
+    print()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`end=""` keeps the stars on the **same line**.',
+              'The empty `print()` after the inner loop **starts a new line**.',
+            ],
+          },
+          { type: 'h3', text: 'Right triangle' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 6):
+    print("*" * i)`,
+          },
+          {
+            type: 'p',
+            text: 'Row `i` has `i` stars. String repetition (`"*" * i`) does the inner loop for you.',
+          },
+          { type: 'h3', text: 'Inverted triangle' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(5, 0, -1):
+    print("*" * i)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which part of the program makes the triangle shrink?',
+          },
+          { type: 'h3', text: 'Number triangle' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 6):
+    for j in range(1, i + 1):
+        print(j, end=" ")
+    print()`,
+          },
+          { type: 'h3', text: 'The same number in each row' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for i in range(1, 6):
+    print(str(i) * i)`,
+          },
+          { type: 'h3', text: 'Pyramid' },
+          {
+            type: 'p',
+            text: 'Each row needs **spaces first**, then an **odd number of stars** (1, 3, 5, ...).',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`n = 4
+for i in range(1, n + 1):
+    print(" " * (n - i) + "*" * (2 * i - 1))`,
+          },
+          { type: 'h3', text: 'Pattern recipe' },
+          {
+            type: 'table',
+            head: ['Step', 'Question to ask'],
+            rows: [
+              ['1', 'How many **rows** are there? That is the outer loop.'],
+              ['2', 'In row `i`, how many **spaces** come first?'],
+              ['3', 'In row `i`, how many **stars or numbers** are printed?'],
+              ['4', 'Do I need `end=""`, or can I build the row as one string?'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's6-factorial',
+        title: 'Factorial',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The factorial of `n` is the **product of all numbers from 1 to n**. So `5! = 5 x 4 x 3 x 2 x 1 = 120`. By definition `0! = 1`.',
+          },
+          {
+            type: 'code',
+            label: 'With a for loop',
+            runnable: true,
+            code: raw`n = 5
+fact = 1
+for i in range(1, n + 1):
+    fact *= i
+print(n, "! =", fact)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Start `fact` at **1**, not 0 (anything times 0 is 0).',
+              'Set it **before** the loop, so it is not reset in every round.',
+            ],
+          },
+          { type: 'h3', text: 'With a while loop' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`n = 5
+fact = 1
+while n > 1:
+    fact *= n
+    n -= 1
+print(fact)`,
+          },
+          { type: 'h3', text: 'Factorials from 1 to 6' },
+          {
+            type: 'p',
+            text: 'Here a loop inside a loop works out many factorials. Notice that `fact = 1` is **reset for every number**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for n in range(1, 7):
+    fact = 1
+    for i in range(1, n + 1):
+        fact *= i
+    print(n, "! =", fact)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What would go wrong if `fact = 1` was written before the outer loop instead?',
+          },
+        ],
+      },
+      {
+        id: 's6-prime',
+        title: 'Prime numbers',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **prime number** is greater than 1 and divisible only by **1 and itself**: 2, 3, 5, 7, 11, 13 ...',
+          },
+          {
+            type: 'p',
+            text: 'Idea: try to divide `n` by every number from 2 up to `n - 1`. If **any** divides it, it is **not prime**.',
+          },
+          {
+            type: 'code',
+            label: 'Is n prime?',
+            runnable: true,
+            code: raw`n = 29
+is_prime = n > 1
+for i in range(2, n):
+    if n % i == 0:
+        is_prime = False
+        break
+if is_prime:
+    print(n, "is prime")
+else:
+    print(n, "is not prime")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`is_prime` is a **flag**: it starts as True and flips to False if a divisor is found.',
+              '`break` stops at the **first divisor**, because one is enough.',
+              '`n > 1` makes sure 0 and 1 are not called prime.',
+            ],
+          },
+          { type: 'h3', text: 'A faster check' },
+          {
+            type: 'p',
+            text: 'A divisor can only be as big as the **square root** of `n`, so you can stop there.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`n = 97
+is_prime = n > 1
+for i in range(2, int(n ** 0.5) + 1):
+    if n % i == 0:
+        is_prime = False
+        break
+print(n, "is prime" if is_prime else "is not prime")`,
+          },
+          { type: 'h3', text: 'All primes up to 30' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`for n in range(2, 31):
+    is_prime = True
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            is_prime = False
+            break
+    if is_prime:
+        print(n, end=" ")`,
+          },
+        ],
+      },
+      {
+        id: 's6-fibonacci',
+        title: 'Fibonacci series',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Each number is the **sum of the two before it**: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 ...',
+          },
+          {
+            type: 'code',
+            label: 'First 10 terms',
+            runnable: true,
+            code: raw`a, b = 0, 1
+for _ in range(10):
+    print(a, end=" ")
+    a, b = b, a + b`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`a` and `b` hold the **current and next** terms.',
+              '`a, b = b, a + b` updates **both at once**, so no third variable is needed.',
+              '`_` is a loop variable we do not use. It is a common name for that.',
+            ],
+          },
+          { type: 'h3', text: 'Fibonacci while a value stays small' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b = 0, 1
+while a < 100:
+    print(a, end=" ")
+    a, b = b, a + b`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which loop is better when you want exactly 10 terms? Which when you want all terms below 100?',
+          },
+        ],
+      },
+      {
+        id: 's6-number-programs',
+        title: 'More number programs',
+        blocks: [
+          { type: 'h3', text: 'Reverse a number and check a palindrome' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`n = 1221
+original = n
+rev = 0
+while n > 0:
+    rev = rev * 10 + n % 10
+    n //= 10
+print(rev)
+if rev == original:
+    print("Palindrome number")
+else:
+    print("Not a palindrome")`,
+          },
+          {
+            type: 'p',
+            text: 'Each round takes the **last digit** (`n % 10`), adds it to the **end of `rev`**, and drops it from `n` (`n //= 10`).',
+          },
+          { type: 'h3', text: 'GCD (greatest common divisor)' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a, b = 48, 18
+while b != 0:
+    a, b = b, a % b
+print("GCD =", a)`,
+          },
+          {
+            type: 'p',
+            text: 'This is **Euclid method**: replace the pair with (smaller, remainder) until the remainder is 0.',
+          },
+        ],
+      },
+      {
+        id: 's6-tips',
+        title: 'Tips and common mistakes',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Mistake', 'What happens', 'Fix'],
+            rows: [
+              ['Forgetting `print()` after the inner loop', 'the whole pattern is on one line', 'add `print()` at the outer loop level'],
+              ['`range(1, n)` when you need n', 'the last row or number is missing', 'use `range(1, n + 1)`'],
+              ['Starting `fact = 0`', 'the answer is always 0', 'start the product at 1'],
+              ['Setting `fact = 1` outside the outer loop', 'the numbers keep growing across rounds', 'reset it inside the outer loop'],
+              ['Wrong indentation of `print()`', 'prints too often or only once', 'check which loop it belongs to'],
+            ],
+          },
+          { type: 'h3', text: 'Pattern without the new line' },
+          {
+            type: 'code',
+            label: 'Try it: add the missing print() so each row gets its own line',
+            runnable: true,
+            code: raw`for i in range(1, 5):
+    for j in range(1, i + 1):
+        print("*", end="")`,
+          },
+        ],
+      },
+      {
+        id: 's6-practice',
+        title: 'Practice questions',
+        blocks: [
+          { type: 'h3', text: 'Pattern questions' },
+          {
+            type: 'ol',
+            items: [
+              'Print a square of stars with 4 rows and 4 columns.',
+              'Print a right triangle of numbers: `1`, `1 2`, `1 2 3`, ...',
+              'Print an inverted triangle of numbers: `1 2 3 4 5`, `1 2 3 4`, ...',
+              'Print a pyramid of stars with 5 rows.',
+              'Print a hollow square of stars (stars only on the border).',
+            ],
+          },
+          { type: 'h3', text: 'Number program questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Take a number and print its factorial.',
+              'Take a number and check whether it is prime.',
+              'Print all prime numbers between 1 and 100.',
+              'Print the first `n` Fibonacci numbers.',
+              'Take a number and check whether it is a palindrome.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`for i in range(1, 4):
+    for j in range(i):
+        print(i, end=" ")
+    print()`,
+          },
+          { type: 'h3', text: 'Try a pattern' },
+          {
+            type: 'code',
+            label: 'Your turn: print a square of 4 x 4 stars, then press Run',
+            runnable: true,
+            code: raw`# use two loops and print()
+`,
+          },
+        ],
+      },
+      {
+        id: 's6-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Print a **diamond** of stars (a pyramid followed by an inverted pyramid).',
+              'Print **Armstrong numbers** between 1 and 1000 (a number is an Armstrong number if the sum of the cubes of its digits equals the number, for example 153).',
+              'Find all **perfect numbers** up to 1000 (a number equal to the sum of its divisors smaller than itself, for example 6 = 1 + 2 + 3).',
+              'Take two numbers and print all **prime numbers between them**.',
+              'Print the **multiplication tables from 1 to 5** side by side using nested loops.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Lists.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'lists',
+    title: 'Lists',
+    summary: 'Store many values in one variable: indexing, slicing, methods, list operations and loops over lists.',
+    hero: {
+      file: 'lists.py',
+      lines: ['nums = [3, 1, 2]', 'nums.sort()', 'print(nums)'],
+      output: '[1, 2, 3]',
+    },
+    sections: [
+      {
+        id: 's7-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `break` do inside a loop?',
+              'Which numbers does `range(2, 10, 3)` give?',
+              'How does a `for` loop take items from a string?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's7-what-is-a-list',
+        title: 'What is a list?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A list is an **ordered collection of items** inside square brackets `[ ]`, separated by commas. One variable can hold **many values**.',
+          },
+          {
+            type: 'code',
+            label: 'lists.py',
+            runnable: true,
+            code: raw`numbers = [10, 20, 30]
+names = ["Aman", "Riya"]
+mixed = [1, "two", 3.0, True]
+empty = []
+print(numbers, names, mixed, empty)
+print(len(numbers))
+print(type(numbers))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Ordered:** every item has a position (index), starting from 0.',
+              '**Mixed types allowed:** one list can hold numbers, text and more.',
+              '**Mutable:** you can change, add and remove items after the list is made.',
+              '**Duplicates allowed:** the same value can appear many times.',
+            ],
+          },
+          { type: 'h3', text: 'Making a list from other things' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(list("Python"))
+print(list(range(1, 6)))
+print("a b c".split())`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What is the difference between `[1, 2, 3]` and `"123"`?',
+          },
+        ],
+      },
+      {
+        id: 's7-indexing',
+        title: 'Indexing',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Indexing works **exactly like strings**: the first item is at index **0**, and **negative** indexes count from the end.',
+          },
+          {
+            type: 'code',
+            label: 'Index positions',
+            code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
+            0        1         2        3
+           -4       -3        -2       -1`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
+print(fruits[0])
+print(fruits[2])
+print(fruits[-1])
+print(fruits[-2])`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'What is `fruits[-4]`? What happens with `fruits[4]`?',
+          },
+          { type: 'h3', text: 'Going past the end' },
+          {
+            type: 'code',
+            label: 'Try it: read the error',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
+print(fruits[4])`,
+          },
+          { type: 'h3', text: 'Lists can be changed' },
+          {
+            type: 'p',
+            text: 'Unlike strings, a list is **mutable**. You can replace an item by assigning to its index.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+fruits[1] = "orange"
+print(fruits)`,
+          },
+        ],
+      },
+      {
+        id: 's7-slicing',
+        title: 'Slicing',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Syntax: `list[start:stop:step]`. The **stop index is not included**, and a slice **gives a new list**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50, 60]
+print(nums[1:4])
+print(nums[:3])
+print(nums[3:])
+print(nums[::2])
+print(nums[::-1])
+print(nums[-2:])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Leaving out **start** means from the beginning, leaving out **stop** means to the end.',
+              'A step of **-1** reverses the list.',
+              '`nums[:]` makes a **copy** of the whole list.',
+            ],
+          },
+          { type: 'h3', text: 'Changing a slice' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50]
+nums[1:3] = [21, 31]
+print(nums)`,
+          },
+        ],
+      },
+      {
+        id: 's7-methods',
+        title: 'List methods',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Methods are called with a dot, like string methods. Unlike string methods, most list methods **change the list itself**.',
+          },
+          { type: 'h3', text: 'Adding items' },
+          {
+            type: 'table',
+            head: ['Method', 'What it does'],
+            rows: [
+              ['`append(x)`', 'adds `x` at the **end**'],
+              ['`insert(i, x)`', 'adds `x` at **position i**'],
+              ['`extend(items)`', 'adds **every item** of another list at the end'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana"]
+fruits.append("mango")
+fruits.insert(1, "kiwi")
+fruits.extend(["grapes", "orange"])
+print(fruits)`,
+          },
+          { type: 'h3', text: 'Removing items' },
+          {
+            type: 'table',
+            head: ['Method', 'What it does'],
+            rows: [
+              ['`remove(x)`', 'removes the **first** `x`'],
+              ['`pop()`', 'removes and **returns** the last item'],
+              ['`pop(i)`', 'removes and returns the item at **position i**'],
+              ['`del list[i]`', 'removes the item at position `i`'],
+              ['`clear()`', 'removes **everything**'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 20, 40]
+nums.remove(20)
+print(nums)
+last = nums.pop()
+print(last, nums)
+first = nums.pop(0)
+print(first, nums)
+del nums[0]
+print(nums)
+nums.clear()
+print(nums)`,
+          },
+          { type: 'h3', text: 'Searching' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`colors = ["red", "green", "blue", "green"]
+print(colors.index("blue"))
+print(colors.count("green"))
+print("red" in colors)
+print("pink" in colors)`,
+          },
+          { type: 'h3', text: 'Sorting and reversing' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [5, 2, 9, 1]
+nums.sort()
+print(nums)
+nums.sort(reverse=True)
+print(nums)
+nums.reverse()
+print(nums)
+print(sorted([3, 1, 2]))`,
+          },
+          {
+            type: 'p',
+            text: '`sort()` **changes the list**. `sorted()` leaves the list alone and **gives a new sorted list**.',
+          },
+          { type: 'h3', text: 'Useful functions' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = [72, 85, 60, 91]
+print(len(marks), min(marks), max(marks), sum(marks))
+print(sum(marks) / len(marks))`,
+          },
+          { type: 'h3', text: 'These methods return None' },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Important',
+            text: '`append`, `sort`, `reverse` and similar methods change the list and **return None**. Do not write `nums = nums.sort()`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [3, 1, 2]
+result = nums.sort()
+print(result)
+print(nums)`,
+          },
+        ],
+      },
+      {
+        id: 's7-operations',
+        title: 'List operations',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3]
+b = [4, 5]
+print(a + b)
+print(b * 3)
+print(2 in a)
+print(7 not in a)
+print(a == [1, 2, 3])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`+` **joins** two lists into a new one.',
+              '`*` **repeats** a list.',
+              '`in` and `not in` check whether a value is **present**.',
+              '`==` compares **all items in order**.',
+            ],
+          },
+          { type: 'h3', text: 'Copying a list' },
+          {
+            type: 'p',
+            text: '`b = a` does **not** copy the list. Both names point to the **same list**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)
+c = a.copy()
+c.append(5)
+print(a)
+print(c)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Why did `a` change when we only appended to `b`?',
+          },
+        ],
+      },
+      {
+        id: 's7-loops',
+        title: 'Loops over lists',
+        blocks: [
+          { type: 'h3', text: 'Go through every item' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+for fruit in fruits:
+    print(fruit)`,
+          },
+          { type: 'h3', text: 'When you also need the index' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+for i in range(len(fruits)):
+    print(i, fruits[i])
+print("---")
+for i, fruit in enumerate(fruits):
+    print(i, fruit)`,
+          },
+          {
+            type: 'p',
+            text: '`enumerate()` hands you the **index and the item together**, which is shorter and harder to get wrong.',
+          },
+          { type: 'h3', text: 'With a while loop' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+i = 0
+while i < len(fruits):
+    print(fruits[i])
+    i += 1`,
+          },
+          { type: 'h3', text: 'Building a list in a loop' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`squares = []
+for n in range(1, 6):
+    squares.append(n * n)
+print(squares)`,
+          },
+          {
+            type: 'p',
+            text: 'Start with an **empty list**, then `append()` inside the loop.',
+          },
+          { type: 'h3', text: 'Picking items with a condition' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [4, 7, 10, 3, 8]
+evens = []
+for n in nums:
+    if n % 2 == 0:
+        evens.append(n)
+print(evens)`,
+          },
+          { type: 'h3', text: 'A shorter way (preview)' },
+          {
+            type: 'p',
+            text: 'A **list comprehension** builds the same list in one line. You will study it later.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`squares = [n * n for n in range(1, 6)]
+print(squares)`,
+          },
+        ],
+      },
+      {
+        id: 's7-nested',
+        title: 'Lists inside lists',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A list can hold **other lists**. This is how you store a **table of rows and columns**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix[0])
+print(matrix[1][2])
+for row in matrix:
+    print(row)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`matrix[1]` is the **second row**.',
+              '`matrix[1][2]` is the **third item of the second row**.',
+              'A nested `for` loop visits **every item**.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
+for row in matrix:
+    for item in row:
+        print(item, end=" ")
+    print()`,
+          },
+        ],
+      },
+      {
+        id: 's7-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Mistake', 'What happens', 'Fix'],
+            rows: [
+              ['Index too big: `fruits[4]` in a 4-item list', 'IndexError', 'the last index is `len(list) - 1`'],
+              ['`nums = nums.append(5)`', 'nums becomes None', 'just write `nums.append(5)`'],
+              ['`remove()` of a missing item', 'ValueError', 'check with `in` first'],
+              ['`b = a` to copy', 'both names change together', 'use `a.copy()` or `a[:]`'],
+              ['Adding a list with `append`', 'a list appears inside the list', 'use `extend()` to add its items'],
+            ],
+          },
+          { type: 'h3', text: 'A missing item' },
+          {
+            type: 'code',
+            label: 'Try it: read the error, then check with in before removing',
+            runnable: true,
+            code: raw`nums = [1, 2, 3]
+nums.remove(10)`,
+          },
+          { type: 'h3', text: 'append or extend?' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2]
+a.append([3, 4])
+print(a)
+b = [1, 2]
+b.extend([3, 4])
+print(b)`,
+          },
+        ],
+      },
+      {
+        id: 's7-practice',
+        title: 'Practice questions',
+        blocks: [
+          { type: 'h3', text: 'Basic questions' },
+          {
+            type: 'ol',
+            items: [
+              'Make a list of 5 numbers and print the sum and the average.',
+              'Find the largest number in a list without using `max()`.',
+              'Count how many even numbers are in a list.',
+              'Print every item of a list with its index.',
+              'Print a list in reverse order without using `reverse()` or slicing.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Remove the duplicates from a list.',
+              'Find the second largest number in a list.',
+              'Join two lists and sort the result.',
+              'Take numbers from the user until they type 0, then print the list and its total.',
+              'Make a list of the squares of the numbers 1 to 10.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50]
+print(nums[1:4])
+print(nums[::-1][0])
+nums.append(60)
+nums.pop(0)
+print(nums)
+print(len(nums))`,
+          },
+          { type: 'h3', text: 'Try the average question' },
+          {
+            type: 'code',
+            label: 'Your turn: print the average of the marks, then press Run',
+            runnable: true,
+            code: raw`marks = [72, 85, 60, 91, 78]
+# print the sum and the average
+`,
+          },
+        ],
+      },
+      {
+        id: 's7-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a program that takes **5 marks**, stores them in a list, and prints the **highest, lowest and average**.',
+              'Write a program that **separates** a list of numbers into two lists: **even** and **odd**.',
+              'Write a program that **rotates** a list by one position: `[1, 2, 3, 4]` becomes `[2, 3, 4, 1]`.',
+              'Write a program that finds the **common items** of two lists.',
+              'Revise the **list methods** tables, especially which methods **return None**.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Tuples and dictionaries.',
           },
         ],
       },

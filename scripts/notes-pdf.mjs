@@ -95,7 +95,7 @@ const block = (b) => {
     case 'ol':
       return `<ol${b.start ? ` start="${b.start}"` : ''}>${b.items.map((t) => `<li>${inline(t)}</li>`).join('')}</ol>`
     case 'code':
-      return `<figure class="code">${b.label ? `<figcaption>${esc(b.label)}</figcaption>` : ''}<pre>${b.code
+      return `<figure class="code"${b.runnable && !b.output && !/^(work out|your turn)/i.test(b.label ?? '') ? ` data-code="${encodeURIComponent(b.code)}"` : ''}>${b.label ? `<figcaption>${esc(b.label)}</figcaption>` : ''}<pre>${b.code
         .split('\n')
         .map(highlight)
         .join('\n')}</pre>${b.output ? `<div class="out"><span>Output</span><pre>${esc(b.output)}</pre></div>` : ''}</figure>`
@@ -148,6 +148,8 @@ figure.code pre { margin: 0; padding: 3mm 4mm; font: 9.5pt/1.55 'Consolas', 'Cou
 figure.code .out { border-top: .3mm dashed #b9c6d8; background: #eef3fa; }
 figure.code .out span { display: block; padding: 1.6mm 4mm 0; font: 700 7pt 'Consolas', monospace; letter-spacing: .1em; text-transform: uppercase; color: #6b7d92; }
 figure.code .out pre { color: #0b5a8a; padding-top: 1mm; }
+figure.code .out.err pre { color: #b42318; }
+figure.code .out.err { background: #fff1f0; }
 .c { color: #7a8aa0; font-style: italic; } .s { color: #0b7a3a; } .f { color: #c2410c; font-weight: 600; } .n { color: #be185d; }
 aside.note { margin: 3mm 0 4mm; padding: 2.5mm 4mm; break-inside: avoid; border: .4mm solid; border-radius: 2mm; }
 aside.note p { margin: 0; }
@@ -180,6 +182,48 @@ addEventListener('load', async () => {
     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height)
     img.src = c.toDataURL('image/jpeg', 0.88)
     await img.decode().catch(() => {})
+  }
+  // run every runnable example with Python (Pyodide, loaded from the CDN) and show its real output
+  const boxes = [...document.querySelectorAll('figure.code[data-code]')]
+  if (boxes.length) {
+    try {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script')
+        s.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js'
+        s.onload = resolve
+        s.onerror = () => reject(new Error('could not load Pyodide'))
+        document.head.appendChild(s)
+      })
+      const py = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/' })
+      for (const box of boxes) {
+        let out = ''
+        const dec = new TextDecoder()
+        const cap = { write: (b) => { out += dec.decode(b, { stream: true }); return b.length } }
+        py.setStdout(cap)
+        py.setStderr(cap)
+        let failed = false
+        try {
+          await py.runPythonAsync(decodeURIComponent(box.dataset.code))
+        } catch (e) {
+          failed = true
+          // (this code sits inside a template literal, so every backslash is doubled)
+          const all = String(e.message).trim().split('\\n')
+          const at = all.map((l) => l.includes('File "<exec>"')).lastIndexOf(true)
+          out += (out && !out.endsWith('\\n') ? '\\n' : '') + (at >= 0 ? all.slice(at) : all.slice(-4)).join('\\n').replace('File "<exec>"', 'File "your code"')
+        }
+        await py.runPythonAsync('import sys\\nsys.stdout.flush()\\nsys.stderr.flush()').catch(() => {})
+        out = out.replace(/\\n$/, '')
+        if (out) {
+          const div = document.createElement('div')
+          div.className = failed ? 'out err' : 'out'
+          div.innerHTML = '<span>' + (failed ? 'Error' : 'Output') + '</span><pre></pre>'
+          div.querySelector('pre').textContent = out
+          box.appendChild(div)
+        }
+      }
+    } catch (e) {
+      document.title = 'NO-OUTPUTS: ' + e.message
+    }
   }
   window.__ready = true
 })
@@ -224,12 +268,14 @@ try {
 
   await send('Page.enable')
   await send('Page.navigate', { url: pathToFileURL(htmlFile).href })
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 480; i++) {
     const ready = await send('Runtime.evaluate', { expression: 'window.__ready === true', returnByValue: true })
     if (ready.result?.value) break
     await sleep(250)
   }
   await sleep(300)
+  const title = await send('Runtime.evaluate', { expression: 'document.title', returnByValue: true })
+  if (String(title.result?.value).startsWith('NO-OUTPUTS')) console.warn('Warning: the example outputs were not added (' + title.result.value + '). Are you online?')
   // NOTES_PREVIEW=<path prefix>: also save the page as A4-sized pictures, <prefix>_1.png, <prefix>_2.png ...
   // (a quick look at the layout without a PDF viewer; the real page breaks can differ slightly)
   if (process.env.NOTES_PREVIEW) {
