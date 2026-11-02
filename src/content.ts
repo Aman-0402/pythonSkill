@@ -6269,4 +6269,674 @@ print(evens([1, 2, 3, 4, 5, 6]))`,
       },
     ],
   },
+  {
+    slug: 'advanced-functions',
+    title: 'Advanced Functions',
+    summary: 'Default and keyword arguments, *args, **kwargs, lambda, map and filter.',
+    hero: {
+      file: 'advanced.py',
+      lines: ['nums = [1, 2, 3, 4]', 'print(list(map(lambda n: n * n, nums)))'],
+      output: '[1, 4, 9, 16]',
+    },
+    sections: [
+      {
+        id: 's12-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between a **parameter** and an **argument**?',
+              'What does a function with **no `return`** give back?',
+              'Can a function read a **global** variable? Can it change one?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's12-defaults',
+        title: 'Default arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A parameter with a **default value** becomes **optional**. The caller can leave it out.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def welcome(name, greeting="Hello", punctuation="!"):
+    return greeting + ", " + name + punctuation
+
+print(welcome("Aman"))
+print(welcome("Aman", "Good morning"))
+print(welcome("Aman", "Hi", "?"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Parameters **without** a default come **first**, then the ones **with** a default.',
+              'The default is made **once**, when the function is **defined**.',
+            ],
+          },
+          { type: 'h3', text: 'The mutable default trap' },
+          {
+            type: 'p',
+            text: 'A **list as a default** is shared by **every call**. It keeps growing!',
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+print(add_item("a"))
+print(add_item("b"))
+print(add_item("c"))`,
+          },
+          { type: 'h3', text: 'The safe way' },
+          {
+            type: 'p',
+            text: 'Use **`None`** as the default and make the list **inside** the function.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def add_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+print(add_item("a"))
+print(add_item("b"))
+print(add_item("c", ["x"]))`,
+          },
+        ],
+      },
+      {
+        id: 's12-keyword',
+        title: 'Keyword arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Name the argument in the call: `name=value`. The **order no longer matters**, and the code is **easier to read**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def book(title, author, year=2020):
+    return f"{title} by {author} ({year})"
+
+print(book("Python Basics", "Aman"))
+print(book(author="Riya", title="Data Tricks"))
+print(book("Loops", "Kabir", year=2018))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Positional** arguments come **first**, **keyword** arguments after them.',
+              'You cannot give the **same parameter twice**.',
+              'Built-in functions use this: `print(..., sep="-", end="!")` and `sorted(..., reverse=True)`.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: a positional argument after a keyword one',
+            runnable: true,
+            code: raw`def book(title, author):
+    return title + " by " + author
+
+print(book(title="Python", "Aman"))`,
+          },
+        ],
+      },
+      {
+        id: 's12-args',
+        title: '*args: any number of arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A parameter with a **single star** collects **all the extra positional arguments** into a **tuple**. By habit it is called **`args`**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def total(*args):
+    print(args, type(args))
+    result = 0
+    for n in args:
+        result += n
+    return result
+
+print(total(1, 2, 3))
+print(total(10, 20, 30, 40))
+print(total())`,
+          },
+          { type: 'h3', text: 'Normal parameters plus *args' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def show(first, *others):
+    print("first:", first)
+    print("others:", others)
+
+show(1)
+show(1, 2, 3)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which built-in function takes any number of arguments? Hint: you have used it since Session 1.',
+          },
+        ],
+      },
+      {
+        id: 's12-kwargs',
+        title: '**kwargs: any number of keyword arguments',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A parameter with a **double star** collects all the extra **keyword arguments** into a **dictionary**. By habit it is called **`kwargs`**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def profile(**kwargs):
+    print(kwargs, type(kwargs))
+    for key, value in kwargs.items():
+        print(key, "=", value)
+
+profile(name="Aman", age=20, city="Delhi")`,
+          },
+          { type: 'h3', text: 'All of them together' },
+          {
+            type: 'p',
+            text: 'The **order** in the definition is: normal parameters, `*args`, then `**kwargs`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def demo(a, b=2, *args, **kwargs):
+    print("a =", a)
+    print("b =", b)
+    print("args =", args)
+    print("kwargs =", kwargs)
+
+demo(1)
+print()
+demo(1, 5, 6, 7, x=10, y=20)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: 'The names `args` and `kwargs` are only a **habit**. The stars are what matter. `*numbers` and `**options` work just as well.',
+          },
+        ],
+      },
+      {
+        id: 's12-unpacking-calls',
+        title: 'Unpacking when you call',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The stars also work **in the call**. `*` spreads a list or tuple into **positional** arguments, `**` spreads a dictionary into **keyword** arguments.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def volume(length, width, height):
+    return length * width * height
+
+sizes = [2, 3, 4]
+print(volume(*sizes))
+
+info = {"length": 5, "width": 2, "height": 3}
+print(volume(**info))`,
+          },
+          { type: 'h3', text: 'Passing everything on' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [5, 1, 9, 3]
+print(max(*nums))
+print(*nums)
+print(*nums, sep=", ")
+
+first = {"a": 1}
+second = {"b": 2}
+print({**first, **second})`,
+          },
+        ],
+      },
+      {
+        id: 's12-keyword-only',
+        title: 'Keyword-only parameters',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Parameters written **after `*args`** (or after a bare `*`) can **only** be given by **name**. This stops mix-ups.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def connect(host, *, port=80, secure=False):
+    return f"{host}:{port} secure={secure}"
+
+print(connect("example.com"))
+print(connect("example.com", port=443, secure=True))`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: port must be named',
+            runnable: true,
+            code: raw`def connect(host, *, port=80):
+    return host + ":" + str(port)
+
+print(connect("example.com", 443))`,
+          },
+        ],
+      },
+      {
+        id: 's12-functions-as-values',
+        title: 'Functions are values',
+        blocks: [
+          {
+            type: 'p',
+            text: 'In Python a function is **a value like any other**. You can put it in a variable, a list, or **pass it to another function**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def shout(text):
+    return text.upper() + "!"
+
+say = shout
+print(say("hello"))
+
+def apply(func, value):
+    return func(value)
+
+print(apply(shout, "python"))
+print(apply(len, "python"))
+print(apply(abs, -7))`,
+          },
+          { type: 'h3', text: 'A list of functions' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def double(n):
+    return n * 2
+
+def square(n):
+    return n * n
+
+for func in [double, square, abs]:
+    print(func(-3))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Why do we write `apply(shout, ...)` and not `apply(shout(), ...)`?',
+          },
+        ],
+      },
+      {
+        id: 's12-lambda',
+        title: 'lambda: a function in one line',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **lambda** is a small **nameless function** written in one line: `lambda parameters: expression`. It **returns** the expression automatically.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`square = lambda n: n * n
+add = lambda a, b: a + b
+greet = lambda name="friend": "Hello, " + name
+
+print(square(6))
+print(add(3, 4))
+print(greet())
+print(greet("Aman"))`,
+          },
+          {
+            type: 'table',
+            head: ['`def` function', '`lambda`'],
+            rows: [
+              ['`def square(n):`  `return n * n`', '`lambda n: n * n`'],
+              ['has a **name**', 'is **nameless** (unless you store it)'],
+              ['many lines allowed', '**one expression** only'],
+              ['uses `return`', 'returns the value **automatically**'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'When to use it',
+            text: 'Use a `lambda` for a **tiny, one-time** function, usually **passed to another function**. For anything longer, write a normal `def`.',
+          },
+        ],
+      },
+      {
+        id: 's12-lambda-key',
+        title: 'lambda with sorted, min and max',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The **`key=`** argument takes a function that says **what to compare**. A `lambda` is perfect for it.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`words = ["banana", "kiwi", "apple", "fig"]
+print(sorted(words))
+print(sorted(words, key=len))
+print(sorted(words, key=lambda w: w[-1]))
+print(max(words, key=len))
+print(min(words, key=lambda w: w[1]))`,
+          },
+          { type: 'h3', text: 'Sorting records' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`students = [("Aman", 85), ("Riya", 92), ("Kabir", 78)]
+print(sorted(students, key=lambda s: s[1]))
+print(sorted(students, key=lambda s: s[1], reverse=True))
+
+people = [{"name": "Aman", "age": 20}, {"name": "Riya", "age": 19}]
+print(sorted(people, key=lambda p: p["age"]))`,
+          },
+        ],
+      },
+      {
+        id: 's12-map',
+        title: 'map()',
+        blocks: [
+          {
+            type: 'p',
+            text: '`map(function, items)` **applies a function to every item** and gives a **new sequence** of the results. Wrap it in `list()` to see the values.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [1, 2, 3, 4]
+print(list(map(lambda n: n * n, nums)))
+print(list(map(str, nums)))
+print(list(map(len, ["hi", "python", "a"])))
+print(list(map(float, ["1.5", "2", "3.25"])))`,
+          },
+          { type: 'h3', text: 'map with a named function' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def to_fahrenheit(c):
+    return c * 9 / 5 + 32
+
+celsius = [0, 20, 37, 100]
+print(list(map(to_fahrenheit, celsius)))`,
+          },
+          { type: 'h3', text: 'map with two lists' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3]
+b = [10, 20, 30]
+print(list(map(lambda x, y: x + y, a, b)))`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Careful',
+            text: '`map()` does **not** give a list. `print(map(...))` shows something like `<map object ...>`. Use `list(map(...))`.',
+          },
+        ],
+      },
+      {
+        id: 's12-filter',
+        title: 'filter()',
+        blocks: [
+          {
+            type: 'p',
+            text: '`filter(function, items)` **keeps only the items** for which the function returns **True**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [1, 2, 3, 4, 5, 6, 7, 8]
+print(list(filter(lambda n: n % 2 == 0, nums)))
+print(list(filter(lambda n: n > 5, nums)))
+
+words = ["apple", "", "kiwi", "", "fig"]
+print(list(filter(None, words)))
+print(list(filter(lambda w: len(w) > 3, words)))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The function must answer **True or False** for each item.',
+              '`filter(None, items)` removes every **falsy** item: `0`, `""`, `None`, `[]`.',
+              'Like `map`, it needs `list()` to show the result.',
+            ],
+          },
+          { type: 'h3', text: 'Passing marks' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = {"Aman": 85, "Riya": 42, "Kabir": 67, "Meera": 30}
+passed = list(filter(lambda name: marks[name] >= 50, marks))
+print(passed)`,
+          },
+        ],
+      },
+      {
+        id: 's12-combine',
+        title: 'map and filter together',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Chain them: **filter first**, then **map**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [1, 2, 3, 4, 5, 6]
+even_squares = list(map(lambda n: n * n, filter(lambda n: n % 2 == 0, nums)))
+print(even_squares)`,
+          },
+          { type: 'h3', text: 'The same with a list comprehension' },
+          {
+            type: 'p',
+            text: 'Many Python programmers prefer a **list comprehension**: it says the same thing and reads more clearly.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [1, 2, 3, 4, 5, 6]
+print([n * n for n in nums if n % 2 == 0])
+print([n * n for n in nums])
+print([n for n in nums if n > 3])`,
+          },
+          {
+            type: 'table',
+            head: ['Job', 'map / filter', 'Comprehension'],
+            rows: [
+              ['change every item', '`map(f, items)`', '`[f(x) for x in items]`'],
+              ['keep some items', '`filter(f, items)`', '`[x for x in items if f(x)]`'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Ask',
+            text: 'Which one is easier to read for you, the `map`/`filter` line or the comprehension?',
+          },
+        ],
+      },
+      {
+        id: 's12-more-tools',
+        title: 'Two more helpers: zip and reduce',
+        blocks: [
+          {
+            type: 'p',
+            text: '`zip()` **pairs up** items from two lists. `functools.reduce()` **combines** all the items into **one value**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`names = ["Aman", "Riya", "Kabir"]
+marks = [85, 92, 78]
+print(list(zip(names, marks)))
+print(dict(zip(names, marks)))
+
+for name, mark in zip(names, marks):
+    print(name, mark)`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`from functools import reduce
+
+nums = [1, 2, 3, 4, 5]
+print(reduce(lambda a, b: a + b, nums))
+print(reduce(lambda a, b: a * b, nums))
+print(reduce(lambda a, b: a if a > b else b, nums))`,
+          },
+        ],
+      },
+      {
+        id: 's12-return-function',
+        title: 'A function that returns a function',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Since functions are values, a function can **build and return another function**. The inner one **remembers** the argument it was made with.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def make_multiplier(n):
+    return lambda x: x * n
+
+double = make_multiplier(2)
+triple = make_multiplier(3)
+print(double(5), triple(5))
+print(make_multiplier(10)(4))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Note',
+            text: 'You do not need this every day, but you will see it in real code, for example in **decorators** (a later topic).',
+          },
+        ],
+      },
+      {
+        id: 's12-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'A **list or dictionary as a default** value: use `None` instead.',
+              'A **positional argument after a keyword** argument: it is a `SyntaxError`.',
+              'Writing a **long `lambda`**: if it is hard to read, use `def`.',
+              'Printing `map(...)` or `filter(...)` **without `list()`**.',
+              'Calling the function inside `map`: `map(f(), items)` is wrong, write `map(f, items)`.',
+              'A `lambda` for `filter` that **returns a value** but not a **True or False** meaning.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: what is wrong here?',
+            runnable: true,
+            code: raw`nums = [1, 2, 3]
+print(map(lambda n: n * 2, nums))
+print(list(map(lambda n: n * 2, nums())))`,
+          },
+        ],
+      },
+      {
+        id: 's12-practice',
+        title: 'Practice',
+        blocks: [
+          { type: 'h3', text: 'Warm-up questions' },
+          {
+            type: 'ol',
+            items: [
+              'Write a function `power(base, exp=2)` and call it with and without the second argument.',
+              'Write a function `average(*nums)` that works for any number of numbers.',
+              'Write a function that takes `**kwargs` and prints each key and value on its own line.',
+              'Use `map` and a `lambda` to turn `[1, 2, 3]` into `["#1", "#2", "#3"]`.',
+              'Use `filter` and a `lambda` to keep the words longer than 3 letters.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ol',
+            start: 6,
+            items: [
+              'Sort a list of `(name, marks)` tuples by marks, highest first.',
+              'Use `map` and `filter` to print the squares of the odd numbers from 1 to 10.',
+              'Write `make_adder(n)` that returns a function adding `n` to its argument.',
+              'Write a function `describe(name, *hobbies, **details)` and call it in two different ways.',
+              'Rewrite your `map` and `filter` answers as list comprehensions.',
+            ],
+          },
+          { type: 'h3', text: 'Find the output' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`def f(a, *args, **kwargs):
+    return a, args, kwargs
+
+print(f(1))
+print(f(1, 2, 3, x=4))
+nums = [3, 8, 5, 10]
+print(list(filter(lambda n: n > 4, nums)))
+print(list(map(lambda n: n // 2, nums)))
+print(sorted(nums, key=lambda n: -n))`,
+          },
+          { type: 'h3', text: 'Try the lambda question' },
+          {
+            type: 'code',
+            label: 'Your turn: print the names sorted by length, then press Run',
+            runnable: true,
+            code: raw`names = ["Meera", "Aman", "Kabir", "Ria"]
+# sort by the length of each name
+`,
+          },
+        ],
+      },
+      {
+        id: 's12-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a function `join_words(*words, sep=" ")` that joins any number of words.',
+              'Write a function that takes a list of numbers and returns the **squares of the even numbers** using `filter` and `map`, then again with a comprehension.',
+              'Given a list of dictionaries with `name` and `price`, print them **sorted by price** using a `lambda`.',
+              'Write a function `make_greeter(greeting)` that returns a function, and use it to make `hello` and `namaste`.',
+              'Revise: **defaults**, **keyword arguments**, `*args`, `**kwargs`, `lambda`, `map`, `filter`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Files and error handling.',
+          },
+        ],
+      },
+    ],
+  },
 ]
