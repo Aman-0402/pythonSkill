@@ -309,6 +309,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 39. Added lesson 10, "Revision and Mini Project" (marks manager and contact book), with its PDF and a 47-question quiz CSV.
 40. Added lesson 11, "Functions", with its PDF and a 47-question quiz CSV.
 41. Added lesson 12, "Advanced Functions", with its PDF and a 43-question quiz CSV.
+42. Renamed the example student "Riya" to "Ankit" in lessons 7 to 12, the quiz data and CSVs for sessions 9, 10 and 12, and regenerated the PDFs for sessions 7 to 12.
 
 ## Gotchas and lessons learned
 

@@ -57,7 +57,7 @@ b["x"] = 99
 print(a)`],
   [`Which line makes a real copy of a dictionary a?`, `a.copy()`, [`b = a`, `a.same()`, `a[:]`], `copy() makes a new dictionary.`],
   [`What does {"x": 1, "y": 2} | {"y": 20, "z": 30} give?`, `{'x': 1, 'y': 20, 'z': 30}`, [`{'x': 1, 'y': 2, 'z': 30}`, `{'x': 1, 'y': 22, 'z': 30}`, `An error`], `When the same key is in both, the second dictionary wins.`, `print({"x": 1, "y": 2} | {"y": 20, "z": 30})`],
-  [`What does students["Riya"]["city"] read when students is a dictionary of dictionaries?`, `The city of Riya`, [`The first letter of Riya`, `The index of the city`, `Nothing, it is an error`], `The first brackets find Riya's dictionary and the second find the city inside it.`],
+  [`What does students["Ankit"]["city"] read when students is a dictionary of dictionaries?`, `The city of Ankit`, [`The first letter of Ankit`, `The index of the city`, `Nothing, it is an error`], `The first brackets find Ankit's dictionary and the second find the city inside it.`],
   [`What does students["Aman"]["age"] = 21 do?`, `Changes Aman's age inside the nested dictionary`, [`Adds a new student`, `Replaces the whole students dictionary`, `Gives an error`], `Each pair of brackets goes one level deeper.`],
   [`What is a list of dictionaries good for?`, `Storing rows of data, one dictionary per row`, [`Sorting numbers`, `Removing duplicates`, `Making a set`], `For example one dictionary for each student.`],
   [`What is printed? scores = {"Aman": [90, 80]}; scores["Aman"].append(70); print(scores["Aman"])`, `[90, 80, 70]`, [`[70]`, `[90, 80]`, `An error`], `The value is a list, so list methods work on it.`, `scores = {"Aman": [90, 80]}

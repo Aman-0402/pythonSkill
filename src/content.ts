@@ -2794,7 +2794,7 @@ print("GCD =", a)`,
             label: 'lists.py',
             runnable: true,
             code: raw`numbers = [10, 20, 30]
-names = ["Aman", "Riya"]
+names = ["Aman", "Ankit"]
 mixed = [1, "two", 3.0, True]
 empty = []
 print(numbers, names, mixed, empty)
@@ -3916,8 +3916,8 @@ fs.add(4)`,
           {
             type: 'code',
             runnable: true,
-            code: raw`maths = {"Aman", "Riya", "Kabir"}
-science = {"Riya", "Kabir", "Meera"}
+            code: raw`maths = {"Aman", "Ankit", "Kabir"}
+science = {"Ankit", "Kabir", "Meera"}
 
 print("Both:", sorted(maths & science))
 print("Either:", sorted(maths | science))
@@ -4423,10 +4423,10 @@ print({**a, **b})`,
             runnable: true,
             code: raw`students = {
     "Aman": {"age": 20, "city": "Delhi"},
-    "Riya": {"age": 19, "city": "Mumbai"},
+    "Ankit": {"age": 19, "city": "Mumbai"},
 }
-print(students["Riya"])
-print(students["Riya"]["city"])`,
+print(students["Ankit"])
+print(students["Ankit"]["city"])`,
           },
           { type: 'h3', text: 'Changing a nested value' },
           {
@@ -4434,7 +4434,7 @@ print(students["Riya"]["city"])`,
             runnable: true,
             code: raw`students = {
     "Aman": {"age": 20, "city": "Delhi"},
-    "Riya": {"age": 19, "city": "Mumbai"},
+    "Ankit": {"age": 19, "city": "Mumbai"},
 }
 students["Aman"]["age"] = 21
 students["Kabir"] = {"age": 22, "city": "Pune"}
@@ -4447,7 +4447,7 @@ print(len(students))`,
             runnable: true,
             code: raw`students = {
     "Aman": {"age": 20, "city": "Delhi"},
-    "Riya": {"age": 19, "city": "Mumbai"},
+    "Ankit": {"age": 19, "city": "Mumbai"},
 }
 for name, info in students.items():
     print(name, "lives in", info["city"])`,
@@ -4456,7 +4456,7 @@ for name, info in students.items():
             type: 'note',
             tone: 'tip',
             title: 'Ask',
-            text: 'How would you read Riya\'s age from `students`?',
+            text: 'How would you read Ankit\'s age from `students`?',
           },
         ],
       },
@@ -4473,7 +4473,7 @@ for name, info in students.items():
             runnable: true,
             code: raw`people = [
     {"name": "Aman", "marks": 90},
-    {"name": "Riya", "marks": 85},
+    {"name": "Ankit", "marks": 85},
     {"name": "Kabir", "marks": 70},
 ]
 for p in people:
@@ -4488,7 +4488,7 @@ print("Average:", total / len(people))`,
           {
             type: 'code',
             runnable: true,
-            code: raw`scores = {"Aman": [90, 80], "Riya": [85, 95]}
+            code: raw`scores = {"Aman": [90, 80], "Ankit": [85, 95]}
 scores["Aman"].append(70)
 print(scores["Aman"])
 for name, marks in scores.items():
@@ -4630,7 +4630,7 @@ print(groups)`,
             code: raw`squares = {n: n * n for n in range(1, 6)}
 print(squares)
 
-names = ["Aman", "Riya"]
+names = ["Aman", "Ankit"]
 lengths = {name: len(name) for name in names}
 print(lengths)`,
           },
@@ -5022,10 +5022,10 @@ print(max(count, key=count.get))`,
             runnable: true,
             code: raw`students = {
     "Aman": [90, 80, 70],
-    "Riya": [85, 95, 88],
+    "Ankit": [85, 95, 88],
 }
-print(students["Riya"])
-print(students["Riya"][0])`,
+print(students["Ankit"])
+print(students["Ankit"][0])`,
           },
           {
             type: 'note',
@@ -5048,7 +5048,7 @@ print(students["Riya"][0])`,
             runnable: true,
             code: raw`students = {}
 students.setdefault("Aman", []).extend([90, 80, 70])
-students.setdefault("Riya", []).extend([85, 95, 88])
+students.setdefault("Ankit", []).extend([85, 95, 88])
 students.setdefault("Aman", []).append(100)
 print(students)`,
           },
@@ -5067,7 +5067,7 @@ print(students)`,
             runnable: true,
             code: raw`students = {
     "Aman": [90, 80, 70],
-    "Riya": [85, 95, 88],
+    "Ankit": [85, 95, 88],
     "Kabir": [60, 55, 72],
 }
 
@@ -5106,7 +5106,7 @@ for name, marks in students.items():
             runnable: true,
             code: raw`students = {
     "Aman": [90, 80, 70],
-    "Riya": [85, 95, 88],
+    "Ankit": [85, 95, 88],
     "Kabir": [60, 55, 72],
 }
 
@@ -5146,11 +5146,11 @@ for rank, name in enumerate(ranked, start=1):
             code: raw`students = {}
 commands = [
     "add Aman 90 80 70",
-    "add Riya 85 95 88",
+    "add Ankit 85 95 88",
     "add Aman 100",
     "report",
     "topper",
-    "remove Riya",
+    "remove Ankit",
     "remove Zed",
     "report",
     "dance",
@@ -5284,9 +5284,9 @@ while True:
             runnable: true,
             code: raw`contacts = {
     "Aman": {"phone": "9876543210", "email": "aman@mail.com"},
-    "Riya": {"phone": "9123456780", "email": "riya@mail.com"},
+    "Ankit": {"phone": "9123456780", "email": "riya@mail.com"},
 }
-print(contacts["Riya"]["phone"])
+print(contacts["Ankit"]["phone"])
 for name, info in contacts.items():
     print(name, info["phone"], info["email"])`,
           },
@@ -5313,7 +5313,7 @@ for name, info in contacts.items():
             code: raw`contacts = {
     "Aman": {"phone": "9876543210", "email": "aman@mail.com"},
     "Amit": {"phone": "9000000001", "email": "amit@mail.com"},
-    "Riya": {"phone": "9123456780", "email": "riya@mail.com"},
+    "Ankit": {"phone": "9123456780", "email": "riya@mail.com"},
 }
 text = "am"
 found = [n for n in contacts if text.lower() in n.lower()]
@@ -5325,8 +5325,8 @@ print(found)`,
             runnable: true,
             code: raw`contacts = {"Aman": {"phone": "9876543210", "email": "aman@mail.com"}}
 contacts["Aman"]["phone"] = "9000000000"
-contacts["Riya"] = {"phone": "9123456780", "email": "riya@mail.com"}
-del contacts["Riya"]
+contacts["Ankit"] = {"phone": "9123456780", "email": "riya@mail.com"}
+del contacts["Ankit"]
 print(contacts)`,
           },
           { type: 'h3', text: 'Listing in order' },
@@ -5334,7 +5334,7 @@ print(contacts)`,
             type: 'code',
             runnable: true,
             code: raw`contacts = {
-    "Riya": {"phone": "9123456780"},
+    "Ankit": {"phone": "9123456780"},
     "Aman": {"phone": "9876543210"},
     "Kabir": {"phone": "9000000002"},
 }
@@ -5354,12 +5354,12 @@ for name in sorted(contacts):
             code: raw`contacts = {}
 commands = [
     "add Aman 9876543210 aman@mail.com",
-    "add Riya 9123456780 riya@mail.com",
+    "add Ankit 9123456780 riya@mail.com",
     "add Amit 9000000001 amit@mail.com",
     "search am",
     "update Aman phone 9000000000",
     "list",
-    "delete Riya",
+    "delete Ankit",
     "delete Zed",
     "list",
     "quit",
@@ -5521,11 +5521,11 @@ while True:
             type: 'code',
             label: 'Work out the output first, then press Run to check',
             runnable: true,
-            code: raw`students = {"Aman": [90, 80], "Riya": [70]}
+            code: raw`students = {"Aman": [90, 80], "Ankit": [70]}
 students.setdefault("Kabir", []).append(60)
-students["Riya"].extend([80, 90])
+students["Ankit"].extend([80, 90])
 print(len(students))
-print(sum(students["Riya"]))
+print(sum(students["Ankit"]))
 print(sorted(students))
 print("Zed" in students)`,
           },
@@ -5534,7 +5534,7 @@ print("Zed" in students)`,
             type: 'code',
             label: 'Your turn: print the highest mark of each student, then press Run',
             runnable: true,
-            code: raw`students = {"Aman": [90, 80], "Riya": [70, 85, 95], "Kabir": [60]}
+            code: raw`students = {"Aman": [90, 80], "Ankit": [70, 85, 95], "Kabir": [60]}
 # print each name with the highest mark
 `,
           },
@@ -5672,7 +5672,7 @@ print(type(greet))`,
     print("Hello,", name)
 
 greet("Aman")
-greet("Riya")`,
+greet("Ankit")`,
           },
           { type: 'h3', text: 'More than one parameter' },
           {
@@ -6068,7 +6068,7 @@ def report(name, marks):
     return f"{name}: {avg:.1f} ({grade(avg)})"
 
 print(report("Aman", [90, 80, 70]))
-print(report("Riya", [85, 95, 88]))`,
+print(report("Ankit", [85, 95, 88]))`,
           },
           { type: 'h3', text: 'A function that calls itself' },
           {
@@ -6115,7 +6115,7 @@ def show_report():
         print(f"{name:<8}{sum(marks):>6}{average(marks):>9.1f}")
 
 add_marks("Aman", [90, 80, 70])
-add_marks("Riya", [85, 95, 88])
+add_marks("Ankit", [85, 95, 88])
 add_marks("Aman", [100])
 show_report()
 print("Topper:", topper())`,
@@ -6371,7 +6371,7 @@ print(add_item("c", ["x"]))`,
     return f"{title} by {author} ({year})"
 
 print(book("Python Basics", "Aman"))
-print(book(author="Riya", title="Data Tricks"))
+print(book(author="Ankit", title="Data Tricks"))
 print(book("Loops", "Kabir", year=2018))`,
           },
           {
@@ -6646,11 +6646,11 @@ print(min(words, key=lambda w: w[1]))`,
           {
             type: 'code',
             runnable: true,
-            code: raw`students = [("Aman", 85), ("Riya", 92), ("Kabir", 78)]
+            code: raw`students = [("Aman", 85), ("Ankit", 92), ("Kabir", 78)]
 print(sorted(students, key=lambda s: s[1]))
 print(sorted(students, key=lambda s: s[1], reverse=True))
 
-people = [{"name": "Aman", "age": 20}, {"name": "Riya", "age": 19}]
+people = [{"name": "Aman", "age": 20}, {"name": "Ankit", "age": 19}]
 print(sorted(people, key=lambda p: p["age"]))`,
           },
         ],
@@ -6729,7 +6729,7 @@ print(list(filter(lambda w: len(w) > 3, words)))`,
           {
             type: 'code',
             runnable: true,
-            code: raw`marks = {"Aman": 85, "Riya": 42, "Kabir": 67, "Meera": 30}
+            code: raw`marks = {"Aman": 85, "Ankit": 42, "Kabir": 67, "Meera": 30}
 passed = list(filter(lambda name: marks[name] >= 50, marks))
 print(passed)`,
           },
@@ -6790,7 +6790,7 @@ print([n for n in nums if n > 3])`,
           {
             type: 'code',
             runnable: true,
-            code: raw`names = ["Aman", "Riya", "Kabir"]
+            code: raw`names = ["Aman", "Ankit", "Kabir"]
 marks = [85, 92, 78]
 print(list(zip(names, marks)))
 print(dict(zip(names, marks)))
