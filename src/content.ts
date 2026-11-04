@@ -10202,4 +10202,965 @@ a = np.arange(1, 11)
       },
     ],
   },
+  {
+    slug: 'numpy-operations',
+    title: 'NumPy Operations',
+    summary: 'Vectorised maths, aggregation, reshaping and random numbers.',
+    hero: {
+      file: 'numpy_ops.py',
+      lines: ['import numpy as np', 'a = np.array([3, 1, 4, 1, 5])', 'print(a.cumsum())'],
+      output: '[ 3  4  8  9 14]',
+    },
+    sections: [
+      {
+        id: 's17-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `a.shape` tell you for a table with 3 rows and 4 columns?',
+              'Is a NumPy slice a **copy** or a **view**?',
+              'What does `a[:, 1]` give for a 2D array?',
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Today: do **maths** on whole arrays, **summarise** them, **reshape** and join them, and make **random** numbers.',
+          },
+        ],
+      },
+      {
+        id: 's17-vector',
+        title: 'Vectorised maths',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Arithmetic on an array happens on **every item at once**. No loop needed.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([10, 20, 30, 40])
+
+print(a + 5)
+print(a - 5)
+print(a * 3)
+print(a / 4)
+print(a // 3)
+print(a % 3)
+print(a ** 2)`,
+          },
+          {
+            type: 'p',
+            text: 'Two arrays of the **same shape** work **item by item**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+price = np.array([100, 250, 80])
+qty = np.array([2, 1, 5])
+
+cost = price * qty
+print(cost)
+print(cost.sum())`,
+          },
+          { type: 'h3', text: 'Maths functions' },
+          {
+            type: 'table',
+            head: ['Function', 'What it does'],
+            rows: [
+              ['`np.sqrt(a)`', 'square root of each item'],
+              ['`np.abs(a)`', 'remove the minus sign'],
+              ['`np.exp(a)`', 'e to the power of each item'],
+              ['`np.log(a)`', 'natural logarithm'],
+              ['`np.sin(a)`, `np.cos(a)`', 'trigonometry (angles in radians)'],
+              ['`np.round(a, 2)`', 'round to 2 decimal places'],
+              ['`np.floor(a)`, `np.ceil(a)`', 'round down / up'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 4, 9, 16])
+print(np.sqrt(a))
+
+b = np.array([-3, 2, -7])
+print(np.abs(b))
+
+c = np.array([1.234, 5.678, 9.1011])
+print(np.round(c, 2))
+print(np.floor(c))
+print(np.ceil(c))
+
+print(np.exp(np.array([0, 1])))
+print(np.log(np.array([1, 10])))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Use np.sqrt, not math.sqrt',
+            text: '`math.sqrt` works on **one** number. `np.sqrt` works on a **whole array**. Mixing them up gives a `TypeError`.',
+          },
+        ],
+      },
+      {
+        id: 's17-examples',
+        title: 'Examples of vectorised maths',
+        blocks: [
+          { type: 'h3', text: 'Celsius to Fahrenheit' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+celsius = np.array([0, 25, 37, 100])
+fahrenheit = celsius * 9 / 5 + 32
+print(fahrenheit)`,
+          },
+          { type: 'h3', text: 'Add GST to every price' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+prices = np.array([100, 250, 80, 400])
+with_gst = np.round(prices * 1.18, 2)
+print(with_gst)
+print("Bill total:", with_gst.sum())`,
+          },
+          { type: 'h3', text: 'Distance between points' },
+          {
+            type: 'p',
+            text: 'The distance from the origin to the points `(3, 4)`, `(6, 8)` and `(5, 12)`:',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+x = np.array([3, 6, 5])
+y = np.array([4, 8, 12])
+
+distance = np.sqrt(x ** 2 + y ** 2)
+print(distance)`,
+          },
+          { type: 'h3', text: 'Is it really faster?' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import time
+
+n = 300000
+data = list(range(n))
+arr = np.arange(n)
+
+t0 = time.time()
+slow = [x * 2 for x in data]
+t_list = time.time() - t0
+
+t0 = time.time()
+fast = arr * 2
+t_numpy = time.time() - t0
+
+print("Same answer:", slow[-1] == fast[-1])
+print("NumPy was faster:", t_numpy < t_list)`,
+          },
+          {
+            type: 'p',
+            text: 'The exact times change from computer to computer, but NumPy is usually **many times faster** on big data.',
+          },
+        ],
+      },
+      {
+        id: 's17-broadcast',
+        title: 'Broadcasting',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Broadcasting** is how NumPy combines arrays of **different shapes**. The smaller one is **stretched** to fit the bigger one.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+print(a + 10)
+
+row = np.array([100, 200, 300])
+print(a + row)
+
+col = np.array([[10],
+                [20]])
+print(a + col)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`a + 10`: the single number is used for **every** item.',
+              '`a + row`: the row `[100 200 300]` is added to **each row**.',
+              '`a + col`: the column is added to **each column** (the `10` goes across row 0, the `20` across row 1).',
+            ],
+          },
+          { type: 'h3', text: 'The rule' },
+          {
+            type: 'p',
+            text: 'Compare the shapes from the **right-hand end**. Two sizes fit if they are **equal**, or one of them is **1**.',
+          },
+          {
+            type: 'table',
+            head: ['Shapes', 'Works?', 'Why'],
+            rows: [
+              ['`(2, 3)` and `(3,)`', 'yes', '3 matches 3; the missing size is stretched'],
+              ['`(2, 3)` and `(2, 1)`', 'yes', 'the 1 is stretched to 3'],
+              ['`(2, 3)` and `(2,)`', '**no**', '3 does not match 2'],
+              ['`(3,)` and `(4,)`', '**no**', '3 does not match 4'],
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.ones((2, 3))
+b = np.array([1, 2])
+print(a + b)`,
+          },
+          { type: 'h3', text: 'Use it: subtract each subject\'s average' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([[80, 70, 90],
+                  [60, 90, 75],
+                  [70, 80, 60]])
+
+avg = marks.mean(axis=0)
+print(avg)
+print(marks - avg)`,
+          },
+        ],
+      },
+      {
+        id: 's17-cond',
+        title: 'Conditions: where, clip, any, all',
+        blocks: [
+          {
+            type: 'p',
+            text: '**`np.where(condition, a, b)`** picks `a` where the condition is `True` and `b` where it is `False`. It is a vectorised `if` and `else`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+
+result = np.where(marks >= 50, "Pass", "Fail")
+print(result)
+
+bonus = np.where(marks < 50, marks + 5, marks)
+print(bonus)`,
+          },
+          { type: 'h3', text: 'Grades with more than two choices' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+
+grade = np.where(marks >= 80, "A",
+         np.where(marks >= 60, "B",
+          np.where(marks >= 40, "C", "D")))
+print(grade)`,
+          },
+          { type: 'h3', text: 'clip: keep numbers in a range' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([-5, 3, 12, 7, 20])
+print(np.clip(a, 0, 10))`,
+          },
+          {
+            type: 'p',
+            text: 'Anything below `0` becomes `0`, and anything above `10` becomes `10`.',
+          },
+          { type: 'h3', text: 'any, all and counting' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+
+print((marks > 90).any())
+print((marks > 30).all())
+print((marks >= 50).sum())
+print(np.count_nonzero(marks < 50))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`.any()` is `True` if **at least one** item matches.',
+              '`.all()` is `True` if **every** item matches.',
+              '`.sum()` on `True`/`False` counts the matches, because `True` is `1`.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's17-agg',
+        title: 'Aggregation',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Aggregation** squeezes many numbers into **one** (or a few). You met `sum` and `mean`. Here are the rest.',
+          },
+          {
+            type: 'table',
+            head: ['Function', 'What it gives'],
+            rows: [
+              ['`a.sum()`', 'total'],
+              ['`a.mean()`', 'average'],
+              ['`np.median(a)`', 'the middle value'],
+              ['`a.min()`, `a.max()`', 'smallest, biggest'],
+              ['`a.std()`', 'standard deviation (how spread out)'],
+              ['`a.var()`', 'variance (the square of `std`)'],
+              ['`a.prod()`', 'everything multiplied together'],
+              ['`np.percentile(a, 90)`', 'the value 90 percent of items are below'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74, 88, 59])
+
+print("sum   :", marks.sum())
+print("mean  :", marks.mean())
+print("median:", np.median(marks))
+print("min   :", marks.min())
+print("max   :", marks.max())
+print("range :", marks.max() - marks.min())
+print("std   :", round(marks.std(), 2))
+print("90th percentile:", np.percentile(marks, 90))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Mean or median?',
+            text: 'One huge number pulls the **mean** up, but barely moves the **median**. For `[1, 2, 3, 4, 1000]` the mean is `202` and the median is `3`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3, 4, 1000])
+print(a.mean())
+print(np.median(a))`,
+          },
+        ],
+      },
+      {
+        id: 's17-axis',
+        title: 'Aggregation along an axis',
+        blocks: [
+          {
+            type: 'p',
+            text: 'On a table, **`axis=0`** gives one answer **per column** and **`axis=1`** gives one answer **per row**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([[85, 90, 78],
+                  [70, 65, 80],
+                  [92, 88, 95],
+                  [55, 60, 48]])
+
+print(marks.sum(axis=0))
+print(marks.sum(axis=1))
+print(marks.mean(axis=0))
+print(marks.max(axis=1))
+print(marks.argmax(axis=0))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`sum(axis=0)`: the total of **each subject** (column).',
+              '`sum(axis=1)`: the total of **each student** (row).',
+              '`argmax(axis=0)`: which **student** (row number) has the top mark in each subject.',
+            ],
+          },
+          { type: 'h3', text: 'keepdims' },
+          {
+            type: 'p',
+            text: '`keepdims=True` keeps the result as a table, so it can be used in more maths.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+totals = a.sum(axis=1, keepdims=True)
+print(totals.shape)
+print(a / totals)`,
+          },
+          {
+            type: 'p',
+            text: 'Each item is divided by its **row total**, so every row now adds up to `1`.',
+          },
+        ],
+      },
+      {
+        id: 's17-cum',
+        title: 'Cumulative maths and unique values',
+        blocks: [
+          { type: 'h3', text: 'cumsum, cumprod and diff' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+daily = np.array([5, 3, 8, 2, 7])
+
+print(np.cumsum(daily))
+print(np.cumprod(np.array([1, 2, 3, 4])))
+print(np.diff(daily))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`cumsum` is a **running total**: `5, 5+3, 5+3+8 ...`',
+              '`cumprod` is a running product.',
+              '`diff` is the **change** from one item to the next. It is one item shorter.',
+            ],
+          },
+          { type: 'h3', text: 'sort and argsort' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38])
+
+print(np.sort(marks))
+print(np.sort(marks)[::-1])
+print(np.argsort(marks))`,
+          },
+          {
+            type: 'p',
+            text: '`argsort` gives the **positions** that would sort the array. The first one, `4`, is the position of the smallest mark (`38`).',
+          },
+          { type: 'h3', text: 'unique and counting' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+colours = np.array(["red", "blue", "red", "green", "blue", "red"])
+
+names, counts = np.unique(colours, return_counts=True)
+print(names)
+print(counts)`,
+          },
+        ],
+      },
+      {
+        id: 's17-reshape',
+        title: 'Reshaping',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Last class: `reshape`, `T` and `flatten`. A quick recap, then new tools.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 13)
+print(a.reshape(3, 4))
+print(a.reshape(2, -1).shape)
+print(a.reshape(3, 4).T.shape)
+print(a.reshape(3, 4).ravel())`,
+          },
+          {
+            type: 'table',
+            head: ['Name', 'What it does'],
+            rows: [
+              ['`ravel()`', 'flatten to 1D (a view when it can, so it is quick)'],
+              ['`flatten()`', 'flatten to 1D, always a **copy**'],
+              ['`np.expand_dims(a, axis)`', 'add a new dimension of size 1'],
+              ['`a[:, np.newaxis]`', 'also adds a dimension: row to column'],
+              ['`np.squeeze(a)`', 'remove dimensions of size 1'],
+            ],
+          },
+          { type: 'h3', text: 'Rows into columns' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3])
+print(a.shape)
+
+col = a[:, np.newaxis]
+print(col)
+print(col.shape)
+
+row = col.reshape(1, 3)
+print(row.shape)
+
+print(np.squeeze(row).shape)`,
+          },
+          {
+            type: 'p',
+            text: 'A **1D** array `(3,)` is neither a row nor a column. `newaxis` turns it into a **column** `(3, 1)`, which broadcasting can then use.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3])
+col = np.array([10, 20, 30])[:, np.newaxis]
+
+print(a + col)`,
+          },
+          {
+            type: 'p',
+            text: 'Every item of `a` is added to every item of `col`. This makes a **table of all the sums**, like a times table.',
+          },
+        ],
+      },
+      {
+        id: 's17-join',
+        title: 'Joining and splitting arrays',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Function', 'What it does'],
+            rows: [
+              ['`np.concatenate([a, b])`', 'join end to end (choose the `axis`)'],
+              ['`np.vstack([a, b])`', 'stack **vertically**: add more rows'],
+              ['`np.hstack([a, b])`', 'stack **horizontally**: add more columns'],
+              ['`np.split(a, 3)`', 'cut into 3 equal parts'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+print(np.concatenate([a, b]))
+print(np.vstack([a, b]))
+print(np.hstack([a, b]))`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+t1 = np.array([[1, 2],
+               [3, 4]])
+t2 = np.array([[5, 6],
+               [7, 8]])
+
+print(np.concatenate([t1, t2], axis=0))
+print(np.concatenate([t1, t2], axis=1))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`axis=0` adds the second table **below** the first (more rows).',
+              '`axis=1` adds it **beside** the first (more columns).',
+              'The sizes of the **other** direction must match.',
+            ],
+          },
+          { type: 'h3', text: 'Adding a total column' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([[85, 90, 78],
+                  [70, 65, 80]])
+
+totals = marks.sum(axis=1, keepdims=True)
+print(np.hstack([marks, totals]))`,
+          },
+          { type: 'h3', text: 'split' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 10)
+parts = np.split(a, 3)
+print(parts)
+print(len(parts))
+
+for p in parts:
+    print(p.sum())`,
+          },
+        ],
+      },
+      {
+        id: 's17-random',
+        title: 'Random numbers',
+        blocks: [
+          {
+            type: 'p',
+            text: 'NumPy can make a **whole array** of random numbers in one go, and much faster than the `random` module in a loop.',
+          },
+          {
+            type: 'p',
+            text: 'The modern way is to make a **generator** with `np.random.default_rng()` and ask it for numbers.',
+          },
+          {
+            type: 'table',
+            head: ['Method', 'What it gives'],
+            rows: [
+              ['`rng.random(size)`', 'floats from `0.0` up to (not including) `1.0`'],
+              ['`rng.integers(low, high, size)`', 'whole numbers from `low` up to (not including) `high`'],
+              ['`rng.normal(mean, std, size)`', 'bell-curve numbers around the mean'],
+              ['`rng.choice(items, size)`', 'pick items at random'],
+              ['`rng.shuffle(a)`', 'mix an array in place'],
+              ['`rng.permutation(a)`', 'a shuffled **copy**'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The numbers change every run, so this box prints **different** numbers each time you press **Run**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+rng = np.random.default_rng()
+
+print(rng.random(3))
+print(rng.integers(1, 7, size=5))
+print(rng.random((2, 3)).shape)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'integers excludes the top',
+            text: 'Unlike `random.randint(1, 6)`, **`rng.integers(1, 7)`** gives `1` to `6`. The `high` value is **not** included. Roll a die with `integers(1, 7)`.',
+          },
+          { type: 'h3', text: 'A seed repeats the numbers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.random.default_rng(42).random(4)
+b = np.random.default_rng(42).random(4)
+c = np.random.default_rng(7).random(4)
+
+print(np.array_equal(a, b))
+print(np.array_equal(a, c))`,
+          },
+          {
+            type: 'p',
+            text: 'The **same seed** gives the **same numbers**. That is how a data scientist makes an experiment **repeatable**.',
+          },
+        ],
+      },
+      {
+        id: 's17-random-ex',
+        title: 'Examples with random numbers',
+        blocks: [
+          { type: 'h3', text: 'Roll a die 6000 times' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+rng = np.random.default_rng()
+rolls = rng.integers(1, 7, size=6000)
+
+print(rolls.min(), rolls.max())
+print(np.bincount(rolls)[1:])`,
+          },
+          {
+            type: 'p',
+            text: '`bincount` counts how many times each number appears. Each face should come up about **1000** times.',
+          },
+          { type: 'h3', text: 'Random marks table' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+rng = np.random.default_rng(1)
+marks = rng.integers(35, 101, size=(4, 3))
+
+print(marks.shape)
+print(marks.min() >= 35, marks.max() <= 100)
+print(marks.mean(axis=0).shape)`,
+          },
+          { type: 'h3', text: 'Pick winners without repeats' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+names = np.array(["Aman", "Ankit", "Neha", "Rohit", "Sara", "Tara"])
+rng = np.random.default_rng()
+
+winners = rng.choice(names, size=3, replace=False)
+print(winners)
+print(len(set(winners)))`,
+          },
+          {
+            type: 'p',
+            text: '`replace=False` means the same name **cannot** be picked twice.',
+          },
+          { type: 'h3', text: 'Bell-curve numbers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+rng = np.random.default_rng()
+heights = rng.normal(170, 10, size=10000)
+
+print(round(heights.mean()))
+print(round(heights.std()))`,
+          },
+          {
+            type: 'p',
+            text: 'The mean is close to `170` and the standard deviation close to `10`, as we asked.',
+          },
+          { type: 'h3', text: 'The older way' },
+          {
+            type: 'p',
+            text: 'You will see old code that uses `np.random.seed(5)`, `np.random.rand(3)` and `np.random.randint(1, 7, 5)`. They still work, but a **generator** (`default_rng`) is the recommended way today.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+np.random.seed(5)
+x = np.random.rand(3)
+
+np.random.seed(5)
+y = np.random.rand(3)
+
+print(np.array_equal(x, y))
+print(np.random.randint(1, 7, 5).shape)`,
+          },
+        ],
+      },
+      {
+        id: 's17-example',
+        title: 'Example: marks analysis',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Put it all together. Rows are students, columns are maths, science and english.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+names = np.array(["Aman", "Ankit", "Neha", "Rohit"])
+marks = np.array([[85, 90, 78],
+                  [70, 65, 80],
+                  [92, 88, 95],
+                  [55, 60, 48]])
+
+total = marks.sum(axis=1)
+average = marks.mean(axis=1)
+grade = np.where(average >= 80, "A", np.where(average >= 60, "B", "C"))
+rank = np.argsort(-total)
+
+print("Totals :", total)
+print("Average:", np.round(average, 1))
+print("Grades :", grade)
+print("Best to worst:", names[rank])
+print("Hardest subject (lowest mean):", ["maths", "science", "english"][marks.mean(axis=0).argmin()])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`np.where` makes the grades for everyone at once.',
+              '`argsort(-total)` sorts **biggest first** (the minus flips the order).',
+              '`names[rank]` uses the positions to **reorder the names**: fancy indexing.',
+            ],
+          },
+          { type: 'h3', text: 'Standardising marks' },
+          {
+            type: 'p',
+            text: 'A **z-score** says how many standard deviations a mark is from the average. It lets you compare marks from different subjects.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([[85, 90, 78],
+                  [70, 65, 80],
+                  [92, 88, 95],
+                  [55, 60, 48]])
+
+z = (marks - marks.mean(axis=0)) / marks.std(axis=0)
+print(np.round(z, 2))
+print(np.allclose(z.mean(axis=0), 0))`,
+          },
+          {
+            type: 'p',
+            text: 'Broadcasting does the work: the column averages are subtracted from **every row**. After standardising, each column has a mean of `0`, and `allclose` confirms it (`True`).',
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print each student\'s percentage (out of 300), rounded to 1 decimal place',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([[85, 90, 78],
+                  [70, 65, 80]])
+
+`,
+          },
+        ],
+      },
+      {
+        id: 's17-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Using `math.sqrt` on an array.** Use `np.sqrt`.',
+              '**Using `and` / `or` instead of `&` / `|`** in array conditions.',
+              '**Mixing up `axis=0` and `axis=1`.** `axis=0` goes **down** (one answer per column); `axis=1` goes **across** (one answer per row).',
+              '**Forgetting that `integers(1, 6)` stops at 5.** Use `integers(1, 7)` for a die.',
+              '**Expecting `rng.shuffle(a)` to return something.** It changes `a` in place and returns `None`.',
+              '**Comparing shapes that do not fit.** `(2, 3)` and `(2,)` cannot broadcast.',
+              '**Forgetting the extra brackets in `np.concatenate([a, b])`.** The arrays go in a **list**.',
+              '**Expecting random numbers to repeat.** Use a **seed** when you need the same numbers again.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose',
+            runnable: true,
+            code: raw`import numpy as np
+import math
+
+a = np.array([4, 9, 16])
+print(math.sqrt(a))`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this also fails on purpose',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+print(np.concatenate(a, b))`,
+          },
+        ],
+      },
+      {
+        id: 's17-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: turn the prices into prices after a 10 percent discount, rounded to 2 places',
+            runnable: true,
+            code: raw`import numpy as np
+
+prices = np.array([199.99, 49.5, 1200, 75.25])
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: use np.where to print "even" or "odd" for each number',
+            runnable: true,
+            code: raw`import numpy as np
+
+nums = np.arange(1, 9)
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print the running total of the daily sales',
+            runnable: true,
+            code: raw`import numpy as np
+
+sales = np.array([120, 80, 150, 95, 200])
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: make 10 random whole numbers from 1 to 100 and print the biggest',
+            runnable: true,
+            code: raw`import numpy as np
+
+rng = np.random.default_rng()
+`,
+          },
+        ],
+      },
+      {
+        id: 's17-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make an array of the temperatures of a week in Celsius and print them in **Fahrenheit** and **Kelvin**.',
+              'Roll **two dice 10 000 times** with NumPy and count how many times the total is **7**.',
+              'Create a `5 x 4` marks table with random whole numbers from 35 to 100. Print each student\'s **average**, each subject\'s **highest** mark, and the student with the **best total**.',
+              'Normalise an array so its smallest value becomes `0` and its biggest becomes `1`: `(a - a.min()) / (a.max() - a.min())`.',
+              'Use `np.where` and `np.clip` to cap all values above 100 at 100 and replace negative values with 0.',
+              'Join two tables with `vstack` and `hstack`, and print the shape of each result.',
+              'Revise: broadcasting, `where`, aggregation with `axis`, `cumsum`, `concatenate`, `default_rng`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Pandas basics: Series and DataFrame.',
+          },
+        ],
+      },
+    ],
+  },
 ]
