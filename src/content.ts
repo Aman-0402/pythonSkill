@@ -7745,4 +7745,819 @@ names = ["Aman", "Ankit", "Neha", "Rohit", "Sara"]
       },
     ],
   },
+  {
+    slug: 'file-handling',
+    title: 'File Handling',
+    summary: 'Read, write, append, with, and working with text and CSV files.',
+    hero: {
+      file: 'files.py',
+      lines: ['with open("hi.txt", "w") as f:', '    f.write("Hello file")', 'print(open("hi.txt").read())'],
+      output: 'Hello file',
+    },
+    sections: [
+      {
+        id: 's14-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between `import math` and `from math import sqrt`?',
+              'What does `random.randint(1, 6)` give?',
+              'Where do you type `pip install`?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's14-why',
+        title: 'Why files?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Variables live in **memory**. When the program ends, everything is **gone**. A **file** keeps data on the disk, so it is still there next time.',
+          },
+          {
+            type: 'ul',
+            items: [
+              'Save marks, contacts, a to-do list or a game score.',
+              'Read data that someone else made, such as a list of names.',
+              'Write a **report** or a **log** of what the program did.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Files in the Try it boxes',
+            text: 'The Try it boxes run inside your browser and use a **temporary** file area. Files you write there are real for that page, but they disappear when you reload. On your own computer the files stay on the disk.',
+          },
+        ],
+      },
+      {
+        id: 's14-open',
+        title: 'open() and the modes',
+        blocks: [
+          {
+            type: 'p',
+            text: '`open(name, mode)` opens a file and gives back a **file object**. The **mode** says what you want to do.',
+          },
+          {
+            type: 'table',
+            head: ['Mode', 'Meaning', 'If the file does not exist'],
+            rows: [
+              ['`"r"`', 'read (the default)', 'error'],
+              ['`"w"`', 'write: **erases** the old content', 'creates it'],
+              ['`"a"`', 'append: adds to the **end**', 'creates it'],
+              ['`"x"`', 'create new, fail if it exists', 'creates it'],
+              ['`"r+"`', 'read and write', 'error'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Add `"b"` for a **binary** file such as an image (`"rb"`, `"wb"`). Without it the file is **text**.',
+          },
+        ],
+      },
+      {
+        id: 's14-write',
+        title: 'Writing a file',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`f = open("hello.txt", "w")
+f.write("Hello, file!")
+f.close()
+
+f = open("hello.txt", "r")
+print(f.read())
+f.close()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`"w"` makes the file if it is not there.',
+              '`write()` puts text in the file. It does **not** add a new line for you.',
+              '`close()` finishes the job. Always close a file you open.',
+            ],
+          },
+          { type: 'h3', text: 'New lines' },
+          {
+            type: 'p',
+            text: 'Put `\\n` at the end of each line to start the next line.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`f = open("names.txt", "w")
+f.write("Aman\n")
+f.write("Ankit\n")
+f.write("Neha\n")
+f.close()
+
+print(open("names.txt").read())`,
+          },
+          { type: 'h3', text: 'writelines' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`lines = ["one\n", "two\n", "three\n"]
+
+f = open("numbers.txt", "w")
+f.writelines(lines)
+f.close()
+
+print(open("numbers.txt").read())`,
+          },
+          {
+            type: 'p',
+            text: '`writelines` writes a list of strings, but it does **not** add the `\\n` for you. Put it in each string.',
+          },
+        ],
+      },
+      {
+        id: 's14-with',
+        title: 'The with statement',
+        blocks: [
+          {
+            type: 'p',
+            text: 'If you forget `close()`, or the program crashes in the middle, the file can stay open. The **`with`** statement closes it **automatically** when the block ends. This is the **best way** to work with files.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("notes.txt", "w") as f:
+    f.write("Line 1\n")
+    f.write("Line 2\n")
+
+with open("notes.txt") as f:
+    print(f.read())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`as f` gives the file object the name `f`.',
+              'The indented lines run while the file is open.',
+              'When the indent ends, Python closes the file for you.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("data.txt", "w") as f:
+    f.write("hi")
+
+print(f.closed)`,
+          },
+          {
+            type: 'p',
+            text: '`f.closed` is `True` after the `with` block. The file is shut for you.',
+          },
+        ],
+      },
+      {
+        id: 's14-read',
+        title: 'Reading a file',
+        blocks: [
+          {
+            type: 'p',
+            text: 'First, make a small file to practise on. The next boxes each build their own copy.',
+          },
+          {
+            type: 'table',
+            head: ['Method', 'What it gives'],
+            rows: [
+              ['`f.read()`', 'the **whole file** as one string'],
+              ['`f.readline()`', 'the **next line** (with its `\\n`)'],
+              ['`f.readlines()`', 'a **list** of all the lines'],
+              ['`for line in f:`', 'one line at a time (best for big files)'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("fruits.txt", "w") as f:
+    f.write("apple\nbanana\ncherry\n")
+
+with open("fruits.txt") as f:
+    text = f.read()
+print(text)
+print(len(text))`,
+          },
+          { type: 'h3', text: 'readline and readlines' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("fruits.txt", "w") as f:
+    f.write("apple\nbanana\ncherry\n")
+
+with open("fruits.txt") as f:
+    print(f.readline())
+    print(f.readline())
+
+with open("fruits.txt") as f:
+    print(f.readlines())`,
+          },
+          {
+            type: 'p',
+            text: 'Each line ends with `\\n`. That is why `print` leaves a blank line after the first two lines.',
+          },
+          { type: 'h3', text: 'Looping over the lines' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("fruits.txt", "w") as f:
+    f.write("apple\nbanana\ncherry\n")
+
+with open("fruits.txt") as f:
+    for line in f:
+        print(line.strip())`,
+          },
+          {
+            type: 'p',
+            text: '`strip()` removes the `\\n` (and spaces) at the ends of each line.',
+          },
+          { type: 'h3', text: 'Reading numbers' },
+          {
+            type: 'p',
+            text: 'Everything you read from a text file is a **string**. Convert with `int()` or `float()` before doing maths.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("marks.txt", "w") as f:
+    f.write("70\n85\n90\n")
+
+total = 0
+with open("marks.txt") as f:
+    for line in f:
+        total += int(line)
+
+print("Total:", total)`,
+          },
+        ],
+      },
+      {
+        id: 's14-pointer',
+        title: 'The file position',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A file remembers **where you are** in it. After `read()` you are at the **end**, so a second `read()` gives an **empty string**.',
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`with open("p.txt", "w") as f:
+    f.write("abc")
+
+with open("p.txt") as f:
+    print(repr(f.read()))
+    print(repr(f.read()))
+    f.seek(0)
+    print(repr(f.read()))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`f.seek(0)` jumps back to the start.',
+              '`f.tell()` tells you the current position.',
+              'To read the file again, just open it again in a new `with`.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's14-append',
+        title: 'Appending',
+        blocks: [
+          {
+            type: 'p',
+            text: '`"w"` **wipes** the old content. To **add** to the end, use **`"a"`**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("log.txt", "w") as f:
+    f.write("Start\n")
+
+with open("log.txt", "a") as f:
+    f.write("Step 1\n")
+    f.write("Step 2\n")
+
+with open("log.txt") as f:
+    print(f.read())`,
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`with open("w.txt", "w") as f:
+    f.write("first\n")
+
+with open("w.txt", "w") as f:
+    f.write("second\n")
+
+with open("w.txt") as f:
+    print(f.read())`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: '"w" erases the file',
+            text: 'Opening an existing file with `"w"` throws away what was in it, **even if you never write anything**. Use `"a"` when you want to keep the old content.',
+          },
+        ],
+      },
+      {
+        id: 's14-examples',
+        title: 'Examples with text files',
+        blocks: [
+          { type: 'h3', text: 'Count lines and words' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("poem.txt", "w") as f:
+    f.write("Roses are red\nViolets are blue\nPython is fun\n")
+
+lines = 0
+words = 0
+with open("poem.txt") as f:
+    for line in f:
+        lines += 1
+        words += len(line.split())
+
+print("Lines:", lines)
+print("Words:", words)`,
+          },
+          { type: 'h3', text: 'Search for a word' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("poem.txt", "w") as f:
+    f.write("Roses are red\nViolets are blue\nPython is fun\n")
+
+with open("poem.txt") as f:
+    for number, line in enumerate(f, start=1):
+        if "are" in line:
+            print(number, line.strip())`,
+          },
+          { type: 'h3', text: 'Copy a file with changes' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("small.txt", "w") as f:
+    f.write("hello\nworld\n")
+
+with open("small.txt") as src, open("big.txt", "w") as dst:
+    for line in src:
+        dst.write(line.upper())
+
+with open("big.txt") as f:
+    print(f.read())`,
+          },
+          {
+            type: 'p',
+            text: 'One `with` can open **two files** at once, separated by a comma.',
+          },
+        ],
+      },
+      {
+        id: 's14-exists',
+        title: 'Does the file exist?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Opening a file that is not there for reading gives a **`FileNotFoundError`**.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose',
+            runnable: true,
+            code: raw`with open("missing.txt") as f:
+    print(f.read())`,
+          },
+          {
+            type: 'p',
+            text: 'You can check first with the `os` module.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import os
+
+print(os.path.exists("missing.txt"))
+
+with open("here.txt", "w") as f:
+    f.write("hi")
+
+print(os.path.exists("here.txt"))
+print(os.path.getsize("here.txt"))
+
+os.remove("here.txt")
+print(os.path.exists("here.txt"))`,
+          },
+          {
+            type: 'table',
+            head: ['Name', 'What it does'],
+            rows: [
+              ['`os.path.exists(p)`', '`True` if the file or folder is there'],
+              ['`os.path.getsize(p)`', 'size in bytes'],
+              ['`os.remove(p)`', 'delete a file'],
+              ['`os.rename(a, b)`', 'rename a file'],
+              ['`os.listdir()`', 'names of the files in the folder'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'There is a better way to handle a missing file than checking first: `try` and `except`. We learn it in the next session.',
+          },
+        ],
+      },
+      {
+        id: 's14-paths',
+        title: 'Paths and encoding',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **path** says where a file is. A name like `"data.txt"` means "in the **current folder**" (the folder the program runs from).',
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Relative path:** `"data/marks.txt"` starts from the current folder.',
+              '**Absolute path:** `"C:/Users/Aman/marks.txt"` starts from the drive.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Backslashes on Windows',
+            text: 'Write `"C:/Users/Aman/marks.txt"` with **forward slashes**, or a raw string `r"C:\\Users\\Aman\\marks.txt"`. A plain `"C:\\new\\table.txt"` breaks, because `\\n` and `\\t` are special characters.',
+          },
+          { type: 'h3', text: 'pathlib' },
+          {
+            type: 'p',
+            text: 'The `pathlib` module treats a path as an object. `write_text` and `read_text` do a whole file in one line.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`from pathlib import Path
+
+p = Path("quick.txt")
+p.write_text("Short and sweet")
+print(p.read_text())
+print(p.exists())
+print(p.suffix)`,
+          },
+          { type: 'h3', text: 'Encoding' },
+          {
+            type: 'p',
+            text: 'A text file stores letters as numbers using an **encoding**. Use **`encoding="utf-8"`** so names like `Zoë` or Hindi text are safe on every computer.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("name.txt", "w", encoding="utf-8") as f:
+    f.write("Zoë")
+
+with open("name.txt", encoding="utf-8") as f:
+    print(f.read())`,
+          },
+        ],
+      },
+      {
+        id: 's14-todo',
+        title: 'Example: a to-do list',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A to-do list that **keeps its tasks** between runs. It uses `input()`, so run it on your own computer.',
+          },
+          {
+            type: 'code',
+            label: 'todo.py (run it on your computer)',
+            code: raw`FILE = "todo.txt"
+
+def load():
+    tasks = []
+    try:
+        with open(FILE) as f:
+            for line in f:
+                tasks.append(line.strip())
+    except FileNotFoundError:
+        pass
+    return tasks
+
+def save(tasks):
+    with open(FILE, "w") as f:
+        for task in tasks:
+            f.write(task + "\n")
+
+tasks = load()
+print("You have", len(tasks), "tasks")
+
+new = input("New task (or press Enter to skip): ")
+if new:
+    tasks.append(new)
+    save(tasks)
+
+for i, task in enumerate(tasks, start=1):
+    print(i, task)`,
+            output: 'You have 0 tasks\nNew task (or press Enter to skip): Buy milk\n1 Buy milk',
+          },
+          {
+            type: 'p',
+            text: 'Run it twice. The second run starts with `You have 1 tasks`, because the list was **saved in a file**. (The `try` and `except` part is next class.)',
+          },
+          { type: 'h3', text: 'The same idea, without input()' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def save(tasks):
+    with open("todo.txt", "w") as f:
+        for task in tasks:
+            f.write(task + "\n")
+
+def load():
+    with open("todo.txt") as f:
+        return [line.strip() for line in f]
+
+save(["Buy milk", "Call Neha", "Study Python"])
+tasks = load()
+tasks.append("Do homework")
+save(tasks)
+
+for i, task in enumerate(load(), start=1):
+    print(i, task)`,
+          },
+        ],
+      },
+      {
+        id: 's14-csv',
+        title: 'CSV files',
+        blocks: [
+          {
+            type: 'p',
+            text: '**CSV** means **comma separated values**. It is a plain text file for a **table**: one row per line, columns separated by commas. Excel and Google Sheets open it.',
+          },
+          {
+            type: 'code',
+            label: 'marks.csv',
+            code: raw`name,maths,science
+Aman,85,90
+Ankit,70,65
+Neha,92,88`,
+          },
+          {
+            type: 'p',
+            text: 'You could split each line yourself, but the **`csv`** module handles quotes and commas inside values for you.',
+          },
+          { type: 'h3', text: 'Writing a CSV' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import csv
+
+rows = [
+    ["name", "maths", "science"],
+    ["Aman", 85, 90],
+    ["Ankit", 70, 65],
+    ["Neha", 92, 88],
+]
+
+with open("marks.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerows(rows)
+
+print(open("marks.csv").read())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`newline=""` stops blank lines appearing between rows on Windows. Always use it with `csv`.',
+              '`writerow(list)` writes one row. `writerows(list of lists)` writes many.',
+            ],
+          },
+          { type: 'h3', text: 'Reading a CSV' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import csv
+
+with open("marks.csv", "w", newline="") as f:
+    csv.writer(f).writerows([["name", "maths"], ["Aman", 85], ["Ankit", 70]])
+
+with open("marks.csv", newline="") as f:
+    for row in csv.reader(f):
+        print(row)`,
+          },
+          {
+            type: 'p',
+            text: 'Each row is a **list of strings**. The numbers come back as text, such as `"85"`. Convert them with `int()`.',
+          },
+          { type: 'h3', text: 'Skipping the header' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import csv
+
+with open("marks.csv", "w", newline="") as f:
+    csv.writer(f).writerows([["name", "maths"], ["Aman", 85], ["Ankit", 70]])
+
+with open("marks.csv", newline="") as f:
+    reader = csv.reader(f)
+    header = next(reader)
+    print("Columns:", header)
+    for name, maths in reader:
+        print(name, int(maths) + 5)`,
+          },
+          {
+            type: 'p',
+            text: '`next(reader)` takes the first row (the header) off, so the loop starts at the data.',
+          },
+        ],
+      },
+      {
+        id: 's14-dictcsv',
+        title: 'DictReader and DictWriter',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Instead of numbering the columns, use **names**. `DictReader` gives each row as a **dictionary**, using the header as the keys.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import csv
+
+with open("marks.csv", "w", newline="") as f:
+    csv.writer(f).writerows([
+        ["name", "maths", "science"],
+        ["Aman", 85, 90],
+        ["Ankit", 70, 65],
+        ["Neha", 92, 88],
+    ])
+
+with open("marks.csv", newline="") as f:
+    for row in csv.DictReader(f):
+        print(row["name"], row["maths"])`,
+          },
+          { type: 'h3', text: 'DictWriter' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import csv
+
+students = [
+    {"name": "Aman", "city": "Delhi"},
+    {"name": "Neha", "city": "Pune"},
+]
+
+with open("people.csv", "w", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=["name", "city"])
+    writer.writeheader()
+    writer.writerows(students)
+
+print(open("people.csv").read())`,
+          },
+          {
+            type: 'p',
+            text: '`fieldnames` sets the column order. `writeheader()` writes the first line.',
+          },
+        ],
+      },
+      {
+        id: 's14-marks',
+        title: 'Example: marks report',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Read a CSV of marks, work out each student\'s total and average, find the topper, and write a **report file**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import csv
+
+with open("marks.csv", "w", newline="") as f:
+    csv.writer(f).writerows([
+        ["name", "maths", "science", "english"],
+        ["Aman", 85, 90, 78],
+        ["Ankit", 70, 65, 80],
+        ["Neha", 92, 88, 95],
+    ])
+
+results = []
+with open("marks.csv", newline="") as f:
+    for row in csv.DictReader(f):
+        marks = [int(row["maths"]), int(row["science"]), int(row["english"])]
+        results.append((row["name"], sum(marks), sum(marks) / 3))
+
+topper = max(results, key=lambda r: r[1])
+
+with open("report.txt", "w") as out:
+    for name, total, avg in results:
+        out.write(f"{name}: total {total}, average {avg:.1f}\n")
+    out.write(f"Topper: {topper[0]}\n")
+
+print(open("report.txt").read())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`max(..., key=lambda ...)` from the advanced functions class finds the top total.',
+              'We read one file and wrote another in the same program.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's14-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Opening with `"w"` when you meant `"a"`.** The old content is gone.',
+              '**Forgetting `\\n`.** All the text ends up on **one line**.',
+              '**Forgetting `close()`.** Use `with` and you never forget.',
+              '**Reading twice.** The second `read()` is empty. Open the file again, or use `seek(0)`.',
+              '**Using numbers from a file as numbers.** They are strings. Use `int()` first.',
+              '**Writing a number.** `f.write(5)` is a `TypeError`. Write `str(5)`.',
+              '**Missing `newline=""` with csv** (blank lines on Windows).',
+              '**Wrong folder.** The file name is relative to where the program **runs**, not where the `.py` file sits.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose',
+            runnable: true,
+            code: raw`with open("number.txt", "w") as f:
+    f.write(5)`,
+          },
+        ],
+      },
+      {
+        id: 's14-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: write the numbers 1 to 5, one per line, into nums.txt, then print the file',
+            runnable: true,
+            code: raw`with open("nums.txt", "w") as f:
+    pass
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: read nums.txt and print the sum of the numbers',
+            runnable: true,
+            code: raw`with open("nums.txt", "w") as f:
+    f.write("1\n2\n3\n4\n5\n")
+
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: append the line "6" to nums.txt, then print the number of lines',
+            runnable: true,
+            code: raw`with open("nums.txt", "w") as f:
+    f.write("1\n2\n3\n4\n5\n")
+
+`,
+          },
+        ],
+      },
+      {
+        id: 's14-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a program that saves **5 names** typed by the user into `names.txt`, one per line.',
+              'Read a text file and print the **longest line** and the **number of words**.',
+              'Make a **contact book** that saves `name,phone` rows in a CSV and can search by name.',
+              'Read `marks.csv` and write a second CSV with the **total and average** added as new columns.',
+              'Make a **diary** program: each run **appends** today\'s entry with the date from `datetime`.',
+              'Revise: **modes** `r`, `w`, `a`, `with`, `read`, `readline`, `readlines`, `csv.reader`, `DictReader`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Exception handling: `try`, `except`, `finally`, common errors and debugging tips.',
+          },
+        ],
+      },
+    ],
+  },
 ]
