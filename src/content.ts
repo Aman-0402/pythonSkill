@@ -9315,4 +9315,891 @@ except ValueError as e:
       },
     ],
   },
+  {
+    slug: 'numpy-basics',
+    title: 'NumPy Basics',
+    summary: 'Arrays, shape, dtype, indexing and slicing.',
+    hero: {
+      file: 'arrays.py',
+      lines: ['import numpy as np', 'a = np.array([1, 2, 3])', 'print(a * 2)'],
+      output: '[2 4 6]',
+    },
+    sections: [
+      {
+        id: 's16-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between `try`, `except`, `else` and `finally`?',
+              'What error does `int("abc")` cause?',
+              'How do you read a traceback: which line first?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's16-what',
+        title: 'What is NumPy?',
+        blocks: [
+          {
+            type: 'p',
+            text: '**NumPy** (Numerical Python) is a package for working with **numbers in bulk**. Its main tool is the **array**: a grid of numbers, all of the same type.',
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Fast:** it does the loops in fast compiled code, not in slow Python.',
+              '**Short:** one line works on a million numbers at once.',
+              '**The base** of `pandas`, `matplotlib`, `scikit-learn` and most data science and machine learning tools.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Install it once on your computer (terminal)',
+            code: raw`pip install numpy`,
+          },
+          {
+            type: 'p',
+            text: 'By convention we import it with the short name **`np`**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+print(np.__name__)
+print(type(np.array([1, 2, 3])))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'NumPy in the Try it boxes',
+            text: 'The first time a box imports NumPy, the page downloads it (a few seconds). After that it is quick. The browser version of Python is a little different from the one on your computer, so one or two outputs below (marked in the notes) may differ slightly.',
+          },
+        ],
+      },
+      {
+        id: 's16-vs',
+        title: 'Lists vs arrays',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A list repeats when you multiply it. An array does **maths on every item**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+nums = [1, 2, 3]
+arr = np.array([1, 2, 3])
+
+print(nums * 2)
+print(arr * 2)
+print(nums + nums)
+print(arr + arr)`,
+          },
+          {
+            type: 'p',
+            text: 'This is called **vectorised** (or element-wise) maths. No loop needed.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+prices = np.array([100, 250, 80, 400])
+
+print(prices * 1.18)
+print(prices - 20)
+print(prices > 200)`,
+          },
+          {
+            type: 'table',
+            head: ['', 'list', 'NumPy array'],
+            rows: [
+              ['items', 'any mix of types', 'all the **same** type'],
+              ['`* 2`', 'repeats the list', 'doubles each number'],
+              ['speed', 'slower for big data', 'much faster'],
+              ['maths on all items', 'needs a loop', 'one line'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's16-create',
+        title: 'Creating arrays',
+        blocks: [
+          { type: 'h3', text: 'From a list' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([10, 20, 30, 40])
+print(a)
+
+b = np.array([[1, 2, 3],
+              [4, 5, 6]])
+print(b)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'A list of numbers makes a **1D** array (a row).',
+              'A list of lists makes a **2D** array (a table with rows and columns).',
+              'Printing an array shows the numbers **without commas**.',
+            ],
+          },
+          { type: 'h3', text: 'Ready-made arrays' },
+          {
+            type: 'table',
+            head: ['Function', 'What it makes'],
+            rows: [
+              ['`np.zeros(5)`', 'five `0.0`s'],
+              ['`np.ones((2, 3))`', '2 rows and 3 columns of `1.0`'],
+              ['`np.full((2, 2), 7)`', 'a 2 by 2 grid of `7`'],
+              ['`np.arange(0, 10, 2)`', 'like `range`, as an array'],
+              ['`np.linspace(0, 1, 5)`', '5 evenly spaced numbers from 0 to 1'],
+              ['`np.eye(3)`', 'the 3 by 3 identity grid'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+print(np.zeros(5))
+print(np.ones((2, 3)))
+print(np.full((2, 2), 7))
+print(np.arange(0, 10, 2))
+print(np.linspace(0, 1, 5))
+print(np.eye(3))`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'arange vs linspace',
+            text: '`arange(start, stop, step)` is told the **step** and the stop is **not** included. `linspace(start, stop, count)` is told **how many numbers** and the stop **is** included.',
+          },
+        ],
+      },
+      {
+        id: 's16-attrs',
+        title: 'Array attributes',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Every array knows facts about itself. They are **attributes**, so there are **no brackets**.',
+          },
+          {
+            type: 'table',
+            head: ['Attribute', 'Meaning'],
+            rows: [
+              ['`a.ndim`', 'number of dimensions (1, 2, 3 ...)'],
+              ['`a.shape`', 'size in each dimension, as a tuple'],
+              ['`a.size`', 'total number of items'],
+              ['`a.dtype`', 'the data type of the items'],
+              ['`a.itemsize`', 'bytes used by one item'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+print(a.ndim)
+print(a.shape)
+print(a.size)
+print(len(a))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`shape` is `(2, 3)`: **2 rows** and **3 columns**.',
+              '`size` is `2 * 3 = 6`.',
+              '`len(a)` gives only the length of the **first** dimension (the number of rows).',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's16-shape',
+        title: 'Understanding shape',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Array', 'shape', 'Picture'],
+            rows: [
+              ['`np.array([1, 2, 3])`', '`(3,)`', 'a row of 3'],
+              ['`np.array([[1, 2, 3]])`', '`(1, 3)`', '1 row, 3 columns'],
+              ['`np.array([[1], [2], [3]])`', '`(3, 1)`', '3 rows, 1 column'],
+              ['`np.zeros((2, 3, 4))`', '`(2, 3, 4)`', '2 tables of 3 rows and 4 columns'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+print(np.array([1, 2, 3]).shape)
+print(np.array([[1, 2, 3]]).shape)
+print(np.array([[1], [2], [3]]).shape)
+print(np.zeros((2, 3, 4)).shape)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'The comma in (3,)',
+            text: 'A tuple with one item is written `(3,)`. The comma tells Python it is a tuple. So `(3,)` means a **1D array with 3 items**.',
+          },
+          {
+            type: 'code',
+            label: 'Work out the shape first, then press Run to check',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.zeros((4, 5))
+print(a.shape)
+print(a.size)
+print(a.ndim)`,
+          },
+        ],
+      },
+      {
+        id: 's16-dtype',
+        title: 'dtype: the data type',
+        blocks: [
+          {
+            type: 'p',
+            text: 'All items in an array share **one type**, called the **`dtype`**. This is what makes arrays fast and compact.',
+          },
+          {
+            type: 'table',
+            head: ['dtype', 'Meaning'],
+            rows: [
+              ['`int8`, `int16`, `int32`, `int64`', 'whole numbers, using 1, 2, 4 or 8 bytes'],
+              ['`float32`, `float64`', 'decimals (`float64` is the usual one)'],
+              ['`bool`', '`True` or `False`'],
+              ['`<U5`', 'text, up to 5 characters'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+print(np.array([1.5, 2.5, 3.5]).dtype)
+print(np.array([True, False]).dtype)
+print(np.array(["cat", "horse"]).dtype)
+print(np.array([1, 2, 3], dtype=np.int8).dtype)
+print(np.array([1, 2, 3], dtype=np.float64).dtype)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Whole numbers: int64 or int32?',
+            text: 'On most computers `np.array([1, 2, 3]).dtype` is `int64`. In the browser version of Python used by these boxes it can show `int32`. Both are whole numbers. To be sure, ask for the type you want with `dtype=`.',
+          },
+          { type: 'h3', text: 'Mixed types become one type' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+print(np.array([1, 2.5, 3]))
+print(np.array([1, 2.5, 3]).dtype)
+print(np.array([1, "a", 3]))
+print(np.array([True, 2, 3.5]))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'NumPy picks a type that fits **everything**: ints and floats become floats.',
+              'Text and numbers together become **text**.',
+              'A `True` becomes `1.0` when mixed with floats.',
+            ],
+          },
+          { type: 'h3', text: 'Changing the type: astype' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1.9, 2.5, 3.1])
+print(a.astype(int))
+print(a.astype(str))
+
+b = np.array([0, 1, 2, 0])
+print(b.astype(bool))`,
+          },
+          {
+            type: 'p',
+            text: '`astype` makes a **new** array. Turning floats into ints **cuts off** the decimals (it does not round).',
+          },
+        ],
+      },
+      {
+        id: 's16-reshape',
+        title: 'reshape, flatten and transpose',
+        blocks: [
+          {
+            type: 'p',
+            text: '`reshape` gives the **same numbers** a new shape. The new shape must hold the same **total count**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 13)
+print(a)
+
+print(a.reshape(3, 4))
+print(a.reshape(4, 3))
+print(a.reshape(2, 2, 3).shape)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '12 numbers can be `3 x 4`, `4 x 3`, `2 x 6` or `2 x 2 x 3`, but **not** `5 x 3`.',
+              'Use **`-1`** for "work this size out for me": `a.reshape(3, -1)`.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 7).reshape(2, 3)
+print(a)
+print(a.T)
+print(a.T.shape)
+print(a.flatten())
+print(a.reshape(-1))`,
+          },
+          {
+            type: 'table',
+            head: ['Name', 'What it does'],
+            rows: [
+              ['`a.reshape(r, c)`', 'new shape, same numbers'],
+              ['`a.T`', '**transpose**: rows become columns'],
+              ['`a.flatten()`', 'turn into a 1D array (a copy)'],
+              ['`a.reshape(-1)`', 'also 1D, with the size worked out'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's16-index1',
+        title: 'Indexing a 1D array',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Indexing a 1D array works like a list: position **starts at 0**, and **negative** positions count from the end.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([10, 20, 30, 40, 50])
+
+print(a[0])
+print(a[2])
+print(a[-1])
+print(a[-2])`,
+          },
+          {
+            type: 'p',
+            text: 'You can **change** an item by assigning to it.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([10, 20, 30])
+a[1] = 99
+print(a)
+
+a[0] = 5.7
+print(a)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'The dtype stays the same',
+            text: 'The array is a whole-number array, so `5.7` was **cut** to `5`. Choose the right `dtype` at the start if you need decimals.',
+          },
+        ],
+      },
+      {
+        id: 's16-index2',
+        title: 'Indexing a 2D array',
+        blocks: [
+          {
+            type: 'p',
+            text: 'In a 2D array you give the **row**, then the **column**: `a[row, column]`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]])
+
+print(a[0, 0])
+print(a[1, 2])
+print(a[2, 1])
+print(a[-1, -1])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`a[1, 2]` means row `1`, column `2`, which is `6`.',
+              '`a[1][2]` also works (index twice), but `a[1, 2]` is the NumPy way and is faster.',
+            ],
+          },
+          { type: 'h3', text: 'One whole row' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]])
+
+print(a[0])
+print(a[2])
+print(a[1][1])`,
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[10, 20, 30],
+              [40, 50, 60]])
+
+print(a[1, 0])
+print(a[0, -1])
+print(a[1])`,
+          },
+        ],
+      },
+      {
+        id: 's16-slice1',
+        title: 'Slicing a 1D array',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A slice takes a **part** of an array: `a[start:stop:step]`. The `stop` position is **not included**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(10, 100, 10)
+print(a)
+
+print(a[2:5])
+print(a[:3])
+print(a[6:])
+print(a[::2])
+print(a[::-1])
+print(a[-3:])`,
+          },
+          {
+            type: 'table',
+            head: ['Slice', 'Meaning'],
+            rows: [
+              ['`a[2:5]`', 'positions 2, 3, 4'],
+              ['`a[:3]`', 'the first 3'],
+              ['`a[6:]`', 'from position 6 to the end'],
+              ['`a[::2]`', 'every second item'],
+              ['`a[::-1]`', 'reversed'],
+              ['`a[-3:]`', 'the last 3'],
+            ],
+          },
+          { type: 'h3', text: 'A slice is a view, not a copy' },
+          {
+            type: 'p',
+            text: 'This is the **big difference from lists**. A NumPy slice **shares memory** with the original. Change the slice and the original changes too.',
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])
+part = a[1:4]
+part[0] = 99
+
+print(part)
+print(a)`,
+          },
+          {
+            type: 'p',
+            text: 'Use **`.copy()`** when you want an independent array.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])
+safe = a[1:4].copy()
+safe[0] = 99
+
+print(safe)
+print(a)`,
+          },
+        ],
+      },
+      {
+        id: 's16-slice2',
+        title: 'Slicing a 2D array',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Give a slice for the **rows**, a comma, then a slice for the **columns**: `a[rows, columns]`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 17).reshape(4, 4)
+print(a)
+
+print(a[0:2, 1:3])
+print(a[:, 0])
+print(a[1, :])
+print(a[2:, 2:])`,
+          },
+          {
+            type: 'table',
+            head: ['Slice', 'Meaning'],
+            rows: [
+              ['`a[0:2, 1:3]`', 'rows 0 and 1, columns 1 and 2'],
+              ['`a[:, 0]`', 'every row, column 0: **the first column**'],
+              ['`a[1, :]`', 'row 1, every column: **the second row**'],
+              ['`a[2:, 2:]`', 'from row 2 down and column 2 across'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'The colon means "all"',
+            text: 'A lone `:` means **everything in that direction**. `a[:, 1]` reads as "all rows, column 1". Say it aloud as you write it.',
+          },
+          { type: 'h3', text: 'Changing a block' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.zeros((3, 4), dtype=np.int8)
+a[1, :] = 5
+a[:, 3] = 9
+a[0:2, 0:2] = 1
+print(a)`,
+          },
+        ],
+      },
+      {
+        id: 's16-bool',
+        title: 'Boolean and fancy indexing',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A comparison on an array gives an array of `True` and `False`. Use it as a **filter**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+
+passed = marks >= 50
+print(passed)
+print(marks[passed])
+print(marks[marks > 80])
+print(marks[(marks > 40) & (marks < 80)])`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Use & and |, with brackets',
+            text: 'Combine conditions with `&` (and) and `|` (or), and put **each condition in brackets**. The words `and` and `or` do not work on whole arrays.',
+          },
+          { type: 'h3', text: 'Change items that match' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+marks[marks < 50] = 50
+print(marks)
+
+print((marks > 70).sum())`,
+          },
+          {
+            type: 'p',
+            text: '`True` counts as `1`, so `(marks > 70).sum()` counts **how many** items match.',
+          },
+          { type: 'h3', text: 'Fancy indexing: a list of positions' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([10, 20, 30, 40, 50])
+print(a[[0, 2, 4]])
+print(a[[4, 0]])
+
+b = np.arange(12).reshape(3, 4)
+print(b[[0, 2]])`,
+          },
+          {
+            type: 'p',
+            text: 'Unlike a slice, fancy and boolean indexing give a **copy**, not a view.',
+          },
+        ],
+      },
+      {
+        id: 's16-maths',
+        title: 'Maths on arrays',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Name', 'What it gives'],
+            rows: [
+              ['`a.sum()`', 'total'],
+              ['`a.mean()`', 'average'],
+              ['`a.max()` / `a.min()`', 'biggest / smallest'],
+              ['`a.argmax()` / `a.argmin()`', '**position** of the biggest / smallest'],
+              ['`np.sort(a)`', 'a sorted copy'],
+              ['`a.std()`', 'standard deviation'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+
+print(marks.sum())
+print(marks.mean())
+print(marks.max(), marks.min())
+print(marks.argmax())
+print(np.sort(marks))`,
+          },
+          { type: 'h3', text: 'axis: rows or columns' },
+          {
+            type: 'p',
+            text: 'On a 2D array, **`axis=0`** works **down the columns** and **`axis=1`** works **across the rows**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+print(a.sum())
+print(a.sum(axis=0))
+print(a.sum(axis=1))
+print(a.mean(axis=0))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`axis=0` collapses the **rows**, so you get one answer per **column**: `[5 7 9]`.',
+              '`axis=1` collapses the **columns**, so you get one answer per **row**: `[ 6 15]`.',
+            ],
+          },
+          { type: 'h3', text: 'Two arrays together' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3])
+b = np.array([10, 20, 30])
+
+print(a + b)
+print(a * b)
+print(b / a)
+print(a ** 2)
+print(np.sqrt(np.array([4, 9, 16])))`,
+          },
+          {
+            type: 'p',
+            text: 'Arrays of the **same shape** are combined **item by item**. An array and a single number also work: the number is used for every item. This is called **broadcasting**.',
+          },
+        ],
+      },
+      {
+        id: 's16-example',
+        title: 'Example: a marks table',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Rows are students, columns are subjects (maths, science, english).',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([
+    [85, 90, 78],
+    [70, 65, 80],
+    [92, 88, 95],
+    [55, 60, 48],
+])
+
+print("Shape:", marks.shape)
+print("Student totals:", marks.sum(axis=1))
+print("Subject averages:", marks.mean(axis=0))
+print("Best maths mark:", marks[:, 0].max())
+print("Top student (row):", marks.sum(axis=1).argmax())
+print("Marks below 50:", marks[marks < 50])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`marks[:, 0]` is the **maths column**.',
+              '`sum(axis=1)` adds each **student**. `mean(axis=0)` averages each **subject**.',
+              '`argmax()` gives the **position** of the best total, which is the student number (starting at `0`).',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add 5 bonus marks to every mark, then print the new student totals',
+            runnable: true,
+            code: raw`import numpy as np
+
+marks = np.array([
+    [85, 90, 78],
+    [70, 65, 80],
+])
+
+`,
+          },
+        ],
+      },
+      {
+        id: 's16-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Forgetting `import numpy as np`.** You get `NameError: name \'np\' is not defined`.',
+              '**Expecting a slice to be a copy.** Changing it changes the original. Use `.copy()`.',
+              '**Writing `a(0)` instead of `a[0]`.** Indexing uses **square** brackets.',
+              '**Writing `a.shape()`.** `shape` is an attribute, with no brackets.',
+              '**Using `and` / `or` on arrays.** Use `&` and `|` with brackets.',
+              '**A wrong `reshape`.** The total number of items must stay the same.',
+              '**Mixing up `axis=0` and `axis=1`.** Remember: `axis=0` goes **down**, `axis=1` goes **across**.',
+              '**Putting different shapes together.** `(3,)` and `(4,)` cannot be added.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(12)
+print(a.reshape(5, 3))`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this also fails on purpose',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.array([1, 2, 3])
+b = np.array([1, 2, 3, 4])
+print(a + b)`,
+          },
+        ],
+      },
+      {
+        id: 's16-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: make the numbers 1 to 20 as a 4 by 5 array and print its shape',
+            runnable: true,
+            code: raw`import numpy as np
+
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print the last column and the first row',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 13).reshape(3, 4)
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print only the even numbers of the array',
+            runnable: true,
+            code: raw`import numpy as np
+
+a = np.arange(1, 11)
+`,
+          },
+        ],
+      },
+      {
+        id: 's16-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make an array of the numbers `0` to `99`, reshape it to `10 x 10`, and print the **diagonal** items (`a[0, 0]`, `a[1, 1]` ...) using a loop.',
+              'Create a `5 x 5` array of zeros, then set the **border** items to `1` using slices.',
+              'Store the marks of 5 students in 4 subjects. Print each student\'s **average**, each subject\'s **highest** mark, and **who has the best total**.',
+              'Given daily temperatures in an array, print how many days were **above the average**.',
+              'Show that a slice is a **view** by changing it, then repeat with `.copy()`.',
+              'Revise: `np.array`, `shape`, `ndim`, `size`, `dtype`, `reshape`, indexing, slicing, boolean masks, `axis`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'More NumPy, or Pandas basics: tables of data with Series and DataFrame.',
+          },
+        ],
+      },
+    ],
+  },
 ]

@@ -35,13 +35,13 @@ const sessionNo = index + 1
 /* ---------- html helpers ---------- */
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-// `code` and **bold** inside running text
+// `code` and **bold** inside running text (code can sit inside bold)
 const inline = (text) =>
   text
     .split(/(`[^`]+`|\*\*[^*]+\*\*)/)
     .map((part) => {
       if (part.startsWith('`')) return `<code>${esc(part.slice(1, -1))}</code>`
-      if (part.startsWith('**')) return `<strong>${esc(part.slice(2, -2))}</strong>`
+      if (part.startsWith('**')) return `<strong>${inline(part.slice(2, -2))}</strong>`
       return esc(part)
     })
     .join('')
@@ -203,7 +203,9 @@ addEventListener('load', async () => {
         py.setStderr(cap)
         let failed = false
         try {
-          await py.runPythonAsync(decodeURIComponent(box.dataset.code))
+          const boxCode = decodeURIComponent(box.dataset.code)
+          await py.loadPackagesFromImports(boxCode)
+          await py.runPythonAsync(boxCode)
         } catch (e) {
           failed = true
           // (this code sits inside a template literal, so every backslash is doubled)

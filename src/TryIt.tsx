@@ -7,6 +7,7 @@ const PYODIDE_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`
 
 type Pyodide = {
   runPythonAsync(code: string): Promise<unknown>
+  loadPackagesFromImports(code: string): Promise<void>
   setStdout(o: { write: (bytes: Uint8Array) => number }): void
   setStderr(o: { write: (bytes: Uint8Array) => number }): void
 }
@@ -59,6 +60,9 @@ export default function TryIt({ code, label }: { code: string; label?: string })
     try {
       setStatus(pyodide ? 'running' : 'loading')
       const py = await loadPython()
+      // packages such as numpy are downloaded the first time a box imports them
+      if (/^\s*(import|from)\s+numpy/m.test(source)) setStatus('loading')
+      await py.loadPackagesFromImports(source)
       setStatus('running')
       py.setStdout(capture)
       py.setStderr(capture)

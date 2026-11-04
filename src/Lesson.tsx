@@ -14,7 +14,7 @@ function Inline({ text }: { text: string }) {
     <>
       {parts.map((part, i) => {
         if (part.startsWith('`')) return <code key={i}>{part.slice(1, -1)}</code>
-        if (part.startsWith('**')) return <strong key={i}>{part.slice(2, -2)}</strong>
+        if (part.startsWith('**')) return <strong key={i}><Inline text={part.slice(2, -2)} /></strong>
         return part
       })}
     </>
