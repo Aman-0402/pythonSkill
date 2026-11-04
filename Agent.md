@@ -90,6 +90,7 @@ src/
   Art.tsx                     Picture under a slide title: drawn illustration (slides 1 and 2 only) or the owner's file from src/slides/
   Highlight.tsx               Tiny Python syntax colouring used by code blocks and illustrations
   TryIt.tsx                   Editable code box that runs Python in the browser (Pyodide)
+  lock.ts                     LOCK_FROM: sessions from this number to the end are locked on the website
   Draw.tsx                    Pen overlay + white screen for explaining code in a dry run (rendered by App.tsx on every page)
   content.ts                  ALL lesson text and its types (the only place to edit lesson content)
   slides/                     The owner's slide pictures (WebP), plus README.md with how to add them
@@ -319,6 +320,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 42. Renamed the example student "Riya" to "Ankit" in lessons 7 to 12, the quiz data and CSVs for sessions 9, 10 and 12, and regenerated the PDFs for sessions 7 to 12.
 43. Added drawing tools (`Draw.tsx`): pen on the page and a white screen, for explaining code in a dry run.
 44. Added a "Board" button to every code box: shows the code on the white screen to draw over while explaining.
+45. Locked sessions 4 to 12 on the website (`src/lock.ts`, `LOCK_FROM = 4`): greyed cards with a lock on Contents, and a locked message if the URL is opened directly. Change `LOCK_FROM` to unlock sessions as classes happen. The notes are still in the JS bundle, so this hides them but is not a security lock; PDFs and quiz CSVs in the repo are not affected.
 
 ## Gotchas and lessons learned
 

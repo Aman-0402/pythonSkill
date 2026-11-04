@@ -5,6 +5,7 @@ import { openBoard } from './Draw'
 import Art from './Art'
 import HeroCode from './HeroCode'
 import { Highlight } from './Highlight'
+import { isLocked } from './lock'
 import { lessons, type Block, type Lesson as LessonData, type Section } from './content'
 
 function Inline({ text }: { text: string }) {
@@ -136,6 +137,18 @@ function sizeOf(blocks: Block[]): 'xl' | 'l' | 'm' {
 
 export default function Lesson({ slug }: { slug: string }) {
   const lesson = lessons.find((l) => l.slug === slug)
+
+  if (lesson && isLocked(lessons.indexOf(lesson))) {
+    return (
+      <div className="light-page"><main className="contents wrap">
+        <Link href="/contents" className="back">← Contents</Link>
+        <header className="contents-head">
+          <h1>🔒 This session is locked</h1>
+          <p>It will open when your trainer unlocks it. Go back to the contents page to read the earlier sessions.</p>
+        </header>
+      </main></div>
+    )
+  }
 
   if (!lesson) {
     return (
