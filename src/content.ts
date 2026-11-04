@@ -8560,4 +8560,759 @@ print(open("report.txt").read())`,
       },
     ],
   },
+  {
+    slug: 'exception-handling',
+    title: 'Exception Handling',
+    summary: 'try, except, finally, common errors and debugging tips.',
+    hero: {
+      file: 'safe.py',
+      lines: ['try:', '    print(10 / 0)', 'except ZeroDivisionError:', '    print("Cannot divide by zero")'],
+      output: 'Cannot divide by zero',
+    },
+    sections: [
+      {
+        id: 's15-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between mode `"w"` and mode `"a"`?',
+              'Why do we use `with open(...)`?',
+              'What error do you get when you open a file that is not there?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's15-what',
+        title: 'What is an exception?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'An **exception** is an error that happens **while the program is running**. If nothing handles it, the program **stops** and prints an error message.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: this crashes on purpose',
+            runnable: true,
+            code: raw`print("Before")
+print(10 / 0)
+print("After")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`Before` is printed, then the error stops the program.',
+              '`After` **never runs**.',
+              'The error type here is **`ZeroDivisionError`**.',
+            ],
+          },
+          { type: 'h3', text: 'Two kinds of errors' },
+          {
+            type: 'table',
+            head: ['Kind', 'When it appears', 'Example'],
+            rows: [
+              ['**Syntax error**', 'before the program runs: Python cannot read the code', '`print("hi"`'],
+              ['**Exception**', 'while it runs: the code is fine but something goes wrong', '`10 / 0`'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Exception handling lets your program **deal with the problem** and keep going.',
+          },
+        ],
+      },
+      {
+        id: 's15-try',
+        title: 'try and except',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Put the risky code in **`try`**. Put the plan for a problem in **`except`**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`try:
+    print(10 / 0)
+except ZeroDivisionError:
+    print("You cannot divide by zero")
+
+print("The program keeps going")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Python runs the `try` block.',
+              'If an error happens, it **jumps** to the `except` block.',
+              'If no error happens, the `except` block is **skipped**.',
+              'Then the program continues after the whole `try` statement.',
+            ],
+          },
+          { type: 'h3', text: 'Code after the error is skipped' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`try:
+    print("A")
+    print(5 / 0)
+    print("B")
+except ZeroDivisionError:
+    print("C")
+print("D")`,
+          },
+          {
+            type: 'p',
+            text: '`B` is **skipped**. Once the error happens, the rest of the `try` block does not run.',
+          },
+        ],
+      },
+      {
+        id: 's15-specific',
+        title: 'Catching specific errors',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Name the error you expect. Different errors can have different plans.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        print("b cannot be zero")
+    except TypeError:
+        print("both must be numbers")
+
+print(divide(10, 2))
+print(divide(10, 0))
+print(divide(10, "x"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Python checks the `except` blocks **in order** and runs the **first match**.',
+              'The failed calls print their message and then give back `None`.',
+            ],
+          },
+          { type: 'h3', text: 'The error message: as e' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`try:
+    number = int("abc")
+except ValueError as e:
+    print("Problem:", e)
+    print(type(e).__name__)`,
+          },
+          {
+            type: 'p',
+            text: '`as e` gives a name to the **error object**. Printing it shows Python\'s own message.',
+          },
+          { type: 'h3', text: 'One plan for several errors' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`values = ["12", "abc", None]
+
+for v in values:
+    try:
+        print(int(v) * 2)
+    except (ValueError, TypeError):
+        print("cannot use", v)`,
+          },
+          {
+            type: 'p',
+            text: 'Put the error names in a **tuple** to handle them the same way.',
+          },
+        ],
+      },
+      {
+        id: 's15-else-finally',
+        title: 'else and finally',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Block', 'When it runs'],
+            rows: [
+              ['`try`', 'always first'],
+              ['`except`', 'only if an error happened'],
+              ['`else`', 'only if there was **no** error'],
+              ['`finally`', '**always**, error or not'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def show(x):
+    try:
+        result = 10 / x
+    except ZeroDivisionError:
+        print("error")
+    else:
+        print("result is", result)
+    finally:
+        print("done")
+
+show(2)
+print("---")
+show(0)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`else` keeps the "everything went well" code **separate** from the risky line.',
+              '`finally` is for **clean-up**: closing a file, saying goodbye, releasing something.',
+            ],
+          },
+          { type: 'h3', text: 'finally runs even with return' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`def test():
+    try:
+        return "from try"
+    finally:
+        print("finally runs first")
+
+print(test())`,
+          },
+        ],
+      },
+      {
+        id: 's15-common',
+        title: 'Common errors',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Error', 'Typical cause', 'Example'],
+            rows: [
+              ['`SyntaxError`', 'broken Python grammar', '`print("hi"`'],
+              ['`IndentationError`', 'wrong spaces at the start of a line', 'a body that is not indented'],
+              ['`NameError`', 'a name that does not exist', '`print(total)` before `total = 0`'],
+              ['`TypeError`', 'wrong type for an operation', '`"5" + 3`'],
+              ['`ValueError`', 'right type, wrong value', '`int("abc")`'],
+              ['`ZeroDivisionError`', 'dividing by zero', '`10 / 0`'],
+              ['`IndexError`', 'list position out of range', '`[1, 2][5]`'],
+              ['`KeyError`', 'dictionary key not found', '`{"a": 1}["b"]`'],
+              ['`AttributeError`', 'a thing has no such method', '`"hi".push(1)`'],
+              ['`FileNotFoundError`', 'file is not there', '`open("nope.txt")`'],
+              ['`ModuleNotFoundError`', 'module not installed or misspelt', '`import mathh`'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'This box **causes** each of these on purpose, **catches** it, and prints the name of the error.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`tests = [
+    lambda: print(total),
+    lambda: "5" + 3,
+    lambda: int("abc"),
+    lambda: 10 / 0,
+    lambda: [1, 2][5],
+    lambda: {"a": 1}["b"],
+    lambda: "hi".push(1),
+    lambda: open("nope.txt"),
+    lambda: __import__("mathh"),
+]
+
+for test in tests:
+    try:
+        test()
+    except Exception as e:
+        print(type(e).__name__, "-", e)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'SyntaxError cannot be caught',
+            text: 'A `SyntaxError` happens **before** the program runs, so a `try` block cannot catch it in the same file. Fix the code instead.',
+          },
+        ],
+      },
+      {
+        id: 's15-input',
+        title: 'Example: safe number input',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Users type anything. A loop with `try` keeps asking until the input is valid.',
+          },
+          {
+            type: 'code',
+            label: 'safe_input.py (run it on your computer)',
+            code: raw`while True:
+    text = input("Enter your age: ")
+    try:
+        age = int(text)
+    except ValueError:
+        print("Please type a whole number.")
+        continue
+    if age < 0:
+        print("Age cannot be negative.")
+        continue
+    break
+
+print("Your age is", age)`,
+            output: 'Enter your age: abc\nPlease type a whole number.\nEnter your age: -5\nAge cannot be negative.\nEnter your age: 20\nYour age is 20',
+          },
+          { type: 'h3', text: 'The same idea with a list of "typed" answers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`answers = ["abc", "-5", "20"]
+
+for text in answers:
+    try:
+        age = int(text)
+    except ValueError:
+        print(text, "is not a whole number")
+        continue
+    if age < 0:
+        print(age, "is negative")
+        continue
+    print("Your age is", age)
+    break`,
+          },
+          { type: 'h3', text: 'A function you can reuse' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def to_number(text):
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+print(to_number("3.5"))
+print(to_number("hello"))
+print(to_number(""))`,
+          },
+        ],
+      },
+      {
+        id: 's15-raise',
+        title: 'Raising your own errors',
+        blocks: [
+          {
+            type: 'p',
+            text: 'You can **raise** an exception yourself with `raise`, when your code finds something wrong.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def set_age(age):
+    if age < 0:
+        raise ValueError("age cannot be negative")
+    return age
+
+try:
+    set_age(-3)
+except ValueError as e:
+    print("Caught:", e)
+
+print(set_age(20))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Choose the **right type**: `ValueError` for a bad value, `TypeError` for a bad type.',
+              'Write a **clear message** so the next person knows what went wrong.',
+              'The function that finds the problem **raises**. The code that calls it decides what to do and **catches**.',
+            ],
+          },
+          { type: 'h3', text: 'Your own exception class' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`class LowBalanceError(Exception):
+    pass
+
+def withdraw(balance, amount):
+    if amount > balance:
+        raise LowBalanceError("not enough money")
+    return balance - amount
+
+try:
+    print(withdraw(100, 30))
+    print(withdraw(100, 500))
+except LowBalanceError as e:
+    print("Sorry:", e)`,
+          },
+          {
+            type: 'p',
+            text: 'A custom exception is a class that **inherits from `Exception`**. We learn classes properly later; for now just copy this pattern when you want an error with your own name.',
+          },
+        ],
+      },
+      {
+        id: 's15-files',
+        title: 'Exceptions and files',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Last class we checked whether a file exists. A `try` block is the better way: it handles the missing file **and** other problems.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def read_file(name):
+    try:
+        with open(name) as f:
+            return f.read()
+    except FileNotFoundError:
+        return "(file not found)"
+
+with open("hello.txt", "w") as f:
+    f.write("Hello!")
+
+print(read_file("hello.txt"))
+print(read_file("missing.txt"))`,
+          },
+          { type: 'h3', text: 'Reading numbers from a file safely' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`with open("scores.txt", "w") as f:
+    f.write("80\nabc\n95\n\n70\n")
+
+total = 0
+bad = 0
+with open("scores.txt") as f:
+    for line in f:
+        try:
+            total += int(line)
+        except ValueError:
+            bad += 1
+
+print("Total:", total)
+print("Bad lines:", bad)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The bad line `abc` and the blank line are **skipped**, and the loop carries on.',
+              'Without `try`, the first bad line would stop the whole program.',
+            ],
+          },
+          { type: 'h3', text: 'finally with a file opened by hand' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`f = open("temp.txt", "w")
+try:
+    f.write("saving...")
+    print(10 / 0)
+except ZeroDivisionError:
+    print("something went wrong")
+finally:
+    f.close()
+    print("file closed:", f.closed)`,
+          },
+          {
+            type: 'p',
+            text: '`with` does this job for you, but `finally` is the idea behind it: **clean up no matter what**.',
+          },
+        ],
+      },
+      {
+        id: 's15-bare',
+        title: 'Catching too much',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Do not do this',
+            code: raw`try:
+    total = pric * 2
+except:
+    print("something went wrong")`,
+          },
+          {
+            type: 'p',
+            text: 'A **bare `except:`** catches **every** error, even your own typing mistakes. Here `pric` is a typo for `price`, but the program only says "something went wrong", and you never learn why.',
+          },
+          {
+            type: 'ul',
+            items: [
+              'Catch the **specific** error you expect.',
+              'If you must catch everything, write `except Exception as e:` and **print or log `e`**.',
+              'Keep the `try` block **small**: only the line that can fail.',
+              'Never write `except: pass`. It hides bugs.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`try:
+    total = pric * 2
+except Exception as e:
+    print(type(e).__name__, "-", e)`,
+          },
+        ],
+      },
+      {
+        id: 's15-traceback',
+        title: 'Reading a traceback',
+        blocks: [
+          {
+            type: 'p',
+            text: 'When a program crashes, Python prints a **traceback**. Do not be scared of it. It tells you exactly what happened.',
+          },
+          {
+            type: 'code',
+            label: 'Try it: this crashes on purpose, then read the message',
+            runnable: true,
+            code: raw`def average(numbers):
+    return sum(numbers) / len(numbers)
+
+def report(marks):
+    avg = average(marks)
+    print("Average:", avg)
+
+report([])`,
+          },
+          {
+            type: 'ol',
+            items: [
+              '**Read the last line first.** It names the error and gives the reason: `ZeroDivisionError: division by zero`.',
+              'The lines above show **where**: each `File ... line N, in name` is one step of the call chain.',
+              'The **last** step before the error is where the crash happened (inside `average`).',
+              'The steps above it show **how we got there** (`report` called `average`).',
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The real cause is that `marks` was empty, so `len(numbers)` was `0`. The error shows in `average`, but the **fix** may belong in the code that called it.',
+          },
+        ],
+      },
+      {
+        id: 's15-debug',
+        title: 'Debugging tips',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Debugging** means finding and fixing the cause of a bug. A calm method beats guessing.',
+          },
+          {
+            type: 'ol',
+            items: [
+              '**Read the error.** Last line first, then the line number.',
+              '**Reproduce it.** Find the smallest input that makes it fail.',
+              '**Print the values.** Show variables just before the failing line.',
+              '**Check the types.** `print(type(x))` solves many `TypeError` problems.',
+              '**Split the problem.** Test one function at a time with easy inputs.',
+              '**Change one thing at a time**, then run again.',
+              '**Explain it aloud** to a friend or a rubber duck. You often spot it while talking.',
+              '**Take a break.** A fresh look finds what a tired one missed.',
+            ],
+          },
+          { type: 'h3', text: 'Print debugging' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def total_price(prices, discount):
+    total = 0
+    for p in prices:
+        total += p
+    print("DEBUG total before discount:", total)
+    total = total - total * discount
+    print("DEBUG total after discount:", total)
+    return total
+
+print(total_price([100, 200, 50], 10))`,
+          },
+          {
+            type: 'p',
+            text: 'The debug lines show the total is `350`, then `-3150`. The bug is clear: `discount` should be `0.10`, not `10`. Remove the debug prints when you are done.',
+          },
+          { type: 'h3', text: 'Common bug patterns' },
+          {
+            type: 'ul',
+            items: [
+              '**Off by one:** `range(5)` stops at `4`.',
+              '**`=` instead of `==`** in a condition.',
+              '**Changing a list while looping over it.**',
+              '**Forgetting `return`**, so the result is `None`.',
+              '**Comparing text with a number:** `"5" == 5` is `False`.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's15-assert',
+        title: 'assert',
+        blocks: [
+          {
+            type: 'p',
+            text: '`assert` checks that something is **true**. If it is false, Python raises an **`AssertionError`**. It is a quick way to test your own code.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`def square(n):
+    return n * n
+
+assert square(4) == 16
+assert square(-3) == 9
+print("All tests passed")
+
+try:
+    assert square(5) == 20, "square(5) should be 25"
+except AssertionError as e:
+    print("Test failed:", e)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`assert condition, "message"` shows the message if the condition is false.',
+              'Use `assert` to check your **own** code. Use `try` and `except` for problems that can happen in real use, like bad input or a missing file.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's15-fix',
+        title: 'Find and fix the bugs',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Each box has a bug. Read the error, find the cause, fix it, and press **Run**.',
+          },
+          {
+            type: 'code',
+            label: 'Your turn: fix the bug',
+            runnable: true,
+            code: raw`marks = [70, 85, 90]
+for i in range(1, len(marks) + 1):
+    print(marks[i])`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: fix the bug',
+            runnable: true,
+            code: raw`age = "20"
+print("Next year you will be", age + 1)`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: fix the bug',
+            runnable: true,
+            code: raw`student = {"name": "Aman", "city": "Delhi"}
+print(student["age"])`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: make this safe with try and except',
+            runnable: true,
+            code: raw`text = "twenty"
+number = int(text)
+print(number * 2)`,
+          },
+        ],
+      },
+      {
+        id: 's15-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**A bare `except:`** that hides every bug.',
+              '**A huge `try` block.** Wrap only the line that can fail.',
+              '**`except: pass`**, which throws the error away without a word.',
+              '**Catching an error and carrying on with a wrong value.** Return `None` or stop clearly.',
+              '**Using `try` where an `if` is clearer.** If you can simply check `if b != 0`, that is fine.',
+              '**Expecting `try` to catch a `SyntaxError`.** It cannot.',
+              '**Forgetting the order of `except` blocks.** Put the specific one before the general one.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`try:
+    int("x")
+except Exception:
+    print("general")
+except ValueError:
+    print("specific")`,
+          },
+          {
+            type: 'p',
+            text: 'The general `Exception` matches first, so `specific` can never run. Put `ValueError` **above** `Exception`.',
+          },
+        ],
+      },
+      {
+        id: 's15-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: write a function safe_divide(a, b) that returns None when b is 0',
+            runnable: true,
+            code: raw`def safe_divide(a, b):
+    pass
+
+print(safe_divide(10, 2))
+print(safe_divide(10, 0))`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add up the numbers and skip the items that are not numbers',
+            runnable: true,
+            code: raw`items = ["10", "x", "25", "", "5"]
+total = 0
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: raise a ValueError if the password is shorter than 6 characters',
+            runnable: true,
+            code: raw`def check_password(p):
+    pass
+
+try:
+    check_password("abc")
+except ValueError as e:
+    print("Rejected:", e)`,
+          },
+        ],
+      },
+      {
+        id: 's15-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Write a **calculator** that asks for two numbers and an operator, and handles bad numbers and division by zero.',
+              'Write a function that reads a file and returns its lines, and prints a **friendly message** if the file is missing.',
+              'Make a **marks reader** that reads numbers from a CSV and skips bad rows, then prints how many were bad.',
+              'Write `get_positive_int(prompt)` that keeps asking until the user types a **positive whole number**.',
+              'Make a **bank account** with a custom `InsufficientFunds` exception.',
+              'Take one of your older programs and add **`print` debugging** to find a bug on purpose.',
+              'Revise: **`try`, `except`, `else`, `finally`, `raise`**, common error names, how to read a traceback.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Object-oriented programming: classes and objects.',
+          },
+        ],
+      },
+    ],
+  },
 ]
