@@ -199,6 +199,8 @@ Slide counts are what the title-screen pill and the "n / N" counter show.
 - A small "Draw" panel (starts collapsed on the right) can be dragged anywhere by its header; it stays on screen and remembers its position (`localStorage` key `draw-pos`). The + / - button expands it. **Pen** draws on top of the page; strokes are stored in page coordinates so they scroll with the lesson. **White screen** opens a full-screen white board with its own drawing. Both have pen, marker, eraser, 6 colours, 3 sizes, undo, clear. Esc leaves the pen or closes the board. Drawing is not saved (reload clears it) and is hidden when printing.
 - Canvases are `position: fixed` (class `draw-layer`, z-index 90/95, toolbar 110); only `.live` canvases take pointer events, so the lesson stays usable when the pen is off.
 
+- Every code box (runnable or not) has a **⬜ Board** button. It calls `openBoard(code, label)` from `Draw.tsx` (a `open-board` window event), which opens the white screen with that code shown large on the left, ready to draw on. For Try it boxes it sends the current (edited) code. Opening it clears the board's old strokes.
+
 ## Slide pictures (Art.tsx and src/slides/)
 
 Under each slide title (left column) there can be a picture. The left column is sticky, so the picture stays visible while a tall slide scrolls.
@@ -316,6 +318,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 41. Added lesson 12, "Advanced Functions", with its PDF and a 43-question quiz CSV.
 42. Renamed the example student "Riya" to "Ankit" in lessons 7 to 12, the quiz data and CSVs for sessions 9, 10 and 12, and regenerated the PDFs for sessions 7 to 12.
 43. Added drawing tools (`Draw.tsx`): pen on the page and a white screen, for explaining code in a dry run.
+44. Added a "Board" button to every code box: shows the code on the white screen to draw over while explaining.
 
 ## Gotchas and lessons learned
 

@@ -13,6 +13,11 @@ const COLORS = ['#e11d48', '#1f5c93', '#16a34a', '#f59e0b', '#111827', '#ffffff'
 const SIZES = [3, 6, 12]
 const PANEL_W = 176
 
+// Code boxes call this to show their code on the white screen
+export function openBoard(code: string, title?: string) {
+  window.dispatchEvent(new CustomEvent('open-board', { detail: { code, title } }))
+}
+
 function paint(canvas: HTMLCanvasElement, strokes: Stroke[], offsetY: number) {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -46,6 +51,7 @@ export default function Draw() {
   const [tool, setTool] = useState<Tool>('pen')
   const [color, setColor] = useState(COLORS[0])
   const [size, setSize] = useState(SIZES[1])
+  const [boardCode, setBoardCode] = useState<{ code: string; title?: string } | null>(null)
   const [pos, setPos] = useState<{ x: number; y: number }>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('draw-pos') || 'null')
@@ -91,6 +97,19 @@ export default function Draw() {
       window.removeEventListener('scroll', onScroll)
     }
   }, [redraw, board])
+
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const d = (e as CustomEvent<{ code: string; title?: string }>).detail
+      strokes.current.board = []
+      setBoardCode(d)
+      setPen(false)
+      setOpen(true)
+      setBoard(true)
+    }
+    window.addEventListener('open-board', onOpen)
+    return () => window.removeEventListener('open-board', onOpen)
+  }, [])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -173,6 +192,7 @@ export default function Draw() {
     setBoard(false)
   }
   const toggleBoard = () => {
+    if (!board) setBoardCode(null)
     setPen(false)
     setBoard((b) => !b)
   }
@@ -181,7 +201,16 @@ export default function Draw() {
     <>
       <canvas ref={pageCanvas} className={'draw-layer' + (pen && !board ? ' live' : '')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
       {board && (
-        <canvas ref={boardCanvas} className="draw-layer board live" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
+        <div className="draw-board">
+          {boardCode && (
+            <div className="draw-board-code">
+              {boardCode.title && <p>{boardCode.title}</p>}
+              <pre>{boardCode.code}</pre>
+            </div>
+          )}
+          <canvas ref={boardCanvas} className="draw-layer board live" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
+          <button className="draw-board-close" onClick={() => setBoard(false)}>✕ Close board</button>
+        </div>
       )}
 
       <div ref={panel} className={'draw-panel' + (open ? ' open' : '')} style={{ left: pos.x, top: pos.y }} role="toolbar" aria-label="Drawing tools">

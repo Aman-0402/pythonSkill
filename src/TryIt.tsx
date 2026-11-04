@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { openBoard } from './Draw'
 
 // Python runs in the browser through Pyodide (WebAssembly), loaded from a CDN on first use.
 const PYODIDE_VERSION = '0.26.4'
@@ -84,6 +85,9 @@ export default function TryIt({ code, label }: { code: string; label?: string })
       <figcaption>
         <span>{label ?? 'Try it'}</span>
         <span className="try-actions">
+          <button type="button" className="try-reset" onClick={() => openBoard(source, label)} title="Show this code on a white screen to explain it">
+            ⬜ Board
+          </button>
           <button type="button" className="try-reset" onClick={() => { setSource(code); setResult(null) }} disabled={busy}>
             Reset
           </button>

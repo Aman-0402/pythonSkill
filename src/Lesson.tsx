@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from './router'
 import TryIt from './TryIt'
+import { openBoard } from './Draw'
 import Art from './Art'
 import HeroCode from './HeroCode'
 import { Highlight } from './Highlight'
@@ -45,7 +46,14 @@ function BlockView({ block }: { block: Block }): ReactNode {
       if (block.runnable) return <TryIt code={block.code} label={block.label} />
       return (
         <figure className="codeblock">
-          {block.label && <figcaption>{block.label}</figcaption>}
+          <figcaption>
+            <span>{block.label ?? 'Code'}</span>
+            <span className="try-actions">
+              <button type="button" className="try-reset" onClick={() => openBoard(block.code, block.label)} title="Show this code on a white screen to explain it">
+                ⬜ Board
+              </button>
+            </span>
+          </figcaption>
           <pre>
             {block.code.split('\n').map((line, i) => (
               <div key={i}><Highlight line={line} /></div>
