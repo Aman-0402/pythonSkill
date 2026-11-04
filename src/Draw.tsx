@@ -155,15 +155,19 @@ export default function Draw() {
                 <button className={'draw-btn' + (tool === 'highlighter' ? ' on' : '')} onClick={() => setTool('highlighter')}>Marker</button>
                 <button className={'draw-btn' + (tool === 'eraser' ? ' on' : '')} onClick={() => setTool('eraser')}>Eraser</button>
                 <span className="draw-sep" />
+                <div className="draw-grid">
                 {COLORS.map((c) => (
                   <button key={c} className={'draw-color' + (color === c && tool !== 'eraser' ? ' on' : '')} style={{ background: c }} onClick={() => { setColor(c); if (tool === 'eraser') setTool('pen') }} aria-label={'Colour ' + c} />
                 ))}
+                </div>
                 <span className="draw-sep" />
+                <div className="draw-grid">
                 {SIZES.map((s) => (
                   <button key={s} className={'draw-size' + (size === s ? ' on' : '')} onClick={() => setSize(s)} aria-label={'Size ' + s}>
                     <i style={{ width: s + 4, height: s + 4 }} />
                   </button>
                 ))}
+                </div>
                 <span className="draw-sep" />
                 <button className="draw-btn" onClick={undo}>Undo</button>
                 <button className="draw-btn" onClick={clear}>Clear</button>
