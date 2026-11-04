@@ -327,7 +327,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 42. Renamed the example student "Riya" to "Ankit" in lessons 7 to 12, the quiz data and CSVs for sessions 9, 10 and 12, and regenerated the PDFs for sessions 7 to 12.
 43. Added drawing tools (`Draw.tsx`): pen on the page and a white screen, for explaining code in a dry run.
 44. Added a "Board" button to every code box: shows the code on the white screen to draw over while explaining.
-45. Locked sessions 4 to 12 on the website (`src/lock.ts`, `LOCK_FROM = 4`): greyed cards with a lock on Contents, and a locked message if the URL is opened directly. Change `LOCK_FROM` to unlock sessions as classes happen. The notes are still in the JS bundle, so this hides them but is not a security lock; PDFs and quiz CSVs in the repo are not affected.
+45. Locked sessions 4 to 12 on the website (`src/lock.ts`, `LOCK_FROM = 4`): greyed cards with a lock on Contents, and a locked message if the URL is opened directly. Change `LOCK_FROM` to unlock sessions as classes happen. (Session 4 unlocked: `LOCK_FROM = 5`, sessions 5 to the end still locked.) The notes are still in the JS bundle, so this hides them but is not a security lock; PDFs and quiz CSVs in the repo are not affected.
 46. Added lesson 13, "Modules and Packages", with its PDF and a 50-question quiz CSV.
 47. Added lesson 14, "File Handling", with its PDF and a 49-question quiz CSV.
 48. Added lesson 15, "Exception Handling", with its PDF and a 49-question quiz CSV.
