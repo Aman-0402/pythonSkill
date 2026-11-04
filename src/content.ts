@@ -11163,4 +11163,904 @@ rng = np.random.default_rng()
       },
     ],
   },
+  {
+    slug: 'pandas-introduction',
+    title: 'Pandas Introduction',
+    summary: 'Series, DataFrame and creating data.',
+    hero: {
+      file: 'students.py',
+      lines: ['import pandas as pd', 's = pd.Series([85, 90, 78], index=["Aman", "Ankit", "Neha"])', 'print(s["Neha"])'],
+      output: '78',
+    },
+    sections: [
+      {
+        id: 's18-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `axis=0` mean in `a.sum(axis=0)`?',
+              'What does `np.where(marks >= 50, "Pass", "Fail")` do?',
+              'What is broadcasting?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's18-what',
+        title: 'What is pandas?',
+        blocks: [
+          {
+            type: 'p',
+            text: '**pandas** is the main Python package for **tables of data**, like an Excel sheet inside Python. It sits on top of NumPy and adds **labels**: names for rows and columns.',
+          },
+          {
+            type: 'ul',
+            items: [
+              'Read data from **CSV**, Excel and more.',
+              'Clean it, filter it, sort it and summarise it.',
+              'Used everywhere in **data analysis** and machine learning.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Install it once on your computer (terminal)',
+            code: raw`pip install pandas`,
+          },
+          {
+            type: 'p',
+            text: 'By convention we import it as **`pd`**. pandas has two main building blocks:',
+          },
+          {
+            type: 'table',
+            head: ['Name', 'What it is', 'Think of it as'],
+            rows: [
+              ['**Series**', 'one column of data with labels', 'one column of a spreadsheet'],
+              ['**DataFrame**', 'a whole table: many Series side by side', 'the whole spreadsheet'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+print(pd.__name__)
+print(type(pd.Series([1, 2, 3])).__name__)
+print(type(pd.DataFrame({"a": [1, 2]})).__name__)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'pandas in the Try it boxes',
+            text: 'The first box that imports pandas downloads it (a few seconds, more than NumPy). After that it is quick. Some printed details, like the word `object` for text columns, can be different in newer versions of pandas on your own computer.',
+          },
+        ],
+      },
+      {
+        id: 's18-series',
+        title: 'Series',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **Series** is a one-dimensional column. Each value has a **label** called the **index**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+marks = pd.Series([85, 90, 78, 92])
+print(marks)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The **left** column (`0 1 2 3`) is the **index**.',
+              'The **right** column is the **values**.',
+              'The last line shows the **dtype** (the data type), here `int64`.',
+            ],
+          },
+          { type: 'h3', text: 'Your own index' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+marks = pd.Series([85, 90, 78, 92],
+                  index=["Aman", "Ankit", "Neha", "Rohit"],
+                  name="maths")
+print(marks)
+print(list(marks.index))
+print(marks.values)
+print(marks.name)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`index=` gives each value a **name** instead of a number.',
+              '`name=` names the Series (it becomes the column name in a table).',
+              '`.index` and `.values` give the two parts.',
+            ],
+          },
+          { type: 'h3', text: 'From a dictionary' },
+          {
+            type: 'p',
+            text: 'A dictionary becomes a Series: the **keys** are the index and the **values** are the data.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+stock = pd.Series({"apples": 30, "bananas": 12, "cherries": 45})
+print(stock)`,
+          },
+          { type: 'h3', text: 'A single value for all' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+print(pd.Series(0, index=["a", "b", "c"]))
+print(pd.Series(range(1, 6)))`,
+          },
+        ],
+      },
+      {
+        id: 's18-series-access',
+        title: 'Using a Series',
+        blocks: [
+          { type: 'h3', text: 'Getting values' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+marks = pd.Series([85, 90, 78, 92],
+                  index=["Aman", "Ankit", "Neha", "Rohit"])
+
+print(marks["Neha"])
+print(marks.iloc[0])
+print(marks[["Aman", "Rohit"]])
+print(marks["Ankit":"Rohit"])`,
+          },
+          {
+            type: 'table',
+            head: ['Way', 'Meaning'],
+            rows: [
+              ['`marks["Neha"]`', 'by **label**'],
+              ['`marks.loc["Neha"]`', 'by label (the clear way)'],
+              ['`marks.iloc[2]`', 'by **position** (0, 1, 2 ...)'],
+              ['`marks[["Aman", "Rohit"]]`', 'several labels, in a list'],
+              ['`marks["Ankit":"Rohit"]`', 'a label slice: **includes** the last label'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Label slices include the end',
+            text: 'A normal slice like `a[1:3]` stops **before** 3. A **label** slice like `"Ankit":"Rohit"` **includes** `"Rohit"`.',
+          },
+          { type: 'h3', text: 'Maths and filtering' },
+          {
+            type: 'p',
+            text: 'A Series works like a NumPy array: maths happens on every value, and a condition works as a filter.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+marks = pd.Series([85, 90, 78, 92],
+                  index=["Aman", "Ankit", "Neha", "Rohit"])
+
+print(marks + 5)
+print(marks[marks > 85])
+print(marks.sum(), marks.mean(), marks.max())
+print(marks.idxmax())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`marks + 5` keeps the labels and adds 5 to each value.',
+              '`marks[marks > 85]` keeps only the matching rows.',
+              '`idxmax()` gives the **label** of the biggest value (the topper\'s name).',
+            ],
+          },
+          { type: 'h3', text: 'Series with Series' },
+          {
+            type: 'p',
+            text: 'When you add two Series, pandas lines the values up by **label**, not by position.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+a = pd.Series([1, 2, 3], index=["x", "y", "z"])
+b = pd.Series([10, 20, 30], index=["z", "y", "x"])
+
+print(a + b)`,
+          },
+        ],
+      },
+      {
+        id: 's18-df',
+        title: 'DataFrame',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **DataFrame** is a table: **rows** and **columns**, each column its own Series. The easiest way to make one is from a **dictionary**: each key is a column name, each value is a list for that column.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+data = {
+    "name":    ["Aman", "Ankit", "Neha", "Rohit"],
+    "maths":   [85, 70, 92, 55],
+    "science": [90, 65, 88, 60],
+}
+
+df = pd.DataFrame(data)
+print(df)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The **bold column on the left** (`0 1 2 3`) is the row **index**.',
+              'The top row has the **column names**.',
+              'All the lists must be the **same length**.',
+            ],
+          },
+          { type: 'h3', text: 'The parts of a DataFrame' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit"],
+    "maths":   [85, 70, 92, 55],
+    "science": [90, 65, 88, 60],
+})
+
+print(df.shape)
+print(list(df.columns))
+print(list(df.index))
+print(df.size)`,
+          },
+          {
+            type: 'table',
+            head: ['Attribute', 'Meaning'],
+            rows: [
+              ['`df.shape`', '`(rows, columns)`'],
+              ['`df.columns`', 'the column names'],
+              ['`df.index`', 'the row labels'],
+              ['`df.dtypes`', 'the type of each column'],
+              ['`df.size`', 'rows times columns'],
+              ['`df.values`', 'the data as a NumPy array'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"maths": [85, 70, 92], "ratio": [0.5, 0.25, 0.75]})
+
+print(df.dtypes)
+print(df.values)`,
+          },
+          {
+            type: 'p',
+            text: 'A column of **text** shows the dtype `object`. (Some newer versions of pandas call it `str`.)',
+          },
+        ],
+      },
+      {
+        id: 's18-create',
+        title: 'Creating a DataFrame in other ways',
+        blocks: [
+          { type: 'h3', text: 'A list of dictionaries (one per row)' },
+          {
+            type: 'p',
+            text: 'This matches how data often arrives: each record is a dictionary.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+rows = [
+    {"name": "Aman",  "city": "Delhi", "age": 21},
+    {"name": "Neha",  "city": "Pune",  "age": 23},
+    {"name": "Rohit", "city": "Goa"},
+]
+
+df = pd.DataFrame(rows)
+print(df)`,
+          },
+          {
+            type: 'p',
+            text: 'Rohit has no `age`, so pandas fills the gap with **`NaN`** (not a number): the sign of a **missing value**.',
+          },
+          { type: 'h3', text: 'A list of lists, with column names' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+rows = [
+    ["Aman", 85, 90],
+    ["Ankit", 70, 65],
+    ["Neha", 92, 88],
+]
+
+df = pd.DataFrame(rows, columns=["name", "maths", "science"])
+print(df)`,
+          },
+          { type: 'h3', text: 'A NumPy array' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
+
+df = pd.DataFrame(arr, columns=["a", "b", "c"], index=["row1", "row2"])
+print(df)`,
+          },
+          { type: 'h3', text: 'Your own row labels' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame(
+    {"maths": [85, 70, 92], "science": [90, 65, 88]},
+    index=["Aman", "Ankit", "Neha"],
+)
+print(df)
+print(df.loc["Neha"])`,
+          },
+          { type: 'h3', text: 'Series together make a DataFrame' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+maths = pd.Series([85, 70, 92], index=["Aman", "Ankit", "Neha"])
+science = pd.Series([90, 65, 88], index=["Aman", "Ankit", "Neha"])
+
+df = pd.DataFrame({"maths": maths, "science": science})
+print(df)`,
+          },
+        ],
+      },
+      {
+        id: 's18-generate',
+        title: 'Creating data with code',
+        blocks: [
+          {
+            type: 'p',
+            text: 'You do not have to type every value. Python and NumPy can **generate** the data.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "n": range(1, 6),
+    "square": [n ** 2 for n in range(1, 6)],
+    "double": [n * 2 for n in range(1, 6)],
+})
+print(df)`,
+          },
+          { type: 'h3', text: 'Random data' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng()
+df = pd.DataFrame(rng.integers(35, 101, size=(4, 3)),
+                  columns=["maths", "science", "english"])
+print(df.shape)
+print((df >= 35).all().all())`,
+          },
+          { type: 'h3', text: 'A range of dates' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+days = pd.date_range("2026-01-01", periods=4)
+sales = pd.Series([120, 80, 150, 95], index=days)
+print(sales)`,
+          },
+          { type: 'h3', text: 'From CSV text' },
+          {
+            type: 'p',
+            text: 'Real data usually comes from a **CSV file**: `pd.read_csv("marks.csv")`. This box uses text that looks like a file.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+from io import StringIO
+
+text = """name,maths,science
+Aman,85,90
+Ankit,70,65
+Neha,92,88"""
+
+df = pd.read_csv(StringIO(text))
+print(df)
+print(df["maths"].mean())`,
+          },
+          {
+            type: 'p',
+            text: 'Next class we read real CSV files. Today, remember the **names**: `read_csv` to read, and `to_csv` to write.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman", "Neha"], "marks": [85, 92]})
+
+df.to_csv("marks.csv", index=False)
+print(open("marks.csv").read())
+
+back = pd.read_csv("marks.csv")
+print(back.equals(df))`,
+          },
+          {
+            type: 'p',
+            text: '`index=False` stops the row numbers being saved as an extra column.',
+          },
+        ],
+      },
+      {
+        id: 's18-look',
+        title: 'Looking at a DataFrame',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Method', 'What it shows'],
+            rows: [
+              ['`df.head(n)`', 'the first `n` rows (5 if you give no number)'],
+              ['`df.tail(n)`', 'the last `n` rows'],
+              ['`df.describe()`', 'count, mean, std, min, quartiles and max of the number columns'],
+              ['`df.info()`', 'columns, types and missing values'],
+              ['`df.sample(n)`', '`n` random rows'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Sara", "Tara"],
+    "maths":   [85, 70, 92, 55, 78, 66],
+    "science": [90, 65, 88, 60, 82, 71],
+})
+
+print(df.head(3))
+print(df.tail(2))
+print(df.describe())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`head` and `tail` are the first thing to run on any new data.',
+              '`describe` skips the text column and summarises the numbers.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's18-select',
+        title: 'Selecting columns and rows',
+        blocks: [
+          { type: 'h3', text: 'Columns' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "maths":   [85, 70, 92],
+    "science": [90, 65, 88],
+})
+
+print(df["maths"])
+print(type(df["maths"]).__name__)
+print(df[["name", "maths"]])
+print(type(df[["name", "maths"]]).__name__)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`df["maths"]` (one name) gives a **Series**.',
+              '`df[["name", "maths"]]` (a **list** of names, so **double brackets**) gives a **DataFrame**.',
+              '`df.maths` also works, but only when the name has no spaces. Prefer `df["maths"]`.',
+            ],
+          },
+          { type: 'h3', text: 'Rows with iloc and loc' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "maths":   [85, 70, 92, 55],
+    "science": [90, 65, 88, 60],
+}, index=["Aman", "Ankit", "Neha", "Rohit"])
+
+print(df.iloc[0])
+print(df.loc["Neha"])
+print(df.iloc[1:3])
+print(df.loc["Aman":"Neha", "maths"])
+print(df.iloc[2, 1])`,
+          },
+          {
+            type: 'table',
+            head: ['Tool', 'Selects by', 'Example'],
+            rows: [
+              ['`iloc`', '**position**', '`df.iloc[0]`, `df.iloc[1:3]`, `df.iloc[2, 1]`'],
+              ['`loc`', '**label**', '`df.loc["Neha"]`, `df.loc["Aman":"Neha", "maths"]`'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Both take `[rows, columns]`, just like NumPy. `iloc` slices **stop before** the end; `loc` slices **include** the end.',
+          },
+          { type: 'h3', text: 'Filtering rows' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit"],
+    "maths": [85, 70, 92, 55],
+})
+
+print(df[df["maths"] >= 80])
+print(df[(df["maths"] > 60) & (df["maths"] < 90)])`,
+          },
+          {
+            type: 'p',
+            text: 'The same rules as NumPy: use `&` and `|`, with each condition in brackets.',
+          },
+        ],
+      },
+      {
+        id: 's18-change',
+        title: 'Adding, changing and removing columns',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "maths":   [85, 70, 92],
+    "science": [90, 65, 88],
+})
+
+df["total"] = df["maths"] + df["science"]
+df["average"] = df["total"] / 2
+df["passed"] = df["average"] >= 75
+print(df)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Assign to a **new** column name to **add** a column.',
+              'The maths is done on the **whole columns** at once, like NumPy.',
+              'Assigning to an **old** name **changes** that column.',
+            ],
+          },
+          { type: 'h3', text: 'Rename and drop' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha"],
+    "maths": [85, 70, 92],
+    "temp":  [0, 0, 0],
+})
+
+df = df.rename(columns={"maths": "math_marks"})
+df = df.drop(columns=["temp"])
+print(df)
+
+df = df.drop(index=[1])
+print(df)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'These make a new table',
+            text: '`rename` and `drop` give back a **new** DataFrame. Save it with `df = ...`, or the change is lost.',
+          },
+          { type: 'h3', text: 'Sorting' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit"],
+    "maths": [85, 70, 92, 55],
+})
+
+print(df.sort_values("maths"))
+print(df.sort_values("maths", ascending=False).head(2))`,
+          },
+        ],
+      },
+      {
+        id: 's18-index',
+        title: 'Working with the index',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Any column can become the **index**, and the index can go back to being a column.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha"],
+    "maths": [85, 70, 92],
+})
+
+by_name = df.set_index("name")
+print(by_name)
+print(by_name.loc["Neha", "maths"])
+
+print(by_name.reset_index())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`set_index("name")` makes `name` the row labels.',
+              '`reset_index()` puts them back as a normal column and numbers the rows `0, 1, 2 ...`.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's18-missing',
+        title: 'Missing values (NaN)',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Real data has gaps. pandas shows a gap as **`NaN`** (or `None`).',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha"],
+    "maths": [85, np.nan, 92],
+})
+
+print(df)
+print(df.isna())
+print(df["maths"].isna().sum())
+print(df["maths"].mean())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`isna()` gives `True` where a value is missing.',
+              '`isna().sum()` counts the gaps.',
+              '`mean()` **skips** the `NaN` values. The mean here is `(85 + 92) / 2`.',
+            ],
+          },
+          { type: 'h3', text: 'Fill or drop' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha"],
+    "maths": [85, np.nan, 92],
+})
+
+print(df.fillna(0))
+print(df["maths"].fillna(df["maths"].mean()))
+print(df.dropna())`,
+          },
+          {
+            type: 'table',
+            head: ['Method', 'What it does'],
+            rows: [
+              ['`fillna(value)`', 'replace each gap with `value`'],
+              ['`dropna()`', 'remove every row that has a gap'],
+              ['`isna()`', 'find the gaps'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's18-example',
+        title: 'Example: a class report',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Put it together: build a table, add columns, rank, and find the topper.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Sara"],
+    "maths":   [85, 70, 92, 55, 78],
+    "science": [90, 65, 88, 60, 82],
+    "english": [78, 80, 95, 48, 74],
+})
+
+df["total"] = df["maths"] + df["science"] + df["english"]
+df["average"] = (df["total"] / 3).round(1)
+df["grade"] = np.where(df["average"] >= 80, "A",
+              np.where(df["average"] >= 60, "B", "C"))
+
+ranked = df.sort_values("total", ascending=False)
+print(ranked[["name", "total", "average", "grade"]])
+
+print("Topper:", ranked.iloc[0]["name"])
+print("Class average:", round(df["average"].mean(), 1))
+print("Students with grade A:", (df["grade"] == "A").sum())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Columns are added with simple maths on other columns.',
+              '`np.where` fills the grade column, as in the NumPy class.',
+              '`sort_values` ranks the table, and `iloc[0]` takes the top row.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add a column "percent" (total out of 300, rounded to 1 decimal) and print the table',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Neha"],
+    "maths":   [85, 92],
+    "science": [90, 88],
+    "english": [78, 95],
+})
+df["total"] = df["maths"] + df["science"] + df["english"]
+
+`,
+          },
+        ],
+      },
+      {
+        id: 's18-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Forgetting `import pandas as pd`.** You get `NameError: name \'pd\' is not defined`.',
+              '**A wrong column name.** `df["Maths"]` is not `df["maths"]`: you get a `KeyError`.',
+              '**One bracket instead of two** when choosing several columns: `df["name", "maths"]` fails. Use `df[["name", "maths"]]`.',
+              '**Lists of different lengths** when making a DataFrame from a dictionary.',
+              '**Forgetting to save** the result of `drop`, `rename` or `sort_values`: `df = df.drop(...)`.',
+              '**Mixing up `loc` and `iloc`.** `loc` uses **labels** and includes the end; `iloc` uses **positions** and stops before the end.',
+              '**Using `and` / `or`** instead of `&` / `|` when filtering rows.',
+              '**Capital letters.** It is `DataFrame` and `Series`, not `Dataframe` or `series`.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman"], "maths": [85]})
+print(df["Maths"])`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this also fails on purpose',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5]})
+print(df)`,
+          },
+        ],
+      },
+      {
+        id: 's18-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: make a Series of 4 city populations (any numbers) with the city names as the index, then print the biggest city',
+            runnable: true,
+            code: raw`import pandas as pd
+
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: make a DataFrame of 3 books with columns title, author and price, then print only the books costing more than 300',
+            runnable: true,
+            code: raw`import pandas as pd
+
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add a column "price_with_gst" (price times 1.18) and sort the table by it, biggest first',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "item":  ["pen", "bag", "book"],
+    "price": [20, 800, 350],
+})
+`,
+          },
+        ],
+      },
+      {
+        id: 's18-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make a DataFrame of **6 students** with name, age, city and marks. Print `shape`, `head(3)` and `describe()`.',
+              'From it, print the students **older than 20**, then only the **name and marks** columns of those students.',
+              'Add a column `result` that says "Pass" or "Fail" using `np.where`, then count how many of each.',
+              'Create the same table from a **list of dictionaries**, then again from a **list of lists** with `columns=`.',
+              'Write your DataFrame to `students.csv` with `to_csv`, then read it back with `read_csv` and check with `equals`.',
+              'Make a table with one **missing value**, find it with `isna`, then fix it with `fillna`.',
+              'Revise: **Series**, **DataFrame**, `index`, `columns`, `loc`, `iloc`, `head`, `describe`, `NaN`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Pandas data analysis: reading CSV files, filtering, `groupby` and summaries.',
+          },
+        ],
+      },
+    ],
+  },
 ]

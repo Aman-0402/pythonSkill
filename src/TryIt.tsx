@@ -61,7 +61,7 @@ export default function TryIt({ code, label }: { code: string; label?: string })
       setStatus(pyodide ? 'running' : 'loading')
       const py = await loadPython()
       // packages such as numpy are downloaded the first time a box imports them
-      if (/^\s*(import|from)\s+numpy/m.test(source)) setStatus('loading')
+      if (/^\s*(import|from)\s+(numpy|pandas)/m.test(source)) setStatus('loading')
       await py.loadPackagesFromImports(source)
       setStatus('running')
       py.setStdout(capture)
