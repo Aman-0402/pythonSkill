@@ -11,6 +11,7 @@ type Stroke = { tool: Tool; color: string; size: number; pts: [number, number][]
 
 const COLORS = ['#e11d48', '#1f5c93', '#16a34a', '#f59e0b', '#111827', '#ffffff']
 const SIZES = [3, 6, 12]
+const PANEL_W = 176
 
 function paint(canvas: HTMLCanvasElement, strokes: Stroke[], offsetY: number) {
   const ctx = canvas.getContext('2d')
@@ -45,6 +46,17 @@ export default function Draw() {
   const [tool, setTool] = useState<Tool>('pen')
   const [color, setColor] = useState(COLORS[0])
   const [size, setSize] = useState(SIZES[1])
+  const [pos, setPos] = useState<{ x: number; y: number }>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('draw-pos') || 'null')
+      if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') return saved
+    } catch {
+      /* no saved position */
+    }
+    return { x: Math.max(8, window.innerWidth - PANEL_W - 64), y: 90 }
+  })
+  const panel = useRef<HTMLDivElement>(null)
+  const drag = useRef<{ dx: number; dy: number } | null>(null)
 
   const pageCanvas = useRef<HTMLCanvasElement>(null)
   const boardCanvas = useRef<HTMLCanvasElement>(null)
@@ -123,13 +135,44 @@ export default function Draw() {
     redraw(layer)
   }
 
+  // keep the panel on screen, and remember where it was left
+  const clamp = useCallback((p: { x: number; y: number }) => {
+    const w = panel.current?.offsetWidth ?? PANEL_W
+    const h = panel.current?.offsetHeight ?? 48
+    return {
+      x: Math.min(Math.max(4, p.x), Math.max(4, window.innerWidth - w - 4)),
+      y: Math.min(Math.max(4, p.y), Math.max(4, window.innerHeight - h - 4)),
+    }
+  }, [])
+  useEffect(() => {
+    const keep = () => setPos((p) => clamp(p))
+    keep()
+    window.addEventListener('resize', keep)
+    return () => window.removeEventListener('resize', keep)
+  }, [clamp, open, drawing])
+  const startDrag = (e: React.PointerEvent<HTMLElement>) => {
+    if ((e.target as HTMLElement).closest('button')) return
+    e.currentTarget.setPointerCapture(e.pointerId)
+    drag.current = { dx: e.clientX - pos.x, dy: e.clientY - pos.y }
+  }
+  const moveDrag = (e: React.PointerEvent<HTMLElement>) => {
+    if (drag.current) setPos(clamp({ x: e.clientX - drag.current.dx, y: e.clientY - drag.current.dy }))
+  }
+  const endDrag = () => {
+    if (!drag.current) return
+    drag.current = null
+    try {
+      localStorage.setItem('draw-pos', JSON.stringify(pos))
+    } catch {
+      /* storage blocked */
+    }
+  }
+
   const togglePen = () => {
-    setOpen(true)
-    setBoard(false)
     setPen((p) => !p)
+    setBoard(false)
   }
   const toggleBoard = () => {
-    setOpen(true)
     setPen(false)
     setBoard((b) => !b)
   }
@@ -141,51 +184,48 @@ export default function Draw() {
         <canvas ref={boardCanvas} className="draw-layer board live" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
       )}
 
-      <div className={'draw-bar' + (open ? ' open' : '')} role="toolbar" aria-label="Drawing tools">
-        {!open ? (
-          <button className="draw-fab" onClick={() => setOpen(true)} title="Open drawing tools" aria-label="Open drawing tools">✏️</button>
-        ) : (
-          <>
-            <button className={'draw-btn' + (pen ? ' on' : '')} onClick={togglePen} title="Draw on this page">✏️ Pen</button>
-            <button className={'draw-btn' + (board ? ' on' : '')} onClick={toggleBoard} title="Open a white screen">⬜ White screen</button>
-            {drawing && (
+      <div ref={panel} className={'draw-panel' + (open ? ' open' : '')} style={{ left: pos.x, top: pos.y }} role="toolbar" aria-label="Drawing tools">
+        <div className="draw-head" onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} title="Drag to move">
+          <span className="draw-grip" aria-hidden="true">⠿</span>
+          <span className="draw-title">Draw</span>
+          <button className="draw-min" onClick={() => setOpen((o) => !o)} aria-label={open ? 'Collapse' : 'Expand'} title={open ? 'Collapse' : 'Expand'}>
+            {open ? '–' : '+'}
+          </button>
+        </div>
+        {open && (
+          <div className="draw-body">
+            <div className="draw-row two">
+              <button className={'draw-btn' + (pen ? ' on' : '')} onClick={togglePen} title="Draw on this page">✏️ Pen</button>
+              <button className={'draw-btn' + (board ? ' on' : '')} onClick={toggleBoard} title="Open a white screen">⬜ Board</button>
+            </div>
+            {drawing ? (
               <>
-                <span className="draw-sep" />
-                <button className={'draw-btn' + (tool === 'pen' ? ' on' : '')} onClick={() => setTool('pen')}>Pen</button>
-                <button className={'draw-btn' + (tool === 'highlighter' ? ' on' : '')} onClick={() => setTool('highlighter')}>Marker</button>
-                <button className={'draw-btn' + (tool === 'eraser' ? ' on' : '')} onClick={() => setTool('eraser')}>Eraser</button>
-                <span className="draw-sep" />
-                <div className="draw-grid">
-                {COLORS.map((c) => (
-                  <button key={c} className={'draw-color' + (color === c && tool !== 'eraser' ? ' on' : '')} style={{ background: c }} onClick={() => { setColor(c); if (tool === 'eraser') setTool('pen') }} aria-label={'Colour ' + c} />
-                ))}
+                <div className="draw-row three">
+                  <button className={'draw-btn' + (tool === 'pen' ? ' on' : '')} onClick={() => setTool('pen')}>Pen</button>
+                  <button className={'draw-btn' + (tool === 'highlighter' ? ' on' : '')} onClick={() => setTool('highlighter')}>Marker</button>
+                  <button className={'draw-btn' + (tool === 'eraser' ? ' on' : '')} onClick={() => setTool('eraser')}>Eraser</button>
                 </div>
-                <span className="draw-sep" />
-                <div className="draw-grid">
-                {SIZES.map((s) => (
-                  <button key={s} className={'draw-size' + (size === s ? ' on' : '')} onClick={() => setSize(s)} aria-label={'Size ' + s}>
-                    <i style={{ width: s + 4, height: s + 4 }} />
-                  </button>
-                ))}
+                <div className="draw-colors">
+                  {COLORS.map((c) => (
+                    <button key={c} className={'draw-color' + (color === c && tool !== 'eraser' ? ' on' : '')} style={{ background: c }} onClick={() => { setColor(c); if (tool === 'eraser') setTool('pen') }} aria-label={'Colour ' + c} />
+                  ))}
                 </div>
-                <span className="draw-sep" />
-                <button className="draw-btn" onClick={undo}>Undo</button>
-                <button className="draw-btn" onClick={clear}>Clear</button>
+                <div className="draw-row three">
+                  {SIZES.map((n) => (
+                    <button key={n} className={'draw-size' + (size === n ? ' on' : '')} onClick={() => setSize(n)} aria-label={'Size ' + n}>
+                      <i style={{ width: n + 4, height: n + 4 }} />
+                    </button>
+                  ))}
+                </div>
+                <div className="draw-row two">
+                  <button className="draw-btn" onClick={undo}>↶ Undo</button>
+                  <button className="draw-btn" onClick={clear}>🗑 Clear</button>
+                </div>
               </>
+            ) : (
+              <p className="draw-hint">Pick <b>Pen</b> to draw on the lesson, or <b>Board</b> for a white screen.</p>
             )}
-            <span className="draw-sep" />
-            <button
-              className="draw-btn"
-              onClick={() => {
-                setPen(false)
-                setBoard(false)
-                setOpen(false)
-              }}
-              title="Close (Esc leaves drawing)"
-            >
-              ✕
-            </button>
-          </>
+          </div>
         )}
       </div>
     </>

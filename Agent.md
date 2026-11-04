@@ -196,7 +196,7 @@ Slide counts are what the title-screen pill and the "n / N" counter show.
 - `input()` is not supported in this box.
 
 ## Drawing tools (Draw.tsx)
-- A pencil button (right side, beside the slide dots) opens a vertical toolbar. **Pen** draws on top of the page; strokes are stored in page coordinates so they scroll with the lesson. **White screen** opens a full-screen white board with its own drawing. Both have pen, marker, eraser, 6 colours, 3 sizes, undo, clear. Esc leaves the pen or closes the board. Drawing is not saved (reload clears it) and is hidden when printing.
+- A small "Draw" panel (starts collapsed on the right) can be dragged anywhere by its header; it stays on screen and remembers its position (`localStorage` key `draw-pos`). The + / - button expands it. **Pen** draws on top of the page; strokes are stored in page coordinates so they scroll with the lesson. **White screen** opens a full-screen white board with its own drawing. Both have pen, marker, eraser, 6 colours, 3 sizes, undo, clear. Esc leaves the pen or closes the board. Drawing is not saved (reload clears it) and is hidden when printing.
 - Canvases are `position: fixed` (class `draw-layer`, z-index 90/95, toolbar 110); only `.live` canvases take pointer events, so the lesson stays usable when the pen is off.
 
 ## Slide pictures (Art.tsx and src/slides/)

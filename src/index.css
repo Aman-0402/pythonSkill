@@ -673,17 +673,26 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .draw-layer { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 90; pointer-events: none; touch-action: none; }
 .draw-layer.live { pointer-events: auto; cursor: crosshair; }
 .draw-layer.board { z-index: 95; background: #fff; }
-.draw-bar { position: fixed; right: 50px; top: 50%; transform: translateY(-50%); z-index: 110; display: flex; flex-direction: column; align-items: stretch; gap: 6px; width: 118px; max-height: calc(100vh - 24px); overflow-y: auto; padding: 8px; background: rgba(13, 27, 42, 0.94); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); }
-.draw-bar:not(.open) { width: auto; padding: 0; background: none; border: 0; box-shadow: none; overflow: visible; }
-.draw-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-.draw-fab { width: 46px; height: 46px; border-radius: 50%; border: 2px solid #10203a; background: #fff; font-size: 1.2rem; cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); }
-.draw-btn { padding: 6px 8px; text-align: center; white-space: nowrap; font: 600 0.85rem var(--body); color: #fff; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; cursor: pointer; }
+.draw-panel { position: fixed; z-index: 110; width: 176px; color: #fff; background: rgba(13, 27, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); user-select: none; overflow: hidden; }
+.draw-panel:not(.open) { width: 104px; }
+.draw-head { display: flex; align-items: center; gap: 6px; padding: 7px 8px; cursor: grab; touch-action: none; background: rgba(255, 255, 255, 0.06); }
+.draw-head:active { cursor: grabbing; }
+.draw-grip { font-size: 1rem; line-height: 1; color: rgba(255, 255, 255, 0.6); }
+.draw-title { flex: 1; font: 700 0.85rem var(--body); letter-spacing: 0.02em; }
+.draw-min { width: 24px; height: 24px; padding: 0; font: 700 1rem/1 var(--body); color: #fff; background: rgba(255, 255, 255, 0.1); border: 0; border-radius: 6px; cursor: pointer; }
+.draw-min:hover { background: rgba(255, 255, 255, 0.22); }
+.draw-body { display: flex; flex-direction: column; gap: 8px; padding: 10px; }
+.draw-row { display: grid; gap: 6px; }
+.draw-row.two { grid-template-columns: 1fr 1fr; }
+.draw-row.three { grid-template-columns: repeat(3, 1fr); }
+.draw-btn { min-width: 0; padding: 7px 4px; font: 600 0.78rem var(--body); text-align: center; white-space: nowrap; color: #fff; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9px; cursor: pointer; }
 .draw-btn:hover { background: rgba(255, 255, 255, 0.18); }
 .draw-btn.on { color: #0d1b2a; background: var(--yellow); border-color: var(--yellow); }
-.draw-sep { height: 1px; background: rgba(255, 255, 255, 0.22); margin: 2px 0; }
-.draw-color { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.4); cursor: pointer; padding: 0; }
+.draw-colors { display: flex; justify-content: space-between; }
+.draw-color { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.35); cursor: pointer; }
 .draw-color.on { border-color: var(--yellow); box-shadow: 0 0 0 2px var(--yellow); }
-.draw-size { width: 30px; height: 30px; display: grid; place-items: center; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; cursor: pointer; padding: 0; }
+.draw-size { height: 30px; display: grid; place-items: center; padding: 0; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9px; cursor: pointer; }
 .draw-size i { display: block; background: #fff; border-radius: 50%; }
-.draw-size.on { border-color: var(--yellow); }
-@media print { .draw-bar, .draw-layer { display: none; } }
+.draw-size.on { border-color: var(--yellow); box-shadow: inset 0 0 0 1px var(--yellow); }
+.draw-hint { margin: 0; font: 0.78rem/1.4 var(--body); color: rgba(255, 255, 255, 0.75); }
+@media print { .draw-panel, .draw-layer { display: none; } }
