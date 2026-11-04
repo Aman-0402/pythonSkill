@@ -90,6 +90,7 @@ src/
   Art.tsx                     Picture under a slide title: drawn illustration (slides 1 and 2 only) or the owner's file from src/slides/
   Highlight.tsx               Tiny Python syntax colouring used by code blocks and illustrations
   TryIt.tsx                   Editable code box that runs Python in the browser (Pyodide)
+  Draw.tsx                    Pen overlay + white screen for explaining code in a dry run (rendered by App.tsx on every page)
   content.ts                  ALL lesson text and its types (the only place to edit lesson content)
   slides/                     The owner's slide pictures (WebP), plus README.md with how to add them
   index.css                   All styles
@@ -193,6 +194,10 @@ Slide counts are what the title-screen pill and the "n / N" counter show.
 - stdout and stderr are captured raw (`setStdout({ write })`, decoded with a `TextDecoder`) and `sys.stdout` is flushed after every run. Capturing line by line (`batched`) lost text without a newline: `print(i, end=" ")` printed nothing, and the text then appeared in the next box's output. Do not switch back to `batched`. The output panel shows what was captured; errors show only the traceback from the learner's own code onward (the Pyodide internal frames above it are cut, and `<exec>` is renamed "your code"), so the learner sees the line number and the error type, drawn in red.
 - Tab inserts 4 spaces; Ctrl/Cmd+Enter runs the code. The editor does not wrap long lines (`wrap="off"`). The Pyodide version is the constant `PYODIDE_VERSION` at the top of the file.
 - `input()` is not supported in this box.
+
+## Drawing tools (Draw.tsx)
+- A pencil button (bottom-left) opens a toolbar. **Pen** draws on top of the page; strokes are stored in page coordinates so they scroll with the lesson. **White screen** opens a full-screen white board with its own drawing. Both have pen, marker, eraser, 6 colours, 3 sizes, undo, clear. Esc leaves the pen or closes the board. Drawing is not saved (reload clears it) and is hidden when printing.
+- Canvases are `position: fixed` (class `draw-layer`, z-index 90/95, toolbar 110); only `.live` canvases take pointer events, so the lesson stays usable when the pen is off.
 
 ## Slide pictures (Art.tsx and src/slides/)
 
@@ -310,6 +315,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 40. Added lesson 11, "Functions", with its PDF and a 47-question quiz CSV.
 41. Added lesson 12, "Advanced Functions", with its PDF and a 43-question quiz CSV.
 42. Renamed the example student "Riya" to "Ankit" in lessons 7 to 12, the quiz data and CSVs for sessions 9, 10 and 12, and regenerated the PDFs for sessions 7 to 12.
+43. Added drawing tools (`Draw.tsx`): pen on the page and a white screen, for explaining code in a dry run.
 
 ## Gotchas and lessons learned
 
