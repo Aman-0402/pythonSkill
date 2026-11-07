@@ -90,6 +90,7 @@ src/
   Art.tsx                     Picture under a slide title: drawn illustration (slides 1 and 2 only) or the owner's file from src/slides/
   Highlight.tsx               Tiny Python syntax colouring used by code blocks and illustrations
   TryIt.tsx                   Editable code box that runs Python in the browser (Pyodide)
+  Quiz.tsx                    Quick quiz slide: one random question at a time, loaded on demand from scripts/quiz-data/
   pyrun.ts                    Loads Pyodide and runs Python: `runPython(source)` gives text, error flag and chart PNGs (used by TryIt and the Draw board)
   lock.ts                     LOCK_FROM: sessions from this number to the end are locked on the website
   Draw.tsx                    Pen overlay + white screen with shapes, text, select and erasers, for explaining code in a dry run (rendered by App.tsx on every page)
@@ -210,6 +211,14 @@ Lessons 19 to 30 are written, **not yet turned into PDFs or quiz CSVs** (owner: 
 - `sizeOf()` picks `data-size` = `xl`, `l` or `m` from how much text a slide has. Short slides get bigger type (`--scale` 1.5 / 1.2 / 1) so they fill the screen. Slides containing code or a table always stay `m`.
 - Each slide gets one of 8 soft background colours with a matching accent (blue, green, orange, purple, pink, teal, amber, indigo), cycling with `.band:nth-of-type(8n + k)`. The accent colours the eyebrow, title bar, bullets, bold text, table headers, code-block header and callout borders.
 - Bold text is the slide's accent colour at heavier weight, with no highlight strip (the strip was tried and rejected).
+
+## Quick quiz slides (Quiz.tsx, added 2026-11-08)
+
+- Every lesson has 1 to 4 "Quick quiz" slides among its normal slides (about one per 8 slides). `withQuizzes()` in `Lesson.tsx` adds them to the slide list at **random slide numbers that change on each visit**: the lesson is cut into equal zones with one quiz in each, so they spread out and are never on the first two slides or at the end. They exist only on the website: `content.ts` is untouched, the PDF script does not see them, and they are hidden when printing (`.band-quiz`).
+- The owner wrote "add quiz in middle on slides, random numbers"; "random numbers" was read as random slide numbers. Confirm if they meant something else.
+- `Quiz.tsx` shows one random question with its options in random order. Clicking marks right and wrong and shows the explanation; "Next question" gives another, and a small score counts that slide only. It picks from the part of the lesson already taught (the question files follow lesson order, `progress` is the slide's position) and does not repeat a question within a visit until the pool runs out.
+- Questions come from `scripts/quiz-data/sN.mjs`, loaded with `import.meta.glob` as small separate chunks. Sessions 1 to 18 reuse their CSV questions; sessions 19 to 30 have new, smaller files (12 to 16 questions, 180 in total) written for the slides.
+- **The hold on quiz CSVs still stands.** Running `scripts/quiz-csv.mjs` with no number now WOULD write CSVs for sessions 19 to 30, so until the owner says so use `node --experimental-strip-types scripts/quiz-csv.mjs --check` (validates every question file, runs the Python checks, writes nothing), or give a session number from 1 to 18.
 
 ## Try it: Python in the browser (TryIt.tsx)
 
@@ -366,6 +375,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 62. Added lessons 26 to 30 (EDA, Capstone parts 1 and 2, Presentation and Reporting, Final Assessment and Next Steps), no PDFs or quiz CSVs yet. Course is now 30 sessions, all unlocked (`LOCK_FROM = 0`). Shared generated dataset in `content.ts` (`SHOP`, `CLEAN`). Verified every runnable box in local Python and 7 key ones (shop data, check(), SQL, t-test, linear regression, a chart, Excel formatting) in headless Chrome.
 63. Added a **⛶ Full screen** option to every code box: dark full-screen code with a Run button, the output at the end of the code, and all the drawing tools on top for explaining. Python running moved from `TryIt.tsx` into the new `src/pyrun.ts` so the Draw board can share it. Tested in headless Chrome on lesson 2 (opens full, Run prints `Aman` and `25`, pen stroke drawn, no console errors).
 64. Fixed: long code in the board could not be scrolled. Wheel, Shift + wheel, arrow keys, Page Up/Down, Space, Home/End now scroll it, and a Fit button shrinks it to the screen. Tested with a 2030 px tall code block in a 804 px window (wheel moved it 600 px, Page Up 644 px, Fit made it 691 px tall).
+65. Full test and quick quiz slides (2026-11-08). Ran `tsc`, lint (warnings only), build, and all 722 runnable boxes in real browser Python with a clean namespace per box. Every error left is a deliberate one ("read the error", "fails on purpose", "fix the bug"). Fixed: the lesson 17 die-roll box crashed in the browser (`bincount` on 32-bit needs `dtype=np.int32`); arrow keys and Home/End on the board also moved the slides or page behind it; direct links to a slide did nothing on a fresh load (`Slides` now scrolls to the hash); labelled the frozenset box. Added quiz slides to all 30 lessons (see "Quick quiz slides") and `--check` to `quiz-csv.mjs`.
 
 ## Gotchas and lessons learned
 
@@ -386,6 +396,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 
 ## Open items and ideas
 
+- **UI upgrades need the owner's OK first** (they said: "if you think you can upgrade better ui then ask me and do"). Ask with concrete options, then do only what they pick.
 - **Waiting on the owner:** (1) "say when" for PDFs and quiz CSVs of sessions 19 to 30, and for regenerating the stale Session 3 PDF; (2) the closing "Next class" lines and the roadmap in lesson 30 are assistant guesses, and the course plan may continue past session 30; (3) Draw panel caveats: shapes are outline only, Select cannot recolour, and moving, zooming or resizing the board code is not part of Undo.
 
 - Not yet done: a quiz **on the website** (the quizzes exist only as CSV files for the owner's own quiz app), a progress bar and remembering the last slide read, a per-slide share link (slides already have anchor ids, e.g. `#installation-windows`), and `input()` support in the Try it box.

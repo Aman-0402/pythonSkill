@@ -4094,6 +4094,7 @@ print(a)`,
           },
           {
             type: 'code',
+            label: 'Try it: this fails on purpose (a frozenset cannot change)',
             runnable: true,
             code: raw`fs = frozenset([1, 2, 3])
 print(fs)
@@ -11102,14 +11103,14 @@ print(np.array_equal(a, c))`,
             code: raw`import numpy as np
 
 rng = np.random.default_rng()
-rolls = rng.integers(1, 7, size=6000)
+rolls = rng.integers(1, 7, size=6000, dtype=np.int32)
 
 print(rolls.min(), rolls.max())
 print(np.bincount(rolls)[1:])`,
           },
           {
             type: 'p',
-            text: '`bincount` counts how many times each number appears. Each face should come up about **1000** times.',
+            text: '`bincount` counts how many times each number appears. Each face should come up about **1000** times. (`dtype=np.int32` is there because the browser Python here is 32-bit, and `bincount` refuses a bigger type on it.)',
           },
           { type: 'h3', text: 'Random marks table' },
           {

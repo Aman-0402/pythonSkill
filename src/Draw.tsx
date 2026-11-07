@@ -449,6 +449,7 @@ export default function Draw() {
         ArrowDown: [0, -80], ArrowUp: [0, 80], ArrowLeft: [80, 0], ArrowRight: [-80, 0],
         PageDown: [0, -step], PageUp: [0, step], ' ': [0, -step],
       }
+      if (e.key === 'Home' || e.key === 'End') e.preventDefault() // or the page behind the board scrolls
       if (e.key === 'Home') setCodeT((c) => ({ ...c, x: 0, y: 0 }))
       else if (e.key === 'End') setCodeT((c) => ({ ...c, y: window.innerHeight * 0.9 - (codeRef.current?.offsetHeight ?? 0) * c.s - (codeRef.current?.offsetTop ?? 0) }))
       else if (move[e.key]) {

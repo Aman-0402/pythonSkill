@@ -3,6 +3,7 @@
 // usage (from the project root):
 //   node --experimental-strip-types scripts/quiz-csv.mjs          all sessions
 //   node --experimental-strip-types scripts/quiz-csv.mjs 3        one session
+//   node --experimental-strip-types scripts/quiz-csv.mjs --check  check the question files, write nothing
 //
 // The files follow quiz-template.csv in the project root: UTF-8 with a BOM, CRLF line endings, every field in quotes.
 // CSV format (one row = one question):
@@ -21,7 +22,9 @@ import { lessons } from '../src/content.ts'
 
 const root = path.resolve(import.meta.dirname, '..')
 const outDir = path.join(root, 'Quiz in CSV')
-const only = process.argv[2] ? Number(process.argv[2]) : null
+const checkOnly = process.argv.includes('--check')
+const onlyArg = process.argv.slice(2).find((a) => /^\d+$/.test(a))
+const only = onlyArg ? Number(onlyArg) : null
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
 const HEADER = ['Question', ...LETTERS.map((l) => `Option ${l}`), 'Correct', 'Explanation']
 
@@ -91,6 +94,10 @@ for (let n = 1; n <= lessons.length; n++) {
     rows.push(cells.map(csvCell).join(','))
   })
 
+  if (checkOnly) {
+    console.log(`  checked ${rows.length} questions`)
+    continue
+  }
   fs.mkdirSync(outDir, { recursive: true })
   const name = `Session ${n} - ${lessons[n - 1].title}.csv`
   fs.writeFileSync(path.join(outDir, name), '\ufeff' + [HEADER.map(csvCell).join(','), ...rows].join('\r\n') + '\r\n') // starts with a UTF-8 BOM, like the template

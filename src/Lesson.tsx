@@ -1,6 +1,7 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from './router'
 import TryIt from './TryIt'
+import Quiz from './Quiz'
 import { openBoard } from './Draw'
 import Art from './Art'
 import HeroCode from './HeroCode'
@@ -104,7 +105,7 @@ function BlockView({ block }: { block: Block }): ReactNode {
   }
 }
 
-type Band = { id: string; eyebrow?: string; title: string; art?: string; blocks: Block[] }
+type Band = { id: string; eyebrow?: string; title: string; art?: string; blocks: Block[]; quiz?: number }
 
 // Each top-level section becomes one band; every sub-heading inside it becomes its own band.
 function toBands(sections: Section[]): Band[] {
@@ -124,6 +125,21 @@ function toBands(sections: Section[]): Band[] {
     if (!current) bands.push({ id: s.id, title: s.title, art: s.art, blocks: intro })
   }
   return bands
+}
+
+// Put quiz slides among the lesson slides at random slide numbers, different on each visit. The lesson is cut into equal
+// zones with one quiz in each, so they spread out and never land next to each other, on the first two slides or at the end.
+function withQuizzes(bands: Band[]): Band[] {
+  const count = Math.min(4, Math.max(1, Math.round(bands.length / 8)))
+  const first = 2
+  const zone = Math.floor((bands.length - 1 - first) / count)
+  if (zone < 1) return bands
+  const out = [...bands]
+  for (let n = count - 1; n >= 0; n--) {
+    const spot = first + n * zone + Math.floor(Math.random() * Math.max(1, zone - 1))
+    out.splice(spot, 0, { id: `quiz-${n + 1}`, eyebrow: 'Check yourself', title: 'Quick quiz', blocks: [], quiz: spot / bands.length })
+  }
+  return out
 }
 
 // Short slides get bigger type so they fill the screen; slides with code or tables stay normal.
@@ -169,7 +185,9 @@ export default function Lesson({ slug }: { slug: string }) {
 }
 
 function Slides({ lesson }: { lesson: LessonData }) {
-  const bands = toBands(lesson.sections)
+  const bands = useMemo(() => withQuizzes(toBands(lesson.sections)), [lesson])
+  const session = lessons.indexOf(lesson) + 1
+  const quizCount = bands.filter((b) => b.quiz !== undefined).length
   const tryItCount = lesson.sections.flatMap((s) => s.blocks).filter((b) => b.type === 'code' && b.runnable).length
   const [active, setActive] = useState(0)
 
@@ -177,6 +195,12 @@ function Slides({ lesson }: { lesson: LessonData }) {
   useEffect(() => {
     document.documentElement.classList.add('snap-page')
     return () => document.documentElement.classList.remove('snap-page')
+  }, [])
+
+  // a link straight to a slide: the slide does not exist until React has drawn it, so the browser cannot jump there itself
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (id) document.getElementById(id)?.scrollIntoView({ block: 'start' })
   }, [])
 
   const goTo = (i: number) => {
@@ -189,7 +213,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement
       if (t.closest('textarea, input, select') || e.altKey || e.ctrlKey || e.metaKey) return
-      if (document.querySelector('.lightbox')) return // a picture is open: keys belong to it
+      if (document.querySelector('.lightbox, .draw-board')) return // a picture or the board is open: keys belong to it
       const to = { ArrowRight: active + 1, ArrowLeft: active - 1, Home: 0, End: bands.length }[e.key]
       if (to === undefined) return
       e.preventDefault()
@@ -242,6 +266,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
               <ul className="hero-facts">
                 <li><b>{bands.length}</b> slides</li>
                 <li><b>{tryItCount}</b> code boxes to run</li>
+                {quizCount > 0 && <li><b>{quizCount}</b> quick {quizCount === 1 ? 'quiz' : 'quizzes'}</li>}
                 {lesson.tag && <li>{lesson.tag}</li>}
               </ul>
               <a href={'#' + bands[0].id} className="scroll-cue">Start reading ↓</a>
@@ -252,7 +277,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
       </header>
 
       {bands.map((b, i) => (
-        <section className="band" key={b.id} id={b.id} data-slide={i + 1} data-size={sizeOf(b.blocks)}>
+        <section className={b.quiz === undefined ? 'band' : 'band band-quiz'} key={b.id} id={b.id} data-slide={i + 1} data-size={b.quiz === undefined ? sizeOf(b.blocks) : 'm'}>
           <div className="wrap band-inner">
             <div className="band-head">
               {b.eyebrow && <p className="band-eyebrow">{b.eyebrow}</p>}
@@ -260,6 +285,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
               <Art name={b.art} id={b.id} />
             </div>
             <div className="notes">
+              {b.quiz !== undefined && <Quiz session={session} progress={b.quiz} />}
               {b.blocks.map((blk, k) => (
                 <BlockView key={k} block={blk} />
               ))}
