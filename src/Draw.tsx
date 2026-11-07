@@ -1,24 +1,122 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Pen overlay for explaining code in a dry run.
-//  - "Pen" draws straight on top of the page. Strokes are stored in page coordinates, so they scroll with the lesson.
+//  - "Pen" draws straight on top of the page. Items are stored in page coordinates, so they scroll with the lesson.
 //  - "Board" opens a white screen to write and draw on. It keeps its own drawing.
-// Pen / highlighter / eraser, a few colours and sizes, undo, clear. Esc closes the board or leaves the pen.
+// Tools: pen, marker, rub-out eraser, remove-one-item eraser, line, arrow, box, circle, text and select (move / edit / delete).
+// Colours, sizes, undo, clear. Esc closes the board or leaves the pen.
 
-type Tool = 'pen' | 'highlighter' | 'eraser'
+type Tool = 'pen' | 'highlighter' | 'eraser' | 'remove' | 'line' | 'arrow' | 'rect' | 'ellipse' | 'text' | 'select'
 type Layer = 'page' | 'board'
-type Stroke = { tool: Tool; color: string; size: number; pts: [number, number][] }
+type Pt = [number, number]
+type Free = { k: 'free'; tool: 'pen' | 'highlighter' | 'eraser'; color: string; size: number; pts: Pt[] }
+type Shape = { k: 'shape'; shape: 'line' | 'arrow' | 'rect' | 'ellipse'; color: string; size: number; a: Pt; b: Pt }
+type TextItem = { k: 'text'; color: string; size: number; x: number; y: number; text: string }
+type Item = Free | Shape | TextItem
+type Edit = { layer: Layer; x: number; y: number; text: string; item: TextItem | null }
 
 const COLORS = ['#e11d48', '#1f5c93', '#16a34a', '#f59e0b', '#111827', '#ffffff']
 const SIZES = [3, 6, 12]
-const PANEL_W = 176
+const PANEL_W = 216
+const FONT = "600 {n}px 'Instrument Sans', system-ui, sans-serif"
+const fontFor = (size: number) => FONT.replace('{n}', String(textPx(size)))
+const textPx = (size: number) => 16 + size * 3 // pen sizes 3, 6, 12 -> text 25, 34, 52 px
+const LINE_H = 1.25
+
+const TOOLS: { id: Tool; icon: string; label: string; title: string }[] = [
+  { id: 'pen', icon: '✏️', label: 'Pen', title: 'Draw freehand' },
+  { id: 'highlighter', icon: '🖍', label: 'Marker', title: 'Highlight' },
+  { id: 'eraser', icon: '🧽', label: 'Rub out', title: 'Rub out part of a drawing' },
+  { id: 'remove', icon: '❌', label: 'Remove', title: 'Click a drawing to remove just that one item' },
+  { id: 'line', icon: '╱', label: 'Line', title: 'Straight line' },
+  { id: 'arrow', icon: '➜', label: 'Arrow', title: 'Arrow' },
+  { id: 'rect', icon: '▭', label: 'Box', title: 'Rectangle' },
+  { id: 'ellipse', icon: '◯', label: 'Circle', title: 'Circle or oval' },
+  { id: 'text', icon: 'T', label: 'Text', title: 'Click and type. Enter to finish, Shift+Enter for a new line' },
+  { id: 'select', icon: '⬚', label: 'Select', title: 'Click an item to move it. Delete removes it. Double-click text to edit' },
+]
+const SHAPE_TOOLS = ['line', 'arrow', 'rect', 'ellipse']
 
 // Code boxes call this to show their code on the white screen
 export function openBoard(code: string, title?: string) {
   window.dispatchEvent(new CustomEvent('open-board', { detail: { code, title } }))
 }
 
-function paint(canvas: HTMLCanvasElement, strokes: Stroke[], offsetY: number) {
+const measureCtx = document.createElement('canvas').getContext('2d')
+
+function textLines(t: TextItem) {
+  return t.text.split('\n')
+}
+function textBox(t: TextItem) {
+  const px = textPx(t.size)
+  let w = 10
+  if (measureCtx) {
+    measureCtx.font = fontFor(t.size)
+    for (const l of textLines(t)) w = Math.max(w, measureCtx.measureText(l).width)
+  }
+  return { x: t.x, y: t.y, w, h: textLines(t).length * px * LINE_H }
+}
+
+function segDist(p: Pt, a: Pt, b: Pt) {
+  const dx = b[0] - a[0]
+  const dy = b[1] - a[1]
+  const len2 = dx * dx + dy * dy
+  const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / len2))
+  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
+}
+
+function hit(it: Item, p: Pt, tol: number): boolean {
+  if (it.k === 'free') {
+    if (it.tool === 'eraser') return false
+    const reach = tol + (it.tool === 'highlighter' ? it.size * 1.5 : it.size / 2)
+    if (it.pts.length === 1) return Math.hypot(p[0] - it.pts[0][0], p[1] - it.pts[0][1]) <= reach
+    for (let i = 1; i < it.pts.length; i++) if (segDist(p, it.pts[i - 1], it.pts[i]) <= reach) return true
+    return false
+  }
+  if (it.k === 'text') {
+    const b = textBox(it)
+    return p[0] >= b.x - tol && p[0] <= b.x + b.w + tol && p[1] >= b.y - tol && p[1] <= b.y + b.h + tol
+  }
+  const reach = tol + it.size / 2
+  if (it.shape === 'line' || it.shape === 'arrow') return segDist(p, it.a, it.b) <= reach
+  const x1 = Math.min(it.a[0], it.b[0])
+  const x2 = Math.max(it.a[0], it.b[0])
+  const y1 = Math.min(it.a[1], it.b[1])
+  const y2 = Math.max(it.a[1], it.b[1])
+  if (it.shape === 'rect') {
+    const outer = p[0] >= x1 - reach && p[0] <= x2 + reach && p[1] >= y1 - reach && p[1] <= y2 + reach
+    const inner = p[0] > x1 + reach && p[0] < x2 - reach && p[1] > y1 + reach && p[1] < y2 - reach
+    return outer && !inner
+  }
+  const rx = Math.max((x2 - x1) / 2, 1)
+  const ry = Math.max((y2 - y1) / 2, 1)
+  const v = Math.hypot((p[0] - (x1 + x2) / 2) / rx, (p[1] - (y1 + y2) / 2) / ry)
+  return Math.abs(v - 1) * Math.min(rx, ry) <= reach
+}
+
+function move(it: Item, dx: number, dy: number) {
+  if (it.k === 'free') it.pts = it.pts.map(([x, y]) => [x + dx, y + dy])
+  else if (it.k === 'shape') {
+    it.a = [it.a[0] + dx, it.a[1] + dy]
+    it.b = [it.b[0] + dx, it.b[1] + dy]
+  } else {
+    it.x += dx
+    it.y += dy
+  }
+}
+
+function bounds(it: Item) {
+  if (it.k === 'text') return textBox(it)
+  const pts = it.k === 'free' ? it.pts : [it.a, it.b]
+  const xs = pts.map((p) => p[0])
+  const ys = pts.map((p) => p[1])
+  const pad = it.size
+  const x = Math.min(...xs) - pad
+  const y = Math.min(...ys) - pad
+  return { x, y, w: Math.max(...xs) + pad - x, h: Math.max(...ys) + pad - y }
+}
+
+function paint(canvas: HTMLCanvasElement, items: Item[], offsetY: number, selected: Item | null) {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const dpr = window.devicePixelRatio || 1
@@ -26,23 +124,65 @@ function paint(canvas: HTMLCanvasElement, strokes: Stroke[], offsetY: number) {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
-  for (const s of strokes) {
-    ctx.globalCompositeOperation = s.tool === 'eraser' ? 'destination-out' : 'source-over'
-    ctx.globalAlpha = s.tool === 'highlighter' ? 0.35 : 1
-    ctx.strokeStyle = s.tool === 'eraser' ? '#000' : s.color
-    ctx.lineWidth = s.tool === 'highlighter' ? s.size * 3 : s.tool === 'eraser' ? s.size * 3 : s.size
-    ctx.beginPath()
-    s.pts.forEach(([x, y], i) => {
-      if (i === 0) ctx.moveTo(x, y - offsetY)
-      else ctx.lineTo(x, y - offsetY)
-    })
-    // a single tap leaves a dot
-    if (s.pts.length === 1) ctx.lineTo(s.pts[0][0] + 0.01, s.pts[0][1] - offsetY)
-    ctx.stroke()
+  for (const it of items) {
+    ctx.globalCompositeOperation = it.k === 'free' && it.tool === 'eraser' ? 'destination-out' : 'source-over'
+    ctx.globalAlpha = it.k === 'free' && it.tool === 'highlighter' ? 0.35 : 1
+    if (it.k === 'free') {
+      ctx.strokeStyle = it.tool === 'eraser' ? '#000' : it.color
+      ctx.lineWidth = it.tool === 'pen' ? it.size : it.size * 3
+      ctx.beginPath()
+      it.pts.forEach(([x, y], i) => {
+        if (i === 0) ctx.moveTo(x, y - offsetY)
+        else ctx.lineTo(x, y - offsetY)
+      })
+      // a single tap leaves a dot
+      if (it.pts.length === 1) ctx.lineTo(it.pts[0][0] + 0.01, it.pts[0][1] - offsetY)
+      ctx.stroke()
+    } else if (it.k === 'shape') {
+      ctx.strokeStyle = it.color
+      ctx.lineWidth = it.size
+      const [ax, ay] = [it.a[0], it.a[1] - offsetY]
+      const [bx, by] = [it.b[0], it.b[1] - offsetY]
+      ctx.beginPath()
+      if (it.shape === 'rect') ctx.rect(Math.min(ax, bx), Math.min(ay, by), Math.abs(bx - ax), Math.abs(by - ay))
+      else if (it.shape === 'ellipse') ctx.ellipse((ax + bx) / 2, (ay + by) / 2, Math.max(Math.abs(bx - ax) / 2, 0.5), Math.max(Math.abs(by - ay) / 2, 0.5), 0, 0, Math.PI * 2)
+      else {
+        ctx.moveTo(ax, ay)
+        ctx.lineTo(bx, by)
+        if (it.shape === 'arrow') {
+          const ang = Math.atan2(by - ay, bx - ax)
+          const head = 10 + it.size * 2
+          for (const side of [-1, 1]) {
+            ctx.moveTo(bx, by)
+            ctx.lineTo(bx - head * Math.cos(ang + side * 0.45), by - head * Math.sin(ang + side * 0.45))
+          }
+        }
+      }
+      ctx.stroke()
+    } else {
+      ctx.fillStyle = it.color
+      ctx.font = fontFor(it.size)
+      ctx.textBaseline = 'top'
+      const px = textPx(it.size)
+      textLines(it).forEach((line, i) => ctx.fillText(line, it.x, it.y - offsetY + i * px * LINE_H + (px * LINE_H - px) / 2))
+    }
   }
   ctx.globalAlpha = 1
   ctx.globalCompositeOperation = 'source-over'
+  if (selected && items.includes(selected)) {
+    const b = bounds(selected)
+    ctx.strokeStyle = '#2563eb'
+    ctx.lineWidth = 1.5
+    ctx.setLineDash([6, 4])
+    ctx.strokeRect(b.x - 4, b.y - offsetY - 4, b.w + 8, b.h + 8)
+    ctx.setLineDash([])
+  }
 }
+
+type Gesture =
+  | { type: 'draw'; item: Free | Shape }
+  | { type: 'remove'; saved: boolean }
+  | { type: 'move'; last: Pt }
 
 export default function Draw() {
   const [open, setOpen] = useState(false) // toolbar visible
@@ -51,6 +191,7 @@ export default function Draw() {
   const [tool, setTool] = useState<Tool>('pen')
   const [color, setColor] = useState(COLORS[0])
   const [size, setSize] = useState(SIZES[1])
+  const [edit, setEdit] = useState<Edit | null>(null)
   const [boardCode, setBoardCode] = useState<{ code: string; title?: string } | null>(null)
   const [pos, setPos] = useState<{ x: number; y: number }>(() => {
     try {
@@ -66,16 +207,30 @@ export default function Draw() {
 
   const pageCanvas = useRef<HTMLCanvasElement>(null)
   const boardCanvas = useRef<HTMLCanvasElement>(null)
-  const strokes = useRef<Record<Layer, Stroke[]>>({ page: [], board: [] })
-  const current = useRef<Stroke | null>(null)
+  const items = useRef<Record<Layer, Item[]>>({ page: [], board: [] })
+  const history = useRef<Record<Layer, Item[][]>>({ page: [], board: [] })
+  const selected = useRef<Item | null>(null)
+  const gesture = useRef<Gesture | null>(null)
+  const field = useRef<HTMLTextAreaElement>(null)
+  const editRef = useRef<Edit | null>(null)
+  useEffect(() => {
+    editRef.current = edit
+  }, [edit])
 
   const layer: Layer = board ? 'board' : 'page'
   const drawing = pen || board
 
   const redraw = useCallback((which: Layer) => {
     const canvas = which === 'page' ? pageCanvas.current : boardCanvas.current
-    if (canvas) paint(canvas, strokes.current[which], which === 'page' ? window.scrollY : 0)
+    if (canvas) paint(canvas, items.current[which], which === 'page' ? window.scrollY : 0, selected.current)
   }, [])
+
+  // remember the drawing before a change, so Undo can step back
+  const snapshot = (which: Layer) => {
+    const h = history.current[which]
+    h.push(structuredClone(items.current[which]))
+    if (h.length > 60) h.shift()
+  }
 
   // keep canvases the size of the window
   useEffect(() => {
@@ -101,7 +256,10 @@ export default function Draw() {
   useEffect(() => {
     const onOpen = (e: Event) => {
       const d = (e as CustomEvent<{ code: string; title?: string }>).detail
-      strokes.current.board = []
+      items.current.board = []
+      history.current.board = []
+      selected.current = null
+      setEdit(null)
       setBoardCode(d)
       setPen(false)
       setOpen(true)
@@ -111,47 +269,160 @@ export default function Draw() {
     return () => window.removeEventListener('open-board', onOpen)
   }, [])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      if (board) setBoard(false)
-      else if (pen) setPen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [board, pen])
-
-  const point = (e: React.PointerEvent): [number, number] => [
-    e.clientX,
-    e.clientY + (layer === 'page' ? window.scrollY : 0),
-  ]
-
-  const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (e.button !== 0 && e.pointerType === 'mouse') return
-    e.currentTarget.setPointerCapture(e.pointerId)
-    current.current = { tool, color, size, pts: [point(e)] }
-    strokes.current[layer].push(current.current)
-    redraw(layer)
-  }
-  const onMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!current.current) return
-    // coalesced events keep fast strokes smooth
-    const events = e.nativeEvent.getCoalescedEvents?.() ?? [e.nativeEvent]
-    const off = layer === 'page' ? window.scrollY : 0
-    for (const ev of events) current.current.pts.push([ev.clientX, ev.clientY + off])
-    redraw(layer)
-  }
-  const onUp = () => {
-    current.current = null
-  }
-
   const undo = () => {
-    strokes.current[layer].pop()
+    const prev = history.current[layer].pop()
+    if (!prev) return
+    items.current[layer] = prev
+    selected.current = null
     redraw(layer)
   }
   const clear = () => {
-    strokes.current[layer] = []
+    if (!items.current[layer].length) return
+    snapshot(layer)
+    items.current[layer] = []
+    selected.current = null
     redraw(layer)
+  }
+  const deleteSelected = () => {
+    const sel = selected.current
+    if (!sel || !items.current[layer].includes(sel)) return
+    snapshot(layer)
+    items.current[layer] = items.current[layer].filter((i) => i !== sel)
+    selected.current = null
+    redraw(layer)
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const typing = (e.target as HTMLElement)?.tagName === 'TEXTAREA'
+      if (e.key === 'Escape') {
+        if (board) setBoard(false)
+        else if (pen) setPen(false)
+      } else if ((e.key === 'Delete' || e.key === 'Backspace') && drawing && !typing && tool === 'select') {
+        e.preventDefault()
+        deleteSelected()
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && drawing && !typing) {
+        e.preventDefault()
+        undo()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  const offsetY = () => (layer === 'page' ? window.scrollY : 0)
+  const point = (e: { clientX: number; clientY: number }): Pt => [e.clientX, e.clientY + offsetY()]
+
+  // text editing
+  const commitEdit = useCallback(() => {
+    const ed = editRef.current
+    if (!ed) return
+    editRef.current = null
+    setEdit(null)
+    const text = (field.current?.value ?? ed.text).replace(/\s+$/, '')
+    const list = items.current[ed.layer]
+    if (ed.item) {
+      if (text === ed.item.text) return
+      snapshot(ed.layer)
+      if (text) ed.item.text = text
+      else items.current[ed.layer] = list.filter((i) => i !== ed.item)
+    } else if (text) {
+      snapshot(ed.layer)
+      list.push({ k: 'text', color, size, x: ed.x, y: ed.y, text })
+    } else return
+    redraw(ed.layer)
+  }, [color, size, redraw])
+
+  useEffect(() => {
+    if (edit) field.current?.focus()
+  }, [edit])
+
+  const topHit = (p: Pt): Item | null => {
+    const list = items.current[layer]
+    for (let i = list.length - 1; i >= 0; i--) if (hit(list[i], p, 6)) return list[i]
+    return null
+  }
+  const removeAt = (p: Pt) => {
+    const g = gesture.current
+    if (g?.type !== 'remove') return
+    const target = topHit(p)
+    if (!target) return
+    if (!g.saved) {
+      snapshot(layer)
+      g.saved = true
+    }
+    items.current[layer] = items.current[layer].filter((i) => i !== target)
+    if (selected.current === target) selected.current = null
+    redraw(layer)
+  }
+
+  const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return
+    if (editRef.current) commitEdit()
+    const p = point(e)
+    if (tool === 'text') {
+      e.preventDefault()
+      setEdit({ layer, x: p[0], y: p[1], text: '', item: null })
+      return
+    }
+    e.currentTarget.setPointerCapture(e.pointerId)
+    if (tool === 'select') {
+      const target = topHit(p)
+      selected.current = target
+      if (target) {
+        snapshot(layer)
+        gesture.current = { type: 'move', last: p }
+      }
+      redraw(layer)
+    } else if (tool === 'remove') {
+      gesture.current = { type: 'remove', saved: false }
+      removeAt(p)
+    } else {
+      snapshot(layer)
+      selected.current = null
+      const item: Free | Shape = SHAPE_TOOLS.includes(tool)
+        ? { k: 'shape', shape: tool as Shape['shape'], color, size, a: p, b: p }
+        : { k: 'free', tool: tool as Free['tool'], color, size, pts: [p] }
+      items.current[layer].push(item)
+      gesture.current = { type: 'draw', item }
+      redraw(layer)
+    }
+  }
+  const onMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const g = gesture.current
+    if (!g) return
+    if (g.type === 'draw') {
+      if (g.item.k === 'free') {
+        // coalesced events keep fast strokes smooth
+        const events = e.nativeEvent.getCoalescedEvents?.() ?? [e.nativeEvent]
+        for (const ev of events) g.item.pts.push(point(ev))
+      } else {
+        g.item.b = point(e)
+      }
+    } else if (g.type === 'remove') {
+      removeAt(point(e))
+      return
+    } else if (selected.current) {
+      const p = point(e)
+      move(selected.current, p[0] - g.last[0], p[1] - g.last[1])
+      g.last = p
+    }
+    redraw(layer)
+  }
+  const onUp = () => {
+    const g = gesture.current
+    gesture.current = null
+    if (g?.type === 'draw' && g.item.k === 'shape' && Math.hypot(g.item.b[0] - g.item.a[0], g.item.b[1] - g.item.a[1]) < 4) {
+      // a click without a drag makes no shape
+      items.current[layer] = items.current[layer].filter((i) => i !== g.item)
+      history.current[layer].pop()
+      redraw(layer)
+    }
+  }
+  const onDouble = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (tool !== 'select') return
+    const target = topHit(point(e))
+    if (target?.k === 'text') setEdit({ layer, x: target.x, y: target.y, text: target.text, item: target })
   }
 
   // keep the panel on screen, and remember where it was left
@@ -187,19 +458,30 @@ export default function Draw() {
     }
   }
 
+  const pickTool = (t: Tool) => {
+    commitEdit()
+    selected.current = null
+    redraw(layer)
+    setTool(t)
+  }
   const togglePen = () => {
+    commitEdit()
     setPen((p) => !p)
     setBoard(false)
   }
   const toggleBoard = () => {
+    commitEdit()
     if (!board) setBoardCode(null)
     setPen(false)
     setBoard((b) => !b)
   }
 
+  const canvasClass = (extra: string) => 'draw-layer' + extra + ' tool-' + tool
+  const px = edit ? textPx(edit.item?.size ?? size) : 0
+
   return (
     <>
-      <canvas ref={pageCanvas} className={'draw-layer' + (pen && !board ? ' live' : '')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
+      <canvas ref={pageCanvas} className={canvasClass(pen && !board ? ' live' : '')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} />
       {board && (
         <div className="draw-board">
           {boardCode && (
@@ -208,9 +490,43 @@ export default function Draw() {
               <pre>{boardCode.code}</pre>
             </div>
           )}
-          <canvas ref={boardCanvas} className="draw-layer board live" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
+          <canvas ref={boardCanvas} className={canvasClass(' board live')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} />
           <button className="draw-board-close" onClick={() => setBoard(false)}>✕ Close board</button>
         </div>
+      )}
+      {edit && (
+        <textarea
+          key={edit.layer + edit.x + '-' + edit.y}
+          ref={field}
+          className="draw-text"
+          defaultValue={edit.text}
+          rows={Math.max(1, edit.text.split('\n').length)}
+          spellCheck={false}
+          style={{
+            left: edit.x,
+            top: edit.y - (edit.layer === 'page' ? window.scrollY : 0),
+            color: edit.item?.color ?? color,
+            font: fontFor(edit.item?.size ?? size),
+            lineHeight: LINE_H,
+            minHeight: px * LINE_H,
+          }}
+          placeholder="Type…"
+          onInput={(e) => {
+            const t = e.currentTarget
+            t.rows = Math.max(1, t.value.split('\n').length)
+          }}
+          onKeyDown={(e) => {
+            e.stopPropagation()
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              commitEdit()
+            } else if (e.key === 'Escape') {
+              editRef.current = null
+              setEdit(null)
+            }
+          }}
+          onBlur={commitEdit}
+        />
       )}
 
       <div ref={panel} className={'draw-panel' + (open ? ' open' : '')} style={{ left: pos.x, top: pos.y }} role="toolbar" aria-label="Drawing tools">
@@ -229,14 +545,17 @@ export default function Draw() {
             </div>
             {drawing ? (
               <>
-                <div className="draw-row three">
-                  <button className={'draw-btn' + (tool === 'pen' ? ' on' : '')} onClick={() => setTool('pen')}>Pen</button>
-                  <button className={'draw-btn' + (tool === 'highlighter' ? ' on' : '')} onClick={() => setTool('highlighter')}>Marker</button>
-                  <button className={'draw-btn' + (tool === 'eraser' ? ' on' : '')} onClick={() => setTool('eraser')}>Eraser</button>
+                <div className="draw-tools">
+                  {TOOLS.map((t) => (
+                    <button key={t.id} className={'draw-tool' + (tool === t.id ? ' on' : '')} onClick={() => pickTool(t.id)} title={t.title}>
+                      <span className="draw-tool-icon" aria-hidden="true">{t.icon}</span>
+                      <span>{t.label}</span>
+                    </button>
+                  ))}
                 </div>
                 <div className="draw-colors">
                   {COLORS.map((c) => (
-                    <button key={c} className={'draw-color' + (color === c && tool !== 'eraser' ? ' on' : '')} style={{ background: c }} onClick={() => { setColor(c); if (tool === 'eraser') setTool('pen') }} aria-label={'Colour ' + c} />
+                    <button key={c} className={'draw-color' + (color === c && tool !== 'eraser' ? ' on' : '')} style={{ background: c }} onClick={() => { setColor(c); if (tool === 'eraser' || tool === 'remove') setTool('pen') }} aria-label={'Colour ' + c} />
                   ))}
                 </div>
                 <div className="draw-row three">
@@ -247,7 +566,7 @@ export default function Draw() {
                   ))}
                 </div>
                 <div className="draw-row two">
-                  <button className="draw-btn" onClick={undo}>↶ Undo</button>
+                  <button className="draw-btn" onClick={undo} title="Undo (Ctrl+Z)">↶ Undo</button>
                   <button className="draw-btn" onClick={clear}>🗑 Clear</button>
                 </div>
               </>
