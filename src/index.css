@@ -190,8 +190,6 @@ body::after {
 .codeblock-out { border-top: 1px dashed rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.04); }
 .codeblock-out span { display: block; padding: 12px 22px 0; font: 500 0.85rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #7e93a9; }
 .codeblock-out pre { color: #8fb8dd; }
-.tok-str { color: #8be3a5; }
-.tok-com { color: #7e93a9; }
 
 .callout { margin: 28px 0; padding: 22px 28px; font-size: 1.3rem; border-radius: 16px; border: 1px solid; }
 .callout strong { display: block; margin-bottom: 4px; }
@@ -253,13 +251,9 @@ body::after {
 
 .codeblock { border: 0; box-shadow: 0 10px 28px rgba(11, 18, 32, 0.22); }
 .codeblock figcaption { background: color-mix(in srgb, var(--accent) 45%, #0b1220); color: #fff; border-bottom: 0; }
-.codeblock pre { color: #f2f7ff; }
+.codeblock pre { color: #d4d4d4; }
 .codeblock-out span { color: #ffd966; }
 .codeblock-out pre { color: #9bd0ff; }
-.tok-str { color: #7ef0a5; }
-.tok-com { color: #8aa0ba; }
-.tok-fn { color: #ffb86b; font-weight: 600; }
-.tok-num { color: #ff9ecb; }
 
 .callout { background: #fff; border-width: 2px; border-color: var(--accent); }
 .callout strong { color: var(--accent); background: none; }
@@ -373,7 +367,7 @@ html.snap-page { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 .try-reset:hover:not(:disabled) { background: rgba(255, 255, 255, 0.26); }
 .try-run:disabled, .try-reset:disabled { opacity: 0.6; cursor: default; }
 .try-run:focus-visible, .try-reset:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-.try-editor { display: block; width: 100%; padding: 26px; border: 0; resize: vertical; background: transparent; color: #f2f7ff; font: clamp(1.2rem, calc(0.8vw + 1.3vh), 2rem)/1.7 var(--mono); tab-size: 4; }
+.try-editor { display: block; width: 100%; padding: 26px; border: 0; resize: vertical; background: transparent; color: transparent; caret-color: #fff; font: clamp(1.2rem, calc(0.8vw + 1.3vh), 2rem)/1.7 var(--mono); tab-size: 4; }
 .try-editor:focus-visible { outline: 2px solid #2ee38a; outline-offset: -2px; }
 .try-hint { margin: 0; padding: 0 26px 18px; color: #ffd966; font-size: 1rem; }
 .try-error { color: #ff9a9a !important; }
@@ -688,8 +682,8 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .draw-board-close { position: absolute; top: 14px; left: 14px; z-index: 3; padding: 8px 16px; font: 600 0.9rem var(--body); color: #fff; background: #10203a; border: 0; border-radius: 999px; cursor: pointer; }
 .draw-board-run { left: 150px; background: #16a34a; }
 .draw-board-run:disabled { opacity: 0.65; cursor: default; }
-.draw-board.full { background: #0b1220; }
-.draw-board.full .draw-board-code { color: #f2f7ff; }
+.draw-board.full { background: #1e1e1e; }
+.draw-board.full .draw-board-code { color: #d4d4d4; }
 .draw-board.full .draw-board-code p { color: #8fa3bf; }
 .draw-board.full .draw-board-code pre { font-size: clamp(1.8rem, 3.2vw, 3rem); }
 .draw-board.full .draw-board-close { background: #1e3a5f; }
@@ -756,3 +750,47 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .quiz-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font: 600 1rem var(--body); }
 .quiz-next { padding: 10px 20px; font: 600 1rem var(--body); color: #fff; background: #10203a; border: 0; border-radius: 999px; cursor: pointer; }
 @media print { .band-quiz { display: none; } }
+
+/* Code colours: VS Code Dark+ */
+:root { --tk-kw: #c586c0; --tk-st: #569cd6; --tk-fn: #dcdcaa; --tk-ty: #4ec9b0; --tk-str: #ce9178; --tk-esc: #d7ba7d; --tk-num: #b5cea8; --tk-com: #6a9955; --tk-var: #9cdcfe; --tk-con: #4fc1ff; --tk-op: #d4d4d4; --tk-b0: #ffd700; --tk-b1: #da70d6; --tk-b2: #179fff; }
+.tk-kw { color: var(--tk-kw); } .tk-st { color: var(--tk-st); } .tk-fn { color: var(--tk-fn); } .tk-ty { color: var(--tk-ty); } .tk-str { color: var(--tk-str); } .tk-esc { color: var(--tk-esc); }
+.tk-num { color: var(--tk-num); } .tk-com { color: var(--tk-com); } .tk-var { color: var(--tk-var); } .tk-con { color: var(--tk-con); } .tk-op { color: var(--tk-op); }
+.tk-b0 { color: var(--tk-b0); } .tk-b1 { color: var(--tk-b1); } .tk-b2 { color: var(--tk-b2); }
+/* the white board uses VS Code Light+ so the same code stays readable */
+.draw-board:not(.full) .draw-board-code { --tk-kw: #af00db; --tk-st: #0000ff; --tk-fn: #795e26; --tk-ty: #267f99; --tk-str: #a31515; --tk-esc: #ee0000; --tk-num: #098658; --tk-com: #008000; --tk-var: #001080; --tk-con: #0070c1; --tk-op: #000; --tk-b0: #0431fa; --tk-b1: #319331; --tk-b2: #7b3814; }
+.codeblock { background: #1e1e1e; }
+.codeblock-out { background: #181818; }
+
+/* the coloured code sits exactly under a transparent text box, so it can still be edited */
+.try-code { position: relative; overflow: hidden; }
+.codeblock pre.try-colors { position: absolute; inset: 0; overflow: hidden; pointer-events: none; white-space: pre; tab-size: 4; }
+.try-editor { position: relative; z-index: 1; }
+.try-editor::selection { color: transparent; background: rgba(38, 79, 120, 0.75); }
+
+/* code box buttons: icons on phones */
+.icon-btn { white-space: nowrap; }
+.icon-btn i { font-style: normal; }
+.phone-only { display: none; }
+@media (max-width: 700px) {
+  .codeblock figcaption { gap: 8px; }
+  .try-actions { width: 100%; justify-content: flex-end; gap: 8px; }
+  .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; font-size: 1.05rem; }
+  .icon-btn span { display: none; }
+  .phone-only { display: inline; }
+  .try-run { height: 40px; padding: 0 16px; white-space: nowrap; }
+  .quiz-keys { display: none; }
+}
+
+/* quiz: keyboard hint */
+.quiz-keys { font-weight: 500; opacity: 0.7; }
+
+/* page while it loads */
+.page-loading { display: grid; place-items: center; min-height: 100vh; font: 600 1.1rem var(--body); color: #51657a; background: #eef3fb; }
+
+/* contents: what has been read */
+.topic { position: relative; }
+.topic-tick { position: absolute; top: 18px; right: 18px; display: grid; place-items: center; width: 40px; height: 40px; font-size: 1.3rem; font-weight: 700; color: #fff; background: #16a34a; border-radius: 50%; }
+.topic-bar { display: block; height: 8px; margin-top: 16px; overflow: hidden; background: #e2e9f5; border-radius: 999px; }
+.topic-bar i { display: block; height: 100%; background: #2563eb; border-radius: 999px; }
+.progress-clear { margin-top: 10px; padding: 6px 14px; font: 600 0.95rem var(--body); color: #35506f; background: transparent; border: 1px solid #b9c9e2; border-radius: 999px; cursor: pointer; }
+.progress-clear:hover { color: #10203a; border-color: #10203a; }

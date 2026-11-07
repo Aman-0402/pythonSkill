@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // A quiz question in scripts/quiz-data/sN.mjs: [question, right answer, [wrong answers], explanation, optional check code]
 type Question = [string, string, string[], string, string?]
@@ -42,6 +42,7 @@ export default function Quiz({ session, progress }: { session: number; progress:
   const [choice, setChoice] = useState<string | null>(null)
   const [score, setScore] = useState({ right: 0, tried: 0 })
   const [failed, setFailed] = useState(false)
+  const box = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let live = true
@@ -62,6 +63,31 @@ export default function Quiz({ session, progress }: { session: number; progress:
     }
   }, [session, progress])
 
+  // keyboard, for class: A to F answer the quiz on screen, Enter or N moves to the next question
+  useEffect(() => {
+    if (!all || !current) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.repeat) return
+      if ((e.target as HTMLElement).closest('textarea, input, select') || document.querySelector('.draw-board, .draw-text')) return
+      const rect = box.current?.getBoundingClientRect()
+      if (!rect || rect.bottom < 0 || rect.top > window.innerHeight * 0.75) return // another slide is on screen
+      const key = e.key.toLowerCase()
+      const index = 'abcdef'.indexOf(key)
+      if (key.length === 1 && index >= 0 && index < current.options.length && !choice) {
+        e.preventDefault()
+        const picked = current.options[index]
+        setChoice(picked)
+        setScore((s) => ({ right: s.right + (picked === current.right ? 1 : 0), tried: s.tried + 1 }))
+      } else if (choice && (key === 'enter' || key === 'n')) {
+        e.preventDefault()
+        setChoice(null)
+        setCurrent(show(pick(session, all, progress)))
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [all, current, choice, session, progress])
+
   if (failed) return <p>This quiz could not be loaded. Check your internet connection and reload the page.</p>
   if (!all || !current) return <p>Loading a question…</p>
 
@@ -81,7 +107,7 @@ export default function Quiz({ session, progress }: { session: number; progress:
   }
 
   return (
-    <div className="quiz">
+    <div className="quiz" ref={box}>
       <p className="quiz-q">{current.question}</p>
       <div className="quiz-options">
         {current.options.map((o, i) => (
@@ -98,7 +124,10 @@ export default function Quiz({ session, progress }: { session: number; progress:
           </p>
         )}
         <div className="quiz-actions">
-          <span>{score.tried ? `${score.right} of ${score.tried} right` : 'Pick an answer'}</span>
+          <span>
+            {score.tried ? `${score.right} of ${score.tried} right` : 'Pick an answer'}
+            <small className="quiz-keys">{choice ? ' · press Enter for the next one' : ` · or press A to ${'ABCDEF'[current.options.length - 1]}`}</small>
+          </span>
           <button type="button" className="quiz-next" onClick={next}>{choice ? 'Next question →' : 'Different question'}</button>
         </div>
       </div>

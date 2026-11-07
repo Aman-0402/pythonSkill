@@ -5,8 +5,9 @@ import Quiz from './Quiz'
 import { openBoard } from './Draw'
 import Art from './Art'
 import HeroCode from './HeroCode'
-import { Highlight } from './Highlight'
+import { Code } from './Highlight'
 import { isLocked } from './lock'
+import { saveSlide } from './progress'
 import { lessons, type Block, type Lesson as LessonData, type Section } from './content'
 
 function Inline({ text }: { text: string }) {
@@ -51,19 +52,15 @@ function BlockView({ block }: { block: Block }): ReactNode {
           <figcaption>
             <span>{block.label ?? 'Code'}</span>
             <span className="try-actions">
-              <button type="button" className="try-reset" onClick={() => openBoard(block.code, block.label, { full: true })} title="Show this code full screen and draw on it to explain">
-                ⛶ Full screen
+              <button type="button" className="try-reset icon-btn" aria-label="Full screen" onClick={() => openBoard(block.code, block.label, { full: true })} title="Show this code full screen and draw on it to explain">
+                <i>⛶</i> <span>Full screen</span>
               </button>
-              <button type="button" className="try-reset" onClick={() => openBoard(block.code, block.label)} title="Show this code on a white screen to explain it">
-                ⬜ Board
+              <button type="button" className="try-reset icon-btn" aria-label="Board" onClick={() => openBoard(block.code, block.label)} title="Show this code on a white screen to explain it">
+                <i>⬜</i> <span>Board</span>
               </button>
             </span>
           </figcaption>
-          <pre>
-            {block.code.split('\n').map((line, i) => (
-              <div key={i}><Highlight line={line} /></div>
-            ))}
-          </pre>
+          <pre><Code code={block.code} label={block.label} /></pre>
           {block.output && (
             <div className="codeblock-out">
               <span>Output</span>
@@ -200,7 +197,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
   // a link straight to a slide: the slide does not exist until React has drawn it, so the browser cannot jump there itself
   useEffect(() => {
     const id = decodeURIComponent(window.location.hash.slice(1))
-    if (id) document.getElementById(id)?.scrollIntoView({ block: 'start' })
+    if (id) document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' })
   }, [])
 
   const goTo = (i: number) => {
@@ -222,6 +219,13 @@ function Slides({ lesson }: { lesson: LessonData }) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   })
+
+  // remember how far this lesson has been read; quiz slides move on each visit, so note the lesson slide before them
+  useEffect(() => {
+    if (active === 0) return
+    const slide = bands.slice(0, active).reverse().find((b) => b.quiz === undefined)
+    if (slide) saveSlide(lesson.slug, slide.id, Math.round((active / bands.length) * 100), active === bands.length)
+  }, [active, bands, lesson.slug])
 
   // reveal the slide in view and track which one is current
   useEffect(() => {

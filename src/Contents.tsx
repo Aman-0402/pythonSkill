@@ -1,8 +1,14 @@
+import { useState } from 'react'
 import { Link } from './router'
 import { lessons } from './content'
 import { isLocked } from './lock'
+import { clearProgress, readProgress } from './progress'
 
 export default function Contents() {
+  const [progress, setProgress] = useState(readProgress)
+  const finished = lessons.filter((l) => progress[l.slug]?.done).length
+  const started = Object.keys(progress).length > 0
+
   return (
     <div className="light-page">
     <main className="contents wrap">
@@ -11,12 +17,26 @@ export default function Contents() {
       </Link>
       <header className="contents-head">
         <h1>Contents</h1>
-        <p>Pick a topic to start learning.</p>
+        <p>{started ? `${finished} of ${lessons.length} sessions finished.` : 'Pick a topic to start learning.'}</p>
+        {started && (
+          <button
+            type="button"
+            className="progress-clear"
+            onClick={() => {
+              clearProgress()
+              setProgress({})
+            }}
+          >
+            Clear my progress
+          </button>
+        )}
       </header>
 
       <div className="topic-grid">
         {lessons.map((t, i) => {
           const locked = isLocked(i)
+          const read = progress[t.slug]
+          const reading = !!read && !read.done
           const inner = (
             <>
               <div className="topic-icon" aria-hidden="true">
@@ -24,15 +44,23 @@ export default function Contents() {
                   <path d="m8 8-5 4 5 4M16 8l5 4-5 4M14 5l-4 14" />
                 </svg>
               </div>
+              {read?.done && <span className="topic-tick" title="Finished">✓</span>}
               <h2>{t.title}</h2>
               <p>{t.summary}</p>
-              <span className="topic-open">{locked ? '🔒 Locked' : 'Open notes →'}</span>
+              {reading && (
+                <span className="topic-bar" aria-hidden="true">
+                  <i style={{ width: `${read.pct}%` }} />
+                </span>
+              )}
+              <span className="topic-open">
+                {locked ? '🔒 Locked' : read?.done ? 'Finished · read again →' : reading ? `Continue from ${read.pct}% →` : 'Open notes →'}
+              </span>
             </>
           )
           return locked ? (
             <div className="topic locked" aria-disabled="true" key={t.slug}>{inner}</div>
           ) : (
-            <Link href={`/contents/${t.slug}`} className="topic" key={t.slug}>{inner}</Link>
+            <Link href={`/contents/${t.slug}${reading ? '#' + read.slide : ''}`} className="topic" key={t.slug}>{inner}</Link>
           )
         })}
       </div>

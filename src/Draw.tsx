@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { runPython, type PyResult } from './pyrun'
+import { Code } from './Highlight'
 
 // Pen overlay for explaining code in a dry run.
 //  - "Pen" draws straight on top of the page. Items are stored in page coordinates, so they scroll with the lesson.
@@ -19,6 +20,9 @@ type Edit = { layer: Layer; x: number; y: number; text: string; item: TextItem |
 const COLORS = ['#e11d48', '#1f5c93', '#16a34a', '#f59e0b', '#111827', '#ffffff']
 const SIZES = [3, 6, 12]
 const PANEL_W = 216
+const COLLAPSED_W = 104
+// phones keep their own saved spot, so an old position that sits on the slide title is not carried over
+const posKey = () => (window.innerWidth < 900 ? 'draw-pos-phone' : 'draw-pos')
 const FONT = "600 {n}px 'Instrument Sans', system-ui, sans-serif"
 const fontFor = (size: number) => FONT.replace('{n}', String(textPx(size)))
 const textPx = (size: number) => 16 + size * 3 // pen sizes 3, 6, 12 -> text 25, 34, 52 px
@@ -207,11 +211,13 @@ export default function Draw() {
   const codeRef = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ x: number; y: number }>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('draw-pos') || 'null')
+      const saved = JSON.parse(localStorage.getItem(posKey()) || 'null')
       if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') return saved
     } catch {
       /* no saved position */
     }
+    // phones: tucked into the top right corner, above the slide title
+    if (window.innerWidth < 900) return { x: window.innerWidth - COLLAPSED_W - 8, y: 8 }
     return { x: Math.max(8, window.innerWidth - PANEL_W - 64), y: 90 }
   })
   const panel = useRef<HTMLDivElement>(null)
@@ -577,7 +583,7 @@ export default function Draw() {
     if (!drag.current) return
     drag.current = null
     try {
-      localStorage.setItem('draw-pos', JSON.stringify(pos))
+      localStorage.setItem(posKey(), JSON.stringify(pos))
     } catch {
       /* storage blocked */
     }
@@ -622,7 +628,7 @@ export default function Draw() {
           {boardCode && (
             <div ref={codeRef} className={'draw-board-code' + (codeSel ? ' sel' : '')} style={{ transform: `translate(${codeT.x}px, ${codeT.y}px) scale(${codeT.s})` }}>
               {boardCode.title && <p>{boardCode.title}</p>}
-              <pre>{boardCode.code}</pre>
+              <pre><Code code={boardCode.code} label={boardCode.title} /></pre>
               {boardOut && (
                 <div className={'draw-board-out' + (boardOut.error ? ' err' : '')}>
                   <span>{boardOut.error ? 'Error' : 'Output'}</span>

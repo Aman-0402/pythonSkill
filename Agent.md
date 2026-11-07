@@ -90,6 +90,7 @@ src/
   Art.tsx                     Picture under a slide title: drawn illustration (slides 1 and 2 only) or the owner's file from src/slides/
   Highlight.tsx               Tiny Python syntax colouring used by code blocks and illustrations
   TryIt.tsx                   Editable code box that runs Python in the browser (Pyodide)
+  progress.ts                 Remembers in this browser how far each lesson was read (localStorage key reading-progress)
   Quiz.tsx                    Quick quiz slide: one random question at a time, loaded on demand from scripts/quiz-data/
   pyrun.ts                    Loads Pyodide and runs Python: `runPython(source)` gives text, error flag and chart PNGs (used by TryIt and the Draw board)
   lock.ts                     LOCK_FROM: sessions from this number to the end are locked on the website
@@ -217,6 +218,7 @@ Lessons 19 to 30 are written, **not yet turned into PDFs or quiz CSVs** (owner: 
 - Every lesson has 1 to 4 "Quick quiz" slides among its normal slides (about one per 8 slides). `withQuizzes()` in `Lesson.tsx` adds them to the slide list at **random slide numbers that change on each visit**: the lesson is cut into equal zones with one quiz in each, so they spread out and are never on the first two slides or at the end. They exist only on the website: `content.ts` is untouched, the PDF script does not see them, and they are hidden when printing (`.band-quiz`).
 - The owner wrote "add quiz in middle on slides, random numbers"; "random numbers" was read as random slide numbers. Confirm if they meant something else.
 - `Quiz.tsx` shows one random question with its options in random order. Clicking marks right and wrong and shows the explanation; "Next question" gives another, and a small score counts that slide only. It picks from the part of the lesson already taught (the question files follow lesson order, `progress` is the slide's position) and does not repeat a question within a visit until the pool runs out.
+- **Keyboard (2026-11-08):** A to F answer the quiz on screen, Enter or N moves on. Ignored while typing or with the board open. Hidden hint on phones (`.quiz-keys`).
 - Questions come from `scripts/quiz-data/sN.mjs`, loaded with `import.meta.glob` as small separate chunks. Sessions 1 to 18 reuse their CSV questions; sessions 19 to 30 have new, smaller files (12 to 16 questions, 178 in total) written for the slides.
 - **The hold on quiz CSVs still stands.** Running `scripts/quiz-csv.mjs` with no number now WOULD write CSVs for sessions 19 to 30, so until the owner says so use `node --experimental-strip-types scripts/quiz-csv.mjs --check` (validates every question file, runs the Python checks, writes nothing), or give a session number from 1 to 18.
 
@@ -277,6 +279,9 @@ One multiple-choice quiz per session, as a CSV file, ready to import into the ow
 
 ## Mobile (phones and small tablets)
 
+- **Draw button (2026-11-08):** under 900px wide it starts in the top right corner above the slide title, and phones save its position under their own key (`draw-pos-phone`) so an old spot on the title is not carried over.
+- **Code box buttons (2026-11-08):** up to 700px wide, Full screen, Board and Reset become 40px icon buttons in one row next to Run (`.icon-btn`, with `aria-label`s).
+
 The whole site is built to work on a phone (tested at 390x844, 360x740 and 820x1180 with touch emulation: no sideways scrolling on any page). The rules live in the **last blocks of `index.css`** ("phones and small tablets", at 900px and 700px/420px breakpoints):
 
 - **Grid columns use `minmax(0, 1fr)`** (`.hero-grid`, `.band-inner`). A plain `1fr` lets wide code, tables or long words push the column wider than the screen and makes the whole page scroll sideways. `.topic-grid` uses `minmax(min(100%, 380px), 1fr)` for the same reason. `html, body` also get `overflow-x: hidden` on small screens as a safety net.
@@ -286,6 +291,14 @@ The whole site is built to work on a phone (tested at 390x844, 360x740 and 820x1
 - **Floating controls are hidden at 700px and below:** the slide counter and the up/down buttons covered the text. Swiping is the navigation on phones (the dots are hidden at 900px and below).
 - **Landing logos:** see "Random logo placement" (the middle band stays free on phones).
 - To check a change on a phone: emulate a mobile device in Chrome DevTools, or in a script call `Emulation.setDeviceMetricsOverride` with `mobile: true`, and compare `document.documentElement.scrollWidth` with `clientWidth` (they must be equal).
+
+## Code colours (Highlight.tsx, added 2026-11-08)
+
+- All code uses the colours of **VS Code Dark+** on its `#1e1e1e` background: purple control words, blue `def`/`True`/`None`, yellow functions, teal types and imported names (`pd`, `np`, `plt`), orange strings, green comments, light blue variables, and gold/pink/blue bracket pairs by depth. f-strings colour the `{expressions}` inside them; triple-quoted strings span lines.
+- `Highlight.tsx` is a small tokenizer, no package. `<Code code label />` goes inside a `<pre>`; `<Highlight line />` is for one line (the typing window on title screens, the drawing on lesson 1). Colours are the CSS variables `--tk-*` on `:root`; the white board overrides them with VS Code Light+ so the same code stays readable on white.
+- `isPython()` leaves terminal commands, Markdown, CSV, folder trees and the "Index positions" diagram uncoloured. Add to its patterns if a new kind of box looks wrongly coloured.
+- **Editable boxes:** a textarea cannot colour its text, so `TryIt.tsx` stacks a coloured `<pre class="try-colors">` under a transparent `.try-editor` and copies the textarea's scroll to it. Both must keep the same font, size, line height and padding, or the caret drifts from the text.
+- `notes-pdf.mjs` has its own code rendering and does not use these colours.
 
 ## Code font: no ligatures
 
@@ -376,6 +389,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 63. Added a **⛶ Full screen** option to every code box: dark full-screen code with a Run button, the output at the end of the code, and all the drawing tools on top for explaining. Python running moved from `TryIt.tsx` into the new `src/pyrun.ts` so the Draw board can share it. Tested in headless Chrome on lesson 2 (opens full, Run prints `Aman` and `25`, pen stroke drawn, no console errors).
 64. Fixed: long code in the board could not be scrolled. Wheel, Shift + wheel, arrow keys, Page Up/Down, Space, Home/End now scroll it, and a Fit button shrinks it to the screen. Tested with a 2030 px tall code block in a 804 px window (wheel moved it 600 px, Page Up 644 px, Fit made it 691 px tall).
 65. Full test and quick quiz slides (2026-11-08). Ran `tsc`, lint (warnings only), build, and all 722 runnable boxes in real browser Python with a clean namespace per box. Every error left is a deliberate one ("read the error", "fails on purpose", "fix the bug"). Fixed: the lesson 17 die-roll box crashed in the browser (`bincount` on 32-bit needs `dtype=np.int32`); arrow keys and Home/End on the board also moved the slides or page behind it; direct links to a slide did nothing on a fresh load (`Slides` now scrolls to the hash); labelled the frozenset box. Added quiz slides to all 30 lessons (see "Quick quiz slides") and `--check` to `quiz-csv.mjs`.
+66. Owner-approved UI upgrades: VS Code colours on all code, including editable boxes, full screen and the white board; Draw button moved off the title on phones; icon buttons on phones; A to F keys in quizzes; Contents shows ticks, a progress bar, "Continue from n%" that resumes at the last slide, and "Clear my progress" (`progress.ts`, this browser only; quiz slides are skipped when saving because their numbers change); pages load lazily (`App.tsx`), so a lesson no longer downloads three.js (main file 1,280 kB down to 245 kB, plus 474 kB of lesson text, 550 kB for the landing page only). A failed page load after a deploy reloads once. Tested on the dev server and the production build in headless Chrome, desktop and phone width.
 
 ## Gotchas and lessons learned
 
@@ -397,9 +411,9 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 ## Open items and ideas
 
 - **UI upgrades need the owner's OK first** (they said: "if you think you can upgrade better ui then ask me and do"). Ask with concrete options, then do only what they pick.
+- **Offered, not chosen:** one quiz score for the whole session with a summary at the end (option 3 on 2026-11-08).
 - **Waiting on the owner:** (1) "say when" for PDFs and quiz CSVs of sessions 19 to 30, and for regenerating the stale Session 3 PDF; (2) the closing "Next class" lines and the roadmap in lesson 30 are assistant guesses, and the course plan may continue past session 30; (3) Draw panel caveats: shapes are outline only, Select cannot recolour, and moving, zooming or resizing the board code is not part of Undo.
 
-- Not yet done: a quiz **on the website** (the quizzes exist only as CSV files for the owner's own quiz app), a progress bar and remembering the last slide read, a per-slide share link (slides already have anchor ids, e.g. `#installation-windows`), and `input()` support in the Try it box.
+- Not yet done: a quiz **on the website** (the quizzes exist only as CSV files for the owner's own quiz app), a per-slide share link (slides already have anchor ids, e.g. `#installation-windows`), and `input()` support in the Try it box.
 - Suggested next: make the Try it box check answers (for example expect a given output) so Practice can say "correct"; pictures for sessions 2 to 7 (the owner can drop files into `src/slides/`).
-- The JS bundle is about 820 kB (mostly three.js). Code-splitting the landing scene with a dynamic `import()` would speed up the Contents and notes pages.
 - The brand name "PyJourney" and the lesson copy were written by the assistant; change them freely.
