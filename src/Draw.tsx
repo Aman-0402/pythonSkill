@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { runPython, type PyResult } from './pyrun'
 
 // Pen overlay for explaining code in a dry run.
 //  - "Pen" draws straight on top of the page. Items are stored in page coordinates, so they scroll with the lesson.
@@ -38,8 +39,11 @@ const TOOLS: { id: Tool; icon: string; label: string; title: string }[] = [
 const SHAPE_TOOLS = ['line', 'arrow', 'rect', 'ellipse']
 
 // Code boxes call this to show their code on the white screen
-export function openBoard(code: string, title?: string) {
-  window.dispatchEvent(new CustomEvent('open-board', { detail: { code, title } }))
+// run: show a Run button and print the output under the code. full: a dark full-screen code view instead of the white screen.
+export type BoardOptions = { run?: boolean; full?: boolean }
+type BoardCode = BoardOptions & { code: string; title?: string }
+export function openBoard(code: string, title?: string, options: BoardOptions = {}) {
+  window.dispatchEvent(new CustomEvent('open-board', { detail: { code, title, ...options } }))
 }
 
 const measureCtx = document.createElement('canvas').getContext('2d')
@@ -194,7 +198,9 @@ export default function Draw() {
   const [color, setColor] = useState(COLORS[0])
   const [size, setSize] = useState(SIZES[1])
   const [edit, setEdit] = useState<Edit | null>(null)
-  const [boardCode, setBoardCode] = useState<{ code: string; title?: string } | null>(null)
+  const [boardCode, setBoardCode] = useState<BoardCode | null>(null)
+  const [boardOut, setBoardOut] = useState<PyResult | null>(null) // what the code printed when Run was pressed on the board
+  const [boardStatus, setBoardStatus] = useState<'idle' | 'loading' | 'running'>('idle')
   const [codeT, setCodeT] = useState({ x: 0, y: 0, s: 1 }) // where the code sits on the board, and its zoom
   const [codeSel, setCodeSel] = useState(false)
   const [, bump] = useState(0)
@@ -268,7 +274,7 @@ export default function Draw() {
 
   useEffect(() => {
     const onOpen = (e: Event) => {
-      const d = (e as CustomEvent<{ code: string; title?: string }>).detail
+      const d = (e as CustomEvent<BoardCode>).detail
       items.current.board = []
       history.current.board = []
       selected.current = null
@@ -276,6 +282,8 @@ export default function Draw() {
       setCodeT({ x: 0, y: 0, s: 1 })
       setEdit(null)
       setBoardCode(d)
+      setBoardOut(null)
+      if (d.full) setColor((c) => (c === COLORS[4] ? COLORS[3] : c)) // dark ink would vanish on the dark screen
       setPen(false)
       setOpen(true)
       setBoard(true)
@@ -555,9 +563,19 @@ export default function Draw() {
   }
   const toggleBoard = () => {
     commitEdit()
-    if (!board) setBoardCode(null)
+    if (!board) {
+      setBoardCode(null)
+      setBoardOut(null)
+    }
     setPen(false)
     setBoard((b) => !b)
+  }
+
+  const runOnBoard = async () => {
+    if (!boardCode || boardStatus !== 'idle') return
+    setBoardStatus('loading')
+    setBoardOut(await runPython(boardCode.code, setBoardStatus))
+    setBoardStatus('idle')
   }
 
   const canvasClass = (extra: string) => 'draw-layer' + extra + ' tool-' + tool
@@ -567,16 +585,30 @@ export default function Draw() {
     <>
       <canvas ref={pageCanvas} className={canvasClass(pen && !board ? ' live' : '')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
       {board && (
-        <div className="draw-board">
+        <div className={'draw-board' + (boardCode?.full ? ' full' : '')}>
           {boardCode && (
             <div ref={codeRef} className={'draw-board-code' + (codeSel ? ' sel' : '')} style={{ transform: `translate(${codeT.x}px, ${codeT.y}px) scale(${codeT.s})` }}>
               {boardCode.title && <p>{boardCode.title}</p>}
               <pre>{boardCode.code}</pre>
+              {boardOut && (
+                <div className={'draw-board-out' + (boardOut.error ? ' err' : '')}>
+                  <span>{boardOut.error ? 'Error' : 'Output'}</span>
+                  {boardOut.text && <pre>{boardOut.text}</pre>}
+                  {boardOut.images?.map((img, i) => (
+                    <img key={i} src={'data:image/png;base64,' + img} alt={`Chart ${i + 1} drawn by the code`} />
+                  ))}
+                </div>
+              )}
               {codeSel && <span className="draw-handle" style={{ width: 16 / codeT.s, height: 16 / codeT.s, right: -8 / codeT.s, bottom: -8 / codeT.s }} />}
             </div>
           )}
           <canvas ref={boardCanvas} className={canvasClass(' board live')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
-          <button className="draw-board-close" onClick={() => setBoard(false)}>✕ Close board</button>
+          <button className="draw-board-close" onClick={() => setBoard(false)}>✕ {boardCode?.full ? 'Close' : 'Close board'}</button>
+          {boardCode?.run && (
+            <button className="draw-board-close draw-board-run" onClick={runOnBoard} disabled={boardStatus !== 'idle'}>
+              {boardStatus === 'loading' ? 'Loading Python…' : boardStatus === 'running' ? 'Running…' : boardOut ? '▶ Run again' : '▶ Run'}
+            </button>
+          )}
         </div>
       )}
       {edit && (

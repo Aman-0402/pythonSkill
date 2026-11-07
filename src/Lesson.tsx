@@ -50,6 +50,9 @@ function BlockView({ block }: { block: Block }): ReactNode {
           <figcaption>
             <span>{block.label ?? 'Code'}</span>
             <span className="try-actions">
+              <button type="button" className="try-reset" onClick={() => openBoard(block.code, block.label, { full: true })} title="Show this code full screen and draw on it to explain">
+                ⛶ Full screen
+              </button>
               <button type="button" className="try-reset" onClick={() => openBoard(block.code, block.label)} title="Show this code on a white screen to explain it">
                 ⬜ Board
               </button>

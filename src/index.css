@@ -686,6 +686,21 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .draw-board-code p { margin: 0 0 12px; font: 600 1rem var(--mono); color: #6b7a90; }
 .draw-board-code pre { margin: 0; font: clamp(1.4rem, 2.6vw, 2.4rem)/1.7 var(--mono); }
 .draw-board-close { position: absolute; top: 14px; left: 14px; z-index: 3; padding: 8px 16px; font: 600 0.9rem var(--body); color: #fff; background: #10203a; border: 0; border-radius: 999px; cursor: pointer; }
+.draw-board-run { left: 150px; background: #16a34a; }
+.draw-board-run:disabled { opacity: 0.65; cursor: default; }
+.draw-board.full { background: #0b1220; }
+.draw-board.full .draw-board-code { color: #f2f7ff; }
+.draw-board.full .draw-board-code p { color: #8fa3bf; }
+.draw-board.full .draw-board-code pre { font-size: clamp(1.8rem, 3.2vw, 3rem); }
+.draw-board.full .draw-board-close { background: #1e3a5f; }
+.draw-board.full .draw-board-run { background: #16a34a; }
+.draw-board-out { margin-top: 22px; padding-top: 14px; border-top: 2px dashed rgba(107, 122, 144, 0.55); }
+.draw-board-out span { font: 700 0.9rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: #16a34a; }
+.draw-board-out.err span, .draw-board-out.err pre { color: #dc2626; }
+.draw-board.full .draw-board-out span { color: #4ade80; }
+.draw-board.full .draw-board-out.err span, .draw-board.full .draw-board-out.err pre { color: #ff9a9a; }
+.draw-board-out pre { margin: 6px 0 0; font-size: clamp(1.2rem, 2.1vw, 2rem); white-space: pre-wrap; }
+.draw-board-out img { display: block; max-width: 100%; margin-top: 10px; background: #fff; border-radius: 8px; }
 .draw-panel { position: fixed; z-index: 110; width: 216px; color: #fff; background: rgba(13, 27, 42, 0.95); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 14px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); user-select: none; overflow: hidden; }
 .draw-panel:not(.open) { width: 104px; }
 .draw-head { display: flex; align-items: center; gap: 6px; padding: 7px 8px; cursor: grab; touch-action: none; background: rgba(255, 255, 255, 0.06); }
@@ -719,3 +734,4 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .draw-text { position: fixed; z-index: 120; min-width: 140px; margin: 0; padding: 0; background: transparent; border: 0; outline: 2px dashed #2563eb; outline-offset: 3px; resize: none; overflow: hidden; field-sizing: content; white-space: pre; }
 .draw-text::placeholder { color: #94a3b8; }
 @media print { .draw-panel, .draw-layer, .draw-text { display: none; } }
+.draw-board.full .draw-board-run { left: 112px; }
