@@ -208,6 +208,7 @@ Lessons 19 to 30 are written, **not yet turned into PDFs or quiz CSVs** (owner: 
 
 - `toBands()` turns sections into slides: the content before the first `h3` is one slide titled with the section name; every `h3` starts a new slide (its title is the slide title, the section name becomes a small label).
 - **Title screen (slide 0)** is a full-screen dark hero (`.notes-hero`, same navy, blue, violet and green glows as the landing page, plus a faint dot grid). Left: a "Python for beginners" chip, the lesson title with the word "Python" (if present) in a yellow-to-green gradient, the summary, fact pills (slide count and number of runnable code boxes, computed from `content.ts`, plus the lesson's optional `tag`) and a yellow "Start reading" button. Right: `HeroCode.tsx`, a code window that types the lesson's `hero` lines, then shows the output (loops every few seconds; static under reduced motion), with four floating white logo tiles (Python, Pandas, NumPy, Jupyter) placed in the side margins so they never cover the code. `.contents-head` styles are still used by the Contents page and the "Topic not found" page.
+- **Title screens stay on one screen (2026-11-08):** the title size steps down with its length (`data-length` on the `h1`: `long` from 18 characters, `longest` from 28). The two grid columns use `minmax(0, ...)` so a long code line wraps inside the window instead of squeezing the title, and `HeroCode.tsx` reserves the space for every line (`.hero-ghost`) so the window keeps its size while typing. To test, emulate reduced motion so all the code shows at once; measuring during the typing misses the problem.
 - `html.snap-page` (added while the notes page is mounted) turns on `scroll-snap-type: y mandatory`; each slide is `min-height: 100vh` with `scroll-snap-align: start`.
 - Slide content fades and rises in via an `IntersectionObserver` (`.in-view`). A second observer, watching the middle line of the screen, drives the active dot and the "n / N" counter. This works even for slides taller than the screen.
 - Right-edge dots jump to a slide; they are hidden under 900px.
@@ -404,6 +405,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 68. Landing page: the snake now weaves through the word "Python" (owner's choice A), passing in front of some letters and behind others, and threads through the word by itself when the pointer is idle.
 69. Redesigned the Practice files page: hero with the zip button and setup steps, search and filter chips, type badges, file sizes, group notes, an empty state, and a phone layout.
 70. Added View and Download buttons to every practice file (`FileViewer.tsx`) and redesigned the Contents header: next-step button, progress, stage links, session numbers on cards.
+71. Fixed title screens with long titles: as the code typed, a long line widened the code window and squeezed the title to five huge lines, pushing the summary and Start button off the screen.
 
 ## Gotchas and lessons learned
 

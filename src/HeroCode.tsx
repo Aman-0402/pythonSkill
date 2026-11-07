@@ -57,13 +57,18 @@ export default function HeroCode({ snippet = DEFAULT_SNIPPET }: { snippet?: Hero
           <span>{file}</span>
         </div>
         <div className="hero-win-body">
-          {typed.map((text, i) => (
-            <div key={i}>
-              <em>{i + 1}</em>
-              <Highlight line={text} />
-              {!done && i === typed.length - 1 && <b className="hero-caret" />}
-            </div>
-          ))}
+          {/* every line takes its full space from the start, so the window does not grow while the code types */}
+          {lines.map((line, i) => {
+            const text = typed[i] ?? ''
+            return (
+              <div key={i}>
+                <em className={i < typed.length ? undefined : 'hero-ghost'}>{i + 1}</em>
+                <Highlight line={text} />
+                {!done && i === typed.length - 1 && <b className="hero-caret" />}
+                <span className="hero-ghost">{line.slice(text.length)}</span>
+              </div>
+            )
+          })}
         </div>
         <div className={done ? 'hero-win-out on' : 'hero-win-out'}>
           <small>OUTPUT</small>

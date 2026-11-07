@@ -261,7 +261,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
           <div className="hero-grid">
             <div className="hero-copy">
               <p className="hero-eyebrow">Python for beginners</p>
-              <h1>
+              <h1 data-length={lesson.title.length >= 28 ? 'longest' : lesson.title.length >= 18 ? 'long' : undefined}>
                 {lesson.title.split(/(Python)/).map((part, i) =>
                   part === 'Python' ? <span className="hl" key={i}>{part}</span> : part,
                 )}
