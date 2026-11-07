@@ -335,6 +335,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 50. Added lesson 17, "NumPy Operations", with its PDF and a 50-question quiz CSV.
 51. Added lesson 18, "Pandas Introduction", with its PDF and a 49-question quiz CSV. `TryIt.tsx` now shows the loading hint for pandas as well as numpy.
 52. Unlocked session 4 on the website (`LOCK_FROM = 5`): sessions 1 to 4 are open, sessions 5 to 18 stay locked. To open the next class, raise `LOCK_FROM` by one.
+53. Lesson 3: every row of the three string-method tables now shows its result (`gives ...`), the missing `title`, `capitalize`, `strip`, `lstrip`, `rstrip` examples were added (`lstrip` and `rstrip` split into two rows), and two new Try it slides were added (cleaning the text, searching and checking). Session 3 PDF regenerated.
 
 ## Gotchas and lessons learned
 

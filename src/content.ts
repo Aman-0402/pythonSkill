@@ -996,33 +996,61 @@ print(len(s))`,
             rows: [
               ['`upper()`', 'all capitals', '`"abc".upper()` gives `ABC`'],
               ['`lower()`', 'all small', '`"ABC".lower()` gives `abc`'],
-              ['`title()`', 'first letter of each word capital', '`"hello world".title()`'],
-              ['`capitalize()`', 'first letter of the string capital', '`"hello world".capitalize()`'],
-              ['`strip()`', 'remove spaces at both ends', '`"  hi  ".strip()`'],
-              ['`lstrip()` / `rstrip()`', 'remove left or right spaces', ''],
-              ['`replace(a, b)`', 'replace text', '`"cat".replace("c", "b")`'],
+              ['`title()`', 'first letter of each word capital', '`"hello world".title()` gives `Hello World`'],
+              ['`capitalize()`', 'first letter of the string capital', '`"hello world".capitalize()` gives `Hello world`'],
+              ['`strip()`', 'remove spaces at both ends', '`"  hi  ".strip()` gives `"hi"`'],
+              ['`lstrip()`', 'remove spaces on the left', '`"  hi  ".lstrip()` gives `"hi  "`'],
+              ['`rstrip()`', 'remove spaces on the right', '`"  hi  ".rstrip()` gives `"  hi"`'],
+              ['`replace(a, b)`', 'replace text', '`"cat".replace("c", "b")` gives `bat`'],
             ],
+          },
+          { type: 'h3', text: 'Try: cleaning the text' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`s = "  hello world  "
+print(s.strip())
+print(s.lstrip())
+print(s.rstrip())
+clean = s.strip()
+print(clean.title())
+print(clean.capitalize())
+print(clean.upper())
+print("cat".replace("c", "b"))`,
           },
           { type: 'h3', text: 'Searching and checking' },
           {
             type: 'table',
             head: ['Method', 'Purpose', 'Example'],
             rows: [
-              ['`find(x)`', 'first index, or -1 if not found', '`"hello".find("l")`'],
-              ['`count(x)`', 'number of occurrences', '`"banana".count("a")`'],
-              ['`startswith(x)`', 'True or False', '`"python".startswith("py")`'],
-              ['`endswith(x)`', 'True or False', '`"file.py".endswith(".py")`'],
-              ['`isdigit()`', 'only digits?', '`"123".isdigit()`'],
-              ['`isalpha()`', 'only letters?', '`"abc".isalpha()`'],
+              ['`find(x)`', 'first index, or -1 if not found', '`"hello".find("l")` gives `2`, `"hello".find("z")` gives `-1`'],
+              ['`count(x)`', 'number of occurrences', '`"banana".count("a")` gives `3`'],
+              ['`startswith(x)`', 'True or False', '`"python".startswith("py")` gives `True`'],
+              ['`endswith(x)`', 'True or False', '`"file.py".endswith(".py")` gives `True`'],
+              ['`isdigit()`', 'only digits?', '`"123".isdigit()` gives `True`'],
+              ['`isalpha()`', 'only letters?', '`"abc".isalpha()` gives `True`, `"ab1".isalpha()` gives `False`'],
             ],
+          },
+          { type: 'h3', text: 'Try: searching and checking' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("hello".find("l"))
+print("hello".find("z"))
+print("banana".count("a"))
+print("python".startswith("py"))
+print("file.py".endswith(".py"))
+print("123".isdigit())
+print("abc".isalpha())
+print("ab1".isalpha())`,
           },
           { type: 'h3', text: 'Splitting and joining' },
           {
             type: 'table',
             head: ['Method', 'Purpose', 'Example'],
             rows: [
-              ['`split()`', 'break into a list', '`"a b c".split()`'],
-              ['`join()`', 'join a list into a string', '`"-".join(["a","b"])`'],
+              ['`split()`', 'break into a list', '`"a b c".split()` gives `["a", "b", "c"]`'],
+              ['`join()`', 'join a list into a string', '`"-".join(["a","b"])` gives `a-b`'],
             ],
           },
           { type: 'h3', text: 'Try the methods' },
