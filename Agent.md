@@ -344,6 +344,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 57. Board code can now be selected with the Select tool, dragged, zoomed in or out (buttons or mouse wheel) and centred; the same zoom and centre work on a picked drawing, text or shape. Tested in headless Chrome (drag, zoom in three times, centre, wheel out, zoom out).
 58. Board code now has a corner drag handle to resize it (Select, click the code, drag the blue square). Tested in headless Chrome: grows, shrinks, top-left stays fixed.
 59. Added lessons 19 ("Loading and Inspecting Data") and 20 ("Selecting and Filtering") to `content.ts`, both locked (`LOCK_FROM = 5`). No PDFs or quiz CSVs by the owner's instruction; waiting for them to say. Boxes verified in local Python only.
+60. Unlocked every session on the website (`LOCK_FROM = 0`, sessions 1 to 20 open). To lock again, set `LOCK_FROM` to the first locked session number; with 0, new lessons are also open as soon as they are added.
 
 ## Gotchas and lessons learned
 
