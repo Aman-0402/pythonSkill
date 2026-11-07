@@ -13,7 +13,7 @@ Guide for anyone (human or AI agent) working in this repo. It records what the p
 3. **No co-author lines.** Commit messages contain no `Co-Authored-By` trailer and no tool attribution.
 4. **Suggest improvements.** When there is a better idea, say so briefly alongside the work, and let the owner decide.
 5. Run `npx tsc -b` before committing.
-6. **Ask before creating notes for any session.** When the owner pastes notes or mentions a new session, first ask what to create (a website lesson, a PDF, a quiz, or all of them), who writes the content, and whether pictures should be included, then wait for the answer. Do not create session notes unprompted. (This rule was added after sessions 2 and 3 were added to the site straight from pasted notes.)
+6. **Ask before creating notes for any session, unless the owner has said "no need to ask just do it"** (they did, from session 8 on: when they send a new session topic, build the lesson, PDF and quiz CSV in one go and publish, with no co-author line). Otherwise: when the owner pastes notes or mentions a new session, first ask what to create (a website lesson, a PDF, a quiz, or all of them), who writes the content, and whether pictures should be included, then wait for the answer. Do not create session notes unprompted. (This rule was added after sessions 2 and 3 were added to the site straight from pasted notes.)
 7. **When the owner picks "I draft it" for a session:** write the notes in the style of the earlier sessions (recap with "Ask" prompts, short slides, runnable examples that work without `input()`, practice questions, homework), build the lesson and the PDF **locally**, run every code box in the browser, then tell the owner where to review it and which choices were the assistant's own (invented numbers, guessed next class). **Publish (Agent.md, commit, push) only after the owner says so.**
 8. **Every session also gets a quiz CSV** in `Quiz in CSV/` (see "Session quizzes"). When the owner asks for a new session, include the quiz in the question about what to create.
 9. **Session PDFs go in the `Notes pdf/` folder, one PDF per session**, named `Session N - <title>.pdf` (see "Session PDFs"). If the session's notes use pictures, the PDF includes them. Sessions 1 to 18 have PDFs.
@@ -327,13 +327,14 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 42. Renamed the example student "Riya" to "Ankit" in lessons 7 to 12, the quiz data and CSVs for sessions 9, 10 and 12, and regenerated the PDFs for sessions 7 to 12.
 43. Added drawing tools (`Draw.tsx`): pen on the page and a white screen, for explaining code in a dry run.
 44. Added a "Board" button to every code box: shows the code on the white screen to draw over while explaining.
-45. Locked sessions 4 to 12 on the website (`src/lock.ts`, `LOCK_FROM = 4`): greyed cards with a lock on Contents, and a locked message if the URL is opened directly. Change `LOCK_FROM` to unlock sessions as classes happen. (Session 4 unlocked: `LOCK_FROM = 5`, sessions 5 to the end still locked.) The notes are still in the JS bundle, so this hides them but is not a security lock; PDFs and quiz CSVs in the repo are not affected.
+45. Locked sessions 4 to 12 on the website (`src/lock.ts`, `LOCK_FROM = 4`): greyed cards with a lock on Contents, and a locked message if the URL is opened directly. Change `LOCK_FROM` to unlock sessions as classes happen. New lessons added after it (13 to 18) are locked automatically, because `LOCK_FROM` is a "from here to the end" number. The notes are still in the JS bundle, so this hides them but is not a security lock; PDFs and quiz CSVs in the repo are not affected.
 46. Added lesson 13, "Modules and Packages", with its PDF and a 50-question quiz CSV.
 47. Added lesson 14, "File Handling", with its PDF and a 49-question quiz CSV.
 48. Added lesson 15, "Exception Handling", with its PDF and a 49-question quiz CSV.
 49. Added lesson 16, "NumPy Basics", with its PDF and a 45-question quiz CSV. Also: Try it and the PDF script now load numpy (`loadPackagesFromImports`), and `**bold with `code` inside**` now renders properly on the site and in the PDFs; PDFs for sessions 2 to 4 and 6 to 15 were regenerated because of that.
 50. Added lesson 17, "NumPy Operations", with its PDF and a 50-question quiz CSV.
 51. Added lesson 18, "Pandas Introduction", with its PDF and a 49-question quiz CSV. `TryIt.tsx` now shows the loading hint for pandas as well as numpy.
+52. Unlocked session 4 on the website (`LOCK_FROM = 5`): sessions 1 to 4 are open, sessions 5 to 18 stay locked. To open the next class, raise `LOCK_FROM` by one.
 
 ## Gotchas and lessons learned
 
