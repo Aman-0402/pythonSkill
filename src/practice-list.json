@@ -1,263 +1,363 @@
 {
  "zip": "python-practice-files.zip",
+ "zipBytes": 28722,
  "files": [
   {
    "group": "Pandas",
    "path": "pandas/students.csv",
    "sessions": "18 to 20",
-   "what": "6 students with two blank marks: read_csv, head, info, describe, filters"
+   "what": "6 students with two blank marks: read_csv, head, info, describe, filters",
+   "bytes": 147
   },
   {
    "group": "Pandas",
    "path": "pandas/marks_semicolon.csv",
    "sessions": "19",
-   "what": "values split by semicolons: use sep=\";\""
+   "what": "values split by semicolons: use sep=\";\"",
+   "bytes": 36
   },
   {
    "group": "Pandas",
    "path": "pandas/marks_no_header.csv",
    "sessions": "19",
-   "what": "no title line: use header=None and names=[...]"
+   "what": "no title line: use header=None and names=[...]",
+   "bytes": 25
   },
   {
    "group": "Pandas",
    "path": "pandas/marks_tab.tsv",
    "sessions": "19",
-   "what": "values split by tabs: use sep=\"\\t\""
+   "what": "values split by tabs: use sep=\"\\t\"",
+   "bytes": 36
   },
   {
    "group": "Pandas",
    "path": "pandas/marks_with_dash.csv",
    "sessions": "19",
-   "what": "a dash for a missing value: use na_values=[\"-\"]"
+   "what": "a dash for a missing value: use na_values=[\"-\"]",
+   "bytes": 35
   },
   {
    "group": "Pandas",
    "path": "pandas/joined_dates.csv",
    "sessions": "19, 21",
-   "what": "a date column: use parse_dates=[\"joined\"]"
+   "what": "a date column: use parse_dates=[\"joined\"]",
+   "bytes": 61
   },
   {
    "group": "Pandas",
    "path": "pandas/marks.xlsx",
    "sessions": "19",
-   "what": "an Excel file with two sheets, Term 1 and Term 2"
+   "what": "an Excel file with two sheets, Term 1 and Term 2",
+   "bytes": 5544,
+   "sheets": {
+    "Term 1": [
+     [
+      "name",
+      "maths",
+      "science"
+     ],
+     [
+      "Aman",
+      85,
+      78
+     ],
+     [
+      "Ankit",
+      90,
+      88
+     ],
+     [
+      "Neha",
+      78,
+      70
+     ],
+     [
+      "Rohit",
+      92,
+      95
+     ]
+    ],
+    "Term 2": [
+     [
+      "name",
+      "maths",
+      "science"
+     ],
+     [
+      "Aman",
+      90,
+      80
+     ],
+     [
+      "Ankit",
+      95,
+      91
+     ],
+     [
+      "Neha",
+      82,
+      74
+     ],
+     [
+      "Rohit",
+      89,
+      97
+     ]
+    ]
+   }
   },
   {
    "group": "Pandas",
    "path": "pandas/students_messy.csv",
    "sessions": "21",
-   "what": "the messy table to clean: blanks, repeats, spaces, mixed capitals"
+   "what": "the messy table to clean: blanks, repeats, spaces, mixed capitals",
+   "bytes": 202
   },
   {
    "group": "Pandas",
    "path": "pandas/class_students.csv",
    "sessions": "20, 22",
-   "what": "8 clean students: groupby, agg, pivot_table"
+   "what": "8 clean students: groupby, agg, pivot_table",
+   "bytes": 188
   },
   {
    "group": "Pandas",
    "path": "pandas/sales.csv",
    "sessions": "22",
-   "what": "three months of sales for the sales summary"
+   "what": "three months of sales for the sales summary",
+   "bytes": 147
   },
   {
    "group": "Pandas",
    "path": "pandas/merge_students.csv",
    "sessions": "23",
-   "what": "the left table for merge"
+   "what": "the left table for merge",
+   "bytes": 67
   },
   {
    "group": "Pandas",
    "path": "pandas/merge_marks.csv",
    "sessions": "23",
-   "what": "the right table for merge; ids 4 and 5 do not match"
+   "what": "the right table for merge; ids 4 and 5 do not match",
+   "bytes": 29
   },
   {
    "group": "Pandas",
    "path": "pandas/merge_tests.csv",
    "sessions": "23",
-   "what": "one student, many tests: a one-to-many merge"
+   "what": "one student, many tests: a one-to-many merge",
+   "bytes": 54
   },
   {
    "group": "Pandas",
    "path": "pandas/sales_jan.csv",
    "sessions": "23",
-   "what": "stack this with sales_feb.csv using concat"
+   "what": "stack this with sales_feb.csv using concat",
+   "bytes": 23
   },
   {
    "group": "Pandas",
    "path": "pandas/sales_feb.csv",
    "sessions": "23",
-   "what": "stack this with sales_jan.csv using concat"
+   "what": "stack this with sales_jan.csv using concat",
+   "bytes": 22
   },
   {
    "group": "Charts",
    "path": "charts/monthly_sales.csv",
    "sessions": "24",
-   "what": "six months of sales: line, bar and pie charts"
+   "what": "six months of sales: line, bar and pie charts",
+   "bytes": 99
   },
   {
    "group": "Charts",
    "path": "charts/study_hours.csv",
    "sessions": "24, 25",
-   "what": "60 students from the Seaborn lesson: box plot, scatter plot, heatmap, correlation"
+   "what": "60 students from the Seaborn lesson: box plot, scatter plot, heatmap, correlation",
+   "bytes": 1058
   },
   {
    "group": "File handling",
    "path": "file-handling/marks.csv",
    "sessions": "14, 18",
-   "what": "read it with the csv module, then with pandas"
+   "what": "read it with the csv module, then with pandas",
+   "bytes": 53
   },
   {
    "group": "File handling",
    "path": "file-handling/people.csv",
    "sessions": "14",
-   "what": "a CSV to read with csv.DictReader"
+   "what": "a CSV to read with csv.DictReader",
+   "bytes": 41
   },
   {
    "group": "File handling",
    "path": "file-handling/marks.txt",
    "sessions": "14",
-   "what": "one student per line: split each line"
+   "what": "one student per line: split each line",
+   "bytes": 34
   },
   {
    "group": "File handling",
    "path": "file-handling/poem.txt",
    "sessions": "14",
-   "what": "count the lines and the words"
+   "what": "count the lines and the words",
+   "bytes": 107
   },
   {
    "group": "File handling",
    "path": "file-handling/todo.txt",
    "sessions": "14",
-   "what": "the list used by todo.py"
+   "what": "the list used by todo.py",
+   "bytes": 39
   },
   {
    "group": "File handling",
    "path": "file-handling/scores.txt",
    "sessions": "15",
-   "what": "one bad line on purpose: catch the ValueError"
+   "what": "one bad line on purpose: catch the ValueError",
+   "bytes": 16
   },
   {
    "group": "Programs",
    "path": "programs/session-02/ask_name.py",
    "sessions": "2",
-   "what": "uses input()"
+   "what": "uses input()",
+   "bytes": 55
   },
   {
    "group": "Programs",
    "path": "programs/session-02/add_numbers.py",
    "sessions": "2",
-   "what": "uses input() and int()"
+   "what": "uses input() and int()",
+   "bytes": 45
   },
   {
    "group": "Programs",
    "path": "programs/session-02/age_next_year.py",
    "sessions": "2",
-   "what": "uses input() and int()"
+   "what": "uses input() and int()",
+   "bytes": 107
   },
   {
    "group": "Programs",
    "path": "programs/session-04/check_age.py",
    "sessions": "4",
-   "what": "uses input() with if"
+   "what": "uses input() with if",
+   "bytes": 95
   },
   {
    "group": "Programs",
    "path": "programs/session-05/password.py",
    "sessions": "5",
-   "what": "a while loop with input()"
+   "what": "a while loop with input()",
+   "bytes": 110
   },
   {
    "group": "Programs",
    "path": "programs/session-10/marks_manager.py",
    "sessions": "10",
-   "what": "the marks manager project"
+   "what": "the marks manager project",
+   "bytes": 1085
   },
   {
    "group": "Programs",
    "path": "programs/session-10/contact_book.py",
    "sessions": "10",
-   "what": "the contact book project"
+   "what": "the contact book project",
+   "bytes": 1330
   },
   {
    "group": "Programs",
    "path": "programs/session-11/read_number.py",
    "sessions": "11",
-   "what": "a function that keeps asking until the input is valid"
+   "what": "a function that keeps asking until the input is valid",
+   "bytes": 238
   },
   {
    "group": "Programs",
    "path": "programs/session-13/shapes.py",
    "sessions": "13",
-   "what": "your own module"
+   "what": "your own module",
+   "bytes": 104
   },
   {
    "group": "Programs",
    "path": "programs/session-13/main.py",
    "sessions": "13",
-   "what": "imports shapes.py from the same folder"
+   "what": "imports shapes.py from the same folder",
+   "bytes": 73
   },
   {
    "group": "Programs",
    "path": "programs/session-13/my_project/main.py",
    "sessions": "13",
-   "what": "imports from the tools package"
+   "what": "imports from the tools package",
+   "bytes": 96
   },
   {
    "group": "Programs",
    "path": "programs/session-14/todo.py",
    "sessions": "14",
-   "what": "a to-do list saved in todo.txt"
+   "what": "a to-do list saved in todo.txt",
+   "bytes": 539
   },
   {
    "group": "Programs",
    "path": "programs/session-15/safe_input.py",
    "sessions": "15",
-   "what": "input() made safe with try and except"
+   "what": "input() made safe with try and except",
+   "bytes": 278
   },
   {
    "group": "Programs",
    "path": "programs/session-13/my_project/tools/maths.py",
    "sessions": "13",
-   "what": "a module inside the tools package"
+   "what": "a module inside the tools package",
+   "bytes": 32
   },
   {
    "group": "Programs",
    "path": "programs/session-13/my_project/tools/text.py",
    "sessions": "13",
-   "what": "a module inside the tools package"
+   "what": "a module inside the tools package",
+   "bytes": 47
   },
   {
    "group": "Capstone",
    "path": "capstone/data/raw/orders.csv",
    "sessions": "26 to 29",
-   "what": "the messy online shop orders, 308 rows. Never edit this one by hand"
+   "what": "the messy online shop orders, 308 rows. Never edit this one by hand",
+   "bytes": 14507
   },
   {
    "group": "Capstone",
    "path": "capstone/data/clean/orders_clean.csv",
    "sessions": "27 to 29",
-   "what": "the same orders after clean_orders, 298 rows, to check your own result"
+   "what": "the same orders after clean_orders, 298 rows, to check your own result",
+   "bytes": 21172
   },
   {
    "group": "Capstone",
    "path": "capstone/requirements.txt",
    "sessions": "29",
-   "what": "install everything with: pip install -r requirements.txt"
+   "what": "install everything with: pip install -r requirements.txt",
+   "bytes": 50
   },
   {
    "group": "Capstone",
    "path": "capstone/README.md",
    "sessions": "29",
-   "what": "a README template to fill in"
+   "what": "a README template to fill in",
+   "bytes": 647
   },
   {
    "group": "Capstone",
    "path": "capstone/notebook.ipynb",
    "sessions": "27 to 29",
-   "what": "a starter notebook in the layout from session 29"
+   "what": "a starter notebook in the layout from session 29",
+   "bytes": 4685
   }
  ]
 }

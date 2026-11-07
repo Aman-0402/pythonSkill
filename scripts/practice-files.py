@@ -254,5 +254,10 @@ with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
             info.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(info, p.read_bytes())
 
-(ROOT / 'src' / 'practice-list.json').write_text(json.dumps({'zip': ZIP_NAME, 'files': files}, indent=1) + '\n', encoding='utf-8', newline='\n')
+for f in files:
+    f['bytes'] = (OUT / f['path']).stat().st_size
+    if f['path'].endswith('.xlsx'):  # a browser cannot read Excel by itself, so the website's viewer gets the cells here
+        sheets = pd.read_excel(OUT / f['path'], sheet_name=None)
+        f['sheets'] = {name: [list(df.columns)] + df.astype(object).where(df.notna(), None).values.tolist() for name, df in sheets.items()}
+(ROOT / 'src' / 'practice-list.json').write_text(json.dumps({'zip': ZIP_NAME, 'zipBytes': zip_path.stat().st_size, 'files': files}, indent=1) + '\n', encoding='utf-8', newline='\n')
 print(f'{len(files)} files listed, zip {zip_path.stat().st_size / 1024:.0f} KB')
