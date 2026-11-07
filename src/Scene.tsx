@@ -9,6 +9,7 @@ const SPEED = 4.2
 const IDLE_MS = 3500
 const EAT_RESPAWN_MS = 2500
 const CAMERA_Z = 18
+const WEAVE_SPEED = 4.6
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -180,6 +181,34 @@ export default function Scene() {
     }
     window.addEventListener('pointermove', onMove)
 
+    /* weave: when the pointer is idle, the snake regularly threads through the title, one letter at a time */
+    const weave = { points: [] as { x: number; y: number }[], next: 0, restUntil: 0.6, forward: 1 }
+    function startWeave() {
+      const spans = Array.from(document.querySelectorAll<HTMLElement>('h1.hero-title span'))
+      // on a phone the snake is too big for the word and its tight turns would cover it, so it only wanders there
+      if (!spans.length || el.clientWidth < 700) {
+        weave.restUntil = Infinity
+        return
+      }
+      const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * (CAMERA_Z - pos[0].z)
+      const worldX = (px: number) => (px / el.clientWidth) * 2 * halfH * camera.aspect - halfH * camera.aspect
+      const worldY = (py: number) => halfH - (py / el.clientHeight) * 2 * halfH
+      const stops = spans.map((s, i) => {
+        const r = s.getBoundingClientRect()
+        // above one letter, below the next, so the body swings across the word
+        return { x: worldX(r.left + r.width / 2), y: worldY(r.top + r.height / 2 + (i % 2 ? 0.3 : -0.3) * r.height) }
+      })
+      weave.forward = pos[0].x <= (stops[0].x + stops[stops.length - 1].x) / 2 ? 1 : -1
+      if (weave.forward < 0) stops.reverse()
+      const middle = worldY(spans[0].getBoundingClientRect().top + spans[0].getBoundingClientRect().height / 2)
+      weave.points = [
+        { x: stops[0].x - 3 * weave.forward, y: middle },
+        ...stops,
+        { x: stops[stops.length - 1].x + 4 * weave.forward, y: middle },
+      ]
+      weave.next = 0
+    }
+
     /* loop */
     let heading = Math.random() * Math.PI * 2
     const phase = [Math.random() * 10, Math.random() * 10, Math.random() * 10]
@@ -211,6 +240,23 @@ export default function Scene() {
           const diff = Math.atan2(Math.sin(aim), Math.cos(aim))
           turn = THREE.MathUtils.clamp(diff * 4, -3.6, 3.6)
           speed = THREE.MathUtils.clamp(Math.hypot(tx - lead.x, ty - lead.y) * 1.6, 2.5, 8)
+          weave.points = []
+          weave.restUntil = t + 2
+        } else if (weave.points.length || t > weave.restUntil) {
+          if (!weave.points.length) startWeave()
+          const point = weave.points[weave.next]
+          if (point) {
+            const aim = Math.atan2(point.y - lead.y, point.x - lead.x) - heading
+            turn = THREE.MathUtils.clamp(Math.atan2(Math.sin(aim), Math.cos(aim)) * 4, -3.6, 3.6)
+            speed = WEAVE_SPEED
+            // move on when it arrives, or when a tight turn has carried it past
+            const passed = weave.next > 0 && (point.x - lead.x) * weave.forward < -0.4
+            if (Math.hypot(point.x - lead.x, point.y - lead.y) < 1 || passed) weave.next++
+            if (weave.next >= weave.points.length) {
+              weave.points = []
+              weave.restUntil = t + 5 + Math.random() * 5
+            }
+          }
         } else if (Math.abs(lead.x) > mx || Math.abs(lead.y) > my) {
           const want = Math.atan2(-lead.y, -lead.x)
           let diff = want - heading

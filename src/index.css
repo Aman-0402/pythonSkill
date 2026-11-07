@@ -395,7 +395,10 @@ html.snap-page { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 
 /* landing layers: title < snake < button < vignette, so the snake slithers in front of the title */
 .landing { z-index: auto; }
+.hero-word { position: relative; }
 .hero-title { position: relative; z-index: 1; }
+.hero-title-over { position: absolute; inset: 0; z-index: 3; pointer-events: none; filter: drop-shadow(0 6px 14px rgba(3, 12, 30, 0.55)); }
+.hero-title-over span:nth-child(odd) { visibility: hidden; }
 .cta { position: relative; z-index: 3; }
 .scene { z-index: 2; }
 body::after { z-index: 4; }
