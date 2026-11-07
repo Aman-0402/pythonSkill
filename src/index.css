@@ -377,6 +377,7 @@ html.snap-page { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
 .try-editor:focus-visible { outline: 2px solid #2ee38a; outline-offset: -2px; }
 .try-hint { margin: 0; padding: 0 26px 18px; color: #ffd966; font-size: 1rem; }
 .try-error { color: #ff9a9a !important; }
+.try-chart { display: block; max-width: 100%; height: auto; margin: 14px 26px 22px; background: #fff; border-radius: 10px; }
 
 @media (max-width: 900px) { .slide-nav { right: 12px; bottom: 12px; } }
 

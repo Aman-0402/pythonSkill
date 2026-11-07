@@ -13969,4 +13969,3378 @@ df = pd.DataFrame({
       },
     ],
   },
+  {
+    slug: 'data-cleaning',
+    title: 'Data Cleaning',
+    summary: 'Missing values, duplicates, data types, renaming and string cleaning.',
+    hero: {
+      file: 'clean.py',
+      lines: ['import pandas as pd', 'df["city"] = df["city"].str.strip().str.title()', 'df = df.drop_duplicates()'],
+      output: 'rows before: 8\nrows after: 6',
+    },
+    sections: [
+      {
+        id: 's21-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'How do you keep only the rows where `maths` is above 80?',
+              'What is the difference between `loc` and `iloc`?',
+              'What does `df.isna().sum()` tell you?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's21-why',
+        title: 'Why clean data?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Real data is **messy**: blanks, the same row twice, numbers stored as text, `" delhi "` and `"Delhi"` meaning the same city. Analysts spend a big part of their time on **cleaning**, because wrong data gives wrong answers, however clever the analysis.',
+          },
+          {
+            type: 'table',
+            head: ['Problem', 'Example', 'Fix'],
+            rows: [
+              ['Missing values', '`NaN` in a marks column', '`fillna`, `dropna`'],
+              ['Duplicates', 'the same student twice', '`drop_duplicates`'],
+              ['Wrong types', 'age stored as `"20"`', '`astype`, `to_numeric`'],
+              ['Bad names', 'columns like `Student Name `', '`rename`, `.str.strip()`'],
+              ['Messy text', '`" delhi"`, `"DELHI"`', '`.str.strip()`, `.str.title()`'],
+              ['Wild values', 'age 250', 'filter or `clip`'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The messy table we will clean in this lesson. Run it and look for the problems yourself first.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "Student Name": ["Aman", "ankit ", "Neha", "Aman", "ROHIT", "Priya", "Sana", "Neha"],
+    "City":   [" delhi", "Mumbai", "DELHI", " delhi", "pune", "Mumbai", None, "DELHI"],
+    "Age":    ["20", "22", "21", "20", "23", "20", "22", "21"],
+    "Maths":  [85, 90, np.nan, 85, 92, 66, np.nan, np.nan],
+    "Science": [78, 88, 70, 78, 95, 70, 81, 70],
+})
+print(df)
+print()
+df.info()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`Student Name` and `City` have **spaces and mixed capitals**.',
+              'Row 0 and row 3 look **identical** (Aman), and so do rows 2 and 7 (Neha).',
+              '`Age` is `object` (text), not a number.',
+              '`Maths` has **missing** values.',
+              'The column names have capitals and a **space** (`Student Name`), which is awkward to type.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Always work on a copy',
+            text: 'Keep the original safe: `clean = df.copy()` and then change `clean`. If you make a mistake, you can start again from `df`.',
+          },
+        ],
+      },
+      {
+        id: 's21-missing-find',
+        title: 'Finding missing values',
+        blocks: [
+          {
+            type: 'p',
+            text: 'In pandas a missing value is **NaN** (or `None` in text columns). We met `isna` last lesson; here are the questions you will ask most.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit"],
+    "maths": [85, np.nan, 78, np.nan],
+    "city":  ["Delhi", "Mumbai", None, "Pune"],
+})
+
+print(df.isna().sum())
+print()
+print(df.isna().mean().round(2))
+print()
+print(df[df["maths"].isna()])
+print()
+print(df.notna().sum())
+print()
+print(df[df.isna().any(axis=1)])`,
+          },
+          {
+            type: 'table',
+            head: ['Code', 'Gives'],
+            rows: [
+              ['`df.isna().sum()`', 'missing **count** per column'],
+              ['`df.isna().mean()`', 'missing **fraction** per column (0.5 = half missing)'],
+              ['`df[df["maths"].isna()]`', 'the rows where maths is missing'],
+              ['`df.notna().sum()`', 'how many values are present'],
+              ['`df[df.isna().any(axis=1)]`', 'rows that have **any** missing value'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's21-fillna',
+        title: 'Filling missing values',
+        blocks: [
+          {
+            type: 'p',
+            text: '`fillna` replaces the blanks. What you fill with depends on the data.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya"],
+    "maths": [85, np.nan, 78, np.nan, 66],
+    "city":  ["Delhi", "Mumbai", None, "Pune", "Delhi"],
+})
+
+print(df["maths"].fillna(0))
+print()
+print(df["maths"].fillna(df["maths"].mean()))
+print()
+print(df["maths"].fillna(df["maths"].median()))
+print()
+print(df["city"].fillna("Unknown"))
+print()
+print(df["city"].fillna(df["city"].mode()[0]))`,
+          },
+          {
+            type: 'table',
+            head: ['Fill with', 'When it makes sense'],
+            rows: [
+              ['a fixed value (`0`, `"Unknown"`)', 'blank really means none, or a label is fine'],
+              ['the **mean**', 'numbers spread evenly, no extreme values'],
+              ['the **median**', 'numbers with a few very big or small values'],
+              ['the **mode** (most common)', 'text categories such as city'],
+              ['`ffill()` / `bfill()`', 'ordered data like daily readings: copy the value before/after'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+temp = pd.Series([30, np.nan, np.nan, 33, np.nan, 35])
+print(temp.ffill())
+print()
+print(temp.bfill())
+print()
+print(temp.interpolate())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`ffill()` copies the **previous** value forward.',
+              '`bfill()` copies the **next** value backward.',
+              '`interpolate()` draws a straight line between the known values (30, 31, 32, 33).',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Filling is a decision',
+            text: 'Filling hides a gap with a guess. Filling a missing marks with `0` makes the average smaller; filling with the mean keeps it. Think about what the blank **means** before you choose, and tell people what you did.',
+          },
+          { type: 'h3', text: 'Fill a whole table, or one column at a time' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "maths":   [85, np.nan, 78],
+    "science": [np.nan, 88, 70],
+    "city":    ["Delhi", None, "Pune"],
+})
+
+print(df.fillna({"maths": 0, "science": df["science"].mean(), "city": "Unknown"}))`,
+          },
+          {
+            type: 'p',
+            text: 'A **dictionary** in `fillna` gives each column its own fill value.',
+          },
+        ],
+      },
+      {
+        id: 's21-dropna',
+        title: 'Dropping missing values',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit"],
+    "maths":   [85, np.nan, 78, np.nan],
+    "science": [78, 88, np.nan, np.nan],
+})
+
+print(df.dropna())
+print()
+print(df.dropna(how="all", subset=["maths", "science"]))
+print()
+print(df.dropna(subset=["maths"]))
+print()
+print(df.dropna(thresh=2))
+print()
+print(df.dropna(axis=1))`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Removes'],
+            rows: [
+              ['`dropna()`', 'every row with **any** blank'],
+              ['`dropna(subset=["maths"])`', 'rows where **maths** is blank'],
+              ['`dropna(how="all", subset=[...])`', 'rows where **all** the listed columns are blank'],
+              ['`dropna(thresh=2)`', 'rows that have **fewer than 2** real values'],
+              ['`dropna(axis=1)`', 'every **column** with a blank'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Fill or drop?',
+            text: 'Few blanks and plenty of rows: dropping is fine. Many blanks, or each row is precious: fill them. A column that is mostly blank is often better dropped entirely.',
+          },
+        ],
+      },
+      {
+        id: 's21-duplicates',
+        title: 'Duplicates',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Aman", "Neha", "Aman"],
+    "maths": [85, 90, 85, 78, 60],
+})
+
+print(df.duplicated())
+print()
+print(df.duplicated().sum())
+print()
+print(df.drop_duplicates())
+print()
+print(df.drop_duplicates(subset=["name"]))
+print()
+print(df.drop_duplicates(subset=["name"], keep="last"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`duplicated()` marks a row `True` if an **identical row appeared before**. The first copy is `False`.',
+              '`drop_duplicates()` removes rows that are exact copies in **every** column.',
+              '`subset=["name"]` compares only the listed columns. Aman at row 4 has different maths but the same name, so it is a duplicate **by name**.',
+              '`keep="first"` (default) keeps the first copy, `keep="last"` the last, `keep=False` removes every copy.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Clean the text before looking for duplicates',
+            text: '`"Delhi"` and `" delhi"` are different to Python, so duplicates hide behind spaces and capitals. Clean the text first (below), then drop duplicates.',
+          },
+        ],
+      },
+      {
+        id: 's21-types',
+        title: 'Fixing data types',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A column of numbers stored as text cannot be added, averaged or compared properly. Check `df.dtypes` and convert.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"age": ["20", "22", "21"], "fee": ["1,000", "1,500", "1,200"]})
+print(df.dtypes)
+print(df["age"].sum())          # joins the text!
+print()
+
+df["age"] = df["age"].astype(int)
+print(df["age"].sum())
+print(df["age"].mean())`,
+          },
+          {
+            type: 'p',
+            text: 'The sum of the text `"20" "22" "21"` is the text `"202221"`. After `astype(int)` the sum is a real 63.',
+          },
+          { type: 'h3', text: 'to_numeric: for messy numbers' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+fee = pd.Series(["1,000", "1,500", "N/A", "1,200"])
+
+clean = fee.str.replace(",", "")
+print(pd.to_numeric(clean, errors="coerce"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`astype(int)` crashes if any value cannot be converted (like `"N/A"`).',
+              '`pd.to_numeric(col, errors="coerce")` turns the bad ones into `NaN` instead, so you can fix or drop them afterwards.',
+              'Remove symbols first: `.str.replace(",", "")`, `.str.replace("Rs", "")`.',
+            ],
+          },
+          { type: 'h3', text: 'Other types' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "joined": ["2024-01-15", "2023-11-30", "2024-03-02"],
+    "paid":   ["yes", "no", "yes"],
+    "grade":  ["B", "A", "B"],
+})
+
+df["joined"] = pd.to_datetime(df["joined"])
+df["paid"] = df["paid"].map({"yes": True, "no": False})
+df["grade"] = df["grade"].astype("category")
+
+print(df.dtypes)
+print()
+print(df["joined"].dt.month_name())
+print(df["paid"].sum())`,
+          },
+          {
+            type: 'table',
+            head: ['Type', 'Meaning', 'Convert with'],
+            rows: [
+              ['`int64`', 'whole numbers', '`astype(int)`'],
+              ['`float64`', 'decimal numbers (also used when `NaN` is present)', '`astype(float)`'],
+              ['`object`', 'text (pandas older than 3) ', '`astype(str)`'],
+              ['`bool`', 'True / False', '`.map({"yes": True, ...})`'],
+              ['`datetime64`', 'dates and times', '`pd.to_datetime`'],
+              ['`category`', 'a few repeating labels, saves memory', '`astype("category")`'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's21-rename',
+        title: 'Renaming columns',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "Student Name": ["Aman", "Ankit"],
+    " City ":        ["Delhi", "Mumbai"],
+    "Maths Marks":   [85, 90],
+})
+
+print(list(df.columns))
+
+df = df.rename(columns={"Student Name": "name", " City ": "city"})
+print(list(df.columns))
+
+df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+print(list(df.columns))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`rename(columns={"old": "new"})` changes chosen columns only.',
+              '`df.columns.str.strip().str.lower().str.replace(" ", "_")` cleans **every** name at once: no stray spaces, all lower case, `_` instead of spaces.',
+              'Names like `maths_marks` can be used as `df.maths_marks` and are easier to type.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'A tidy-names habit',
+            text: 'Right after loading a file, run `df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")`. It prevents many `KeyError`s caused by invisible spaces.',
+          },
+        ],
+      },
+      {
+        id: 's21-strings',
+        title: 'String cleaning',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The `.str` methods work on a whole column, just like the string methods from lesson 3.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+city = pd.Series([" delhi", "Mumbai ", "DELHI", "pune", "  Mumbai"])
+
+print(city.str.strip())
+print()
+print(city.str.strip().str.title())
+print()
+print(city.str.strip().str.title().value_counts())`,
+          },
+          {
+            type: 'table',
+            head: ['Method', 'Does'],
+            rows: [
+              ['`.str.strip()`', 'removes spaces at both ends'],
+              ['`.str.lower()` / `.upper()` / `.title()`', 'changes the capitals'],
+              ['`.str.replace("a", "b")`', 'replaces text'],
+              ['`.str.contains("del")`', '`True` where the text contains it'],
+              ['`.str.startswith("D")`', '`True` where it begins with it'],
+              ['`.str.split(" ")`', 'splits into a list'],
+              ['`.str.len()`', 'length of each text'],
+              ['`.str.extract(r"(\\d+)")`', 'pulls out the first number'],
+            ],
+          },
+          { type: 'h3', text: 'Split into parts' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"full": ["Aman Kumar", "Neha Singh", "Rohit Verma"]})
+
+parts = df["full"].str.split(" ", expand=True)
+print(parts)
+
+df["first"] = parts[0]
+df["last"] = parts[1]
+print(df)`,
+          },
+          {
+            type: 'p',
+            text: '`expand=True` returns the pieces as separate columns (numbered 0, 1, ...), which we copied into `first` and `last`.',
+          },
+          { type: 'h3', text: 'Fix wrong spellings' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+city = pd.Series(["Bombay", "Mumbai", "Delhi", "New Delhi", "Bombay"])
+
+fixed = city.replace({"Bombay": "Mumbai", "New Delhi": "Delhi"})
+print(fixed)
+print()
+print(fixed.value_counts())`,
+          },
+          {
+            type: 'p',
+            text: '`replace` with a dictionary swaps whole values. Always check with `value_counts()` afterwards to see that the categories look right.',
+          },
+        ],
+      },
+      {
+        id: 's21-outliers',
+        title: 'Wild values (outliers)',
+        blocks: [
+          {
+            type: 'p',
+            text: 'An **outlier** is a value far away from the rest: an age of 250, marks of -5, a typing slip. First **look** (`describe`), then decide.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya"],
+    "age":   [20, 22, 250, 23, 21],
+    "marks": [85, 90, 78, -5, 66],
+})
+
+print(df.describe().loc[["min", "max"]])
+print()
+print(df[(df["age"] > 100) | (df["marks"] < 0)])
+print()
+ok = df[(df["age"] <= 100) & (df["marks"] >= 0)]
+print(ok)
+print()
+print(df["marks"].clip(lower=0, upper=100))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`describe` shows `min` and `max`: an age of 250 and marks of -5 stand out at once.',
+              '**Filter** them out when the row is clearly wrong.',
+              '`clip(lower=0, upper=100)` squeezes values into a range instead of removing the row.',
+              'Or treat them as missing: `df.loc[df["age"] > 100, "age"] = np.nan`, then fill.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's21-pipeline',
+        title: 'Example: clean the whole table',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Now we clean the messy table from the start of the lesson, one step at a time, printing the shape as we go.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "Student Name": ["Aman", "ankit ", "Neha", "Aman", "ROHIT", "Priya", "Sana", "Neha"],
+    "City":   [" delhi", "Mumbai", "DELHI", " delhi", "pune", "Mumbai", None, "DELHI"],
+    "Age":    ["20", "22", "21", "20", "23", "20", "22", "21"],
+    "Maths":  [85, 90, np.nan, 85, 92, 66, np.nan, np.nan],
+    "Science": [78, 88, 70, 78, 95, 70, 81, 70],
+})
+
+clean = df.copy()
+print("start:", clean.shape)
+
+# 1. tidy column names
+clean.columns = clean.columns.str.strip().str.lower().str.replace(" ", "_")
+
+# 2. clean the text
+clean["student_name"] = clean["student_name"].str.strip().str.title()
+clean["city"] = clean["city"].str.strip().str.title()
+
+# 3. fix the type
+clean["age"] = clean["age"].astype(int)
+
+# 4. drop duplicate rows
+clean = clean.drop_duplicates()
+print("after duplicates:", clean.shape)
+
+# 5. missing values
+clean["city"] = clean["city"].fillna("Unknown")
+clean["maths"] = clean["maths"].fillna(clean["maths"].median())
+
+print()
+print(clean)
+print()
+clean.info()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Order matters: **clean the text first**, so that `" delhi"` and `"DELHI"` become `"Delhi"`, and only then look for duplicates.',
+              'Neha\'s two rows became identical after cleaning, so one was dropped (8 rows to 6).',
+              'The median of the known maths marks filled the blanks.',
+              '`info()` at the end confirms: no missing values, `age` is `int64`.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's21-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Forgetting to save.** `df.drop_duplicates()` and `df.fillna(0)` return a new table: write `df = df.drop_duplicates()`.',
+              '**Dropping duplicates before cleaning the text.** `"Delhi"` and `" delhi"` are not equal yet.',
+              '**Filling with 0 without thinking.** It changes the average.',
+              '**`dropna()` with no `subset`** can remove almost every row when each row has a blank somewhere.',
+              '**`astype(int)` on a column with `NaN`.** It fails: fix or fill the blanks first (or use `astype(float)`).',
+              '**Using `.str` on a number column.** `.str` only works on text; convert with `astype(str)` first.',
+              '**Changing the original with no backup.** Work on `df.copy()`.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (NaN cannot become an int)',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+s = pd.Series([1, 2, np.nan])
+print(s.astype(int))`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this also fails on purpose (.str on numbers)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+s = pd.Series([10, 20, 30])
+print(s.str.upper())`,
+          },
+        ],
+      },
+      {
+        id: 's21-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: fill the missing prices with the average price, then print the table',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "item":  ["pen", "book", "bag", "ruler"],
+    "price": [5, np.nan, 800, np.nan],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: clean the names (strip, title case) and then remove the duplicate rows',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["aman", "Aman ", " ANKIT", "Ankit", "Neha"]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: turn the "fee" column into numbers (remove the commas) and print the total',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"fee": ["1,000", "1,500", "1,200"]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: tidy these column names (lower case, no spaces, underscores) and print them',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"First Name": ["Aman"], " Total Marks ": [85], "CITY": ["Delhi"]})
+`,
+          },
+        ],
+      },
+      {
+        id: 's21-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make a messy table of **10 rows**: a few blanks, two duplicate rows, names with spaces and mixed capitals, ages stored as text.',
+              'Print `info()` and `isna().sum()` before cleaning.',
+              'Clean it: tidy the column names, strip and title-case the text, convert the types, drop duplicates, fill or drop the blanks.',
+              'Print `info()` again and compare with the start.',
+              'Add one impossible value (age 300) and find it with `describe`, then remove it.',
+              'Write the cleaned table to `clean.csv` with `index=False`.',
+              'Revise: `isna`, `fillna`, `dropna`, `duplicated`, `drop_duplicates`, `astype`, `to_numeric`, `to_datetime`, `rename`, `.str.strip`, `.str.title`, `clip`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Grouping and aggregation: `groupby`, `agg`, `pivot_table` and `value_counts`.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'grouping-and-aggregation',
+    title: 'Grouping and Aggregation',
+    summary: 'groupby, agg, pivot_table and value_counts.',
+    hero: {
+      file: 'groups.py',
+      lines: ['import pandas as pd', 'print(df.groupby("city")["maths"].mean())'],
+      output: 'city\nDelhi     81.5\nMumbai    78.0\nPune      83.0',
+    },
+    sections: [
+      {
+        id: 's22-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'How do you fill missing values with the average?',
+              'Why should you clean the text before dropping duplicates?',
+              'How do you make a new column from two others?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's22-idea',
+        title: 'The idea: split, apply, combine',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Questions like "what is the **average marks per city**?" or "what are the **total sales per item**?" all work the same way:',
+          },
+          {
+            type: 'ol',
+            items: [
+              '**Split** the rows into groups (one group per city).',
+              '**Apply** a calculation to each group (the average).',
+              '**Combine** the answers into one small table.',
+            ],
+          },
+          {
+            type: 'p',
+            text: '`groupby` does all three in one line. It is the same as **GROUP BY** in SQL and a **pivot table** in Excel. Run the data below, we use it through the whole lesson.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana", "Kabir", "Isha"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "gender":  ["M", "M", "F", "M", "F", "F", "M", "F"],
+    "maths":   [85, 90, 78, 92, 66, 74, 81, 95],
+    "science": [78, 88, 70, 95, 70, 81, 79, 91],
+})
+print(df)`,
+          },
+        ],
+      },
+      {
+        id: 's22-groupby',
+        title: 'groupby basics',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "maths":   [85, 90, 78, 92, 66, 74, 81, 95],
+    "science": [78, 88, 70, 95, 70, 81, 79, 91],
+})
+
+print(df.groupby("city")["maths"].mean())
+print()
+print(df.groupby("city")["maths"].max())
+print()
+print(df.groupby("city").mean())
+print()
+print(df.groupby("city").size())`,
+          },
+          {
+            type: 'p',
+            text: 'Read `df.groupby("city")["maths"].mean()` from left to right: "take df, group by city, look at maths, take the mean".',
+          },
+          {
+            type: 'table',
+            head: ['Code', 'Gives'],
+            rows: [
+              ['`df.groupby("city")["maths"].mean()`', 'one number per city (a Series)'],
+              ['`df.groupby("city").mean()`', 'the mean of **every number column** per city'],
+              ['`df.groupby("city").size()`', 'how many rows in each group'],
+              ['`df.groupby("city")["maths"].count()`', 'how many non-missing values in each group'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The usual calculations: `sum`, `mean`, `median`, `min`, `max`, `count`, `std`, `first`, `last`, `nunique`.',
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Text columns and mean',
+            text: 'If the table has text columns, `df.groupby("city").mean()` complains in newer pandas. Choose the numbers: `df.groupby("city")[["maths", "science"]].mean()`.',
+          },
+          { type: 'h3', text: 'Several columns at once' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "maths":   [85, 90, 78, 92, 66, 74, 81, 95],
+    "science": [78, 88, 70, 95, 70, 81, 79, 91],
+})
+
+print(df.groupby("city")[["maths", "science"]].mean())
+print()
+print(df.groupby("city")[["maths", "science"]].sum())`,
+          },
+        ],
+      },
+      {
+        id: 's22-two-keys',
+        title: 'Grouping by two columns',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":   ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "gender": ["M", "M", "F", "M", "F", "F", "M", "F"],
+    "maths":  [85, 90, 78, 92, 66, 74, 81, 95],
+})
+
+g = df.groupby(["city", "gender"])["maths"].mean()
+print(g)
+print()
+print(g.unstack())
+print()
+print(g.reset_index())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`groupby(["city", "gender"])` makes a group for each **pair**. The result has a **two-level index**.',
+              '`unstack()` moves the inner level (gender) into **columns**: a handy cross-table.',
+              '`reset_index()` turns the index levels back into normal columns, giving a plain table.',
+              'A pair with no rows (like Pune females if there were none) shows as `NaN` after `unstack`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'as_index=False',
+            text: '`df.groupby("city", as_index=False)["maths"].mean()` returns a normal table straight away (the group names stay as a column), so you can skip `reset_index()`.',
+          },
+        ],
+      },
+      {
+        id: 's22-agg',
+        title: 'agg: several calculations at once',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "maths":   [85, 90, 78, 92, 66, 74, 81, 95],
+    "science": [78, 88, 70, 95, 70, 81, 79, 91],
+})
+
+print(df.groupby("city")["maths"].agg(["min", "max", "mean", "count"]))
+print()
+print(df.groupby("city").agg({"maths": "mean", "science": ["min", "max"]}))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`agg(["min", "max", "mean"])` gives one column per calculation.',
+              'A **dictionary** `{"maths": "mean", "science": ["min", "max"]}` picks a different calculation for each column.',
+            ],
+          },
+          { type: 'h3', text: 'Named aggregation: your own column names' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "maths":   [85, 90, 78, 92, 66, 74, 81, 95],
+    "science": [78, 88, 70, 95, 70, 81, 79, 91],
+})
+
+report = df.groupby("city").agg(
+    students=("maths", "count"),
+    avg_maths=("maths", "mean"),
+    best_science=("science", "max"),
+).round(1)
+
+print(report)`,
+          },
+          {
+            type: 'p',
+            text: 'The form `new_name=("column", "calculation")` gives clean, readable result columns. This is the style most analysts prefer.',
+          },
+          { type: 'h3', text: 'Your own calculation' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+def spread(s):
+    return s.max() - s.min()
+
+print(df.groupby("city")["maths"].agg(spread))
+print()
+print(df.groupby("city")["maths"].agg(lambda s: (s >= 80).sum()))`,
+          },
+          {
+            type: 'p',
+            text: 'Give `agg` any function that takes a group (a Series) and returns **one value**. Here: the spread (max minus min), and how many scored 80 or more.',
+          },
+        ],
+      },
+      {
+        id: 's22-transform',
+        title: 'Group results next to each row',
+        blocks: [
+          {
+            type: 'p',
+            text: '`groupby(...).mean()` gives **one row per group**. Sometimes you want the group average added as a column on **every original row**, for example "how far above the city average is each student?". That is `transform`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+df["city_avg"] = df.groupby("city")["maths"].transform("mean")
+df["diff"] = df["maths"] - df["city_avg"]
+print(df)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`transform("mean")` keeps the **same number of rows** as the original and repeats each group result.',
+              'That makes it easy to compare every row with its own group.',
+              'Also useful: `transform("sum")`, `transform("max")`, `rank`, and `cumsum` inside each group.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+df["rank_in_city"] = df.groupby("city")["maths"].rank(ascending=False)
+print(df.sort_values(["city", "rank_in_city"]))`,
+          },
+        ],
+      },
+      {
+        id: 's22-filter-groups',
+        title: 'Looping over groups, and picking rows from groups',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+for city, group in df.groupby("city"):
+    print(city, "->", list(group["name"]), "average", group["maths"].mean())
+
+print()
+print(df.groupby("city").get_group("Delhi"))`,
+          },
+          {
+            type: 'p',
+            text: 'A groupby can be looped over: each step gives the **group name** and a small **DataFrame** for that group. `get_group` fetches one group directly.',
+          },
+          { type: 'h3', text: 'Top one (or top two) in each group' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+best = df.sort_values("maths", ascending=False).groupby("city").head(1)
+print(best.sort_values("city"))
+print()
+print(df.loc[df.groupby("city")["maths"].idxmax()])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Sort first, then `groupby("city").head(1)` keeps the **first row of each group**, which is the highest.',
+              '`idxmax()` per group gives the row **label** of the best row, and `loc` fetches those rows.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's22-value-counts',
+        title: 'value_counts',
+        blocks: [
+          {
+            type: 'p',
+            text: '`value_counts()` is a shortcut for "group by this column and count the rows".',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":   ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "gender": ["M", "M", "F", "M", "F", "F", "M", "F"],
+})
+
+print(df["city"].value_counts())
+print()
+print(df["city"].value_counts(normalize=True).round(2))
+print()
+print(df["city"].value_counts(ascending=True))
+print()
+print(df[["city", "gender"]].value_counts())
+print()
+print(df.groupby("city").size())`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Gives'],
+            rows: [
+              ['`s.value_counts()`', 'count of each value, most common first'],
+              ['`value_counts(normalize=True)`', 'the **fraction** of each (0.375 = 37.5%)'],
+              ['`value_counts(ascending=True)`', 'least common first'],
+              ['`df[["a", "b"]].value_counts()`', 'counts of each **pair**'],
+              ['`value_counts(dropna=False)`', 'also count the missing values'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The last two lines of the code above give the same counts: `df["city"].value_counts()` is `df.groupby("city").size()` sorted from biggest to smallest.',
+          },
+        ],
+      },
+      {
+        id: 's22-crosstab',
+        title: 'crosstab',
+        blocks: [
+          {
+            type: 'p',
+            text: '`pd.crosstab(rows, columns)` counts how often each **pair** appears, laid out as a table. It is quick for "how many of each kind in each place".',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":   ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "gender": ["M", "M", "F", "M", "F", "F", "M", "F"],
+})
+
+print(pd.crosstab(df["city"], df["gender"]))
+print()
+print(pd.crosstab(df["city"], df["gender"], margins=True))`,
+          },
+          {
+            type: 'p',
+            text: '`margins=True` adds an **All** row and column with the totals.',
+          },
+        ],
+      },
+      {
+        id: 's22-pivot',
+        title: 'pivot_table',
+        blocks: [
+          {
+            type: 'p',
+            text: '`pivot_table` is the Excel pivot table. You say what goes down the **rows** (`index`), what goes across the **columns**, which numbers to fill in (`values`) and how to combine them (`aggfunc`).',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":   ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune", "Delhi", "Mumbai"],
+    "gender": ["M", "M", "F", "M", "F", "F", "M", "F"],
+    "maths":  [85, 90, 78, 92, 66, 74, 81, 95],
+})
+
+p = pd.pivot_table(df, index="city", columns="gender", values="maths", aggfunc="mean")
+print(p)
+print()
+print(pd.pivot_table(df, index="city", values="maths", aggfunc=["mean", "max"]))
+print()
+print(pd.pivot_table(df, index="city", columns="gender", values="maths",
+                     aggfunc="mean", margins=True, fill_value=0).round(1))`,
+          },
+          {
+            type: 'table',
+            head: ['Argument', 'Meaning'],
+            rows: [
+              ['`index`', 'what goes down the left (the rows)'],
+              ['`columns`', 'what goes across the top'],
+              ['`values`', 'the numbers to summarise'],
+              ['`aggfunc`', 'how: `"mean"` (default), `"sum"`, `"count"`, `"max"` or a list'],
+              ['`margins=True`', 'add the totals (the **All** row and column)'],
+              ['`fill_value=0`', 'what to show for empty cells'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'pivot_table or groupby?',
+            text: 'They give the same answers. `groupby` + `unstack` is the programmer\'s way; `pivot_table` reads more like Excel and is quicker when you want a cross-table with totals.',
+          },
+        ],
+      },
+      {
+        id: 's22-example',
+        title: 'Example: a sales summary',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+sales = pd.DataFrame({
+    "month": ["Jan", "Jan", "Jan", "Feb", "Feb", "Feb", "Mar", "Mar", "Mar"],
+    "item":  ["pen", "book", "bag", "pen", "book", "bag", "pen", "book", "bag"],
+    "qty":   [10, 2, 1, 15, 3, 2, 12, 4, 1],
+    "price": [5, 350, 800, 5, 350, 800, 5, 350, 800],
+})
+sales["amount"] = sales["qty"] * sales["price"]
+
+print("Total sales:", sales["amount"].sum())
+print()
+print("By item")
+print(sales.groupby("item")["amount"].sum().sort_values(ascending=False))
+print()
+print("By month (in order)")
+order = ["Jan", "Feb", "Mar"]
+print(sales.groupby("month")["amount"].sum().reindex(order))
+print()
+print("Month by item")
+print(sales.pivot_table(index="month", columns="item", values="amount", aggfunc="sum").reindex(order))
+print()
+top = sales.groupby("item")["amount"].sum().idxmax()
+print("Best item:", top)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Group results come sorted by name (Feb, Jan, Mar). `reindex(order)` puts the months in the right order.',
+              '`sort_values(ascending=False)` shows the biggest first.',
+              '`idxmax()` on the grouped totals gives the **name** of the best item.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's22-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Forgetting the calculation.** `df.groupby("city")` alone only makes a group object. Add `.mean()`, `.sum()`, `.size()` ...',
+              '**Wrong brackets.** One column is `["maths"]`, several columns need `[["maths", "science"]]`.',
+              '**Averaging text columns.** Choose the number columns first.',
+              '**Missing values are skipped** by `mean`, `sum` and `count`. `size()` counts every row, `count()` only the non-blank ones.',
+              '**Group names become the index.** Use `reset_index()` or `as_index=False` when you want a plain table.',
+              '**Months in the wrong order.** Groups sort alphabetically; use `reindex` or a proper date column.',
+              '**Mixing up `agg` and `transform`.** `agg` shrinks to one row per group; `transform` keeps every row.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: nothing useful is printed (no calculation after groupby)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["Delhi", "Pune"], "maths": [85, 90]})
+print(df.groupby("city"))`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (wrong column name)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["Delhi", "Pune"], "maths": [85, 90]})
+print(df.groupby("city")["Maths"].mean())`,
+          },
+        ],
+      },
+      {
+        id: 's22-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: print the total salary of each department',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "dept":   ["HR", "IT", "IT", "HR", "Sales", "IT"],
+    "salary": [30, 60, 70, 35, 40, 65],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: for each department print the number of people, the average salary and the highest salary (use named aggregation)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "dept":   ["HR", "IT", "IT", "HR", "Sales", "IT"],
+    "salary": [30, 60, 70, 35, 40, 65],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: count how many students there are in each city, as percentages',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["Delhi", "Pune", "Delhi", "Mumbai", "Delhi", "Pune"]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: make a pivot table of average marks with city down the side and gender across the top',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "city":   ["Delhi", "Pune", "Delhi", "Pune"],
+    "gender": ["M", "F", "F", "M"],
+    "marks":  [80, 70, 90, 60],
+})
+`,
+          },
+        ],
+      },
+      {
+        id: 's22-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make a table of **12 sales** with date (month), item, city, qty and price. Add an `amount` column.',
+              'Find the total amount per item, per city, and per city and item together.',
+              'Use named aggregation to build a report: number of orders, total amount and biggest order for each city.',
+              'Add a column with each city\'s total using `transform`, then the percentage each row contributes to its city.',
+              'Make a `pivot_table` with months down the side and items across, with totals (`margins=True`).',
+              'Use `value_counts(normalize=True)` to find the share of each item.',
+              'Revise: `groupby`, `agg`, named aggregation, `transform`, `size` vs `count`, `unstack`, `reset_index`, `value_counts`, `crosstab`, `pivot_table`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Sorting, merging and joining: `sort_values`, `merge`, `concat` and `apply`.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'sorting-merging-and-joining',
+    title: 'Sorting, Merging and Joining',
+    summary: 'sort_values, merge, concat and apply.',
+    hero: {
+      file: 'merge.py',
+      lines: ['import pandas as pd', 'both = pd.merge(students, marks, on="id")', 'print(both.sort_values("maths"))'],
+      output: '   id   name  maths\n1   2  Ankit     90\n0   1   Aman     85',
+    },
+    sections: [
+      {
+        id: 's23-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `df.groupby("city")["maths"].mean()` give?',
+              'What is the difference between `agg` and `transform`?',
+              'What does a `pivot_table` do?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's23-sort',
+        title: 'sort_values',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai"],
+    "maths": [85, 90, 78, 92, 66],
+})
+
+print(df.sort_values("maths"))
+print()
+print(df.sort_values("maths", ascending=False))
+print()
+print(df.sort_values(["city", "maths"], ascending=[True, False]))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`sort_values("maths")` sorts from the smallest (ascending is the default).',
+              '`ascending=False` puts the biggest first.',
+              'A **list** of columns sorts by the first, and uses the next to break ties.',
+              '`ascending=[True, False]` gives each column its own direction: city A to Z, then maths high to low.',
+              'The row labels travel with their rows, so they look shuffled. Add `.reset_index(drop=True)` for a fresh 0, 1, 2 ...',
+            ],
+          },
+          { type: 'h3', text: 'More sorting tools' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya"],
+    "maths": [85, np.nan, 78, 92, 66],
+})
+
+print(df.sort_values("maths", na_position="first"))
+print()
+print(df.sort_values("name", key=lambda s: s.str.lower()))
+print()
+print(df.sort_values("maths", ascending=False).reset_index(drop=True))
+print()
+print(df.sort_index(ascending=False))
+print()
+print(df.nlargest(2, "maths"))
+print(df.nsmallest(2, "maths"))`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Does'],
+            rows: [
+              ['`na_position="first"`', 'blanks go to the top (default: the bottom)'],
+              ['`key=lambda s: s.str.lower()`', 'sort ignoring capital letters'],
+              ['`reset_index(drop=True)`', 'renumber the rows 0, 1, 2 ... and forget the old numbers'],
+              ['`sort_index()`', 'sort by the **row labels**'],
+              ['`nlargest(n, "col")` / `nsmallest`', 'the top / bottom `n` rows (quicker than sort + head)'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Save the sorted table',
+            text: '`df.sort_values(...)` returns a new table and leaves `df` as it was. Write `df = df.sort_values(...)` to keep the order. Text is sorted by letter code, so capital letters come before small ones unless you use `key=`.',
+          },
+        ],
+      },
+      {
+        id: 's23-rank',
+        title: 'rank',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya"],
+    "maths": [85, 90, 78, 90, 66],
+})
+
+df["rank"] = df["maths"].rank(ascending=False)
+df["rank_min"] = df["maths"].rank(ascending=False, method="min")
+print(df)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`rank` gives each row its position, 1 for the best when `ascending=False`.',
+              'Two students tied on 90 share rank **1.5** (the average). `method="min"` gives both rank **1** like a school ranking.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's23-concat',
+        title: 'concat: stack tables',
+        blocks: [
+          {
+            type: 'p',
+            text: '`pd.concat` glues tables together. Use it when you have the **same kind of data in pieces**: one file per month, one per branch.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+jan = pd.DataFrame({"item": ["pen", "book"], "qty": [10, 2]})
+feb = pd.DataFrame({"item": ["pen", "bag"], "qty": [15, 1]})
+
+print(pd.concat([jan, feb]))
+print()
+print(pd.concat([jan, feb], ignore_index=True))
+print()
+both = pd.concat([jan, feb], keys=["Jan", "Feb"])
+print(both)
+print()
+print(both.loc["Feb"])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`pd.concat([a, b])` stacks the rows of `b` under `a` (the tables are given in a **list**).',
+              'The old row numbers are kept, so you see 0, 1, 0, 1. `ignore_index=True` renumbers them.',
+              '`keys=["Jan", "Feb"]` remembers which piece each row came from, as an extra index level.',
+            ],
+          },
+          { type: 'h3', text: 'Columns that do not match' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+a = pd.DataFrame({"name": ["Aman"], "maths": [85]})
+b = pd.DataFrame({"name": ["Neha"], "science": [70]})
+
+print(pd.concat([a, b], ignore_index=True))`,
+          },
+          {
+            type: 'p',
+            text: 'Columns are matched **by name**. A column missing in one table is filled with `NaN`. Clean the column names first so that `"Name"` and `"name"` do not turn into two columns.',
+          },
+          { type: 'h3', text: 'Side by side: axis=1' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+names = pd.DataFrame({"name": ["Aman", "Ankit"]})
+marks = pd.DataFrame({"maths": [85, 90]})
+
+print(pd.concat([names, marks], axis=1))`,
+          },
+          {
+            type: 'p',
+            text: '`axis=1` places tables **next to each other**, lining the rows up by row label. For anything that needs matching on a value such as an id, use `merge` instead.',
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'A common pattern',
+            text: 'Read many files and join them: `pd.concat([pd.read_csv(f) for f in files], ignore_index=True)`.',
+          },
+        ],
+      },
+      {
+        id: 's23-merge-idea',
+        title: 'merge: why we need it',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Real data is split over several tables. Students are in one, their marks in another, linked by an **id**. To get names next to marks we **merge** (join) them, just like a SQL **JOIN** or an Excel **VLOOKUP**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({
+    "id":   [1, 2, 3, 4],
+    "name": ["Aman", "Ankit", "Neha", "Rohit"],
+    "city": ["Delhi", "Mumbai", "Delhi", "Pune"],
+})
+marks = pd.DataFrame({
+    "id":    [1, 2, 3, 5],
+    "maths": [85, 90, 78, 60],
+})
+
+print(students)
+print()
+print(marks)
+print()
+print(pd.merge(students, marks, on="id"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`on="id"` is the **key**: the column that appears in both tables.',
+              'The result has the columns of both, and a row only when the id is in **both** tables.',
+              'Rohit (id 4) has no marks, and id 5 has no student, so both are left out. That is an **inner join**, the default.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's23-how',
+        title: 'The four kinds of join (how=)',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({"id": [1, 2, 3, 4], "name": ["Aman", "Ankit", "Neha", "Rohit"]})
+marks = pd.DataFrame({"id": [1, 2, 3, 5], "maths": [85, 90, 78, 60]})
+
+for how in ["inner", "left", "right", "outer"]:
+    print("how =", how)
+    print(pd.merge(students, marks, on="id", how=how))
+    print()`,
+          },
+          {
+            type: 'table',
+            head: ['how', 'Keeps', 'Use it for'],
+            rows: [
+              ['`inner` (default)', 'ids found in **both**', 'only complete records'],
+              ['`left`', 'every row of the **left** table', '"add marks to my students, even if some have none"'],
+              ['`right`', 'every row of the **right** table', 'the mirror of left'],
+              ['`outer`', 'every row of **both**', 'see everything, find what does not match'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Where there is no match, the missing side is filled with `NaN`. In the output above, `left` shows Rohit with `NaN` marks, and `outer` also shows id 5 with `NaN` for the name.',
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Left join is the everyday one',
+            text: 'When in doubt, use `how="left"`: your main table stays complete, and you add information to it. Then check which rows got `NaN`.',
+          },
+          { type: 'h3', text: 'Finding what did not match' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({"id": [1, 2, 3, 4], "name": ["Aman", "Ankit", "Neha", "Rohit"]})
+marks = pd.DataFrame({"id": [1, 2, 3, 5], "maths": [85, 90, 78, 60]})
+
+full = pd.merge(students, marks, on="id", how="outer", indicator=True)
+print(full)
+print()
+print(full[full["_merge"] == "left_only"])
+print(full["_merge"].value_counts())`,
+          },
+          {
+            type: 'p',
+            text: '`indicator=True` adds a `_merge` column that says `both`, `left_only` or `right_only`. It is the quickest way to see which records failed to match.',
+          },
+        ],
+      },
+      {
+        id: 's23-keys',
+        title: 'Different key names, several keys, repeated names',
+        blocks: [
+          { type: 'h3', text: 'left_on and right_on' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({"student_id": [1, 2, 3], "name": ["Aman", "Ankit", "Neha"]})
+marks = pd.DataFrame({"sid": [1, 2, 3], "maths": [85, 90, 78]})
+
+m = pd.merge(students, marks, left_on="student_id", right_on="sid")
+print(m)
+print()
+print(m.drop(columns="sid"))`,
+          },
+          {
+            type: 'p',
+            text: 'When the key has a **different name** in each table, use `left_on` and `right_on`. Both columns are kept, so drop the extra one.',
+          },
+          { type: 'h3', text: 'Two keys' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+a = pd.DataFrame({"city": ["Delhi", "Delhi", "Pune"], "month": ["Jan", "Feb", "Jan"], "sales": [100, 120, 80]})
+b = pd.DataFrame({"city": ["Delhi", "Delhi", "Pune"], "month": ["Jan", "Feb", "Jan"], "target": [90, 130, 70]})
+
+print(pd.merge(a, b, on=["city", "month"]))`,
+          },
+          { type: 'h3', text: 'Same column name in both: suffixes' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+t1 = pd.DataFrame({"id": [1, 2], "marks": [85, 90]})
+t2 = pd.DataFrame({"id": [1, 2], "marks": [88, 92]})
+
+print(pd.merge(t1, t2, on="id"))
+print()
+print(pd.merge(t1, t2, on="id", suffixes=("_term1", "_term2")))`,
+          },
+          {
+            type: 'p',
+            text: 'If both tables have a column with the same name (that is not the key), pandas adds `_x` and `_y`. `suffixes=` lets you choose clearer endings.',
+          },
+          { type: 'h3', text: 'The key is the row label: join' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({"name": ["Aman", "Ankit", "Neha"]}, index=[1, 2, 3])
+marks = pd.DataFrame({"maths": [85, 90, 78]}, index=[1, 2, 3])
+
+print(students.join(marks))`,
+          },
+          {
+            type: 'p',
+            text: '`df.join(other)` is a short form of `merge` that matches on the **row labels** (the index). It is a left join by default.',
+          },
+        ],
+      },
+      {
+        id: 's23-many',
+        title: 'One to many',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Often one row on the left matches **several** rows on the right: a student has many test results. The left row is **repeated** for each match.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({"id": [1, 2], "name": ["Aman", "Ankit"]})
+tests = pd.DataFrame({
+    "id":    [1, 1, 2, 2, 2],
+    "test":  ["T1", "T2", "T1", "T2", "T3"],
+    "score": [80, 90, 70, 75, 95],
+})
+
+m = pd.merge(students, tests, on="id")
+print(m)
+print()
+print(m.groupby("name")["score"].mean())`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Check the row count after a merge',
+            text: 'A left join should never give you **fewer** rows than the left table, and if the right table has duplicate keys it can give **more**. Always print `len()` before and after, and use `validate="one_to_one"` or `"one_to_many"` to make pandas raise an error if the data breaks your assumption.',
+          },
+        ],
+      },
+      {
+        id: 's23-apply',
+        title: 'apply',
+        blocks: [
+          {
+            type: 'p',
+            text: '`apply` runs **your own function** on a column, or on every row. Use it when the rule is too complicated for plain column maths.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Priya"],
+    "maths": [85, 92, 70, 40],
+})
+
+def grade(m):
+    if m >= 90:
+        return "A"
+    if m >= 75:
+        return "B"
+    if m >= 50:
+        return "C"
+    return "F"
+
+df["grade"] = df["maths"].apply(grade)
+df["initial"] = df["name"].apply(lambda n: n[0])
+print(df)`,
+          },
+          { type: 'h3', text: 'apply across a row: axis=1' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "maths":   [85, 92, 70],
+    "science": [78, 88, 55],
+})
+
+def result(row):
+    if row["maths"] >= 60 and row["science"] >= 60:
+        return "Pass"
+    return "Fail"
+
+df["result"] = df.apply(result, axis=1)
+print(df)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`df["col"].apply(f)` calls `f` on each **value** of the column.',
+              '`df.apply(f, axis=1)` calls `f` on each **row** (a Series, so use `row["maths"]`). This lets a rule use several columns.',
+              '`axis=0` (the default for a table) would call it on each column.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'apply is the slow way',
+            text: '`apply` runs a Python function once per row, so it is slow on big tables. Try these first: column maths, `np.where`, `np.select`, `.str` methods, `map`. Use `apply` when nothing simpler fits.',
+          },
+          { type: 'h3', text: 'Speed check' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import time
+import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({"x": np.arange(200_000)})
+
+t = time.time()
+a = df["x"].apply(lambda v: v * 2)
+t1 = time.time() - t
+
+t = time.time()
+b = df["x"] * 2
+t2 = time.time() - t
+
+print("same answer:", a.equals(b))
+print("apply is slower:", t1 > t2)`,
+          },
+        ],
+      },
+      {
+        id: 's23-example',
+        title: 'Example: a class report from three tables',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+students = pd.DataFrame({
+    "id":   [1, 2, 3, 4, 5],
+    "name": ["Aman", "Ankit", "Neha", "Rohit", "Priya"],
+    "city": ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai"],
+})
+term1 = pd.DataFrame({"id": [1, 2, 3, 4], "maths": [80, 85, 70, 90]})
+term2 = pd.DataFrame({"id": [1, 2, 3, 5], "maths": [85, 95, 78, 60]})
+
+both = pd.merge(term1, term2, on="id", how="outer", suffixes=("_t1", "_t2"))
+report = pd.merge(students, both, on="id", how="left")
+
+report["average"] = report[["maths_t1", "maths_t2"]].mean(axis=1)
+report["improved"] = report["maths_t2"] > report["maths_t1"]
+report = report.sort_values("average", ascending=False).reset_index(drop=True)
+
+print(report)
+print()
+print(report.groupby("city")["average"].mean().round(1))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Two merges: terms together (outer, so nobody is lost), then add the student details (left).',
+              '`suffixes` told the two `maths` columns apart.',
+              '`mean(axis=1)` averages **across a row**, ignoring a missing term.',
+              'Comparing with `NaN` gives `False`, so students with only one term show `improved = False`.',
+              'Sorted by the average, then `groupby` for a city summary.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's23-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Forgetting to save** `sort_values`, `merge` or `concat` results.',
+              '**Keys with different types.** Id `1` (a number) never matches `"1"` (text): convert with `astype` first.',
+              '**Spaces or capitals in the key.** `"Aman"` and `"aman "` do not match: clean the text first.',
+              '**Wrong `how`.** The default is `inner`, which silently drops rows that do not match.',
+              '**Rows multiplying.** Duplicate keys in one table repeat rows. Check `len()` before and after.',
+              '**`concat` with a table instead of a list.** It is `pd.concat([a, b])`, with square brackets.',
+              '**Old row numbers after `concat`.** Use `ignore_index=True`.',
+              '**Using `apply` for simple maths.** Column maths is shorter and much faster.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (number key against text key)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+a = pd.DataFrame({"id": [1, 2], "name": ["Aman", "Ankit"]})
+b = pd.DataFrame({"id": ["1", "2"], "maths": [85, 90]})
+
+print(pd.merge(a, b, on="id"))`,
+          },
+        ],
+      },
+      {
+        id: 's23-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: sort the books by price (highest first) and print the top 2 titles',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "title": ["A", "B", "C", "D"],
+    "price": [250, 600, 120, 450],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: stack the two tables into one with fresh row numbers, then print it',
+            runnable: true,
+            code: raw`import pandas as pd
+
+north = pd.DataFrame({"city": ["Delhi", "Noida"], "sales": [100, 80]})
+south = pd.DataFrame({"city": ["Chennai", "Kochi"], "sales": [120, 90]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add each customer\'s city to the orders (a left join on "cust_id")',
+            runnable: true,
+            code: raw`import pandas as pd
+
+orders = pd.DataFrame({"order": [1, 2, 3], "cust_id": [10, 20, 10], "amount": [500, 300, 150]})
+customers = pd.DataFrame({"cust_id": [10, 20], "city": ["Delhi", "Pune"]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add a column "tax" using apply: 18% of amount for amounts above 400, otherwise 5%',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"amount": [500, 300, 150, 900]})
+`,
+          },
+        ],
+      },
+      {
+        id: 's23-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make two tables: **students** (id, name, city) and **marks** (id, subject, score), with at least 6 students and a few marks missing.',
+              'Do an inner, left and outer merge and write down which rows each one keeps.',
+              'Use `indicator=True` to list students with no marks.',
+              'Sort the merged table by city and then by score (highest first), and print the top 3.',
+              'Split the data into two halves and put them back together with `concat`, using `ignore_index=True`.',
+              'Add a `grade` column with `apply`, then do the same with `np.select` and compare.',
+              'Revise: `sort_values`, `nlargest`, `rank`, `concat`, `merge`, `how=`, `on`, `left_on`, `suffixes`, `join`, `apply`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Matplotlib: line charts, bar charts, pie charts, histograms, labels, titles and saving charts.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'matplotlib',
+    title: 'Matplotlib',
+    summary: 'Line, bar and pie charts, histograms, labels, titles and saving charts.',
+    hero: {
+      file: 'chart.py',
+      lines: ['import matplotlib.pyplot as plt', 'plt.bar(["Aman", "Ankit", "Neha"], [85, 90, 78])', 'plt.title("Maths marks")'],
+      output: '(a bar chart appears)',
+    },
+    sections: [
+      {
+        id: 's24-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What does `merge(a, b, on="id", how="left")` do?',
+              'Why use `ignore_index=True` with `concat`?',
+              'How do you sort a table by marks, highest first?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's24-what',
+        title: 'What is Matplotlib?',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Matplotlib** is Python\'s main library for **drawing charts**. Numbers in a table are hard to read; a chart shows the pattern at a glance. We import its drawing module as **`plt`**.',
+          },
+          {
+            type: 'code',
+            label: 'Install it once on your computer (terminal)',
+            code: raw`pip install matplotlib`,
+          },
+          {
+            type: 'table',
+            head: ['Chart', 'Call', 'Best for'],
+            rows: [
+              ['Line', '`plt.plot`', 'change over time (sales per month)'],
+              ['Bar', '`plt.bar`, `plt.barh`', 'compare categories (marks per student)'],
+              ['Pie', '`plt.pie`', 'parts of a whole (share of each item)'],
+              ['Histogram', '`plt.hist`', 'how values are spread (how many scored 60-70)'],
+              ['Scatter', '`plt.scatter`', 'two numbers against each other (hours studied vs marks)'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Charts in the Try it boxes',
+            text: 'On this website the chart appears **under the output** when you press Run. The first run downloads Matplotlib (a few seconds). On your own computer you finish with `plt.show()` to open the chart window. The boxes here leave `plt.show()` in so you learn the habit; it does nothing on this website.',
+          },
+        ],
+      },
+      {
+        id: 's24-first',
+        title: 'Your first chart',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+x = [1, 2, 3, 4, 5]
+y = [10, 20, 15, 30, 25]
+
+plt.plot(x, y)
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`plt.plot(x, y)` draws a line through the points: `x` values along the bottom, `y` values up the side.',
+              '`plt.show()` displays the chart. Everything before it is "drawing on the page".',
+              'Give `plot` only one list and it uses 0, 1, 2 ... for `x`.',
+            ],
+          },
+          { type: 'h3', text: 'Labels, title and legend' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+months = ["Jan", "Feb", "Mar", "Apr", "May"]
+sales = [100, 120, 90, 150, 170]
+target = [110, 110, 110, 140, 140]
+
+plt.plot(months, sales, label="Sales")
+plt.plot(months, target, label="Target")
+
+plt.title("Sales against target")
+plt.xlabel("Month")
+plt.ylabel("Amount (in thousands)")
+plt.legend()
+plt.grid(True)
+plt.show()`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Does'],
+            rows: [
+              ['`plt.title("...")`', 'the heading above the chart'],
+              ['`plt.xlabel("...")`, `plt.ylabel("...")`', 'names of the axes. **Always add them**, with units'],
+              ['`label="..."` in `plot`, then `plt.legend()`', 'a key that says which line is which'],
+              ['`plt.grid(True)`', 'light grid lines to read values'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'A chart with no title or labels is unfinished',
+            text: 'A reader should understand the chart without you standing next to it: a title that says what it shows, axis names with units, and a legend if there is more than one line.',
+          },
+        ],
+      },
+      {
+        id: 's24-style',
+        title: 'Colours, markers and line styles',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+x = [1, 2, 3, 4, 5]
+
+plt.plot(x, [2, 4, 6, 8, 10], color="green", marker="o", linestyle="-", label="solid")
+plt.plot(x, [1, 3, 5, 7, 9], color="red", marker="s", linestyle="--", label="dashed")
+plt.plot(x, [3, 3, 4, 4, 5], color="#7c3aed", linewidth=3, linestyle=":", label="dotted")
+
+plt.legend()
+plt.title("Styles")
+plt.show()`,
+          },
+          {
+            type: 'table',
+            head: ['Argument', 'Examples'],
+            rows: [
+              ['`color`', '`"red"`, `"green"`, `"blue"`, `"orange"`, or hex like `"#7c3aed"`'],
+              ['`marker`', '`"o"` circle, `"s"` square, `"^"` triangle, `"*"` star, `"x"` cross'],
+              ['`linestyle`', '`"-"` solid, `"--"` dashed, `":"` dotted, `"-."` dash-dot'],
+              ['`linewidth`', 'thickness, a number such as `3`'],
+              ['`alpha`', 'see-through: `0.3` is faint, `1` is solid'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'There is also a short form: `"ro--"` means red, circle markers, dashed line.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+plt.plot([1, 2, 3, 4], [1, 4, 9, 16], "ro--")
+plt.show()`,
+          },
+        ],
+      },
+      {
+        id: 's24-bar',
+        title: 'Bar charts',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+names = ["Aman", "Ankit", "Neha", "Rohit", "Priya"]
+maths = [85, 90, 78, 92, 66]
+
+plt.bar(names, maths, color="steelblue")
+plt.title("Maths marks")
+plt.xlabel("Student")
+plt.ylabel("Marks")
+plt.ylim(0, 100)
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`plt.bar(categories, heights)` draws one bar per category.',
+              '`plt.ylim(0, 100)` fixes the up-down range. **Start bars at 0**, otherwise small differences look huge.',
+              '`color` can be one colour or a **list** of colours, one per bar.',
+            ],
+          },
+          { type: 'h3', text: 'Horizontal bars, and a number on each bar' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+names = ["Aman", "Ankit", "Neha", "Rohit", "Priya"]
+maths = [85, 90, 78, 92, 66]
+colors = ["green" if m >= 80 else "orange" for m in maths]
+
+bars = plt.barh(names, maths, color=colors)
+plt.bar_label(bars)
+plt.title("Maths marks (green = 80 or more)")
+plt.xlabel("Marks")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`barh` makes the bars lie down, which is easier to read when the names are long. `bar_label` prints the value at the end of each bar. A list comprehension picked a colour for each bar.',
+          },
+          { type: 'h3', text: 'Two bars per student (grouped)' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import matplotlib.pyplot as plt
+
+names = ["Aman", "Ankit", "Neha", "Rohit"]
+maths = [85, 90, 78, 92]
+science = [78, 88, 70, 95]
+
+x = np.arange(len(names))
+w = 0.35
+
+plt.bar(x - w / 2, maths, w, label="Maths")
+plt.bar(x + w / 2, science, w, label="Science")
+plt.xticks(x, names)
+plt.legend()
+plt.title("Maths and Science")
+plt.ylabel("Marks")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: 'We placed the bars by number (`x`), moved the two sets left and right by half a bar width, and then wrote the names back with `plt.xticks(x, names)`.',
+          },
+        ],
+      },
+      {
+        id: 's24-pie',
+        title: 'Pie charts',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+items = ["Pens", "Books", "Bags", "Rulers"]
+sales = [40, 25, 20, 15]
+
+plt.pie(sales, labels=items, autopct="%1.1f%%", startangle=90)
+plt.title("Share of sales")
+plt.axis("equal")
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`labels=` names each slice.',
+              '`autopct="%1.1f%%"` prints each slice\'s percentage with one decimal place.',
+              '`startangle=90` starts the first slice at the top.',
+              '`plt.axis("equal")` keeps the pie round.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+items = ["Pens", "Books", "Bags", "Rulers"]
+sales = [40, 25, 20, 15]
+explode = [0.1, 0, 0, 0]
+
+plt.pie(sales, labels=items, autopct="%d%%", explode=explode, shadow=True,
+        colors=["#2563eb", "#f59e0b", "#10b981", "#ef4444"])
+plt.title("Pull out the biggest slice")
+plt.show()`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'When not to use a pie',
+            text: 'A pie works only for a **few** parts (about 5 or fewer) that add up to a whole. For many categories, or for comparing sizes accurately, a **bar chart** is easier to read.',
+          },
+        ],
+      },
+      {
+        id: 's24-hist',
+        title: 'Histograms',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **histogram** shows how a set of numbers is **spread**. It cuts the range into **bins** (ranges such as 60-70) and draws a bar for how many values fall in each bin.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+marks = [45, 52, 58, 61, 63, 65, 67, 68, 70, 71, 72, 74, 75, 76, 78, 80, 82, 85, 88, 91, 95]
+
+plt.hist(marks, bins=5, color="teal", edgecolor="white")
+plt.title("How the class scored")
+plt.xlabel("Marks")
+plt.ylabel("Number of students")
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`bins=5` cuts the range into 5 equal pieces. More bins show more detail, fewer give a smoother picture.',
+              'You can give the bin edges yourself: `bins=[40, 50, 60, 70, 80, 90, 100]`.',
+              '`edgecolor="white"` draws a thin line between the bars so you can see each one.',
+              'Difference from a bar chart: a bar chart compares **categories**; a histogram shows how **one number** is distributed.',
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(42)
+heights = rng.normal(loc=165, scale=8, size=500)
+
+plt.hist(heights, bins=20, color="#7c3aed", edgecolor="white")
+plt.axvline(heights.mean(), color="red", linestyle="--", label="average")
+plt.title("500 heights")
+plt.xlabel("cm")
+plt.legend()
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`axvline` draws a vertical line, here at the average. (`axhline` draws a horizontal one.) The seed 42 makes the random numbers, and so the chart, the same every time.',
+          },
+        ],
+      },
+      {
+        id: 's24-scatter',
+        title: 'Scatter plots',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **scatter plot** puts one dot per row, with one number on each axis. It shows whether two things are **related**: do students who study more score more?',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+hours = [1, 2, 3, 4, 5, 6, 7, 8]
+marks = [35, 45, 50, 58, 65, 72, 80, 88]
+
+plt.scatter(hours, marks, color="crimson", s=80)
+plt.title("Study hours and marks")
+plt.xlabel("Hours studied per day")
+plt.ylabel("Marks")
+plt.grid(True)
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`s=80` sets the size of the dots.',
+              'The dots climb from left to right: more hours, more marks. We call that a **positive relationship**.',
+              'A cloud with no pattern means the two are not related.',
+            ],
+          },
+          { type: 'h3', text: 'Colour by value' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+hours = [1, 2, 3, 4, 5, 6, 7, 8]
+marks = [35, 45, 50, 58, 65, 72, 80, 88]
+
+plt.scatter(hours, marks, c=marks, cmap="viridis", s=100)
+plt.colorbar(label="Marks")
+plt.title("Colour follows the marks")
+plt.xlabel("Hours")
+plt.ylabel("Marks")
+plt.show()`,
+          },
+        ],
+      },
+      {
+        id: 's24-sub',
+        title: 'Several charts together: subplots',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+months = ["Jan", "Feb", "Mar", "Apr"]
+sales = [100, 120, 90, 150]
+items = ["Pens", "Books", "Bags"]
+share = [50, 30, 20]
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+axes[0].plot(months, sales, marker="o", color="green")
+axes[0].set_title("Sales by month")
+axes[0].set_xlabel("Month")
+axes[0].set_ylabel("Sales")
+
+axes[1].bar(items, share, color=["#2563eb", "#f59e0b", "#10b981"])
+axes[1].set_title("Share by item")
+
+fig.suptitle("Shop report")
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`plt.subplots(1, 2)` makes a figure with **1 row and 2 columns** of charts.',
+              '`fig` is the whole picture; `axes` holds the individual charts: `axes[0]`, `axes[1]`.',
+              'On an `axes` object the methods are `set_title`, `set_xlabel`, `set_ylabel` (not `title`, `xlabel`).',
+              '`figsize=(10, 4)` is the width and height in inches.',
+              '`fig.suptitle` adds one heading over everything. `plt.tight_layout()` stops labels overlapping.',
+            ],
+          },
+          {
+            type: 'p',
+            text: 'There are two ways to draw: the quick `plt.plot(...)` style we used first, and this **`fig, ax`** style, which is better the moment you have more than one chart.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.plot([1, 2, 3, 4], [2, 4, 3, 5], marker="o")
+ax.set_title("One chart, the ax way")
+ax.set_xlabel("x")
+ax.set_ylabel("y")
+ax.annotate("highest", xy=(4, 5), xytext=(2.5, 4.8), arrowprops={"arrowstyle": "->"})
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`annotate` writes a note with an arrow pointing at a spot (`xy`), placing the text at `xytext`.',
+          },
+        ],
+      },
+      {
+        id: 's24-pandas',
+        title: 'Charts straight from pandas',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A DataFrame can draw charts itself with `.plot`, using Matplotlib underneath. Your column names become the labels.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({
+    "month": ["Jan", "Feb", "Mar", "Apr"],
+    "sales": [100, 120, 90, 150],
+    "cost":  [70, 80, 75, 90],
+})
+
+df.plot(x="month", y=["sales", "cost"], kind="bar", title="Sales and cost")
+plt.ylabel("Amount")
+plt.show()`,
+          },
+          {
+            type: 'table',
+            head: ['kind=', 'Chart'],
+            rows: [
+              ['`"line"` (default)', 'line chart'],
+              ['`"bar"`, `"barh"`', 'bar charts'],
+              ['`"pie"`', 'pie chart (give `y="column"`)'],
+              ['`"hist"`', 'histogram'],
+              ['`"scatter"`', 'scatter plot (give `x=` and `y=`)'],
+              ['`"box"`', 'box plot'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+avg = df.groupby("city")["maths"].mean()
+avg.plot(kind="bar", color="orange", title="Average maths by city")
+plt.ylabel("Marks")
+plt.xticks(rotation=0)
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: 'This is the common pattern: **group, then plot**. `plt.xticks(rotation=0)` keeps the city names straight (use `rotation=45` for long names).',
+          },
+        ],
+      },
+      {
+        id: 's24-save',
+        title: 'Saving a chart',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import os
+import matplotlib.pyplot as plt
+
+plt.bar(["A", "B", "C"], [3, 7, 5], color="teal")
+plt.title("Saved chart")
+
+plt.savefig("my_chart.png", dpi=200, bbox_inches="tight")
+print("saved:", os.path.exists("my_chart.png"))
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`plt.savefig("my_chart.png")` writes the chart to a file. Use `.png` for pictures, `.pdf` or `.svg` for sharp print quality.',
+              '`dpi=200` makes the picture sharper (bigger).',
+              '`bbox_inches="tight"` trims the white border so the labels are not cut off.',
+              'Call `savefig` **before** `plt.show()`. After `show` on your own computer the chart is cleared and you save a blank picture.',
+              'On this website the file is saved inside the browser\'s temporary Python world, so you cannot download it. On your own computer it appears in your folder.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Make the picture bigger or smaller',
+            text: '`plt.figure(figsize=(8, 5))` (width, height in inches) before you draw. Wider for long month names, taller for horizontal bars.',
+          },
+        ],
+      },
+      {
+        id: 's24-example',
+        title: 'Example: a report picture',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+import matplotlib.pyplot as plt
+
+sales = pd.DataFrame({
+    "month": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "pens":  [40, 45, 38, 50, 55, 60],
+    "books": [20, 25, 30, 28, 35, 40],
+    "bags":  [10, 8, 12, 15, 11, 18],
+})
+sales["total"] = sales[["pens", "books", "bags"]].sum(axis=1)
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+
+axes[0].plot(sales["month"], sales["total"], marker="o", color="#2563eb")
+axes[0].set_title("Total sales per month")
+axes[0].set_ylabel("Items sold")
+axes[0].grid(True, alpha=0.3)
+
+axes[1].pie(sales[["pens", "books", "bags"]].sum(), labels=["Pens", "Books", "Bags"],
+            autopct="%1.0f%%", startangle=90)
+axes[1].set_title("Share of items (Jan to Jun)")
+
+fig.suptitle("Shop report, first half of the year")
+plt.tight_layout()
+plt.show()
+
+best = sales.loc[sales["total"].idxmax(), "month"]
+print("Best month:", best)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'A DataFrame feeds the chart: columns become the data.',
+              'A line shows the **trend**, a pie shows the **share**: one picture, two answers.',
+              'We also printed the best month, because a chart and a sentence together are stronger than either alone.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's24-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**No title or axis labels.** Always add `title`, `xlabel`, `ylabel`.',
+              '**`x` and `y` of different lengths.** `ValueError: x and y must have same first dimension`.',
+              '**Forgetting `plt.show()`** on your computer: nothing appears (in a script).',
+              '**Calling `savefig` after `show`** and saving an empty picture.',
+              '**A bar chart that does not start at 0.** It exaggerates small differences.',
+              '**Too many slices in a pie.** Use a bar chart.',
+              '**Overlapping labels.** Use `plt.xticks(rotation=45)`, `barh`, or `plt.tight_layout()`.',
+              '**Mixing `plt.title` and `ax.set_title`.** On an `ax` use `set_title`, `set_xlabel`, `set_ylabel`.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (different lengths)',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+plt.plot([1, 2, 3], [10, 20])
+plt.show()`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (a pie cannot have a negative slice)',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+plt.pie([10, -5, 20])
+plt.show()`,
+          },
+        ],
+      },
+      {
+        id: 's24-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: draw a line chart of the temperatures with a title, x label, y label and markers',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+days = ["Mon", "Tue", "Wed", "Thu", "Fri"]
+temp = [31, 33, 30, 34, 32]
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: draw a bar chart of the prices, with a different colour for prices above 300',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+items = ["pen", "book", "bag", "ruler"]
+price = [5, 350, 800, 20]
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: draw a pie chart of the votes with percentages',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+parties = ["A", "B", "C"]
+votes = [120, 90, 40]
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: draw a histogram of the marks with 4 bins and a title',
+            runnable: true,
+            code: raw`import matplotlib.pyplot as plt
+
+marks = [35, 48, 52, 55, 61, 63, 66, 70, 72, 75, 78, 81, 85, 90, 94]
+`,
+          },
+        ],
+      },
+      {
+        id: 's24-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make a table of **6 months** of sales for two products. Draw a **line chart** with both lines, a legend, axis labels and a title.',
+              'Draw a **bar chart** of the total of each product, and a **pie chart** of their share.',
+              'Draw a **histogram** of 30 marks (type them or use `default_rng(1).integers(30, 100, 30)`), and mark the average with `axvline`.',
+              'Draw a **scatter plot** of hours studied against marks, coloured by marks.',
+              'Put two of these side by side with `plt.subplots(1, 2)` and a `suptitle`.',
+              'Save your favourite chart as `report.png` with `dpi=200` on your computer.',
+              'Revise: `plot`, `bar`, `barh`, `pie`, `hist`, `scatter`, `title`, `xlabel`, `ylabel`, `legend`, `grid`, `subplots`, `savefig`, `df.plot`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Seaborn: box plots, scatter plots, heatmaps and correlation.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'seaborn',
+    title: 'Seaborn',
+    summary: 'Box plots, scatter plots, heatmaps and correlation.',
+    hero: {
+      file: 'seaborn_demo.py',
+      lines: ['import seaborn as sns', 'sns.boxplot(data=df, x="city", y="marks")', 'sns.heatmap(df.corr(numeric_only=True), annot=True)'],
+      output: '(a box plot and a heatmap appear)',
+    },
+    sections: [
+      {
+        id: 's25-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'Which Matplotlib chart shows how values are spread?',
+              'What do `plt.xlabel` and `plt.title` do?',
+              'What does `plt.savefig` do, and where must you call it?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's25-what',
+        title: 'What is Seaborn?',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Seaborn** is a chart library built **on top of Matplotlib**. It makes good-looking statistical charts in one line, and it works directly with **DataFrames**: you give the table and the column names.',
+          },
+          {
+            type: 'code',
+            label: 'Install it once on your computer (terminal)',
+            code: raw`pip install seaborn`,
+          },
+          {
+            type: 'p',
+            text: 'By convention we import it as **`sns`**, together with `pyplot`.',
+          },
+          {
+            type: 'table',
+            head: ['Chart', 'Seaborn call', 'Shows'],
+            rows: [
+              ['Box plot', '`sns.boxplot`', 'spread, middle and outliers of a number, per group'],
+              ['Scatter plot', '`sns.scatterplot`', 'two numbers against each other, with colour for a third thing'],
+              ['Heatmap', '`sns.heatmap`', 'a table of numbers as colours (often correlations)'],
+              ['Histogram', '`sns.histplot`', 'how one number is spread'],
+              ['Count plot', '`sns.countplot`', 'how many rows of each category'],
+              ['Bar plot', '`sns.barplot`', 'the average of a number per category'],
+              ['Pair plot', '`sns.pairplot`', 'every number against every other, at once'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Seaborn in the Try it boxes',
+            text: 'The first Seaborn box installs it from the internet (a few extra seconds). Charts appear under the output. On your own computer end with `plt.show()`. Seaborn\'s example data sets are downloaded from the internet, so here we **make our own data** instead.',
+          },
+          {
+            type: 'p',
+            text: 'The table we will use in this lesson: 60 students with a city, the hours they study, and their marks. It is made with a seeded random generator, so it is the same every time.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":    rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "gender":  rng.choice(["F", "M"], n),
+    "hours":   hours,
+    "absent":  rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+print(df.head())
+print()
+print(df.shape)
+print(df.describe().round(1))`,
+          },
+        ],
+      },
+      {
+        id: 's25-theme',
+        title: 'Your first Seaborn chart',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.histplot(data=df, x="marks", bins=10)
+plt.title("Marks of 60 students")
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`sns.set_theme()` gives every chart a cleaner look (light grid, nicer colours). Call it once at the top.',
+              'The pattern is always the same: `data=df` (the table) and the **column names** as text: `x="marks"`.',
+              'Seaborn draws on Matplotlib, so `plt.title`, `plt.xlabel` and `plt.savefig` all still work.',
+            ],
+          },
+          { type: 'h3', text: 'The same chart in Matplotlib needs more work' },
+          {
+            type: 'p',
+            text: 'With Matplotlib you would pick the column, pass the values and write the labels yourself. Seaborn reads the names from the DataFrame and labels the axes for you.',
+          },
+          {
+            type: 'table',
+            head: ['', 'Matplotlib', 'Seaborn'],
+            rows: [
+              ['Data input', 'lists or arrays', 'a DataFrame plus column names'],
+              ['Axis labels', 'you write them', 'taken from the column names'],
+              ['Looks', 'plain by default', 'styled by default'],
+              ['Groups by colour', 'loop and draw each', '`hue="city"` in one go'],
+              ['Best for', 'full control', 'quick statistical charts'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's25-box',
+        title: 'Box plots',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **box plot** summarises a number in one small picture. It is perfect for **comparing groups**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.boxplot(data=df, x="city", y="marks")
+plt.title("Marks by city")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: 'How to read one box:',
+          },
+          {
+            type: 'table',
+            head: ['Part', 'Meaning'],
+            rows: [
+              ['**Line inside the box**', 'the **median** (the middle value)'],
+              ['**The box**', 'the middle half of the values: from the 25% mark (Q1) to the 75% mark (Q3). Its height is the **IQR**'],
+              ['**The whiskers**', 'the lines out of the box: the normal range of the data'],
+              ['**Dots beyond the whiskers**', '**outliers**: unusually high or low values'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              'A **taller** box means the marks are more spread out.',
+              'A box that sits **higher** means that group scored higher.',
+              'If the median line is not in the middle of the box, the data is **skewed** to one side.',
+              'Dots outside the whiskers are worth a look: a typing mistake, or a really special case.',
+            ],
+          },
+          {
+            type: 'p',
+            text: 'A box plot of one column only: `sns.boxplot(data=df, y="marks")`. Add `hue="gender"` to split each box by another column.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 90
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "gender": rng.choice(["F", "M"], n),
+})
+df["marks"] = rng.normal(70, 12, n).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.boxplot(data=df, x="city", y="marks", hue="gender")
+plt.title("Marks by city and gender")
+plt.show()`,
+          },
+        ],
+      },
+      {
+        id: 's25-scatter',
+        title: 'Scatter plots',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.scatterplot(data=df, x="hours", y="marks")
+plt.title("Study hours and marks")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: 'The dots rise from left to right: students who study more tend to score more. Now the real strength of Seaborn: show a **third thing** with colour and a **fourth** with size.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.scatterplot(data=df, x="hours", y="marks", hue="city", size="absent", sizes=(30, 200), alpha=0.8)
+plt.title("Hours, marks, city and days absent")
+plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`hue="city"` colours the dots by city and adds a legend.',
+              '`size="absent"` makes the dots bigger for more absences; `sizes=(30, 200)` sets the smallest and biggest.',
+              '`alpha=0.8` makes the dots slightly see-through where they overlap.',
+            ],
+          },
+          { type: 'h3', text: 'A line through the dots: regplot' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({"hours": hours})
+df["marks"] = (35 + hours * 6 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.regplot(data=df, x="hours", y="marks")
+plt.title("A trend line through the dots")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`regplot` adds a **best-fit line** (and a faint band showing how sure it is). It makes the trend easy to see.',
+          },
+        ],
+      },
+      {
+        id: 's25-corr',
+        title: 'Correlation',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Correlation** is a number between **-1 and +1** that says how strongly two numbers move together.',
+          },
+          {
+            type: 'table',
+            head: ['Value', 'Meaning', 'Example'],
+            rows: [
+              ['**+1**', 'perfectly together: one rises, the other rises', 'height in cm and height in inches'],
+              ['**about +0.7**', 'strong positive', 'study hours and marks'],
+              ['**about 0**', 'no relationship', 'shoe size and marks'],
+              ['**about -0.7**', 'strong negative: one rises, the other falls', 'days absent and marks'],
+              ['**-1**', 'perfectly opposite', 'speed and time for a fixed distance'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+print(df["hours"].corr(df["marks"]).round(2))
+print(df["absent"].corr(df["marks"]).round(2))
+print()
+print(df.corr().round(2))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`a.corr(b)` gives the correlation of two columns.',
+              '`df.corr()` gives a **table** of every pair. The diagonal is always 1 (a column against itself).',
+              'The table is symmetric: `hours` against `marks` equals `marks` against `hours`.',
+              'With text columns in the table use `df.corr(numeric_only=True)`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Correlation is not cause',
+            text: 'Two things moving together does not prove one **causes** the other. Ice-cream sales and sunburn rise together because of the summer, not because ice cream burns you. Correlation only measures a straight-line relationship, too: a perfect curve can show a value near 0.',
+          },
+        ],
+      },
+      {
+        id: 's25-heatmap',
+        title: 'Heatmaps',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **heatmap** colours every cell of a table by its value. The classic use: draw the **correlation table** so the strong relationships jump out.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+corr = df.corr(numeric_only=True)
+
+sns.set_theme()
+sns.heatmap(corr, annot=True, cmap="coolwarm", vmin=-1, vmax=1, fmt=".2f")
+plt.title("Correlation heatmap")
+plt.show()`,
+          },
+          {
+            type: 'table',
+            head: ['Argument', 'Does'],
+            rows: [
+              ['`annot=True`', 'write the number in every cell'],
+              ['`fmt=".2f"`', 'show 2 decimals'],
+              ['`cmap="coolwarm"`', 'colour scheme: red for positive, blue for negative. Others: `"viridis"`, `"Blues"`, `"YlGnBu"`'],
+              ['`vmin=-1, vmax=1`', 'fix the colour range so the colours mean the same on every chart'],
+              ['`linewidths=0.5`', 'thin lines between cells'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Read it: the deep red cell where `hours` meets `marks` is a strong positive link; the blue cell for `absent` and `marks` is a negative one; the diagonal is always 1.',
+          },
+          { type: 'h3', text: 'Any table works: pivot_table + heatmap' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(3)
+n = 120
+df = pd.DataFrame({
+    "city": rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "day":  rng.choice(["Mon", "Tue", "Wed", "Thu", "Fri"], n),
+})
+df["sales"] = rng.integers(50, 200, n)
+
+table = df.pivot_table(index="city", columns="day", values="sales", aggfunc="mean")
+table = table[["Mon", "Tue", "Wed", "Thu", "Fri"]]
+
+sns.set_theme()
+sns.heatmap(table, annot=True, fmt=".0f", cmap="YlGnBu")
+plt.title("Average sales: city by day")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: 'Heatmaps show a whole table at a glance: darker cells are bigger numbers. We built the table with `pivot_table` (from the grouping lesson) and drew it.',
+          },
+        ],
+      },
+      {
+        id: 's25-others',
+        title: 'Three more useful charts',
+        blocks: [
+          { type: 'h3', text: 'countplot: how many of each' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], 60),
+    "gender": rng.choice(["F", "M"], 60),
+})
+
+sns.set_theme()
+sns.countplot(data=df, x="city", hue="gender")
+plt.title("Students per city")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`countplot` does the counting for you (like `value_counts`) and draws it. No y column is needed.',
+          },
+          { type: 'h3', text: 'barplot: the average per group' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+df = pd.DataFrame({"city": rng.choice(["Delhi", "Mumbai", "Pune"], 60)})
+df["marks"] = rng.normal(70, 12, 60).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.barplot(data=df, x="city", y="marks")
+plt.title("Average marks per city (with a range)")
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`barplot` averages the numbers in each group by default and adds a thin **error bar** showing how uncertain that average is. A tall error bar means the data is spread out or there are few rows.',
+          },
+          { type: 'h3', text: 'pairplot: everything against everything' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme()
+sns.pairplot(df, hue="city", height=2)
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '`pairplot` draws a scatter plot for **every pair** of number columns, with a histogram of each on the diagonal. It is a great first look at an unknown table, but slow for tables with many columns.',
+          },
+        ],
+      },
+      {
+        id: 's25-look',
+        title: 'Titles, size and saving',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 60
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({"city": rng.choice(["Delhi", "Mumbai", "Pune"], n), "hours": hours})
+df["marks"] = (35 + hours * 6 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+sns.set_theme(style="whitegrid", palette="Set2", font_scale=1.1)
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+sns.boxplot(data=df, x="city", y="marks", ax=axes[0])
+axes[0].set_title("Spread of marks")
+sns.scatterplot(data=df, x="hours", y="marks", hue="city", ax=axes[1])
+axes[1].set_title("Hours and marks")
+fig.suptitle("Class overview")
+plt.tight_layout()
+fig.savefig("overview.png", dpi=150)
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`sns.set_theme(style="whitegrid", palette="Set2", font_scale=1.1)`: choose the background (`"darkgrid"`, `"white"`, `"ticks"`), the colours and the text size.',
+              '`ax=axes[0]` tells a Seaborn chart **which panel** to draw in. That is how you place several Seaborn charts on one figure.',
+              'The Matplotlib tools still work on top: `set_title`, `suptitle`, `savefig`, `figsize`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Colour choices',
+            text: 'Use a colour for a reason: one colour for one thing. `palette="Set2"`, `"deep"` and `"colorblind"` are safe starting points; keep red and green apart, because many people cannot tell them apart.',
+          },
+        ],
+      },
+      {
+        id: 's25-example',
+        title: 'Example: what drives marks?',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+n = 80
+hours = rng.uniform(1, 8, n).round(1)
+df = pd.DataFrame({
+    "city":   rng.choice(["Delhi", "Mumbai", "Pune"], n),
+    "hours":  hours,
+    "absent": rng.integers(0, 10, n),
+})
+df["marks"] = (35 + hours * 6 - df["absent"] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0)
+
+print(df.corr(numeric_only=True)["marks"].drop("marks").round(2))
+print()
+print(df.groupby("city")["marks"].mean().round(1))
+
+sns.set_theme(style="whitegrid")
+fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", vmin=-1, vmax=1, ax=axes[0])
+axes[0].set_title("Correlation")
+
+sns.scatterplot(data=df, x="hours", y="marks", hue="absent", palette="viridis", ax=axes[1])
+axes[1].set_title("Hours and marks")
+
+sns.boxplot(data=df, x="city", y="marks", ax=axes[2])
+axes[2].set_title("Marks by city")
+
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The printed correlations answer the question in numbers: hours is a **strong positive**, absences a **negative**.',
+              'The heatmap, the scatter plot and the box plot show the same story three ways.',
+              'The cities look similar: the data does not show city as a reason. A chart helps you also say what is **not** a driver.',
+              'Charts show **patterns**. They do not prove why.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's25-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Forgetting `data=df`.** Then column names such as `"marks"` are just text and the chart fails.',
+              '**A wrong column name.** `x="Marks"` is not `x="marks"`: you get a `ValueError`.',
+              '**`df.corr()` with a text column.** Newer pandas fails; use `df.corr(numeric_only=True)`.',
+              '**A heatmap of raw data** instead of a summary. Make a `corr()` or `pivot_table` first.',
+              '**Reading correlation as cause.**',
+              '**Mixing up the box parts.** The line in the box is the **median**, not the mean.',
+              '**A crowded chart.** Too many hues and sizes together are hard to read: show one extra thing at a time.',
+              '**Not saving before `show`.** Call `savefig` first.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (a column name that does not exist)',
+            runnable: true,
+            code: raw`import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({"city": ["A", "B", "A"], "marks": [60, 70, 80]})
+sns.boxplot(data=df, x="city", y="Marks")
+plt.show()`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this also fails on purpose (corr on text)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["A", "B", "A"], "marks": [60, 70, 80]})
+print(df.corr())`,
+          },
+        ],
+      },
+      {
+        id: 's25-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: draw a box plot of salary for each department, with a title',
+            runnable: true,
+            code: raw`import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({
+    "dept":   ["HR", "HR", "IT", "IT", "IT", "Sales", "Sales", "HR"],
+    "salary": [30, 35, 60, 70, 65, 40, 45, 32],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: draw a scatter plot of price against rating, coloured by category',
+            runnable: true,
+            code: raw`import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({
+    "price":    [100, 250, 300, 80, 500, 450],
+    "rating":   [3.5, 4.0, 4.2, 3.0, 4.8, 4.5],
+    "category": ["A", "A", "B", "A", "B", "B"],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print the correlation table and draw it as an annotated heatmap',
+            runnable: true,
+            code: raw`import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.DataFrame({
+    "hours":  [1, 2, 3, 4, 5, 6],
+    "marks":  [40, 48, 55, 62, 70, 78],
+    "absent": [8, 7, 5, 4, 2, 1],
+})
+`,
+          },
+        ],
+      },
+      {
+        id: 's25-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Create a DataFrame of **40 rows** with `city`, `hours`, `absent` and `marks` (you may copy the generator from this lesson and change the numbers).',
+              'Draw a box plot of marks by city, and a scatter plot of hours against marks with `hue`.',
+              'Print `df.corr(numeric_only=True)` and draw it as a heatmap. Write two sentences about what it shows.',
+              'Draw a `countplot` of students per city and a `barplot` of the average marks.',
+              'Put two charts side by side with `ax=` and save the figure.',
+              'Open a CSV from the internet or your own data, load it with `read_csv`, clean it and draw three charts.',
+              'Revise: `sns.set_theme`, `boxplot`, `scatterplot`, `regplot`, `heatmap`, `corr`, `hue`, `countplot`, `barplot`, `pairplot`, `ax=`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'A mini project that brings it all together: load, clean, group and chart a real data set.',
+          },
+        ],
+      },
+    ],
+  },
 ]

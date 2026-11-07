@@ -8,6 +8,7 @@ const PYODIDE_URL = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`
 type Pyodide = {
   runPythonAsync(code: string): Promise<unknown>
   loadPackagesFromImports(code: string): Promise<void>
+  loadPackage(names: string | string[]): Promise<void>
   setStdout(o: { write: (bytes: Uint8Array) => number }): void
   setStderr(o: { write: (bytes: Uint8Array) => number }): void
 }
@@ -40,7 +41,31 @@ function loadPython(): Promise<Pyodide> {
 const flushOutput = (py: Pyodide) =>
   py.runPythonAsync('import sys\nsys.stdout.flush()\nsys.stderr.flush()').catch(() => undefined)
 
-type Result = { text: string; error: boolean }
+// Charts: draw with matplotlib's "agg" backend, then turn every open figure into a PNG to show under the output.
+const CHART_SETUP = `import matplotlib
+matplotlib.use("agg")
+import matplotlib.pyplot as _plt
+_plt.close("all")
+_plt.show = lambda *a, **k: None`
+const CHART_COLLECT = `import io, base64, json
+import matplotlib.pyplot as _plt
+_imgs = []
+for _n in _plt.get_fignums():
+    _b = io.BytesIO()
+    _plt.figure(_n).savefig(_b, format="png", dpi=110, bbox_inches="tight")
+    _imgs.append(base64.b64encode(_b.getvalue()).decode())
+_plt.close("all")
+json.dumps(_imgs)`
+
+// openpyxl and seaborn are not bundled with Pyodide, so they are installed from PyPI (pure Python) when a box uses them.
+async function installExtras(py: Pyodide, source: string) {
+  const extras = [/\bopenpyxl\b/.test(source) && 'openpyxl', /\bseaborn\b/.test(source) && 'seaborn'].filter(Boolean)
+  if (!extras.length) return
+  await py.loadPackage(['micropip', 'numpy', 'pandas', 'matplotlib'])
+  await py.runPythonAsync(`import micropip\nawait micropip.install(${JSON.stringify(extras)})`)
+}
+
+type Result = { text: string; error: boolean; images?: string[] }
 
 export default function TryIt({ code, label }: { code: string; label?: string }) {
   const [source, setSource] = useState(code)
@@ -61,14 +86,20 @@ export default function TryIt({ code, label }: { code: string; label?: string })
       setStatus(pyodide ? 'running' : 'loading')
       const py = await loadPython()
       // packages such as numpy are downloaded the first time a box imports them
-      if (/^\s*(import|from)\s+(numpy|pandas)/m.test(source)) setStatus('loading')
+      if (/^\s*(import|from)\s+(numpy|pandas|matplotlib|seaborn|openpyxl)/m.test(source)) setStatus('loading')
       await py.loadPackagesFromImports(source)
+      await installExtras(py, source)
       setStatus('running')
       py.setStdout(capture)
       py.setStderr(capture)
+      // pandas prints a long "Pyarrow will become required" notice when it is first imported; learners do not need it
+      await py.runPythonAsync('import warnings\nwarnings.filterwarnings("ignore", category=DeprecationWarning)')
+      const charts = /matplotlib|seaborn/.test(source)
+      if (charts) await py.runPythonAsync(CHART_SETUP)
       await py.runPythonAsync(source)
       await flushOutput(py)
-      setResult({ text: out.replace(/\n$/, '') || '(no output)', error: false })
+      const images = charts ? (JSON.parse((await py.runPythonAsync(CHART_COLLECT)) as string) as string[]) : []
+      setResult({ text: out.replace(/\n$/, '') || (images.length ? '' : '(no output)'), error: false, images })
     } catch (e) {
       const ready = await pyodide?.catch(() => null)
       if (ready) await flushOutput(ready)
@@ -125,7 +156,10 @@ export default function TryIt({ code, label }: { code: string; label?: string })
       {result && (
         <div className="codeblock-out">
           <span>{result.error ? 'Error' : 'Output'}</span>
-          <pre className={result.error ? 'try-error' : undefined}>{result.text}</pre>
+          {result.text && <pre className={result.error ? 'try-error' : undefined}>{result.text}</pre>}
+          {result.images?.map((img, i) => (
+            <img key={i} className="try-chart" src={'data:image/png;base64,' + img} alt={`Chart ${i + 1} drawn by your code`} />
+          ))}
         </div>
       )}
     </figure>
