@@ -34,7 +34,7 @@ const TOOLS: { id: Tool; icon: string; label: string; title: string }[] = [
   { id: 'rect', icon: '▭', label: 'Box', title: 'Rectangle' },
   { id: 'ellipse', icon: '◯', label: 'Circle', title: 'Circle or oval' },
   { id: 'text', icon: 'T', label: 'Text', title: 'Click and type. Enter to finish, Shift+Enter for a new line' },
-  { id: 'select', icon: '⬚', label: 'Select', title: 'Click a drawing, or the code, to move it. Scroll the wheel to zoom it. Delete removes a drawing. Double-click text to edit' },
+  { id: 'select', icon: '⬚', label: 'Select', title: 'Click a drawing, or the code, to move it. With a drawing picked, the wheel zooms it. Delete removes a drawing. Double-click text to edit' },
 ]
 const SHAPE_TOOLS = ['line', 'arrow', 'rect', 'ellipse']
 
@@ -422,12 +422,44 @@ export default function Draw() {
       }))
     }
   }
-  const onWheel = (e: React.WheelEvent) => {
-    if (tool !== 'select') return
-    const f = e.deltaY < 0 ? 1.1 : 1 / 1.1
-    if (selected.current) scaleItem(selected.current, f)
-    else if (codeSel) scaleCode(f)
+  // fit all of the code (and its output) on the screen
+  const fitCode = () => {
+    const el = codeRef.current
+    if (!el) return
+    const s = Math.min(1, (window.innerWidth * 0.92) / el.offsetWidth, (window.innerHeight * 0.86) / el.offsetHeight)
+    setCodeT({ x: 0, y: 0, s: Math.max(0.3, s) })
   }
+  // wheel (or two-finger scroll): scroll the code up and down, Shift + wheel sideways. A picked drawing is zoomed instead.
+  const onWheel = (e: React.WheelEvent) => {
+    if (tool === 'select' && selected.current) {
+      scaleItem(selected.current, e.deltaY < 0 ? 1.1 : 1 / 1.1)
+    } else if (board && boardCode) {
+      const sideways = e.shiftKey ? e.deltaY : e.deltaX
+      const down = e.shiftKey ? 0 : e.deltaY
+      setCodeT((c) => ({ ...c, x: c.x - sideways, y: c.y - down }))
+    }
+  }
+  // arrow keys, Page Up/Down, Home and End scroll the code too
+  useEffect(() => {
+    if (!board || !boardCode) return
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement | null)?.tagName === 'TEXTAREA') return
+      const step = window.innerHeight * 0.8
+      const move: Record<string, [number, number]> = {
+        ArrowDown: [0, -80], ArrowUp: [0, 80], ArrowLeft: [80, 0], ArrowRight: [-80, 0],
+        PageDown: [0, -step], PageUp: [0, step], ' ': [0, -step],
+      }
+      if (e.key === 'Home') setCodeT((c) => ({ ...c, x: 0, y: 0 }))
+      else if (e.key === 'End') setCodeT((c) => ({ ...c, y: window.innerHeight * 0.9 - (codeRef.current?.offsetHeight ?? 0) * c.s - (codeRef.current?.offsetTop ?? 0) }))
+      else if (move[e.key]) {
+        e.preventDefault()
+        const [dx, dy] = move[e.key]
+        setCodeT((c) => ({ ...c, x: c.x + dx, y: c.y + dy }))
+      } else return
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [board, boardCode])
 
   const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (e.button !== 0 && e.pointerType === 'mouse') return
@@ -685,9 +717,10 @@ export default function Draw() {
                 {(selected.current || (board && boardCode)) && (
                   <div className="draw-zoom">
                     <span>{selected.current ? 'Item' : 'Code'}</span>
-                    <button className="draw-btn" onClick={() => zoom(1 / 1.15)} title="Zoom out (or scroll the wheel with Select)">🔍−</button>
-                    <button className="draw-btn" onClick={() => zoom(1.15)} title="Zoom in (or scroll the wheel with Select)">🔍+</button>
+                    <button className="draw-btn" onClick={() => zoom(1 / 1.15)} title="Zoom out">🔍−</button>
+                    <button className="draw-btn" onClick={() => zoom(1.15)} title="Zoom in">🔍+</button>
                     <button className="draw-btn" onClick={center} title="Move to the centre of the screen">Center</button>
+                    {!selected.current && <button className="draw-btn" onClick={fitCode} title="Shrink the code and its output to fit the screen">Fit</button>}
                   </div>
                 )}
                 <div className="draw-row two">
