@@ -12221,4 +12221,1752 @@ df = pd.DataFrame({
       },
     ],
   },
+  {
+    slug: 'loading-and-inspecting-data',
+    title: 'Loading and Inspecting Data',
+    summary: 'read_csv, read_excel, head, info and describe.',
+    hero: {
+      file: 'load.py',
+      lines: ['import pandas as pd', 'df = pd.read_csv("students.csv")', 'print(df.head(2))'],
+      output: '    name    city  age  maths\n0   Aman   Delhi   20     85\n1  Ankit  Mumbai   22     90',
+    },
+    sections: [
+      {
+        id: 's19-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What is the difference between a **Series** and a **DataFrame**?',
+              'What does `df.shape` give?',
+              'What is the difference between `loc` and `iloc`?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's19-why',
+        title: 'Real data lives in files',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Until now we typed our data inside the code. Real data comes in **files**: a **CSV** file from a website, an **Excel** sheet from the office. The first job of every data analysis is the same: **load the file, then look at it** before doing anything else.',
+          },
+          {
+            type: 'table',
+            head: ['Step', 'Function', 'What it does'],
+            rows: [
+              ['1. Load', '`pd.read_csv`, `pd.read_excel`', 'file into a DataFrame'],
+              ['2. Peek', '`head`, `tail`, `sample`', 'see a few rows'],
+              ['3. Size and types', '`shape`, `info`, `dtypes`', 'how big, what kind of data'],
+              ['4. Summary', '`describe`', 'count, mean, min, max'],
+              ['5. Quality', '`isna().sum()`, `value_counts`', 'missing values, repeats'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Files in the Try it boxes',
+            text: 'The Try it boxes run in your browser and cannot see files on your computer. So in this lesson we put the CSV text inside the code with `io.StringIO`, which acts like a file. On your own computer you simply write the file name: `pd.read_csv("students.csv")`.',
+          },
+        ],
+      },
+      {
+        id: 's19-read-csv',
+        title: 'read_csv',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **CSV** (comma-separated values) file is plain text: one row per line, values split by commas, the first line holds the column names. `pd.read_csv` turns it into a DataFrame.',
+          },
+          {
+            type: 'code',
+            label: 'On your computer (the file must exist)',
+            code: raw`import pandas as pd
+
+df = pd.read_csv("students.csv")
+print(df)`,
+          },
+          { type: 'h3', text: 'The same thing, runnable here' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+
+df = pd.read_csv(io.StringIO(text))
+print(df)
+print(type(df).__name__)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The first line became the **column names**.',
+              'Every other line became a **row**, numbered 0, 1, 2 ...',
+              '**Empty** places in the file became **NaN** (not a number, a missing value). Look at Neha\'s science and Sana\'s maths.',
+              'pandas worked out the types for you: `age` is a whole number, `name` is text.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'File not found',
+            text: 'If `read_csv("students.csv")` says `FileNotFoundError`, Python is looking in the wrong folder. Put the file next to your script, or give the **full path**: `pd.read_csv(r"C:\\data\\students.csv")`. The `r` before the quote stops backslashes being treated as escapes.',
+          },
+        ],
+      },
+      {
+        id: 's19-csv-options',
+        title: 'Useful read_csv options',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Not every file is tidy. `read_csv` has options for the usual surprises. The most useful ones:',
+          },
+          {
+            type: 'table',
+            head: ['Option', 'Use it when', 'Example'],
+            rows: [
+              ['`sep=`', 'values are not split by commas', '`sep=";"` or `sep="\\t"`'],
+              ['`header=None`', 'the file has no column names line', '`header=None`'],
+              ['`names=[...]`', 'you want to give the column names', '`names=["a", "b"]`'],
+              ['`index_col=`', 'one column should be the row labels', '`index_col="name"`'],
+              ['`usecols=`', 'you only need some columns', '`usecols=["name", "maths"]`'],
+              ['`nrows=`', 'the file is huge, read only the top', '`nrows=100`'],
+              ['`na_values=`', 'missing values are written some other way', '`na_values=["-", "NA"]`'],
+              ['`parse_dates=`', 'a column holds dates', '`parse_dates=["joined"]`'],
+            ],
+          },
+          { type: 'h3', text: 'sep: a different separator' },
+          {
+            type: 'p',
+            text: 'Files from some countries use **semicolons**, and some use **tabs**. Tell pandas with `sep=`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name;maths
+Aman;85
+Ankit;90
+"""
+
+print(pd.read_csv(io.StringIO(text)))
+print()
+print(pd.read_csv(io.StringIO(text), sep=";"))`,
+          },
+          {
+            type: 'p',
+            text: 'Without `sep=";"` everything ended up squashed into one column. If a table looks like **one wide column**, the separator is wrong.',
+          },
+          { type: 'h3', text: 'header and names: no title line' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """Aman,85
+Ankit,90
+Neha,78
+"""
+
+df = pd.read_csv(io.StringIO(text), header=None, names=["name", "maths"])
+print(df)`,
+          },
+          {
+            type: 'p',
+            text: '`header=None` says "the first line is data, not names", and `names=` supplies the names. Without them pandas would treat Aman and 85 as the column names!',
+          },
+          { type: 'h3', text: 'index_col: choose the row labels' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,maths,science
+Aman,85,78
+Ankit,90,88
+Neha,78,70
+"""
+
+df = pd.read_csv(io.StringIO(text), index_col="name")
+print(df)
+print(df.loc["Ankit"])`,
+          },
+          { type: 'h3', text: 'usecols and nrows: read less' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths
+Aman,Delhi,20,85
+Ankit,Mumbai,22,90
+Neha,Delhi,21,78
+Rohit,Pune,23,92
+"""
+
+print(pd.read_csv(io.StringIO(text), usecols=["name", "maths"]))
+print()
+print(pd.read_csv(io.StringIO(text), nrows=2))`,
+          },
+          {
+            type: 'p',
+            text: 'For a file with millions of rows, `nrows=` lets you peek at the top quickly, and `usecols=` saves memory by loading only what you need.',
+          },
+          { type: 'h3', text: 'na_values: other ways to say missing' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,maths
+Aman,85
+Ankit,-
+Neha,NA
+"""
+
+print(pd.read_csv(io.StringIO(text)))
+print()
+df = pd.read_csv(io.StringIO(text), na_values=["-"])
+print(df)
+print(df.dtypes)`,
+          },
+          {
+            type: 'p',
+            text: 'The dash `-` made the whole `maths` column **text** in the first table. With `na_values=["-"]` it becomes a proper **NaN**, and the column is numeric again (`float64`, because NaN is a float). pandas already treats `NA` as missing by itself.',
+          },
+          { type: 'h3', text: 'parse_dates: real dates' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,joined
+Aman,2024-01-15
+Ankit,2023-11-30
+"""
+
+plain = pd.read_csv(io.StringIO(text))
+dated = pd.read_csv(io.StringIO(text), parse_dates=["joined"])
+print(plain.dtypes)
+print()
+print(dated.dtypes)
+print(dated["joined"].dt.year)`,
+          },
+          {
+            type: 'p',
+            text: 'Without `parse_dates` a date column is just text. With it, you get a real date type and tools like `.dt.year`.',
+          },
+        ],
+      },
+      {
+        id: 's19-excel',
+        title: 'read_excel',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Excel files (`.xlsx`) work the same way with `pd.read_excel`. The extra thing: an Excel file can have **many sheets**, so you can choose one with `sheet_name=`.',
+          },
+          {
+            type: 'code',
+            label: 'On your computer',
+            code: raw`import pandas as pd
+
+df = pd.read_excel("marks.xlsx")                       # first sheet
+df2 = pd.read_excel("marks.xlsx", sheet_name="Term 2") # a sheet by name
+df3 = pd.read_excel("marks.xlsx", sheet_name=1)        # a sheet by position`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Excel needs one more package',
+            text: 'pandas reads `.xlsx` files through a helper package called **openpyxl**. Install it once: `pip install openpyxl`. Without it, `read_excel` fails with an `ImportError`.',
+          },
+          { type: 'h3', text: 'Try it: write an Excel file, then read it' },
+          {
+            type: 'p',
+            text: 'We cannot upload a file here, so we first **create** an Excel file in memory with `to_excel`, then read it back with `read_excel`. This is also how you save your own results.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import openpyxl
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha"],
+    "maths": [85, 90, 78],
+})
+
+file = io.BytesIO()                      # a pretend file in memory
+df.to_excel(file, index=False)           # write it as an Excel file
+file.seek(0)                             # go back to the start
+
+back = pd.read_excel(file)
+print(back)
+print(back.equals(df))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`to_excel(..., index=False)` writes the table **without** the 0, 1, 2 row numbers.',
+              '`file.seek(0)` rewinds the pretend file so it can be read from the start.',
+              'On your computer you just give a name: `df.to_excel("marks.xlsx", index=False)`.',
+              '`import openpyxl` here makes the Try it box download that package. You do not need that line on your own computer once it is installed.',
+            ],
+          },
+          { type: 'h3', text: 'Two sheets' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import openpyxl
+import pandas as pd
+
+term1 = pd.DataFrame({"name": ["Aman", "Neha"], "maths": [85, 78]})
+term2 = pd.DataFrame({"name": ["Aman", "Neha"], "maths": [90, 82]})
+
+file = io.BytesIO()
+with pd.ExcelWriter(file) as writer:
+    term1.to_excel(writer, sheet_name="Term 1", index=False)
+    term2.to_excel(writer, sheet_name="Term 2", index=False)
+file.seek(0)
+
+print(pd.read_excel(file, sheet_name="Term 2"))
+print()
+file.seek(0)
+sheets = pd.read_excel(file, sheet_name=None)    # None = every sheet
+print(list(sheets))
+print(sheets["Term 1"])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`sheet_name="Term 2"` reads one sheet by its name.',
+              '`sheet_name=None` reads **all** sheets into a dictionary: the keys are sheet names, the values are DataFrames.',
+            ],
+          },
+          {
+            type: 'table',
+            head: ['', 'read_csv', 'read_excel'],
+            rows: [
+              ['File type', '`.csv` (plain text)', '`.xlsx`, `.xls`'],
+              ['Sheets', 'no', 'yes, `sheet_name=`'],
+              ['Extra package', 'none', '`openpyxl`'],
+              ['Speed', 'fast', 'slower'],
+              ['Save', '`to_csv`', '`to_excel`'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's19-peek',
+        title: 'A first look: head, tail, sample',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Never print a whole big table. Look at a **few rows** first.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.head())
+print()
+print(df.head(2))
+print()
+print(df.tail(2))`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Gives'],
+            rows: [
+              ['`df.head()`', 'the **first 5** rows'],
+              ['`df.head(n)`', 'the first `n` rows'],
+              ['`df.tail()`', 'the **last 5** rows'],
+              ['`df.tail(n)`', 'the last `n` rows'],
+              ['`df.sample(n)`', '`n` **random** rows'],
+            ],
+          },
+          { type: 'h3', text: 'sample: a random peek' },
+          {
+            type: 'p',
+            text: 'The top of a file may not be typical (it could be sorted). `sample` picks random rows. `random_state=` makes it repeatable.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,maths
+Aman,85
+Ankit,90
+Neha,78
+Rohit,92
+Priya,66
+Sana,70
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.sample(2, random_state=1))`,
+          },
+        ],
+      },
+      {
+        id: 's19-shape',
+        title: 'Size and column names',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.shape)
+print(len(df))
+print(df.columns)
+print(list(df.columns))
+print(df.index)
+print(df.dtypes)`,
+          },
+          {
+            type: 'table',
+            head: ['Attribute', 'Meaning'],
+            rows: [
+              ['`df.shape`', '`(rows, columns)`'],
+              ['`len(df)`', 'number of rows'],
+              ['`df.columns`', 'the column names'],
+              ['`df.index`', 'the row labels'],
+              ['`df.dtypes`', 'the data type of each column'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Why are maths and science decimals?',
+            text: 'A column that has a **NaN** cannot be stored as whole numbers, so pandas makes it `float64` (85.0, 90.0 ...). `age` has no missing values, so it stays `int64`.',
+          },
+        ],
+      },
+      {
+        id: 's19-info',
+        title: 'info()',
+        blocks: [
+          {
+            type: 'p',
+            text: '`df.info()` is the best one-glance **health check**. It prints (it does not return a table).',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+df.info()`,
+          },
+          {
+            type: 'p',
+            text: 'How to read it:',
+          },
+          {
+            type: 'ul',
+            items: [
+              '**RangeIndex: 6 entries** means 6 rows.',
+              '**Data columns (total 5 columns)**: 5 columns.',
+              '**Non-Null Count** is how many values are **not missing**. `maths` has 5 of 6, so one is missing. `science` also has 5 of 6.',
+              '**Dtype** is the type: `int64` whole numbers, `float64` decimals, `object` (text).',
+              'The last line is how much **memory** the table uses.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Spot the problems fast',
+            text: 'Look at **Non-Null Count** (any column with fewer than the number of rows has gaps) and at **Dtype** (a column that should be a number but says `object` usually has stray text in it, like the `-` we saw earlier).',
+          },
+        ],
+      },
+      {
+        id: 's19-describe',
+        title: 'describe()',
+        blocks: [
+          {
+            type: 'p',
+            text: '`df.describe()` gives a quick **statistical summary** of every numeric column.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.describe())`,
+          },
+          {
+            type: 'table',
+            head: ['Row', 'Meaning'],
+            rows: [
+              ['`count`', 'how many values are **not missing**'],
+              ['`mean`', 'the average'],
+              ['`std`', 'standard deviation (how spread out)'],
+              ['`min`', 'smallest value'],
+              ['`25%`', 'a quarter of the values are below this'],
+              ['`50%`', 'the **median** (the middle value)'],
+              ['`75%`', 'three quarters of the values are below this'],
+              ['`max`', 'largest value'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Notice `count` for maths is **5**, not 6: `describe` skips missing values. That is a quick way to notice gaps.',
+          },
+          { type: 'h3', text: 'Text columns and rounding' },
+          {
+            type: 'p',
+            text: 'By default only numeric columns are shown. `include="object"` describes the text columns, and `.round(1)` tidies the numbers.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.describe(include="object"))
+print()
+print(df.describe().round(1))
+print()
+print(df["maths"].describe())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'For text, `describe` gives `count`, `unique` (different values), `top` (most common) and `freq` (how often the top one appears).',
+              '`df["maths"].describe()` summarises **one column**.',
+            ],
+          },
+          { type: 'h3', text: 'Single statistics' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df["maths"].mean())
+print(df["maths"].median())
+print(df["maths"].min(), df["maths"].max())
+print(df["maths"].count())
+print(df[["maths", "science"]].mean())`,
+          },
+        ],
+      },
+      {
+        id: 's19-quality',
+        title: 'Missing values and repeats',
+        blocks: [
+          { type: 'h3', text: 'How many values are missing?' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.isna())
+print()
+print(df.isna().sum())
+print()
+print(df.isna().sum().sum())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`df.isna()` is a table of `True` / `False`: `True` where a value is missing.',
+              '`.sum()` adds the `True`s (a `True` counts as 1), giving **missing values per column**.',
+              'A second `.sum()` gives the total for the whole table.',
+            ],
+          },
+          { type: 'h3', text: 'unique, nunique and value_counts' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,city,age,maths,science
+Aman,Delhi,20,85,78
+Ankit,Mumbai,22,90,88
+Neha,Delhi,21,78,
+Rohit,Pune,23,92,95
+Priya,Mumbai,20,66,70
+Sana,Pune,22,,81
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df["city"].unique())
+print(df["city"].nunique())
+print(df["city"].value_counts())
+print()
+print(df["age"].value_counts().sort_index())`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Gives'],
+            rows: [
+              ['`s.unique()`', 'the different values'],
+              ['`s.nunique()`', 'how many different values'],
+              ['`s.value_counts()`', 'how often each value appears, most common first'],
+              ['`df.duplicated().sum()`', 'how many rows are exact copies of an earlier row'],
+            ],
+          },
+          { type: 'h3', text: 'Duplicate rows' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,maths
+Aman,85
+Ankit,90
+Aman,85
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print(df.duplicated())
+print(df.duplicated().sum())
+print(df.drop_duplicates())`,
+          },
+        ],
+      },
+      {
+        id: 's19-first-look',
+        title: 'Example: a first look at a new file',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A new file arrives. Here is the routine most analysts follow, every time. Run it and read each part.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """order_id,item,qty,price,city
+101,pen,10,5,Delhi
+102,book,2,350,Mumbai
+103,bag,1,800,Delhi
+104,pen,5,5,Pune
+105,book,,350,Pune
+106,bag,2,800,Mumbai
+"""
+df = pd.read_csv(io.StringIO(text))
+
+print("1. Shape:", df.shape)
+print()
+print("2. First rows")
+print(df.head(3))
+print()
+print("3. Types and gaps")
+df.info()
+print()
+print("4. Numbers")
+print(df[["qty", "price"]].describe().round(1))
+print()
+print("5. Missing per column")
+print(df.isna().sum())
+print()
+print("6. Items sold")
+print(df["item"].value_counts())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The routine is always: **shape, head, info, describe, missing, value_counts**.',
+              '`info` shows `qty` has 5 of 6 values, so order 105 has no quantity. We found a problem before doing any analysis.',
+              '`value_counts` shows `pen`, `book` and `bag` each appear twice.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's19-save',
+        title: 'Saving your work',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman", "Ankit"], "maths": [85, 90]})
+
+print(df.to_csv(index=False))      # no file name: returns the text
+df.to_csv("students_out.csv", index=False)   # on your computer: saves a file`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`to_csv("file.csv")` saves the table. Add **`index=False`** so the 0, 1, 2 row numbers are not written as an extra column.',
+              'Without a file name, `to_csv()` just returns the CSV text. That is a nice way to see exactly what would be saved.',
+              '`to_excel("file.xlsx", index=False)` does the same for Excel.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'The index=False habit',
+            text: 'Forget `index=False` and the next `read_csv` brings back an extra column called `Unnamed: 0`. If you ever see that name, this is why.',
+          },
+        ],
+      },
+      {
+        id: 's19-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**A wrong path.** `FileNotFoundError`: check the folder, the spelling and the extension.',
+              '**A wrong separator.** The whole table is one wide column: add `sep=";"` or `sep="\\t"`.',
+              '**No header line** but forgetting `header=None`: the first row of data becomes the column names.',
+              '**Missing `openpyxl`.** `read_excel` fails with an `ImportError`.',
+              '**Writing `df.info` without brackets.** `df.info` is the method itself; you need `df.info()`.',
+              '**Printing `info()`.** `print(df.info())` shows `None` at the end, because `info` prints by itself. Just call `df.info()`.',
+              '**Forgetting `index=False`** when saving, then getting `Unnamed: 0` when reading back.',
+              '**Trusting the top rows only.** Also check `tail`, `describe` and `isna().sum()`.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this prints extra None',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"a": [1, 2]})
+print(df.info())`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (no such file)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.read_csv("not_here.csv")
+print(df)`,
+          },
+        ],
+      },
+      {
+        id: 's19-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: read this CSV text, then print its shape and the first 2 rows',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """product,price,stock
+pen,5,100
+book,350,20
+bag,800,5
+"""
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: read this text with a semicolon separator and no title line, naming the columns "city" and "temp"',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """Delhi;31
+Mumbai;29
+Pune;27
+"""
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: read this, print how many values are missing in each column, then describe the numbers',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """name,marks,attendance
+Aman,85,90
+Ankit,,80
+Neha,78,
+"""
+`,
+          },
+        ],
+      },
+      {
+        id: 's19-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Create a CSV file `students.csv` in a text editor (name, city, age, marks, at least 8 rows, leave 2 values empty). Load it with `read_csv`.',
+              'Print its `shape`, `head(3)`, `tail(3)`, `info()` and `describe()`. Write down what each one told you.',
+              'Find out how many values are missing in each column, and the number of different cities with `nunique`.',
+              'Use `value_counts` to see which city has the most students.',
+              'Load the file again with `usecols` to keep only name and marks, and again with `index_col="name"`.',
+              'Save the table as an Excel file with `to_excel` (install `openpyxl` first), then read it back with `read_excel`.',
+              'Revise: `read_csv`, `sep`, `header`, `index_col`, `usecols`, `na_values`, `read_excel`, `sheet_name`, `head`, `info`, `describe`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Selecting and filtering: `loc`, `iloc`, conditions and column operations.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'selecting-and-filtering',
+    title: 'Selecting and Filtering',
+    summary: 'loc, iloc, conditions and column operations.',
+    hero: {
+      file: 'filter.py',
+      lines: ['import pandas as pd', 'df = pd.read_csv("students.csv")', 'print(df[df["maths"] > 80])'],
+      output: '    name    city  maths\n0   Aman   Delhi     85\n1  Ankit  Mumbai     90',
+    },
+    sections: [
+      {
+        id: 's20-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'How do you load a CSV file into a DataFrame?',
+              'What do `df.info()` and `df.describe()` tell you?',
+              'What does `df.isna().sum()` give?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's20-data',
+        title: 'The table we will use',
+        blocks: [
+          {
+            type: 'p',
+            text: 'In this lesson we choose **parts** of a table: some columns, some rows, rows that match a rule. Every example uses this small table of students. Run it once and look at it.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "age":     [20, 22, 21, 23, 20, 22],
+    "maths":   [85, 90, 78, 92, 66, 74],
+    "science": [78, 88, 70, 95, 70, 81],
+})
+print(df)`,
+          },
+          {
+            type: 'table',
+            head: ['Goal', 'Tool'],
+            rows: [
+              ['some **columns**', '`df["col"]`, `df[["a", "b"]]`'],
+              ['rows and columns by **label**', '`df.loc[...]`'],
+              ['rows and columns by **position**', '`df.iloc[...]`'],
+              ['rows that match a **rule**', '`df[condition]`'],
+              ['new or changed **columns**', '`df["new"] = ...`'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's20-columns',
+        title: 'Selecting columns',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "city":    ["Delhi", "Mumbai", "Delhi"],
+    "maths":   [85, 90, 78],
+})
+
+print(df["name"])
+print(type(df["name"]).__name__)
+print()
+print(df[["name", "maths"]])
+print(type(df[["name", "maths"]]).__name__)
+print()
+print(df.maths)`,
+          },
+          {
+            type: 'table',
+            head: ['Code', 'Gives'],
+            rows: [
+              ['`df["name"]`', 'one column, as a **Series**'],
+              ['`df[["name", "maths"]]`', 'several columns, as a **DataFrame** (two brackets!)'],
+              ['`df.maths`', 'the same as `df["maths"]`, but only works for simple names'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Prefer df["maths"]',
+            text: '`df.maths` fails when the name has a space (`"first name"`) or clashes with a pandas method (like `count`). `df["maths"]` always works.',
+          },
+        ],
+      },
+      {
+        id: 's20-loc',
+        title: 'loc: select by label',
+        blocks: [
+          {
+            type: 'p',
+            text: '`df.loc[rows, columns]` picks by **label**: row labels first, then column names. By default the row labels are 0, 1, 2 ...',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths":   [85, 90, 78, 92, 66, 74],
+    "science": [78, 88, 70, 95, 70, 81],
+})
+
+print(df.loc[2])
+print()
+print(df.loc[2, "name"])
+print()
+print(df.loc[1:3])
+print()
+print(df.loc[1:3, ["name", "maths"]])
+print()
+print(df.loc[:, "name":"city"])`,
+          },
+          {
+            type: 'table',
+            head: ['Code', 'Meaning'],
+            rows: [
+              ['`df.loc[2]`', 'the whole row labelled 2 (a Series)'],
+              ['`df.loc[2, "name"]`', 'one cell: row 2, column name'],
+              ['`df.loc[1:3]`', 'rows 1, 2 **and 3** (label slices include the end)'],
+              ['`df.loc[1:3, ["name", "maths"]]`', 'those rows, only these columns'],
+              ['`df.loc[:, "name":"city"]`', 'all rows, columns from name **to** city'],
+            ],
+          },
+          { type: 'h3', text: 'Names as row labels' },
+          {
+            type: 'p',
+            text: 'It is more natural when the rows have meaningful labels. `set_index` turns a column into the labels.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha"],
+    "maths": [85, 90, 78],
+    "science": [78, 88, 70],
+}).set_index("name")
+
+print(df)
+print()
+print(df.loc["Ankit"])
+print(df.loc["Ankit", "maths"])
+print(df.loc[["Aman", "Neha"], "science"])`,
+          },
+        ],
+      },
+      {
+        id: 's20-iloc',
+        title: 'iloc: select by position',
+        blocks: [
+          {
+            type: 'p',
+            text: '`df.iloc[rows, columns]` picks by **position**: 0 is the first row, 0 is the first column. It works the same way as list slicing: the end is **not** included.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths":   [85, 90, 78, 92, 66, 74],
+    "science": [78, 88, 70, 95, 70, 81],
+})
+
+print(df.iloc[0])
+print()
+print(df.iloc[0, 2])
+print()
+print(df.iloc[1:3])
+print()
+print(df.iloc[:, [0, 2]])
+print()
+print(df.iloc[-1])
+print()
+print(df.iloc[0:2, 0:2])`,
+          },
+          {
+            type: 'table',
+            head: ['Code', 'Meaning'],
+            rows: [
+              ['`df.iloc[0]`', 'the first row'],
+              ['`df.iloc[0, 2]`', 'row 0, column 2 (maths)'],
+              ['`df.iloc[1:3]`', 'rows 1 and 2 (**not** 3)'],
+              ['`df.iloc[:, [0, 2]]`', 'all rows, columns 0 and 2'],
+              ['`df.iloc[-1]`', 'the **last** row'],
+              ['`df.iloc[0:2, 0:2]`', 'the top-left 2 by 2 block'],
+            ],
+          },
+          { type: 'h3', text: 'loc versus iloc' },
+          {
+            type: 'table',
+            head: ['', 'loc', 'iloc'],
+            rows: [
+              ['Picks by', '**labels** (names)', '**positions** (numbers)'],
+              ['`1:3` gives', 'rows 1, 2, 3 (end included)', 'rows 1, 2 (end excluded)'],
+              ['Remember', '**l** for label', '**i** for integer position'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"x": [10, 20, 30, 40]}, index=[3, 2, 1, 0])
+print(df)
+print()
+print(df.loc[1])      # the row LABELLED 1
+print()
+print(df.iloc[1])     # the SECOND row`,
+          },
+          {
+            type: 'p',
+            text: 'Here the labels are shuffled, so `loc[1]` and `iloc[1]` give different rows. After sorting or filtering, labels and positions often differ, so know which one you want.',
+          },
+        ],
+      },
+      {
+        id: 's20-conditions',
+        title: 'Filtering with conditions',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The most useful trick in pandas: put a **condition** inside the brackets and get only the rows where it is `True`.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths":   [85, 90, 78, 92, 66, 74],
+})
+
+mask = df["maths"] > 80
+print(mask)
+print()
+print(df[mask])
+print()
+print(df[df["city"] == "Delhi"])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`df["maths"] > 80` makes a column of `True` / `False`, one per row. It is called a **mask**.',
+              '`df[mask]` keeps only the rows where the mask is `True`.',
+              'Usually we write it in one line: `df[df["maths"] > 80]`. Read it as "df, where maths is above 80".',
+              'The comparison operators are the ones you know: `==`, `!=`, `>`, `<`, `>=`, `<=`.',
+            ],
+          },
+          { type: 'h3', text: 'Rows and columns together' },
+          {
+            type: 'p',
+            text: '`loc` accepts a condition for the rows and column names for the columns.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths":   [85, 90, 78, 92, 66, 74],
+})
+
+print(df.loc[df["maths"] > 80, ["name", "maths"]])
+print()
+print(df.loc[df["city"] == "Pune", "name"])`,
+          },
+          { type: 'h3', text: 'and, or, not: use & | ~' },
+          {
+            type: 'p',
+            text: 'To combine conditions you cannot use `and`, `or`, `not`. Use the symbols below, and put **every condition in brackets**.',
+          },
+          {
+            type: 'table',
+            head: ['Want', 'Write', 'Meaning'],
+            rows: [
+              ['both', '`(a) & (b)`', 'AND'],
+              ['either', '`(a) | (b)`', 'OR'],
+              ['opposite', '`~(a)`', 'NOT'],
+            ],
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths":   [85, 90, 78, 92, 66, 74],
+    "science": [78, 88, 70, 95, 70, 81],
+})
+
+print(df[(df["maths"] > 80) & (df["science"] > 80)])
+print()
+print(df[(df["city"] == "Delhi") | (df["city"] == "Pune")])
+print()
+print(df[~(df["city"] == "Delhi")])`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Brackets are required',
+            text: 'Write `(df["a"] > 1) & (df["b"] < 5)`. Without the brackets, `&` is done first and you get an error. And `and` / `or` fail with `ValueError: The truth value of a Series is ambiguous`.',
+          },
+        ],
+      },
+      {
+        id: 's20-handy',
+        title: 'isin, between and text filters',
+        blocks: [
+          { type: 'h3', text: 'isin: one of several' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name": ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city": ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+})
+
+print(df[df["city"].isin(["Delhi", "Pune"])])
+print()
+print(df[~df["city"].isin(["Delhi", "Pune"])])`,
+          },
+          {
+            type: 'p',
+            text: '`isin([...])` is the short way to write many `==` joined by `|`. Put `~` in front for "not one of these".',
+          },
+          { type: 'h3', text: 'between: a range' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+print(df[df["maths"].between(75, 90)])`,
+          },
+          {
+            type: 'p',
+            text: '`between(75, 90)` is the same as `(maths >= 75) & (maths <= 90)`. Both ends are **included**.',
+          },
+          { type: 'h3', text: 'Text columns: str methods' },
+          {
+            type: 'p',
+            text: 'Text columns have a `.str` helper with the string methods you learned in lesson 3, working on the whole column at once.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name": ["Aman", "ankit", "Neha", "ROHIT", "Priya", "Sana"],
+})
+
+print(df["name"].str.upper())
+print()
+print(df["name"].str.title())
+print()
+print(df["name"].str.len())
+print()
+print(df[df["name"].str.startswith("A")])
+print()
+print(df[df["name"].str.lower().str.contains("an")])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`.str.upper()`, `.str.lower()`, `.str.title()`, `.str.strip()`, `.str.replace(a, b)`, `.str.len()` work like the normal string methods.',
+              '`.str.startswith("A")`, `.str.endswith(...)` and `.str.contains("an")` give `True` / `False` per row, so they are filters.',
+              'Capital letters count: `"ankit"` does not start with `"A"`. Lower-case the column first when you do not care.',
+            ],
+          },
+          { type: 'h3', text: 'query: a readable shortcut' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit"],
+    "city":    ["Delhi", "Mumbai", "Delhi", "Pune"],
+    "maths":   [85, 90, 78, 92],
+})
+
+print(df.query("maths > 80"))
+print()
+print(df.query("maths > 80 and city == 'Delhi'"))
+
+limit = 85
+print()
+print(df.query("maths > @limit"))`,
+          },
+          {
+            type: 'p',
+            text: '`query` takes the condition as **text**, and there you *can* write `and` / `or`. Use `@name` to bring in a normal variable. It is neat for simple filters; the bracket style works everywhere.',
+          },
+        ],
+      },
+      {
+        id: 's20-count',
+        title: 'Counting and sorting the result',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "maths":   [85, 90, 78, 92, 66, 74],
+})
+
+top = df[df["maths"] > 80]
+print(len(top))
+print((df["maths"] > 80).sum())
+print((df["maths"] > 80).mean())
+print()
+print(top.sort_values("maths", ascending=False))
+print()
+print(df.nlargest(2, "maths"))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`len(top)` counts the matching rows.',
+              '`(condition).sum()` also counts them: each `True` is 1.',
+              '`(condition).mean()` is the **fraction** that match (0.5 means half).',
+              '`nlargest(2, "maths")` gives the top 2 rows (`nsmallest` the bottom).',
+              'Row labels keep their old numbers after filtering. Add `.reset_index(drop=True)` for a fresh 0, 1, 2 ...',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's20-new-columns',
+        title: 'Column operations: new columns',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Assign to a column name that does not exist yet and pandas **creates** it. Maths is done on the whole column at once, no loop needed.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "maths":   [85, 90, 78],
+    "science": [78, 88, 70],
+})
+
+df["total"] = df["maths"] + df["science"]
+df["average"] = df["total"] / 2
+df["bonus"] = df["maths"] + 5
+df["grace"] = 2
+print(df)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`df["total"] = ...` adds a new column on the right.',
+              'Assigning to an **existing** name replaces that column.',
+              'One value (`2`) is copied into every row.',
+              'Columns of different tables line up by **row label**, not by position.',
+            ],
+          },
+          { type: 'h3', text: 'np.where: a column from a rule' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Priya"],
+    "maths": [85, 90, 78, 40],
+})
+
+df["result"] = np.where(df["maths"] >= 50, "Pass", "Fail")
+print(df)
+print()
+print(df["result"].value_counts())`,
+          },
+          { type: 'h3', text: 'Many bands: np.select' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman", "Ankit", "Neha", "Priya"], "maths": [85, 92, 70, 40]})
+
+conditions = [df["maths"] >= 90, df["maths"] >= 75, df["maths"] >= 50]
+grades     = ["A", "B", "C"]
+df["grade"] = np.select(conditions, grades, default="F")
+print(df)`,
+          },
+          {
+            type: 'p',
+            text: '`np.select` checks the conditions **in order** and takes the first one that is true. If none is true, it uses `default`.',
+          },
+        ],
+      },
+      {
+        id: 's20-change',
+        title: 'Changing columns: map, apply, astype',
+        blocks: [
+          { type: 'h3', text: 'map: swap values using a dictionary' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["Delhi", "Mumbai", "Pune", "Delhi"]})
+
+short = {"Delhi": "DEL", "Mumbai": "BOM", "Pune": "PNQ"}
+df["code"] = df["city"].map(short)
+print(df)`,
+          },
+          { type: 'h3', text: 'apply: run your own function on each value' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman", "Ankit", "Neha"], "maths": [85, 90, 78]})
+
+def grade(m):
+    if m >= 90:
+        return "A"
+    if m >= 80:
+        return "B"
+    return "C"
+
+df["grade"] = df["maths"].apply(grade)
+df["name_len"] = df["name"].apply(len)
+df["double"] = df["maths"].apply(lambda m: m * 2)
+print(df)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Vectorised first',
+            text: 'Whole-column maths (`df["maths"] * 2`) and `np.where` are **much faster** than `apply`. Use `apply` only when the rule is too complicated for those.',
+          },
+          { type: 'h3', text: 'astype: change the type' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"age": ["20", "22", "21"], "fee": [1000, 1500, 1200]})
+print(df.dtypes)
+print()
+
+df["age"] = df["age"].astype(int)
+df["fee"] = df["fee"].astype(float)
+print(df.dtypes)
+print(df["age"].sum())`,
+          },
+          {
+            type: 'p',
+            text: 'Numbers stored as text (`"20"`) cannot be added. `astype(int)` converts them. If a value cannot be converted, `pd.to_numeric(col, errors="coerce")` turns the bad ones into `NaN` instead of failing.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+s = pd.Series(["10", "20", "abc", "40"])
+print(pd.to_numeric(s, errors="coerce"))`,
+          },
+        ],
+      },
+      {
+        id: 's20-edit',
+        title: 'Renaming, dropping and updating',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "maths":   [85, 90, 78],
+    "science": [78, 88, 70],
+})
+
+df = df.rename(columns={"maths": "math_marks"})
+print(df)
+print()
+df = df.drop(columns=["science"])
+print(df)
+print()
+df = df.drop(index=[1])
+print(df)
+print()
+df.columns = ["student", "marks"]
+print(df)`,
+          },
+          {
+            type: 'table',
+            head: ['Call', 'Does'],
+            rows: [
+              ['`rename(columns={"old": "new"})`', 'renames some columns'],
+              ['`drop(columns=["a"])`', 'removes columns'],
+              ['`drop(index=[1])`', 'removes rows by label'],
+              ['`df.columns = [...]`', 'replaces all the names at once'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Save the result',
+            text: '`rename` and `drop` give back a **new** table and leave the old one alone. Write `df = df.drop(...)`, or nothing changes.',
+          },
+          { type: 'h3', text: 'Updating selected rows' },
+          {
+            type: 'p',
+            text: 'Put a condition and a column in `loc` on the left of `=` to change only some cells.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Priya"],
+    "maths": [85, 90, 78, 40],
+})
+
+df.loc[df["maths"] < 50, "maths"] = 50          # raise failures to 50
+df.loc[df["name"] == "Neha", "maths"] += 5      # add 5 to one student
+print(df)`,
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Use loc to change, not chained brackets',
+            text: '`df[df["maths"] < 50]["maths"] = 50` looks right but changes a **copy**, so the table stays the same (and pandas warns). Always write `df.loc[condition, "column"] = value`.',
+          },
+        ],
+      },
+      {
+        id: 's20-example',
+        title: 'Example: a sales report',
+        blocks: [
+          {
+            type: 'p',
+            text: 'We combine everything: new columns, a filter, a sort.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "order": [101, 102, 103, 104, 105, 106],
+    "item":  ["pen", "book", "bag", "pen", "book", "bag"],
+    "qty":   [10, 2, 1, 5, 3, 2],
+    "price": [5, 350, 800, 5, 350, 800],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Pune", "Mumbai"],
+})
+
+df["amount"] = df["qty"] * df["price"]
+df["size"] = np.where(df["amount"] >= 1000, "big", "small")
+
+print(df)
+print()
+print("Big orders in Delhi or Mumbai:")
+big = df[(df["size"] == "big") & (df["city"].isin(["Delhi", "Mumbai"]))]
+print(big[["order", "item", "amount"]])
+print()
+print("Total sales:", df["amount"].sum())
+print("Biggest order:", df.loc[df["amount"].idxmax(), "item"])
+print()
+print(df.sort_values("amount", ascending=False).head(3)[["order", "amount"]])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`qty * price` made the `amount` column with no loop.',
+              '`np.where` made a `size` label from a rule.',
+              'The filter used `&` with brackets, and `isin` for two cities.',
+              '`idxmax()` gave the row **label** of the biggest amount, and `loc` used it to get that item.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's20-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**`and` / `or` instead of `&` / `|`.** Gives "truth value of a Series is ambiguous".',
+              '**No brackets around each condition** when combining with `&` or `|`.',
+              '**One bracket for several columns.** `df["a", "b"]` fails; use `df[["a", "b"]]`.',
+              '**`loc` versus `iloc` mix-up.** `loc[1:3]` has 3 rows, `iloc[1:3]` has 2.',
+              '**Chained assignment.** `df[cond]["col"] = x` changes a copy; use `df.loc[cond, "col"] = x`.',
+              '**Forgetting to save** `rename`, `drop`, `sort_values`: write `df = df.drop(...)`.',
+              '**Comparing text with the wrong case.** `"delhi" == "Delhi"` is `False`.',
+              '**Numbers stored as text.** `"20" + "5"` is `"205"`; convert with `astype(int)` first.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: this fails on purpose (and instead of &)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"maths": [85, 90, 40], "science": [70, 88, 30]})
+print(df[(df["maths"] > 50) and (df["science"] > 50)])`,
+          },
+          {
+            type: 'code',
+            label: 'Try it: this also fails on purpose (wrong column name)',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"maths": [85, 90, 40]})
+print(df["Maths"])`,
+          },
+        ],
+      },
+      {
+        id: 's20-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: print only the name and city of students older than 21',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name": ["Aman", "Ankit", "Neha", "Rohit"],
+    "city": ["Delhi", "Mumbai", "Delhi", "Pune"],
+    "age":  [20, 22, 21, 23],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print the students from Delhi whose maths is above 80',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune"],
+    "maths": [85, 90, 78, 92],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add a column "total" (maths + science) and a column "result" ("Pass" if total is at least 150, else "Fail")',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({
+    "name":    ["Aman", "Ankit", "Neha"],
+    "maths":   [85, 90, 60],
+    "science": [78, 88, 55],
+})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: using iloc, print the last 2 rows and only the first 2 columns',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune"],
+    "maths": [85, 90, 78, 92],
+})
+`,
+          },
+        ],
+      },
+      {
+        id: 's20-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Make a DataFrame of **8 students** with name, city, age, maths and science.',
+              'Print: the `name` column; the `name` and `city` columns; row 3 with `loc`; rows 2 to 4 with `iloc`.',
+              'Filter: students with maths above the class average; students from two chosen cities (use `isin`); students older than 20 **and** with science above 75.',
+              'Add columns `total`, `percentage` and `grade` (use `np.select` with A, B, C, F).',
+              'Use `loc` to give every student below 40 in maths a grace of 5 marks.',
+              'Sort by `total` (biggest first) and print the top 3 names.',
+              'Rename a column and drop another, saving the result.',
+              'Revise: `loc`, `iloc`, mask, `&` `|` `~`, `isin`, `between`, `.str`, `query`, `np.where`, `np.select`, `map`, `apply`, `astype`, `rename`, `drop`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Grouping and summaries: `groupby`, `agg` and `pivot_table`.',
+          },
+        ],
+      },
+    ],
+  },
 ]
