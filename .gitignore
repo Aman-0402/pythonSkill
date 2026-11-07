@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# NOTES_PREVIEW page pictures
+/[0-9]*_[0-9]*.png

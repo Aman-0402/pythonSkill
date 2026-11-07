@@ -337,6 +337,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 52. Unlocked session 4 on the website (`LOCK_FROM = 5`): sessions 1 to 4 are open, sessions 5 to 18 stay locked. To open the next class, raise `LOCK_FROM` by one.
 53. Lesson 3: every row of the three string-method tables now shows its result (`gives ...`), the missing `title`, `capitalize`, `strip`, `lstrip`, `rstrip` examples were added (`lstrip` and `rstrip` split into two rows), and two new Try it slides were added (cleaning the text, searching and checking). Session 3 PDF regenerated.
 54. Lesson 3: every string method now has its own small Try it box (one idea per box, labelled with the method) on slides grouped by method: `upper`/`lower`, `title`/`capitalize`, `strip`/`lstrip`/`rstrip`, `replace`, `find`/`count`, `startswith`/`endswith`, `isdigit`/`isalpha`, `split`, `join`. Replaced the two combined boxes added in item 53. **The owner asked not to regenerate PDFs until they finish correcting the lessons, so the Session 3 PDF is stale until they say so** (regenerate it then with `notes-pdf.mjs 3`).
+55. Deleted 16 stray preview pictures (`1_1.png` to `1_16.png` in the repo root, accidentally committed with lesson 16 from a `NOTES_PREVIEW` run) and ignored that name pattern in `.gitignore`. Kept `Images/` (the owner's originals) and the pictures in use (`src/slides/`, `public/`). When using `NOTES_PREVIEW`, save the pictures in a temp folder, not the repo.
 
 ## Gotchas and lessons learned
 
