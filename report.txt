@@ -1,4 +1,17 @@
-Aman: total 253, average 84.3
-Ankit: total 215, average 71.7
-Neha: total 275, average 91.7
-Topper: Neha
+ONLINE SHOP REPORT, JANUARY TO JUNE 2024
+==========================================
+
+SUMMARY
+- 298 orders, total revenue Rs 602,191.
+- Gadgets is the biggest category: Rs 314,195 (52% of revenue).
+- Delhi is the biggest city: Rs 238,849.
+- Best month: 2024-05. Weakest month: 2024-02.
+
+REVENUE BY CATEGORY
+  Gadgets      Rs    314,195
+  Bags         Rs    168,654
+  Books        Rs     92,738
+  Stationery   Rs     26,604
+
+LIMITS
+- Six months of data from one shop; no seasons can be seen.

@@ -21,6 +21,44 @@ export type Lesson = {
 }
 
 const raw = String.raw
+// The shared 'online shop orders' data used by lessons 26 to 29: a generator (with real-world mess on purpose) and the cleaning function from lesson 27.
+const SHOP = raw`import numpy as np
+import pandas as pd
+
+def make_orders(n=300, seed=11):
+    rng = np.random.default_rng(seed)
+    ranges = {"Stationery": (20, 150), "Books": (150, 600), "Bags": (400, 1500), "Gadgets": (500, 5000)}
+    category = rng.choice(list(ranges), n, p=[0.35, 0.3, 0.2, 0.15])
+    df = pd.DataFrame({
+        "order_id": np.arange(1001, 1001 + n),
+        "date": pd.to_datetime("2024-01-01") + pd.to_timedelta(rng.integers(0, 180, n), unit="D"),
+        "city": rng.choice(["Delhi", "Mumbai", "Pune", "Chennai"], n, p=[0.35, 0.3, 0.2, 0.15]),
+        "category": category,
+        "qty": rng.integers(1, 6, n),
+        "price": [int(rng.integers(*ranges[c])) for c in category],
+        "discount": rng.choice([0, 5, 10, 20], n, p=[0.5, 0.2, 0.2, 0.1]),
+        "payment": rng.choice(["UPI", "Card", "Cash"], n, p=[0.5, 0.3, 0.2]),
+        "rating": rng.integers(1, 6, n).astype(float),
+    })
+    # make it messy, like real data
+    df.loc[rng.choice(n, 25, replace=False), "rating"] = np.nan
+    df.loc[rng.choice(n, 10, replace=False), "city"] = " delhi "
+    df.loc[rng.choice(n, 6, replace=False), "payment"] = None
+    df.loc[[7, 150], "qty"] = 500
+    return pd.concat([df, df.iloc[:8]], ignore_index=True)
+`
+const CLEAN = raw`def clean_orders(raw):
+    df = raw.copy()
+    df = df.drop_duplicates()
+    df["city"] = df["city"].str.strip().str.title()
+    df["payment"] = df["payment"].fillna("Unknown")
+    df = df[df["qty"] <= 20]
+    df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+    df["month"] = df["date"].dt.strftime("%Y-%m")
+    df["weekday"] = df["date"].dt.day_name()
+    return df.reset_index(drop=True)
+`
+
 
 export const lessons: Lesson[] = [
   {
@@ -17338,6 +17376,2640 @@ df = pd.DataFrame({
             tone: 'tip',
             title: 'Next class',
             text: 'A mini project that brings it all together: load, clean, group and chart a real data set.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'exploratory-data-analysis',
+    title: 'Exploratory Data Analysis (EDA)',
+    summary: 'A full workflow on a real-style dataset: look, question, chart, conclude.',
+    hero: {
+      file: 'eda.py',
+      lines: ['orders = make_orders()', 'orders.info()', 'print(orders.groupby("category")["amount"].sum())'],
+      output: 'category\nBags          ...\nBooks         ...\nGadgets       ...',
+    },
+    sections: [
+      {
+        id: 's26-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'Name three things you check when you first load a file.',
+              'What does `groupby` + `agg` give you?',
+              'Which chart compares groups, and which shows how values are spread?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's26-what',
+        title: 'What is EDA?',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Exploratory Data Analysis (EDA)** means getting to know a dataset **before** you build anything on it. You look at its size, its quality and its patterns, ask questions, draw charts and write down what you find. It was named by the statistician John Tukey.',
+          },
+          {
+            type: 'ul',
+            items: [
+              'It tells you **what is in the data** and whether you can trust it.',
+              'It finds **mistakes** (blanks, duplicates, impossible values) early.',
+              'It shows **patterns** and gives you the right questions to ask.',
+              'Every later step, a report, a dashboard, a model, depends on it.',
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The workflow has the same eight steps every time:',
+          },
+          {
+            type: 'table',
+            head: ['Step', 'Question', 'Tools'],
+            rows: [
+              ['1. Goal', 'What do we want to find out?', 'write the questions down'],
+              ['2. Load', 'Does the data open correctly?', '`read_csv`, `head`'],
+              ['3. Structure', 'How big? What columns and types?', '`shape`, `info`, `dtypes`'],
+              ['4. Quality', 'Blanks? Duplicates? Wrong values?', '`isna`, `duplicated`, `describe`'],
+              ['5. One column', 'How is each column spread?', '`value_counts`, `hist`, `boxplot`'],
+              ['6. Two columns', 'How do columns relate?', '`groupby`, `corr`, scatter'],
+              ['7. Over time', 'Is there a trend or season?', '`resample`, line chart'],
+              ['8. Conclude', 'What did we learn? What next?', 'a short written summary'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's26-data',
+        title: 'The dataset: an online shop',
+        blocks: [
+          {
+            type: 'p',
+            text: 'We will explore **308 orders** from a small online shop over six months. Real data sets are too big to type, so this table is **generated by code** with a fixed seed: it is the same every time, and it has the usual real-world problems on purpose.',
+          },
+          {
+            type: 'table',
+            head: ['Column', 'Meaning'],
+            rows: [
+              ['`order_id`', 'order number'],
+              ['`date`', 'the day of the order'],
+              ['`city`', 'where it was delivered'],
+              ['`category`', 'Stationery, Books, Bags or Gadgets'],
+              ['`qty`', 'how many items'],
+              ['`price`', 'price of one item in rupees'],
+              ['`discount`', 'percent discount (0, 5, 10 or 20)'],
+              ['`payment`', 'UPI, Card or Cash'],
+              ['`rating`', 'customer rating 1 to 5'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'About the long first lines',
+            text: 'Every box in this lesson starts with the same `make_orders` function so that it runs by itself. You do **not** need to read it: it only builds the table. The analysis starts after the line `orders = make_orders()`. In a notebook you would write the function once at the top.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+print(orders.head())`,
+          },
+        ],
+      },
+      {
+        id: 's26-structure',
+        title: 'Steps 2 and 3: structure',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+
+print("Rows and columns:", orders.shape)
+print()
+orders.info()
+print()
+print(orders.head(3))
+print()
+print(orders.tail(3))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '**308 rows, 9 columns.** Small enough to look at in full.',
+              '`date` is a real date type, `qty`, `price` and `discount` are whole numbers.',
+              '`payment` and `rating` have **fewer than 308 values**: some are missing.',
+              '`rating` is `float64` because it contains `NaN`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Write notes as you go',
+            text: 'Keep a running list of **findings** and **to-do fixes**. Here: "payment and rating have blanks", "check city spelling", "check the duplicates".',
+          },
+        ],
+      },
+      {
+        id: 's26-quality',
+        title: 'Step 4: quality checks',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+
+print("Missing values")
+print(orders.isna().sum())
+print()
+print("Duplicate rows:", orders.duplicated().sum())
+print()
+print("City spellings")
+print(orders["city"].value_counts())
+print()
+print("Numbers")
+print(orders[["qty", "price", "discount", "rating"]].describe().round(1))`,
+          },
+          {
+            type: 'p',
+            text: 'What the checks found:',
+          },
+          {
+            type: 'table',
+            head: ['Check', 'Finding', 'Action'],
+            rows: [
+              ['`isna().sum()`', '`payment` has 6 blanks, `rating` has 26', 'fill `payment` with "Unknown"; leave `rating` blank (do not invent ratings)'],
+              ['`duplicated().sum()`', '8 repeated rows', 'drop them'],
+              ['`city.value_counts()`', '`" delhi "` counted apart from `"Delhi"`', 'strip spaces and fix the capitals'],
+              ['`describe()` on `qty`', 'maximum **500**, while most orders are 1 to 5', 'two typing mistakes: remove those rows'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'We will fix all of these in the next lesson. For now, **find** them: that is EDA. To keep the numbers honest in this lesson we do the quick fixes below and then explore.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+
+df = orders.drop_duplicates().copy()
+df["city"] = df["city"].str.strip().str.title()
+df["payment"] = df["payment"].fillna("Unknown")
+df = df[df["qty"] <= 20].copy()
+df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+
+print("Rows kept:", len(df), "of", len(orders))
+print(df["city"].value_counts())
+print(df["qty"].max())
+print(df[["qty", "price", "amount"]].describe().round(1))`,
+          },
+        ],
+      },
+      {
+        id: 's26-one',
+        title: 'Step 5: one column at a time',
+        blocks: [
+          { type: 'h3', text: 'Categories: value_counts' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df["city"] = df["city"].str.strip().str.title()
+df["payment"] = df["payment"].fillna("Unknown")
+df = df[df["qty"] <= 20].copy()
+
+print(df["category"].value_counts())
+print()
+print(df["payment"].value_counts(normalize=True).round(2))
+print()
+print(df["city"].value_counts())`,
+          },
+          {
+            type: 'p',
+            text: 'Stationery and Books make most of the orders; Gadgets are the fewest. `normalize=True` shows shares: about half the customers pay by UPI.',
+          },
+          { type: 'h3', text: 'Numbers: histogram and box plot' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+import matplotlib.pyplot as plt
+
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df = df[df["qty"] <= 20].copy()
+df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 4))
+axes[0].hist(df["price"], bins=20, color="#2563eb", edgecolor="white")
+axes[0].set_title("Price of one item")
+axes[1].hist(df["amount"], bins=20, color="#7c3aed", edgecolor="white")
+axes[1].set_title("Order amount")
+axes[2].boxplot(df["amount"])
+axes[2].set_title("Order amount (box plot)")
+plt.tight_layout()
+plt.show()
+
+print(df["amount"].describe().round(0))
+print("mean:", round(df["amount"].mean()), " median:", round(df["amount"].median()))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'The charts lean to the **left with a long tail on the right**: most orders are small, a few are large. We call that **right-skewed**.',
+              'So the **mean** is pulled up by the big orders and is **bigger than the median**. For skewed money data the median is the better "typical" value.',
+              'The dots on the box plot are the large orders: real (a Gadget bought five at a time), not mistakes.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's26-two',
+        title: 'Step 6: two columns together',
+        blocks: [
+          { type: 'h3', text: 'Number by category' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df["city"] = df["city"].str.strip().str.title()
+df = df[df["qty"] <= 20].copy()
+df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+
+by_cat = df.groupby("category").agg(
+    orders=("order_id", "count"),
+    revenue=("amount", "sum"),
+    avg_order=("amount", "mean"),
+).round(0).sort_values("revenue", ascending=False)
+print(by_cat)
+print()
+by_cat["share_%"] = (by_cat["revenue"] / by_cat["revenue"].sum() * 100).round(1)
+print(by_cat["share_%"])
+print()
+print(df.pivot_table(index="city", columns="category", values="amount", aggfunc="sum").round(0))`,
+          },
+          {
+            type: 'p',
+            text: 'A surprise worth noticing: **Gadgets are the fewest orders but the biggest share of the money**. Counting orders and counting rupees tell different stories. This is why EDA looks at the data from several sides.',
+          },
+          { type: 'h3', text: 'Does a discount lead to a better rating?' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df = df[df["qty"] <= 20].copy()
+
+print(df.groupby("discount")["rating"].agg(["count", "mean"]).round(2))
+print()
+print(df[["qty", "price", "discount", "rating"]].corr().round(2))`,
+          },
+          {
+            type: 'p',
+            text: 'The averages hardly move and the correlations are close to 0. In this data a discount does **not** change the rating. Noting "no relationship" is a result too. (This data is random, so you will not find strong links in it; real data usually has some.)',
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Small groups mislead',
+            text: 'Always look at the `count` next to an average. An average of 3 rows is a weak fact.',
+          },
+        ],
+      },
+      {
+        id: 's26-time',
+        title: 'Step 7: over time',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+import matplotlib.pyplot as plt
+
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df = df[df["qty"] <= 20].copy()
+df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+
+monthly = df.set_index("date")["amount"].resample("MS").sum()
+print(monthly.round(0))
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+monthly.plot(ax=axes[0], marker="o")
+axes[0].set_title("Revenue per month")
+axes[0].set_ylabel("Rupees")
+
+df["weekday"] = df["date"].dt.day_name()
+order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+df.groupby("weekday")["order_id"].count().reindex(order).plot(kind="bar", ax=axes[1], color="orange")
+axes[1].set_title("Orders per weekday")
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`set_index("date")` then `resample("MS").sum()` totals the amount for each **month start**. (`"D"` is daily, `"W"` weekly.)',
+              '`dt.day_name()` turns dates into weekday names, and `reindex(order)` puts them in calendar order.',
+              'Look for a **trend** (going up or down), **seasons** (the same dip every year) and **spikes** worth explaining.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's26-conclude',
+        title: 'Step 8: write down what you found',
+        blocks: [
+          {
+            type: 'p',
+            text: 'EDA ends with a short written summary. Let the code print the facts, so the numbers in your text are never typed by hand.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df["city"] = df["city"].str.strip().str.title()
+df["payment"] = df["payment"].fillna("Unknown")
+df = df[df["qty"] <= 20].copy()
+df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+
+top_cat = df.groupby("category")["amount"].sum().idxmax()
+top_city = df.groupby("city")["amount"].sum().idxmax()
+upi = (df["payment"] == "UPI").mean() * 100
+
+print(f"Orders analysed: {len(df)} (removed {len(orders) - len(df)} bad or repeated rows)")
+print(f"Total revenue: Rs {df['amount'].sum():,.0f}")
+print(f"Typical order (median): Rs {df['amount'].median():,.0f}, average: Rs {df['amount'].mean():,.0f}")
+print(f"Biggest category by revenue: {top_cat}")
+print(f"Biggest city by revenue: {top_city}")
+print(f"Paid by UPI: {upi:.0f}%")
+print(f"Orders with no rating: {df['rating'].isna().sum()}")`,
+          },
+          {
+            type: 'p',
+            text: 'A good EDA summary has: how much data and what you removed; the most important numbers; two or three patterns; the problems that remain; and **what to do next**.',
+          },
+        ],
+      },
+      {
+        id: 's26-tools',
+        title: 'Two shortcuts for a first look',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+
+print(orders.describe(include="all").T.round(1).head(12))
+print()
+print(orders.nunique())
+print()
+print((orders.isna().mean() * 100).round(1))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`describe(include="all")` summarises every column, text and numbers; `.T` turns it on its side so it fits.',
+              '`nunique()` counts the different values in each column: a column with 1 value is useless; a column that is different on every row (like `order_id`) is an identifier.',
+              '`isna().mean() * 100` gives the **percent missing** per column.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Automatic reports',
+            text: 'Tools such as `ydata-profiling` or `sweetviz` build a whole EDA report from one line. They are handy for a first glance, but learn to do it by hand first: the tool cannot decide what the numbers **mean**.',
+          },
+        ],
+      },
+      {
+        id: 's26-checklist',
+        title: 'The EDA checklist',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Questions first.** What do we want to know?',
+              '**Size and types:** `shape`, `info`, `dtypes`.',
+              '**Blanks:** `isna().sum()`. Decide: fill, drop or leave.',
+              '**Duplicates:** `duplicated().sum()`.',
+              '**Impossible values:** `describe()` min and max, `value_counts` for categories.',
+              '**Text mess:** spaces and capitals in category columns.',
+              '**Each column alone:** counts, histogram, box plot.',
+              '**Pairs of columns:** `groupby`, `corr`, scatter plot.',
+              '**Time:** trend, weekday, month.',
+              '**Write it down:** findings, problems, next steps.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's26-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Skipping straight to charts** without checking quality: a typing mistake (qty 500) ruins every average.',
+              '**Looking at the average only.** Also look at the median, the spread and the count.',
+              '**Deleting rows silently.** Say how many you removed and why.',
+              '**Inventing missing values** (like ratings) just to fill the gap.',
+              '**Believing a pattern from a tiny group.** Check the `count`.',
+              '**Confusing correlation with cause.**',
+              '**Forgetting the question.** Exploring is fine, but come back to the goal.',
+            ],
+          },
+          {
+            type: 'code',
+            label: 'Try it: one typing mistake changes the average a lot',
+            runnable: true,
+            code: raw`import pandas as pd
+
+qty = pd.Series([2, 3, 1, 4, 2, 500])
+print("mean with the mistake:", round(qty.mean(), 1))
+print("median with the mistake:", qty.median())
+print("mean without it:", qty[qty < 100].mean())`,
+          },
+        ],
+      },
+      {
+        id: 's26-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: using the orders data (already cleaned below), print the revenue of each payment type, biggest first',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df = df[df["qty"] <= 20].copy()
+df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: find the average rating of each category (ignore blanks) and the number of ratings behind each average',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df = df[df["qty"] <= 20].copy()
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: draw a bar chart of the number of orders in each city',
+            runnable: true,
+            code: raw`${SHOP}
+import matplotlib.pyplot as plt
+
+orders = make_orders()
+df = orders.drop_duplicates().copy()
+df["city"] = df["city"].str.strip().str.title()
+`,
+          },
+        ],
+      },
+      {
+        id: 's26-homework',
+        title: 'Homework and wrap-up',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Re-run the whole EDA on the orders data in a **new notebook or script**, one step per section, with a note under each one.',
+              'Find **three more questions** the data can answer (for example: which weekday has the biggest orders?) and answer them.',
+              'Pick a small real CSV (a list of sources is in the next lesson) and do steps 2 to 4 on it: size, types, blanks, duplicates, odd values.',
+              'Write a 5-line summary of what you found.',
+              'Revise: the eight EDA steps, `info`, `describe`, `isna`, `duplicated`, `value_counts`, `groupby`, `corr`, `resample`.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Capstone, part 1: choose your own dataset, write the questions, and clean and prepare it.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'capstone-part-1',
+    title: 'Capstone, Part 1: Choose and Clean',
+    summary: 'Pick a dataset, write your questions, then clean and prepare the data.',
+    hero: {
+      file: 'capstone.py',
+      lines: ['df = clean_orders(raw_orders)', 'check(df)', 'df.to_csv("orders_clean.csv", index=False)'],
+      output: 'all checks passed\nsaved 298 rows',
+    },
+    sections: [
+      {
+        id: 's27-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What are the eight steps of EDA?',
+              'Why look at the median as well as the mean?',
+              'Which problems did we find in the orders data?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's27-what',
+        title: 'What is a capstone?',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **capstone** is the project at the end of a course: you use **everything you learned** on a problem of your own. Over two lessons you will do a small but complete data analysis, from a raw file to a written conclusion. This is also the first piece for your **portfolio**.',
+          },
+          {
+            type: 'table',
+            head: ['Part', 'You will'],
+            rows: [
+              ['**Part 1** (this lesson)', 'choose a dataset, write the questions, load, check and **clean** it, and save a clean file'],
+              ['**Part 2** (next lesson)', '**analyse** it, draw charts, and write the **insights** and advice'],
+              ['**Then**', 'present it: a notebook, an Excel file, a short talk'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'In class we show every step on the **online shop orders** data from last lesson. You then repeat the same steps on **your own dataset**.',
+          },
+        ],
+      },
+      {
+        id: 's27-choose',
+        title: 'Choosing a dataset',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A good capstone dataset is **interesting to you**, not too big, and has more than one kind of column.',
+          },
+          {
+            type: 'table',
+            head: ['Check', 'Good sign'],
+            rows: [
+              ['**Size**', '500 to 50,000 rows and 6 to 20 columns (it must open quickly)'],
+              ['**Mix of columns**', 'numbers, categories **and** a date'],
+              ['**Questions**', 'you can think of at least 3 real questions about it'],
+              ['**Messy enough**', 'some blanks or odd values to clean (clean data teaches little)'],
+              ['**Licence**', 'free to use; note the source and licence'],
+              ['**No private data**', 'no names, phone numbers or other personal details'],
+            ],
+          },
+          {
+            type: 'h3',
+            text: 'Where to find data',
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Kaggle Datasets** (kaggle.com/datasets): thousands of CSV files, with a usability score.',
+              '**data.gov.in**: the Government of India open data portal.',
+              '**UCI Machine Learning Repository**: classic, well documented data sets.',
+              '**Google Dataset Search**: finds data sets across the web.',
+              '**World Bank Open Data** and **Our World in Data**: countries, health, economy.',
+              '**Your own data**: a fitness log, expenses, a cricket scoreboard, your college marks (remove names!).',
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Some topic ideas: **sales** of a shop, **Indian cities** and air quality, **IPL** matches and players, **movies** and ratings, **student** performance, **used cars** and prices, **Swiggy/Zomato** restaurants, **flights**, **house prices**.',
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Keep it small',
+            text: 'A small project that is **finished, clean and well explained** beats a huge one that is half done. Choose a dataset you can fully understand in a week.',
+          },
+        ],
+      },
+      {
+        id: 's27-questions',
+        title: 'Write your questions first',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Before you touch the data, write **3 to 5 questions** you want to answer. They guide every choice later. A good question is **specific** and can be answered with numbers.',
+          },
+          {
+            type: 'table',
+            head: ['Too vague', 'Better'],
+            rows: [
+              ['"Look at sales"', '"Which product category brings the most **revenue**, and is it also the one with the most **orders**?"'],
+              ['"Is it going well?"', '"Is monthly revenue **growing**, and which month was the best?"'],
+              ['"Customers"', '"Which **city** spends most per order, and which **payment method** is most popular?"'],
+              ['"Discounts"', '"Do discounted orders get **better ratings** than full-price ones?"'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'The questions for our shop project, which we will answer in part 2:',
+          },
+          {
+            type: 'ol',
+            items: [
+              'Which **category** earns the most money, and is it also the most ordered?',
+              'Which **city** brings the most revenue?',
+              'How does revenue change **month by month**?',
+              'Do **discounts** change how much people buy, or how happy they are?',
+              'How do customers **pay**?',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'A one-page project plan',
+            text: 'Write these five lines in a text file or the top of your notebook: **Title**, **Data source** (link and date), **Questions** (3 to 5), **Columns** you expect to use, **Expected problems**. Teachers and employers like to see a plan.',
+          },
+        ],
+      },
+      {
+        id: 's27-load',
+        title: 'Load and take a first look',
+        blocks: [
+          {
+            type: 'p',
+            text: 'On your computer you load your file with `read_csv`. Always keep the **raw file untouched** in its own folder and do all cleaning in code, so the work can be repeated.',
+          },
+          {
+            type: 'code',
+            label: 'On your computer: a tidy project folder',
+            code: raw`my_project/
+    data/
+        raw/orders.csv          <- never edit by hand
+        clean/orders_clean.csv  <- made by your code
+    notebook.ipynb              <- the analysis
+    README.md                   <- what it is and how to run it`,
+          },
+          {
+            type: 'code',
+            label: 'On your computer: load and look',
+            code: raw`import pandas as pd
+
+raw_orders = pd.read_csv("data/raw/orders.csv", parse_dates=["date"])
+print(raw_orders.shape)
+raw_orders.info()
+print(raw_orders.head())`,
+          },
+          {
+            type: 'p',
+            text: 'On this website we build the raw table with our generator, then take the same first look. Write down every problem you spot.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+raw_orders = make_orders()
+
+print(raw_orders.shape)
+print()
+print("blanks per column")
+print(raw_orders.isna().sum()[lambda s: s > 0])
+print()
+print("duplicate rows:", raw_orders.duplicated().sum())
+print()
+print("cities:", sorted(raw_orders["city"].unique()))
+print()
+print("biggest quantities:", sorted(raw_orders["qty"], reverse=True)[:4])`,
+          },
+        ],
+      },
+      {
+        id: 's27-log',
+        title: 'The cleaning plan',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Turn the problems into a **plan**, with a decision and a reason for each. This table is also what you write in your report.',
+          },
+          {
+            type: 'table',
+            head: ['Problem', 'Decision', 'Why'],
+            rows: [
+              ['8 repeated rows', 'drop them', 'the same order counted twice'],
+              ['`" delhi "` vs `"Delhi"`', 'strip spaces, title case', 'one city, one spelling'],
+              ['6 blank `payment`', 'fill with "Unknown"', 'keep the order, show it honestly'],
+              ['26 blank `rating`', '**leave blank**', 'not everyone rates; a made-up rating would be false'],
+              ['`qty` 500', 'drop the rows', 'impossible: 5 is the largest real order'],
+              ['no revenue column', 'add `amount`', 'we need money, not only counts'],
+              ['date as a single column', 'add `month` and `weekday`', 'for trends'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Decide, then record',
+            text: 'Every cleaning step is a **decision** that can change the answers. Never clean silently: write down what you did and how many rows each step touched.',
+          },
+        ],
+      },
+      {
+        id: 's27-clean',
+        title: 'Clean it with a function',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Put all the cleaning in **one function**. Then it is repeatable: give it the raw table, get the clean one. If the shop sends new data next month, you run the same function.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+def clean_orders(raw):
+    df = raw.copy()
+    df = df.drop_duplicates()
+    df["city"] = df["city"].str.strip().str.title()
+    df["payment"] = df["payment"].fillna("Unknown")
+    df = df[df["qty"] <= 20]
+    df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+    df["month"] = df["date"].dt.strftime("%Y-%m")
+    df["weekday"] = df["date"].dt.day_name()
+    return df.reset_index(drop=True)
+
+raw_orders = make_orders()
+orders = clean_orders(raw_orders)
+
+print("rows before:", len(raw_orders), " after:", len(orders))
+print()
+print(orders.head())
+print()
+orders.info()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`raw.copy()` keeps the original table safe inside the function.',
+              'Order of steps matters: **fix the text before** looking for duplicates would also catch rows that differ only in spaces. Think about which order is right for your data.',
+              '`strftime("%Y-%m")` makes a month label such as `2024-03` that sorts correctly.',
+              '`reset_index(drop=True)` renumbers the rows 0, 1, 2 ...',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Why a function?',
+            text: 'A function can be **tested**, **reused** and **read** in one place. A long chain of notebook cells that you changed by hand cannot be repeated by someone else (or by you next month).',
+          },
+        ],
+      },
+      {
+        id: 's27-check',
+        title: 'Check the clean data',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Do not trust that cleaning worked: **test** it. An `assert` stops the program with an error when a rule is broken, which is just what we want.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+def clean_orders(raw):
+    df = raw.copy()
+    df = df.drop_duplicates()
+    df["city"] = df["city"].str.strip().str.title()
+    df["payment"] = df["payment"].fillna("Unknown")
+    df = df[df["qty"] <= 20]
+    df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+    df["month"] = df["date"].dt.strftime("%Y-%m")
+    df["weekday"] = df["date"].dt.day_name()
+    return df.reset_index(drop=True)
+
+def check(df):
+    assert df["order_id"].is_unique, "repeated order ids"
+    assert not df.duplicated().any(), "duplicate rows"
+    assert df["qty"].between(1, 20).all(), "qty out of range"
+    assert (df["price"] > 0).all(), "price must be positive"
+    assert df["discount"].isin([0, 5, 10, 20]).all(), "unknown discount"
+    assert df["rating"].dropna().between(1, 5).all(), "rating out of range"
+    assert set(df["city"]) == {"Delhi", "Mumbai", "Pune", "Chennai"}, "city spellings"
+    assert df["payment"].notna().all(), "blank payment"
+    print("all checks passed")
+
+orders = clean_orders(make_orders())
+check(orders)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`assert condition, "message"` does nothing when the condition is `True`, and raises `AssertionError: message` when it is `False`.',
+              '`.is_unique`, `.between(a, b).all()`, `.isin([...]).all()` are handy ways to write the rule.',
+              'Checks are cheap and catch mistakes that charts hide.',
+            ],
+          },
+          { type: 'h3', text: 'A check that catches a problem' },
+          {
+            type: 'code',
+            label: 'Try it: the check fails on purpose when we skip the cleaning',
+            runnable: true,
+            code: raw`${SHOP}
+orders = make_orders()
+
+assert orders["qty"].between(1, 20).all(), "qty out of range"
+print("passed")`,
+          },
+        ],
+      },
+      {
+        id: 's27-prepare',
+        title: 'Prepare: new columns for the analysis',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Cleaning fixes mistakes. **Preparing** adds the columns the questions need. Think about each question: what column would make it easy?',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+import numpy as np
+
+def clean_orders(raw):
+    df = raw.copy()
+    df = df.drop_duplicates()
+    df["city"] = df["city"].str.strip().str.title()
+    df["payment"] = df["payment"].fillna("Unknown")
+    df = df[df["qty"] <= 20]
+    df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+    df["month"] = df["date"].dt.strftime("%Y-%m")
+    df["weekday"] = df["date"].dt.day_name()
+    return df.reset_index(drop=True)
+
+orders = clean_orders(make_orders())
+
+orders["discounted"] = np.where(orders["discount"] > 0, "Discounted", "Full price")
+orders["size"] = pd.cut(orders["amount"], bins=[0, 500, 2000, 10000, 1e9],
+                        labels=["Small", "Medium", "Large", "Huge"])
+orders["rated"] = orders["rating"].notna()
+
+print(orders[["amount", "size", "discounted", "rated"]].head())
+print()
+print(orders["size"].value_counts())
+print()
+print(orders["discounted"].value_counts())`,
+          },
+          {
+            type: 'table',
+            head: ['New column', 'Made with', 'Helps with'],
+            rows: [
+              ['`amount`', 'qty x price x (1 - discount/100)', 'revenue questions'],
+              ['`month`, `weekday`', '`dt.strftime`, `dt.day_name`', 'trends over time'],
+              ['`discounted`', '`np.where`', 'discount versus full price'],
+              ['`size`', '`pd.cut` with bins and labels', 'small, medium, large orders'],
+              ['`rated`', '`notna()`', 'who leaves a rating'],
+            ],
+          },
+          {
+            type: 'p',
+            text: '`pd.cut(values, bins=[...], labels=[...])` sorts numbers into **ranges** and gives each range a name.',
+          },
+        ],
+      },
+      {
+        id: 's27-save',
+        title: 'Save the clean data and a data dictionary',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+def clean_orders(raw):
+    df = raw.copy()
+    df = df.drop_duplicates()
+    df["city"] = df["city"].str.strip().str.title()
+    df["payment"] = df["payment"].fillna("Unknown")
+    df = df[df["qty"] <= 20]
+    df["amount"] = df["qty"] * df["price"] * (1 - df["discount"] / 100)
+    df["month"] = df["date"].dt.strftime("%Y-%m")
+    df["weekday"] = df["date"].dt.day_name()
+    return df.reset_index(drop=True)
+
+orders = clean_orders(make_orders())
+
+text = orders.head(3).to_csv(index=False)
+print(text)
+
+orders.to_csv("orders_clean.csv", index=False)     # on your computer: saves the file
+back = pd.read_csv("orders_clean.csv", parse_dates=["date"])
+print("same rows after reading back:", len(back) == len(orders))`,
+          },
+          {
+            type: 'p',
+            text: 'A **data dictionary** describes every column. It takes ten minutes and saves hours later, for you and for anyone who uses the file.',
+          },
+          {
+            type: 'table',
+            head: ['Column', 'Type', 'Meaning', 'Notes'],
+            rows: [
+              ['`order_id`', 'int', 'order number', 'unique'],
+              ['`date`', 'date', 'order day', 'Jan to Jun 2024'],
+              ['`city`', 'text', 'delivery city', '4 cities, cleaned'],
+              ['`category`', 'text', 'product group', '4 values'],
+              ['`qty`', 'int', 'items in the order', '1 to 5 after cleaning'],
+              ['`price`', 'int', 'price of one item (Rs)', ''],
+              ['`discount`', 'int', 'percent off', '0, 5, 10, 20'],
+              ['`payment`', 'text', 'UPI, Card, Cash or Unknown', '6 blanks filled'],
+              ['`rating`', 'float', 'customer rating 1 to 5', 'blanks kept'],
+              ['`amount`', 'float', 'money paid for the order (Rs)', 'added by us'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's27-checklist',
+        title: 'Part 1 checklist',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Project plan:** title, source and licence, 3 to 5 questions, expected problems.',
+              '**Raw data kept** in its own folder, never edited by hand.',
+              '**First look:** shape, info, blanks, duplicates, odd values, text spellings.',
+              '**Cleaning plan:** a table of problem, decision, reason.',
+              '**One cleaning function**, run from the raw table.',
+              '**Checks** with `assert` that pass.',
+              '**New columns** the questions need.',
+              '**Saved clean CSV** and a **data dictionary**.',
+              'A note of how many rows each step removed.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's27-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Editing the raw file by hand.** You can never repeat or explain it.',
+              '**Cleaning in a random order of notebook cells.** Put it in a function and use "Restart and run all".',
+              '**Filling every blank** to make the table look complete. Sometimes a blank is the honest answer.',
+              '**Deleting rows without counting.** Print the number before and after.',
+              '**Choosing data you cannot understand.** If you do not know what a column means, you cannot analyse it.',
+              '**A dataset with personal information.** Remove names and contact details first.',
+              '**Skipping the questions** and then having nothing to conclude.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's27-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: write a function clean_names(df) that strips and title-cases the "name" column and drops duplicate rows, then try it',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["aman", "Aman ", "NEHA", "Neha"], "marks": [80, 80, 70, 70]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: write a check() with assert for this table: marks between 0 and 100 and no blank names',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman", "Neha", "Rohit"], "marks": [80, 70, 95]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: add a column "band" with pd.cut: marks 0-49 "Low", 50-79 "Mid", 80-100 "High"',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"name": ["Aman", "Neha", "Rohit", "Priya"], "marks": [45, 70, 95, 82]})
+`,
+          },
+        ],
+      },
+      {
+        id: 's27-homework',
+        title: 'Homework: your capstone, part 1',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Choose** your dataset (a CSV from Kaggle, data.gov.in or your own). Check the licence and that it has no private data.',
+              'Write the **project plan** (title, source, 3 to 5 questions, expected problems) as the first cell of a new notebook, or a `README.md`.',
+              '**Load** it and do the first look: shape, info, blanks, duplicates, odd values.',
+              'Write the **cleaning plan** table: problem, decision, reason.',
+              'Put the cleaning in **one function**, add 4 or more `assert` checks and make them pass.',
+              'Add the **new columns** your questions need.',
+              'Save `data/clean/your_data_clean.csv` and write a **data dictionary**.',
+              'Bring it next class: part 2 starts from your clean file.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Capstone, part 2: analyse the clean data, draw the charts, and write the insights.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'capstone-part-2',
+    title: 'Capstone, Part 2: Analyse and Visualise',
+    summary: 'Answer your questions with numbers and charts, and write the insights.',
+    hero: {
+      file: 'analysis.py',
+      lines: ['rev = orders.groupby("category")["amount"].sum()', 'print(rev.idxmax())', 'rev.plot(kind="bar")'],
+      output: 'Gadgets',
+    },
+    sections: [
+      {
+        id: 's28-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'Why do we clean data inside one function?',
+              'What does `assert` do?',
+              'Which five questions did we write for the shop project?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's28-plan',
+        title: 'From question to answer',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Part 2 follows one pattern, for every question: **ask, calculate, chart, say it in a sentence**. We start from the clean table. In a notebook, this is simply `orders` loaded from your clean CSV.',
+          },
+          {
+            type: 'table',
+            head: ['#', 'Question', 'Tools'],
+            rows: [
+              ['1', 'Which category earns the most, and is it also the most ordered?', '`groupby`, bar chart'],
+              ['2', 'Which city brings the most revenue?', '`groupby`, bar chart'],
+              ['3', 'How does revenue change month by month?', '`groupby("month")`, line chart'],
+              ['4', 'Do discounts change how much people buy, or their rating?', '`groupby("discounted")`, box plot'],
+              ['5', 'How do customers pay?', '`value_counts`, pie or bar'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'The lines at the top of each box',
+            text: 'Each box begins with the data maker and the `clean_orders` function from part 1, so that it runs on its own. In your notebook these go in the first cells, **once**.',
+          },
+        ],
+      },
+      {
+        id: 's28-q1',
+        title: 'Question 1: which category earns the most?',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+
+cat = orders.groupby("category").agg(
+    orders=("order_id", "count"),
+    revenue=("amount", "sum"),
+).sort_values("revenue", ascending=False)
+cat["revenue_share_%"] = (cat["revenue"] / cat["revenue"].sum() * 100).round(1)
+cat["order_share_%"] = (cat["orders"] / cat["orders"].sum() * 100).round(1)
+print(cat.round(0))
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+axes[0].bar(cat.index, cat["orders"], color="#2563eb")
+axes[0].set_title("Number of orders")
+axes[1].bar(cat.index, cat["revenue"], color="#10b981")
+axes[1].set_title("Revenue (Rs)")
+plt.tight_layout()
+plt.show()
+
+best_rev = cat["revenue"].idxmax()
+best_cnt = cat["orders"].idxmax()
+print()
+print(f"Most revenue: {best_rev} ({cat.loc[best_rev, 'revenue_share_%']}% of the money, {cat.loc[best_rev, 'order_share_%']}% of the orders)")
+print(f"Most orders:  {best_cnt} ({cat.loc[best_cnt, 'order_share_%']}% of the orders, {cat.loc[best_cnt, 'revenue_share_%']}% of the money)")`,
+          },
+          {
+            type: 'p',
+            text: '**Insight:** the category with the most **orders** (Stationery) is not the category with the most **money** (Gadgets). Counts and revenue answer different questions, so always show both.',
+          },
+        ],
+      },
+      {
+        id: 's28-q2',
+        title: 'Question 2: which city brings the most revenue?',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+
+city = orders.groupby("city").agg(
+    orders=("order_id", "count"),
+    revenue=("amount", "sum"),
+    avg_order=("amount", "mean"),
+).sort_values("revenue", ascending=False).round(0)
+print(city)
+
+mix = orders.pivot_table(index="city", columns="category", values="amount", aggfunc="sum").round(0)
+print()
+print(mix)
+
+mix.plot(kind="bar", stacked=True, figsize=(8, 4))
+plt.title("Revenue by city and category")
+plt.ylabel("Rupees")
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '**Insight:** Delhi brings the most revenue, helped by being the biggest city by number of orders. Compare `avg_order` too: a city can win on the **number** of orders or on the **size** of each one. A stacked bar shows what each city is made of.',
+          },
+        ],
+      },
+      {
+        id: 's28-q3',
+        title: 'Question 3: revenue over the months',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+
+monthly = orders.groupby("month").agg(revenue=("amount", "sum"), orders=("order_id", "count"))
+monthly["change_%"] = (monthly["revenue"].pct_change() * 100).round(1)
+print(monthly.round(0))
+
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.plot(monthly.index, monthly["revenue"], marker="o", color="#7c3aed")
+best = monthly["revenue"].idxmax()
+ax.annotate("best month", xy=(best, monthly.loc[best, "revenue"]),
+            xytext=(0, 12), textcoords="offset points", ha="center")
+ax.set_title("Revenue per month")
+ax.set_ylabel("Rupees")
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+print()
+print("Best month:", best, " Weakest month:", monthly["revenue"].idxmin())`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`pct_change()` gives the **percent change** from the previous month. The first month has no previous one, so it shows `NaN`.',
+              'The line goes **up and down** rather than climbing: there is no steady growth in this data. Do not invent a trend that is not there.',
+              'With only 6 months we cannot say anything about **seasons**. Say so in the report.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's28-q4',
+        title: 'Question 4: do discounts matter?',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import numpy as np
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+orders["discounted"] = np.where(orders["discount"] > 0, "Discounted", "Full price")
+
+summary = orders.groupby("discounted").agg(
+    orders=("order_id", "count"),
+    avg_qty=("qty", "mean"),
+    avg_amount=("amount", "mean"),
+    avg_rating=("rating", "mean"),
+    ratings=("rating", "count"),
+).round(2)
+print(summary)
+
+fig, axes = plt.subplots(1, 3, figsize=(13, 4))
+orders.boxplot(column="qty", by="discounted", ax=axes[0])
+orders.boxplot(column="amount", by="discounted", ax=axes[1])
+orders.boxplot(column="rating", by="discounted", ax=axes[2])
+for ax in axes:
+    ax.set_xlabel("")
+plt.suptitle("Discounted and full-price orders")
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '**Insight:** the average quantity is almost the same (about 3 items) for discounted and full-price orders, and the amount and rating differ only a little, while the boxes overlap almost completely. In this data, a discount does **not** clearly bring bigger orders or happier customers. A careful sentence: "we found no clear effect of discounts on order size or rating". Never write more than the data shows.',
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'No effect is a finding',
+            text: 'Do not hunt for a pattern until you find one. "We checked and found nothing" is a useful result: it may save the shop money on discounts.',
+          },
+        ],
+      },
+      {
+        id: 's28-q5',
+        title: 'Question 5: how do customers pay?',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+
+pay = orders["payment"].value_counts()
+share = (pay / pay.sum() * 100).round(1)
+print(share)
+
+by_city = orders.pivot_table(index="city", columns="payment", values="order_id", aggfunc="count", fill_value=0)
+print()
+print((by_city.div(by_city.sum(axis=1), axis=0) * 100).round(0))
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+axes[0].pie(pay, labels=pay.index, autopct="%1.0f%%", startangle=90)
+axes[0].set_title("Payment methods")
+by_city.plot(kind="bar", ax=axes[1])
+axes[1].set_title("Orders by city and payment")
+plt.sca(axes[1])
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: '**Insight:** about half of the orders are paid by **UPI**, then Card, then Cash, and UPI is the top method in every city, though the mix changes (Cash is about 29% in Mumbai but about 9% in Pune). `div(..., axis=0)` turned the counts into row percentages so the cities (with different sizes) can be compared fairly.',
+          },
+        ],
+      },
+      {
+        id: 's28-corr',
+        title: 'One more look: relationships',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+
+corr = orders[["qty", "price", "discount", "rating", "amount"]].corr()
+print(corr.round(2))
+
+sns.set_theme()
+sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", vmin=-1, vmax=1)
+plt.title("Correlation of the number columns")
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`amount` is strongly linked to `price` and `qty`, but that is **by construction** (we made `amount` from them). Do not report it as a discovery.',
+              '`rating` has almost no link to anything: price, discount and quantity do not explain it.',
+              'A heatmap answers "is there anything surprising?" in one glance.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's28-dashboard',
+        title: 'One picture for the report',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+
+fig, axes = plt.subplots(2, 2, figsize=(11, 8))
+
+orders.groupby("category")["amount"].sum().sort_values().plot(kind="barh", ax=axes[0, 0], color="#10b981")
+axes[0, 0].set_title("Revenue by category (Rs)")
+axes[0, 0].set_ylabel("")
+
+orders.groupby("city")["amount"].sum().sort_values(ascending=False).plot(kind="bar", ax=axes[0, 1], color="#2563eb")
+axes[0, 1].set_title("Revenue by city (Rs)")
+axes[0, 1].set_xlabel("")
+axes[0, 1].tick_params(axis="x", rotation=0)
+
+orders.groupby("month")["amount"].sum().plot(marker="o", ax=axes[1, 0], color="#7c3aed")
+axes[1, 0].set_title("Revenue by month (Rs)")
+axes[1, 0].set_xlabel("")
+
+orders["payment"].value_counts().plot(kind="pie", ax=axes[1, 1], autopct="%1.0f%%")
+axes[1, 1].set_title("Payment methods")
+axes[1, 1].set_ylabel("")
+
+fig.suptitle("Online shop, January to June 2024", fontsize=14)
+plt.tight_layout()
+plt.show()`,
+          },
+          {
+            type: 'p',
+            text: 'Four small charts with titles that **say what they show**, one overall heading and consistent colours make a strong summary picture for a report.',
+          },
+        ],
+      },
+      {
+        id: 's28-insights',
+        title: 'Writing the insights',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Charts are not the finish line: **the sentences are**. A good insight has three parts: **what we found** (with a number), **why it matters**, and **what to do**.',
+          },
+          {
+            type: 'table',
+            head: ['Weak', 'Strong'],
+            rows: [
+              ['"Gadgets are good."', '"**Gadgets are 14% of orders but 52% of revenue.** Keeping them in stock matters most; one average Gadget order is worth about 30 Stationery orders."'],
+              ['"Discounts are fine."', '"**Discounted orders are not bigger or better rated** than full-price ones. Test a month with fewer discounts before giving more."'],
+              ['"Revenue changes."', '"**Revenue swings between about 74 and 145 thousand a month** with no steady growth; six months is too short to see a season."'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Let the code write the numbers, so they are always correct:',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+
+orders = clean_orders(make_orders())
+
+rev = orders.groupby("category")["amount"].sum()
+top = rev.idxmax()
+top_rev_share = rev[top] / rev.sum() * 100
+top_order_share = (orders["category"] == top).mean() * 100
+
+monthly = orders.groupby("month")["amount"].sum()
+upi = (orders["payment"] == "UPI").mean() * 100
+
+print("KEY INSIGHTS")
+print(f"1. {top} is {top_order_share:.0f}% of orders but {top_rev_share:.0f}% of revenue.")
+print(f"2. {orders.groupby('city')['amount'].sum().idxmax()} is the biggest city by revenue.")
+print(f"3. Monthly revenue ranges from Rs {monthly.min():,.0f} ({monthly.idxmin()}) to Rs {monthly.max():,.0f} ({monthly.idxmax()}).")
+print(f"4. {upi:.0f}% of orders are paid by UPI.")`,
+          },
+        ],
+      },
+      {
+        id: 's28-limits',
+        title: 'Limits and next steps',
+        blocks: [
+          {
+            type: 'p',
+            text: 'An honest analysis says **what it cannot tell you**. Add a short "limits" paragraph to every report.',
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Small sample:** 298 orders over 6 months. A rare event could change the picture.',
+              '**One shop, one period:** do not claim it holds for other shops or years.',
+              '**Blanks:** 25 orders had no rating, so the rating results describe only those who rated.',
+              '**Correlation is not cause:** we saw links, not reasons.',
+              '**Cleaning choices:** we removed orders with a quantity of 500 and filled blank payments with "Unknown".',
+            ],
+          },
+          {
+            type: 'p',
+            text: '**Next steps** turn findings into action: a deeper look at Gadgets, a trial of fewer discounts, and getting a full year of data.',
+          },
+        ],
+      },
+      {
+        id: 's28-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Charts without a point.** Every chart should answer one of your questions, and have a title that says so.',
+              '**Reporting numbers you typed by hand.** Print them from the data with f-strings.',
+              '**Showing only counts or only totals.** Show both, they can disagree.',
+              '**Claiming a trend from 6 points.** Say what you can and cannot see.',
+              '**Reporting a built-in link** (like `amount` and `price`) as a discovery.',
+              '**Forgetting the limits.** Every dataset has them.',
+              '**Too many charts.** Four good ones beat fourteen random ones.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's28-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: which weekday has the most revenue? Print the revenue of each weekday, then name the best one',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+
+orders = clean_orders(make_orders())
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: draw a bar chart of the average amount per order for each payment method, with a title and axis labels',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print one sentence (with f-strings) that says which city has the highest average order and what that average is',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+
+orders = clean_orders(make_orders())
+`,
+          },
+        ],
+      },
+      {
+        id: 's28-homework',
+        title: 'Homework: your capstone, part 2',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Load your **clean file** from part 1 in a notebook.',
+              'Answer each of your **3 to 5 questions**: calculate, chart, then write one sentence with a number.',
+              'Make at least **4 charts**, each with a title, axis labels and units, and use at least 3 different kinds (bar, line, histogram, box, scatter, heatmap).',
+              'Build one **summary figure** with `subplots`.',
+              'Let the code print a **KEY INSIGHTS** list using f-strings.',
+              'Write a **limits** paragraph and 2 or 3 **next steps**.',
+              'Revise: `groupby`, `pivot_table`, `pct_change`, `pd.cut`, `subplots`, `heatmap`, f-strings.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Presentation and reporting: notebook layout, exporting to Excel and CSV, and presenting your findings.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'presentation-and-reporting',
+    title: 'Presentation and Reporting',
+    summary: 'Notebook layout, exporting to Excel and CSV, and presenting your findings.',
+    hero: {
+      file: 'report.py',
+      lines: ['with pd.ExcelWriter("report.xlsx") as w:', '    summary.to_excel(w, sheet_name="Summary")', '    orders.to_excel(w, sheet_name="Data", index=False)'],
+      output: 'report.xlsx written: 2 sheets',
+    },
+    sections: [
+      {
+        id: 's29-recap',
+        title: 'Recap',
+        blocks: [
+          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'ul',
+            items: [
+              'What are the three parts of a good insight?',
+              'Why print numbers with f-strings instead of typing them?',
+              'What should the "limits" paragraph of a report say?',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-why',
+        title: 'Analysis nobody can read is wasted',
+        blocks: [
+          {
+            type: 'p',
+            text: 'You have found the answers. Now other people must be able to **read them, trust them and act on them**. The same analysis can be delivered in three ways, for three different readers:',
+          },
+          {
+            type: 'table',
+            head: ['Reader', 'Gets', 'Format'],
+            rows: [
+              ['A **colleague** who will reuse your work', 'the code and the reasoning', 'a **Jupyter notebook** (and the clean CSV)'],
+              ['A **manager** who uses Excel', 'the tables and totals', 'an **Excel workbook**'],
+              ['A **decision maker** with five minutes', 'the findings and the advice', 'a **short talk or one-page summary**'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'In this lesson: **lay out a notebook**, **export** your results, and **present** them.',
+          },
+        ],
+      },
+      {
+        id: 's29-jupyter',
+        title: 'Jupyter notebooks',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A **Jupyter notebook** (`.ipynb`) mixes **code**, its **results and charts**, and **text** in one document. It is the standard tool for data analysis, and a notebook is what most people expect as a capstone.',
+          },
+          {
+            type: 'code',
+            label: 'On your computer (terminal): install and start',
+            code: raw`pip install notebook
+jupyter notebook`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'A notebook is a list of **cells**. A **code cell** runs Python; a **Markdown cell** holds text.',
+              '**Shift + Enter** runs a cell and moves to the next one.',
+              'The last expression of a cell is shown automatically: just write `df.head()`.',
+              'Charts appear right under the cell. In a notebook, add `%matplotlib inline` at the top if they do not.',
+              'Also try **Google Colab** (colab.research.google.com): a free notebook in the browser with nothing to install, and **VS Code**, which opens `.ipynb` files.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Restart and run all',
+            text: 'Cells can be run in any order, so a notebook can look right while hiding a bug: a variable made in a cell you deleted. Before you share it, use **Kernel, Restart and Run All**. If it runs top to bottom with no errors, it is trustworthy.',
+          },
+        ],
+      },
+      {
+        id: 's29-layout',
+        title: 'A good notebook layout',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Use the same order every time, so anyone can find things. Each section starts with a **Markdown heading** and a sentence or two.',
+          },
+          {
+            type: 'table',
+            head: ['#', 'Section', 'What goes in it'],
+            rows: [
+              ['1', '**Title and summary**', 'project name, your name, date, and a 3-line summary of the **main findings**'],
+              ['2', '**Questions**', 'the 3 to 5 questions from your plan'],
+              ['3', '**Data**', 'source, licence, data dictionary, `shape`'],
+              ['4', '**Imports and settings**', 'all `import` lines and chart theme in one cell'],
+              ['5', '**Load and first look**', '`read_csv`, `info`, `head`, problems found'],
+              ['6', '**Cleaning**', 'the cleaning plan, the function, the checks'],
+              ['7', '**Analysis**', 'one sub-section per question: calculate, chart, one-sentence insight'],
+              ['8', '**Conclusions**', 'key insights, limits, next steps'],
+              ['9', '**Appendix**', 'extra charts, notes, references'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Summary first',
+            text: 'Put the **answer at the top**. Most readers stop after the first screen. The detail below is for those who want to check your work.',
+          },
+        ],
+      },
+      {
+        id: 's29-markdown',
+        title: 'Markdown for notebook text',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Text cells use **Markdown**, a simple way to format text with symbols. Type this in a Markdown cell:',
+          },
+          {
+            type: 'code',
+            label: 'Markdown (in a Markdown cell, not Python)',
+            code: raw`# Online Shop Analysis
+## Key findings
+- **Gadgets** are 14% of orders but 52% of revenue
+- Discounts do not change ratings
+
+### Questions
+1. Which category earns the most?
+2. Which city brings the most revenue?
+
+Normal text with *italics* and **bold**.
+
+| City | Revenue |
+|------|---------|
+| Delhi | 238,849 |
+| Mumbai | 161,745 |
+
+[Data source](https://example.com/data)
+![chart](chart.png)`,
+          },
+          {
+            type: 'table',
+            head: ['You type', 'You get'],
+            rows: [
+              ['`# Title`', 'a big heading (`##` smaller, `###` smaller still)'],
+              ['`**bold**`, `*italic*`', '**bold**, *italic*'],
+              ['`- item`', 'a bullet list'],
+              ['`1. item`', 'a numbered list'],
+              ['backticks around code', 'code in a box'],
+              ['`[text](link)`', 'a link'],
+              ['`![alt](file.png)`', 'a picture'],
+              ['`| a | b |` rows', 'a table'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Write **full sentences** under every chart: what it shows, and what to notice. A chart with no words is a puzzle for the reader.',
+          },
+        ],
+      },
+      {
+        id: 's29-csv',
+        title: 'Exporting to CSV',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+
+orders = clean_orders(make_orders())
+
+summary = orders.groupby("category").agg(
+    orders=("order_id", "count"),
+    revenue=("amount", "sum"),
+).round(0).sort_values("revenue", ascending=False)
+
+print(summary.to_csv())
+print(orders.head(2).to_csv(index=False))
+
+summary.to_csv("category_summary.csv")
+orders.to_csv("orders_clean.csv", index=False)
+print("written")`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`to_csv(index=False)` for a normal table: no extra row-number column.',
+              'For a **summary** whose index is meaningful (here the category names), keep the index: `to_csv()` without `index=False`.',
+              'Useful options: `sep=";"` for a different separator, `columns=[...]` to choose columns, `float_format="%.1f"` for decimals, `encoding="utf-8-sig"` so **Excel shows non-English text correctly**.',
+              'CSV is plain text: it keeps **no formatting, no formulas and no charts**, only the values.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-excel',
+        title: 'Exporting to Excel',
+        blocks: [
+          {
+            type: 'p',
+            text: 'An **Excel workbook** is better for people who work in Excel: several sheets in one file. Use `ExcelWriter` and write each table to its own sheet. (Needs the `openpyxl` package: `pip install openpyxl`.)',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import io
+import openpyxl
+
+orders = clean_orders(make_orders())
+
+by_category = orders.groupby("category")["amount"].sum().round(0).sort_values(ascending=False)
+by_city = orders.groupby("city")["amount"].sum().round(0).sort_values(ascending=False)
+by_month = orders.groupby("month")["amount"].sum().round(0)
+
+file = io.BytesIO()                       # on your computer: a name like "report.xlsx"
+with pd.ExcelWriter(file) as writer:
+    by_category.to_frame("revenue").to_excel(writer, sheet_name="By category")
+    by_city.to_frame("revenue").to_excel(writer, sheet_name="By city")
+    by_month.to_frame("revenue").to_excel(writer, sheet_name="By month")
+    orders.to_excel(writer, sheet_name="Data", index=False)
+
+file.seek(0)
+book = pd.read_excel(file, sheet_name=None)
+print("sheets:", list(book))
+print(book["By category"])
+print("data rows:", len(book["Data"]))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`with pd.ExcelWriter("report.xlsx") as writer:` opens one workbook; every `to_excel(writer, sheet_name=...)` adds a sheet; the file is saved when the `with` block ends.',
+              '`.to_frame("revenue")` turns a Series into a one-column table with a column name.',
+              '`pd.read_excel(file, sheet_name=None)` reads **all** the sheets back, as a dictionary.',
+            ],
+          },
+          { type: 'h3', text: 'A little formatting' },
+          {
+            type: 'p',
+            text: 'Because pandas writes through **openpyxl**, you can reach the sheet and adjust the width of columns, the header colour and the number format.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import io
+import openpyxl
+import pandas as pd
+from openpyxl.styles import Font, PatternFill
+
+df = pd.DataFrame({
+    "category": ["Gadgets", "Bags", "Books", "Stationery"],
+    "revenue":  [314195.4, 168654.0, 92738.5, 26604.2],
+})
+
+file = io.BytesIO()
+with pd.ExcelWriter(file, engine="openpyxl") as writer:
+    df.to_excel(writer, sheet_name="Summary", index=False)
+    sheet = writer.sheets["Summary"]
+
+    for cell in sheet[1]:                                   # the header row
+        cell.font = Font(bold=True, color="FFFFFF")
+        cell.fill = PatternFill("solid", fgColor="2563EB")
+    sheet.column_dimensions["A"].width = 18
+    sheet.column_dimensions["B"].width = 14
+    for row in sheet.iter_rows(min_row=2, min_col=2, max_col=2):
+        for cell in row:
+            cell.number_format = "#,##0"                    # 314,195
+
+file.seek(0)
+check = openpyxl.load_workbook(file)["Summary"]
+print(check["A1"].font.bold, check["B2"].number_format, check.column_dimensions["A"].width)`,
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'CSV or Excel?',
+            text: '**CSV** for data that another program will read (small, universal). **Excel** when a person will open it, want several sheets, or needs formatting. Send the **clean CSV and the notebook** to people who will repeat your work.',
+          },
+        ],
+      },
+      {
+        id: 's29-charts',
+        title: 'Saving charts for reports',
+        blocks: [
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+import os
+import matplotlib.pyplot as plt
+
+orders = clean_orders(make_orders())
+rev = orders.groupby("category")["amount"].sum().sort_values()
+
+fig, ax = plt.subplots(figsize=(7, 4))
+rev.plot(kind="barh", ax=ax, color="#10b981")
+ax.set_title("Gadgets bring half of the revenue")
+ax.set_xlabel("Revenue (Rs)")
+ax.set_ylabel("")
+fig.tight_layout()
+
+fig.savefig("revenue_by_category.png", dpi=200)
+fig.savefig("revenue_by_category.svg")
+print(os.path.exists("revenue_by_category.png"), os.path.exists("revenue_by_category.svg"))
+plt.show()`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'A **PNG** (`dpi=200`) goes into Word, PowerPoint and emails.',
+              'An **SVG** or **PDF** stays sharp at any size, good for print.',
+              '**Make the title the finding**: "Gadgets bring half of the revenue" tells the reader more than "Revenue by category".',
+              'Same chart, same colours across the report. One colour for one thing.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-export-nb',
+        title: 'Exporting the notebook itself',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A reader without Python can still read your notebook if you export it as an **HTML** or **PDF** file.',
+          },
+          {
+            type: 'code',
+            label: 'On your computer (terminal)',
+            code: raw`jupyter nbconvert --to html notebook.ipynb
+jupyter nbconvert --to html --no-input notebook.ipynb   # hide the code, show only results
+jupyter nbconvert --to pdf  notebook.ipynb              # needs a LaTeX install, so HTML is easier`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`--to html` makes one `.html` file anyone can open in a browser.',
+              '`--no-input` hides the code cells, which suits a manager who only wants the results.',
+              'In the notebook menu: **File, Download as**, and in Google Colab **File, Print** gives a PDF.',
+              'You can also put the notebook on **GitHub**: it shows `.ipynb` files nicely, and it becomes part of your portfolio.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-report',
+        title: 'A text report from code',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Some reports are just text: an email, a README, a one-page summary. Let the code write it, so the numbers always match the data.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`${SHOP}
+${CLEAN}
+
+orders = clean_orders(make_orders())
+
+rev = orders.groupby("category")["amount"].sum().sort_values(ascending=False)
+city = orders.groupby("city")["amount"].sum().sort_values(ascending=False)
+monthly = orders.groupby("month")["amount"].sum()
+
+lines = [
+    "ONLINE SHOP REPORT, JANUARY TO JUNE 2024",
+    "=" * 42,
+    "",
+    "SUMMARY",
+    f"- {len(orders)} orders, total revenue Rs {orders['amount'].sum():,.0f}.",
+    f"- {rev.index[0]} is the biggest category: Rs {rev.iloc[0]:,.0f} ({rev.iloc[0] / rev.sum():.0%} of revenue).",
+    f"- {city.index[0]} is the biggest city: Rs {city.iloc[0]:,.0f}.",
+    f"- Best month: {monthly.idxmax()}. Weakest month: {monthly.idxmin()}.",
+    "",
+    "REVENUE BY CATEGORY",
+]
+lines += [f"  {name:<12} Rs {value:>10,.0f}" for name, value in rev.items()]
+lines += ["", "LIMITS", "- Six months of data from one shop; no seasons can be seen."]
+
+report = "\n".join(lines)
+print(report)
+
+with open("report.txt", "w") as f:           # on your computer: saves report.txt
+    f.write(report)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'f-string formats: `:,.0f` is a thousands separator with no decimals, `:.0%` turns 0.52 into 52%, `:<12` pads on the right to 12 characters, `:>10,.0f` aligns numbers on the right.',
+              '`"\\n".join(lines)` glues the lines into one text.',
+              'The report writes itself again when the data changes: re-run and send.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-present',
+        title: 'Presenting your findings',
+        blocks: [
+          {
+            type: 'p',
+            text: 'A good talk is a **story**, not a tour of your code. For a 5-minute presentation:',
+          },
+          {
+            type: 'table',
+            head: ['Slide', 'Content'],
+            rows: [
+              ['1. **The question**', 'what we wanted to know, and why it matters'],
+              ['2. **The data**', 'where it comes from, how big, how it was cleaned (one slide, no code)'],
+              ['3. to 5. **The findings**', 'one finding per slide: a **headline sentence** and **one chart**'],
+              ['6. **What to do**', 'two or three clear recommendations'],
+              ['7. **Limits and next steps**', 'what we cannot say, and what to do next'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Headline first.** The slide title is the finding: "Gadgets are 14% of orders, 52% of revenue".',
+              '**One message per slide.** Remove everything that does not support it.',
+              '**Few words, big charts.** Make the key number large.',
+              '**Know your audience.** A manager wants the action; a teacher wants the method; a colleague wants the code.',
+              '**Be honest about uncertainty.** "In this data..." is stronger than a claim you cannot back up.',
+              '**Practise out loud** and keep to your time.',
+              '**Expect questions**: keep the notebook open for the details.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Chart rules that always help',
+            text: 'Title says the finding · axes labelled with units · start bars at zero · sort bars by size · few colours, and a colour used for a reason · remove clutter · biggest thing first.',
+          },
+        ],
+      },
+      {
+        id: 's29-readme',
+        title: 'A README and a portfolio',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Put the project on **GitHub** with a `README.md`. It is the front page of your work. Employers look at these.',
+          },
+          {
+            type: 'code',
+            label: 'README.md (a template)',
+            code: raw`# Online Shop Sales Analysis
+
+Which products, cities and months drive the revenue of a small online shop?
+
+## Key findings
+- Gadgets are 14% of orders but 52% of revenue.
+- Discounts do not change order size or rating.
+- UPI is the most used payment method.
+
+## Data
+Generated example data, 308 rows, January to June 2024 (see the data dictionary).
+
+## How to run
+1. pip install pandas matplotlib seaborn openpyxl
+2. Open notebook.ipynb and choose Restart and Run All.
+
+## Files
+- notebook.ipynb: the analysis
+- data/clean/orders_clean.csv: the cleaned data
+- report.xlsx: summary tables
+
+## Limits
+Six months, one shop; correlation is not cause.`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'Include the **notebook**, the **clean data** (if the licence allows), the **README** and the **charts**.',
+              'Add a `requirements.txt` listing the packages (`pip freeze > requirements.txt` on your computer).',
+              'Do **not** upload private data, passwords or API keys.',
+              'Three good, finished projects in different areas make a strong portfolio.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-mistakes',
+        title: 'Common mistakes',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Sending a notebook that was never re-run.** Restart and run all first.',
+              '**Charts with no sentence** under them.',
+              '**Burying the answer** at the bottom. Put the summary first.',
+              '**Titles that describe, not tell.** "Revenue by category" versus "Gadgets bring half of the revenue".',
+              '**Sending Excel when someone needs to reuse the data**, or CSV when someone needs formatting.',
+              '**Forgetting `index=False`** and exporting a row-number column.',
+              '**Sharing the raw, unclean file** instead of the clean one (or the other way round without saying which).',
+              '**Hand-typed numbers in the report** that no longer match the data.',
+              '**Uploading private data** to a public place.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's29-practice',
+        title: 'Practice',
+        blocks: [
+          {
+            type: 'code',
+            label: 'Your turn: write this table to CSV text without the row numbers and print it',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["Delhi", "Pune"], "revenue": [238849, 100518]})
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: write the two tables to one Excel file (two sheets), read the sheet names back and print them',
+            runnable: true,
+            code: raw`import io
+import openpyxl
+import pandas as pd
+
+sales = pd.DataFrame({"month": ["Jan", "Feb"], "revenue": [100, 120]})
+costs = pd.DataFrame({"month": ["Jan", "Feb"], "cost": [70, 80]})
+file = io.BytesIO()
+`,
+          },
+          {
+            type: 'code',
+            label: 'Your turn: print a 3-line text summary with f-strings: the number of rows, the total revenue with a thousands separator, and the best city',
+            runnable: true,
+            code: raw`import pandas as pd
+
+df = pd.DataFrame({"city": ["Delhi", "Pune", "Delhi", "Mumbai"], "revenue": [50000, 30000, 25000, 40000]})
+`,
+          },
+        ],
+      },
+      {
+        id: 's29-homework',
+        title: 'Homework: deliver your capstone',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Put your capstone into **one notebook** with the layout from this lesson: title and summary first, then questions, data, cleaning, analysis, conclusions.',
+              'Add a **Markdown sentence** under every chart. Make every chart title a finding.',
+              '**Restart and run all** and fix any error.',
+              'Export an **Excel workbook** with a summary sheet per question plus the data sheet, and the **clean CSV**.',
+              'Export the notebook to **HTML** (`nbconvert`).',
+              'Write a **README.md** and, if you can, put the project on GitHub.',
+              'Prepare a **5-minute talk**: question, data, three findings with one chart each, advice, limits. Practise it once out loud.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Next class',
+            text: 'Final assessment and next steps: a quiz and practical test, then the roadmap to SQL, Power BI, statistics and machine learning.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'final-assessment-and-next-steps',
+    title: 'Final Assessment and Next Steps',
+    summary: 'A quiz, a practical test and the roadmap to SQL, Power BI, statistics and machine learning.',
+    hero: {
+      file: 'next.py',
+      lines: ['import pandas as pd', 'print("What next? SQL, Power BI, statistics, ML")'],
+      output: 'What next? SQL, Power BI, statistics, ML',
+    },
+    sections: [
+      {
+        id: 's30-recap',
+        title: 'Where you started, where you are',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Congratulations. You began by installing Python and printing "Hello, World!". You can now **load, clean, analyse, chart and present real data**. That is a real skill that people are paid for.',
+          },
+          {
+            type: 'table',
+            head: ['Stage', 'Sessions', 'What you can do'],
+            rows: [
+              ['**Python basics**', '1 to 4', 'variables, types, strings, operators, `if` / `elif` / `else`'],
+              ['**Repeating and collecting**', '5 to 10', 'loops, lists, tuples, sets, dictionaries, a mini project'],
+              ['**Organising code**', '11 to 15', 'functions, modules, packages, files, exceptions'],
+              ['**Numbers**', '16 to 17', 'NumPy: arrays, vectorised maths, broadcasting'],
+              ['**Tables**', '18 to 23', 'pandas: load, inspect, select, filter, clean, group, merge'],
+              ['**Pictures**', '24 to 25', 'Matplotlib and Seaborn charts'],
+              ['**Projects**', '26 to 29', 'EDA, the capstone, notebooks, reports and presentations'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's30-quiz',
+        title: 'Self-check quiz',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Answer each question **before** you read the answer. Count your score at the end.',
+          },
+          { type: 'h3', text: 'Python basics (Q1 to Q8)' },
+          {
+            type: 'ol',
+            items: [
+              '**What does `print(type(3.0))` show?** Answer: `<class \'float\'>`.',
+              '**What is `7 // 2`, and `7 % 2`?** Answer: 3 and 1 (whole-number division and the remainder).',
+              '**What does `"python"[1:4]` give?** Answer: `"yth"` (the end index is not included).',
+              '**Which prints for `x = 15`: `if x > 10: print("A")` then `elif x > 5: print("B")`?** Answer: only `A`, because the first true branch runs and the rest are skipped.',
+              '**How many times does `for i in range(3, 10, 2)` run?** Answer: 4 times (3, 5, 7, 9).',
+              '**What is the difference between a list and a tuple?** Answer: a list can be changed, a tuple cannot.',
+              '**How do you get the value of a key without an error if it may be missing?** Answer: `d.get(key)` (or `d.get(key, default)`).',
+              '**What does a `try` / `except` block do?** Answer: runs code that may fail and handles the error instead of crashing.',
+            ],
+            start: 1,
+          },
+          { type: 'h3', text: 'NumPy and pandas (Q9 to Q16)' },
+          {
+            type: 'ol',
+            items: [
+              '**Why is `arr * 2` faster than a loop?** Answer: NumPy does it on the whole array at once (vectorised), in fast compiled code.',
+              '**What is the shape of `np.zeros((3, 4))`?** Answer: `(3, 4)`: 3 rows, 4 columns.',
+              '**What is the difference between `loc` and `iloc`?** Answer: `loc` uses labels (end included), `iloc` uses positions (end excluded).',
+              '**How do you keep rows where `maths` is above 80 and `city` is Delhi?** Answer: `df[(df["maths"] > 80) & (df["city"] == "Delhi")]`.',
+              '**What does `df.isna().sum()` give?** Answer: the number of missing values in each column.',
+              '**What is the difference between `fillna` and `dropna`?** Answer: `fillna` replaces blanks with a value, `dropna` removes the rows (or columns) with blanks.',
+              '**What does `df.groupby("city")["maths"].mean()` do?** Answer: the average maths of each city.',
+              '**Which `merge` keeps every row of the left table?** Answer: `how="left"`.',
+            ],
+            start: 9,
+          },
+          { type: 'h3', text: 'Charts, EDA and reporting (Q17 to Q24)' },
+          {
+            type: 'ol',
+            items: [
+              '**Which chart shows how one number is spread?** Answer: a histogram (or a box plot).',
+              '**What does the line inside a box plot mean?** Answer: the median.',
+              '**What do you call a value close to +1 in `df.corr()`?** Answer: a strong positive correlation: the two columns rise together.',
+              '**Does correlation prove cause?** Answer: no.',
+              '**Name three checks to do on a new file.** Answer: for example `shape`/`info`, `isna().sum()`, `duplicated().sum()`, `describe()`.',
+              '**Why keep the raw data file untouched?** Answer: so the cleaning can be repeated and explained.',
+              '**Why use `index=False` in `to_csv`?** Answer: to avoid writing the row numbers as an extra column.',
+              '**What should the title of a chart be?** Answer: the finding, for example "Gadgets bring half of the revenue".',
+            ],
+            start: 17,
+          },
+          {
+            type: 'table',
+            head: ['Score', 'Meaning'],
+            rows: [
+              ['20 to 24', 'Excellent. Move on to the roadmap.'],
+              ['15 to 19', 'Good. Revise the sessions of the questions you missed.'],
+              ['10 to 14', 'Fair. Re-run the Try it boxes of those sessions.'],
+              ['Under 10', 'Go back over sessions 1 to 18 slowly, then try again.'],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's30-practical',
+        title: 'Practical test',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The practical test checks that you can **do** the work. Do it **alone**, in about **90 minutes**, with the notes closed (you may use `help()` and the pandas documentation). Each box below starts you off.',
+          },
+          { type: 'h3', text: 'Task 1: load and inspect (10 marks)' },
+          {
+            type: 'code',
+            label: 'Your turn: print the shape, the missing values per column, the number of duplicate rows, and the describe() of the numbers',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+
+text = """student,class,maths,science,english,attendance
+Aman,10A,85,78,72,92
+Ankit,10B,90,88,81,85
+Neha,10A,78,,69,90
+Rohit,10B,92,95,88,95
+Priya,10A,66,70,,70
+Ankit,10B,90,88,81,85
+Sana,10B,,81,75,88
+Kabir,10A,81,79,70,260
+"""
+df = pd.read_csv(io.StringIO(text))
+`,
+          },
+          { type: 'h3', text: 'Task 2: clean (15 marks)' },
+          {
+            type: 'code',
+            label: 'Your turn: drop the duplicate row, fix the impossible attendance (above 100) by setting it to blank, fill blank marks with the column median, then print info()',
+            runnable: true,
+            code: raw`import io
+import numpy as np
+import pandas as pd
+
+text = """student,class,maths,science,english,attendance
+Aman,10A,85,78,72,92
+Ankit,10B,90,88,81,85
+Neha,10A,78,,69,90
+Rohit,10B,92,95,88,95
+Priya,10A,66,70,,70
+Ankit,10B,90,88,81,85
+Sana,10B,,81,75,88
+Kabir,10A,81,79,70,260
+"""
+df = pd.read_csv(io.StringIO(text))
+`,
+          },
+          { type: 'h3', text: 'Task 3: analyse (15 marks)' },
+          {
+            type: 'code',
+            label: 'Your turn: add a column "total" and a column "grade" (A: 85 or more on average, B: 70 to 84, C: below 70), then print the average total per class and the student with the highest total',
+            runnable: true,
+            code: raw`import io
+import numpy as np
+import pandas as pd
+
+text = """student,class,maths,science,english
+Aman,10A,85,78,72
+Ankit,10B,90,88,81
+Neha,10A,78,70,69
+Rohit,10B,92,95,88
+Priya,10A,66,70,60
+Sana,10B,74,81,75
+"""
+df = pd.read_csv(io.StringIO(text))
+`,
+          },
+          { type: 'h3', text: 'Task 4: chart and conclude (10 marks)' },
+          {
+            type: 'code',
+            label: 'Your turn: draw a bar chart of the average marks of each subject, with a title that states the finding and labelled axes, then print one sentence that names the strongest and weakest subject',
+            runnable: true,
+            code: raw`import io
+import pandas as pd
+import matplotlib.pyplot as plt
+
+text = """student,maths,science,english
+Aman,85,78,72
+Ankit,90,88,81
+Neha,78,70,69
+Rohit,92,95,88
+Priya,66,70,60
+Sana,74,81,75
+"""
+df = pd.read_csv(io.StringIO(text))
+`,
+          },
+          {
+            type: 'table',
+            head: ['Task', 'Marks', 'What earns the marks'],
+            rows: [
+              ['1. Load and inspect', '10', 'shape, blanks, duplicates, describe, all correct'],
+              ['2. Clean', '15', 'duplicates dropped, outlier handled, blanks filled sensibly, a reason for each choice'],
+              ['3. Analyse', '15', 'correct columns, `groupby`, `idxmax`, readable result'],
+              ['4. Chart and conclude', '10', 'right chart, finding as title, labels, a correct sentence'],
+              ['**Total**', '**50**', '40 or more is a pass with distinction, 25 or more is a pass'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Marking yourself',
+            text: 'After the test, compare your code with a friend\'s. Different code that gives the same answer is fine. Ask: is it **correct**, is it **readable**, did I **check** the result?',
+          },
+        ],
+      },
+      {
+        id: 's30-capstone-rubric',
+        title: 'How the capstone is judged',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Part', 'Marks', 'Looking for'],
+            rows: [
+              ['**Plan**', '10', 'clear title, source, 3 to 5 specific questions'],
+              ['**Cleaning**', '20', 'problems found, decisions explained, a function, `assert` checks, clean file saved'],
+              ['**Analysis**', '25', 'each question answered with numbers, sensible methods, no over-claiming'],
+              ['**Charts**', '15', 'right chart types, finding titles, labels and units, consistent colours'],
+              ['**Insights and limits**', '15', 'what, why it matters, what to do; honest limits'],
+              ['**Presentation**', '15', 'notebook layout, restart-and-run-all works, README, talk clarity'],
+              ['**Total**', '100', ''],
+            ],
+          },
+        ],
+      },
+      {
+        id: 's30-roadmap',
+        title: 'The roadmap: what to learn next',
+        blocks: [
+          {
+            type: 'p',
+            text: 'There is no single path, but the usual order for a **data analyst** is below. Each step builds on the last, and **each one uses the Python you already know**.',
+          },
+          {
+            type: 'table',
+            head: ['Step', 'Learn', 'Why', 'Time'],
+            rows: [
+              ['**1. SQL**', 'SELECT, WHERE, GROUP BY, JOIN', 'most business data lives in databases, not CSV files', '4 to 6 weeks'],
+              ['**2. Statistics**', 'averages, spread, probability, sampling, hypothesis tests', 'tells you whether a pattern is real or just chance', '6 to 8 weeks'],
+              ['**3. Power BI** (or Tableau)', 'dashboards that update themselves', 'the tool many companies use to share results', '3 to 4 weeks'],
+              ['**4. Machine learning**', 'prediction with scikit-learn', 'forecast prices, sort customers, spot fraud', '2 to 3 months'],
+              ['**5. Real projects**', 'your own portfolio', 'proof that you can do the work', 'ongoing'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'We give you a **taste of each** below, in a few lines you can run.',
+          },
+        ],
+      },
+      {
+        id: 's30-sql',
+        title: 'Next: SQL',
+        blocks: [
+          {
+            type: 'p',
+            text: '**SQL** is the language for asking questions of a **database**. If you know pandas, you already know the ideas: only the words change.',
+          },
+          {
+            type: 'table',
+            head: ['Idea', 'pandas', 'SQL'],
+            rows: [
+              ['pick columns', '`df[["name", "maths"]]`', '`SELECT name, maths FROM students`'],
+              ['filter rows', '`df[df["maths"] > 80]`', '`WHERE maths > 80`'],
+              ['sort', '`df.sort_values("maths")`', '`ORDER BY maths`'],
+              ['group', '`df.groupby("city")["maths"].mean()`', '`SELECT city, AVG(maths) ... GROUP BY city`'],
+              ['join', '`pd.merge(a, b, on="id")`', '`a JOIN b ON a.id = b.id`'],
+              ['count rows', '`len(df)`', '`SELECT COUNT(*)`'],
+            ],
+          },
+          {
+            type: 'p',
+            text: 'Python includes a small database called **SQLite**. Here is real SQL running on a pandas table:',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import sqlite3
+import pandas as pd
+
+students = pd.DataFrame({
+    "name":  ["Aman", "Ankit", "Neha", "Rohit", "Priya", "Sana"],
+    "city":  ["Delhi", "Mumbai", "Delhi", "Pune", "Mumbai", "Pune"],
+    "maths": [85, 90, 78, 92, 66, 74],
+})
+
+conn = sqlite3.connect(":memory:")
+students.to_sql("students", conn, index=False)
+
+query = """
+SELECT city, COUNT(*) AS students, ROUND(AVG(maths), 1) AS avg_maths
+FROM students
+WHERE maths >= 70
+GROUP BY city
+ORDER BY avg_maths DESC
+"""
+print(pd.read_sql(query, conn))
+
+print()
+print(students[students["maths"] >= 70].groupby("city")["maths"].agg(["count", "mean"]).round(1))`,
+          },
+          {
+            type: 'p',
+            text: 'The two results are the same. SQL reads almost like English, and it works on tables of **millions of rows** that are too big for a CSV. Start with SQLite or a free online practice site, then try MySQL or PostgreSQL.',
+          },
+        ],
+      },
+      {
+        id: 's30-stats',
+        title: 'Next: statistics',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Statistics answers the question charts cannot: **is this difference real, or just luck?** Suppose class A averaged 74 and class B averaged 79. Is B really better?',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+from scipy import stats
+
+a = np.array([70, 72, 75, 68, 80, 74, 71, 77, 73, 76])
+b = np.array([74, 79, 82, 76, 85, 78, 77, 81, 80, 78])
+
+print("mean A:", a.mean(), " mean B:", b.mean())
+print("spread (std) A:", a.std(ddof=1).round(1), " B:", b.std(ddof=1).round(1))
+
+result = stats.ttest_ind(a, b)
+print("p-value:", round(result.pvalue, 4))
+print("Probably a real difference?", result.pvalue < 0.05)`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'A **t-test** compares two averages. The **p-value** is the chance of seeing a gap this big **if the two groups were really the same**.',
+              'A small p-value (under 0.05 by habit) means "unlikely to be luck".',
+              'This is only a taste. The real topics: **mean, median, standard deviation, the normal curve, probability, sampling, confidence intervals, hypothesis tests, correlation and regression**.',
+              'Good first books and courses: *Khan Academy statistics*, *StatQuest* on YouTube, and *Think Stats* (free).',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'warn',
+            title: 'Statistics prevents false stories',
+            text: 'Without it, it is easy to "find" a pattern in random numbers. This is the most valuable skill after you can code.',
+          },
+        ],
+      },
+      {
+        id: 's30-powerbi',
+        title: 'Next: Power BI and dashboards',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Power BI** (and **Tableau**) turn data into **interactive dashboards**: click a city and every chart changes. Most companies share their numbers this way, and non-programmers can use them.',
+          },
+          {
+            type: 'table',
+            head: ['Python (what you know)', 'Power BI'],
+            rows: [
+              ['`pd.read_csv`, `read_excel`', 'Get Data (Excel, CSV, SQL, web)'],
+              ['cleaning with pandas', 'Power Query (point and click, steps are saved)'],
+              ['`groupby`, new columns', 'measures and calculated columns (DAX)'],
+              ['Matplotlib / Seaborn charts', 'visuals: bar, line, map, cards, slicers'],
+              ['`merge`', 'relationships between tables'],
+              ['saving a notebook', 'publish a report to the web'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              'Power BI Desktop is **free for Windows**. Use the free Microsoft Learn course.',
+              'Your Python helps: Power BI can run Python scripts, and what you know about tidy tables makes the data model easy.',
+              'A dashboard needs the same discipline: clear questions, clean data, honest charts, titles that state the finding.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's30-ml',
+        title: 'Next: machine learning',
+        blocks: [
+          {
+            type: 'p',
+            text: '**Machine learning** (ML) means letting the computer **learn a pattern from examples** and then **predict** for new cases. Everything you learned is the foundation: ML starts with a **clean table**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+rng = np.random.default_rng(1)
+hours = rng.uniform(1, 9, 60)
+marks = 30 + 6 * hours + rng.normal(0, 5, 60)
+df = pd.DataFrame({"hours": hours, "marks": marks})
+
+X = df[["hours"]]            # the clue (a table)
+y = df["marks"]              # the answer to predict
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+print("each extra hour adds about", round(model.coef_[0], 1), "marks")
+print("score on unseen data:", round(model.score(X_test, y_test), 2))
+new = pd.DataFrame({"hours": [2, 5, 8]})
+print(model.predict(new).round(0))`,
+          },
+          {
+            type: 'ul',
+            items: [
+              '`X` holds the **features** (the clues), `y` the **target** (what we predict).',
+              '`train_test_split` hides part of the data. We **train** on one part and **test** on the part the model has never seen: the only honest way to measure it.',
+              '`fit` learns, `predict` guesses, `score` measures (1.0 is perfect, 0 is no better than guessing the average).',
+              'The pattern here is a straight line: **linear regression**, the simplest model.',
+            ],
+          },
+          {
+            type: 'table',
+            head: ['Kind of ML', 'Predicts', 'Example'],
+            rows: [
+              ['**Regression**', 'a number', 'house price, sales next month'],
+              ['**Classification**', 'a category', 'spam or not, will the customer leave'],
+              ['**Clustering**', 'groups (no answers given)', 'types of customers'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'The honest order',
+            text: 'Most of the work in ML is what you already did: **gathering, cleaning and understanding the data** (80% by common estimate). A fancy model on dirty data gives nonsense. Learn **statistics first**, then scikit-learn, then deeper topics.',
+          },
+        ],
+      },
+      {
+        id: 's30-plan',
+        title: 'A 6-month study plan',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Months', 'Focus', 'Output'],
+            rows: [
+              ['**1**', 'Polish pandas: redo the capstone on a **second dataset**', 'project 2 on GitHub'],
+              ['**2**', 'SQL: SELECT, WHERE, GROUP BY, JOIN on SQLite or MySQL', '20 practice queries; project 1 redone in SQL'],
+              ['**3**', 'Statistics: descriptive, probability, hypothesis tests', 'notes plus 3 worked examples'],
+              ['**4**', 'Power BI: a dashboard from your cleaned data', 'a published dashboard'],
+              ['**5**', 'Machine learning: regression and classification with scikit-learn', 'one prediction project'],
+              ['**6**', 'Portfolio, résumé, mock interviews', '3 finished projects, a profile on LinkedIn and GitHub'],
+            ],
+          },
+          {
+            type: 'ul',
+            items: [
+              '**Practise a little every day.** 30 to 60 minutes beats one big weekend.',
+              '**Build projects on things you care about**: cricket, music, money, your city.',
+              '**Read other people\'s notebooks** on Kaggle, then redo them from a blank page.',
+              '**Explain what you learn** to a friend or write a short post: teaching shows the gaps.',
+              '**Get stuck and search**: reading an error message and searching for it is part of the job.',
+              '**Join a community**: a local meetup, a college club, an online forum.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's30-careers',
+        title: 'Roles you are now ready to explore',
+        blocks: [
+          {
+            type: 'table',
+            head: ['Role', 'Does', 'Extra skills'],
+            rows: [
+              ['**Data analyst**', 'answers business questions from data, builds reports and dashboards', 'SQL, Excel, Power BI, communication'],
+              ['**Business analyst**', 'links data to decisions and processes', 'domain knowledge, presentation'],
+              ['**Data scientist**', 'builds predictive models', 'statistics, machine learning'],
+              ['**Data engineer**', 'builds the pipes that move and store data', 'SQL, cloud, Python, tools like Airflow'],
+              ['**Research / academic analyst**', 'analyses survey and experiment data', 'statistics, R, writing'],
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Start with an analyst role',
+            text: 'A data analyst job (or internship) is the usual first step. You will use exactly what you learned here, and you will learn the rest on real data.',
+          },
+        ],
+      },
+      {
+        id: 's30-mistakes',
+        title: 'Common mistakes on the way',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              '**Collecting courses instead of making things.** Watch less, build more.',
+              '**Jumping to machine learning** before you can clean data and explain a chart.',
+              '**Copying code you do not understand.** Type it, change it, break it, fix it.',
+              '**Comparing yourself with experts** who have years of practice.',
+              '**Only doing clean, tidy data sets.** Real data is messy: practise on messy data.',
+              '**Hiding the work.** Put it on GitHub, even when it is not perfect.',
+              '**Stopping after the course.** The habit of regular practice is what makes you good.',
+            ],
+          },
+        ],
+      },
+      {
+        id: 's30-homework',
+        title: 'Wrap-up and what to do this week',
+        blocks: [
+          {
+            type: 'ul',
+            items: [
+              'Take the **self-check quiz** again after a week, without peeking, and compare your score.',
+              'Complete the **practical test** alone, and mark it with the table.',
+              'Finish and publish your **capstone**: notebook, clean CSV, Excel summary, README and a 5-minute talk.',
+              'Choose your **next step** from the roadmap and write down a first-month plan.',
+              'Start a **second project** on a different dataset.',
+            ],
+          },
+          {
+            type: 'note',
+            tone: 'tip',
+            title: 'Well done',
+            text: 'You came here to learn Python, and you leave able to turn data into decisions. Keep practising, keep building, and keep asking good questions.',
           },
         ],
       },
