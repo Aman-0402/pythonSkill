@@ -336,6 +336,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 51. Added lesson 18, "Pandas Introduction", with its PDF and a 49-question quiz CSV. `TryIt.tsx` now shows the loading hint for pandas as well as numpy.
 52. Unlocked session 4 on the website (`LOCK_FROM = 5`): sessions 1 to 4 are open, sessions 5 to 18 stay locked. To open the next class, raise `LOCK_FROM` by one.
 53. Lesson 3: every row of the three string-method tables now shows its result (`gives ...`), the missing `title`, `capitalize`, `strip`, `lstrip`, `rstrip` examples were added (`lstrip` and `rstrip` split into two rows), and two new Try it slides were added (cleaning the text, searching and checking). Session 3 PDF regenerated.
+54. Lesson 3: every string method now has its own small Try it box (one idea per box, labelled with the method) on slides grouped by method: `upper`/`lower`, `title`/`capitalize`, `strip`/`lstrip`/`rstrip`, `replace`, `find`/`count`, `startswith`/`endswith`, `isdigit`/`isalpha`, `split`, `join`. Replaced the two combined boxes added in item 53. **The owner asked not to regenerate PDFs until they finish correcting the lessons, so the Session 3 PDF is stale until they say so** (regenerate it then with `notes-pdf.mjs 3`).
 
 ## Gotchas and lessons learned
 

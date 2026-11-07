@@ -1004,19 +1004,73 @@ print(len(s))`,
               ['`replace(a, b)`', 'replace text', '`"cat".replace("c", "b")` gives `bat`'],
             ],
           },
-          { type: 'h3', text: 'Try: cleaning the text' },
+          { type: 'h3', text: 'upper() and lower()' },
           {
             type: 'code',
             runnable: true,
-            code: raw`s = "  hello world  "
-print(s.strip())
-print(s.lstrip())
-print(s.rstrip())
-clean = s.strip()
-print(clean.title())
-print(clean.capitalize())
-print(clean.upper())
-print("cat".replace("c", "b"))`,
+            label: 'upper(): make every letter a capital',
+            code: raw`text = "hello python"
+print(text.upper())`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'lower(): make every letter small',
+            code: raw`text = "HELLO Python"
+print(text.lower())`,
+          },
+          { type: 'h3', text: 'title() and capitalize()' },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'title(): capital letter at the start of every word',
+            code: raw`text = "learning python is fun"
+print(text.title())`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'capitalize(): capital only at the start of the string',
+            code: raw`text = "learning python is fun"
+print(text.capitalize())`,
+          },
+          { type: 'h3', text: 'strip(), lstrip() and rstrip()' },
+          {
+            type: 'p',
+            text: 'The `[` and `]` in these examples make the spaces easy to see.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'strip(): remove spaces from both ends',
+            code: raw`text = "   hi there   "
+print("[" + text + "]")
+print("[" + text.strip() + "]")`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'lstrip() and rstrip(): remove spaces from one end only',
+            code: raw`text = "   hi there   "
+print("[" + text.lstrip() + "]")
+print("[" + text.rstrip() + "]")`,
+          },
+          { type: 'h3', text: 'replace()' },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'replace(a, b): change every a into b',
+            code: raw`text = "I like cats. Cats are cute."
+print(text.replace("cats", "dogs"))
+print(text.replace("c", "k"))`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'replace(a, b, n): change only the first n',
+            code: raw`text = "a-b-c-d"
+print(text.replace("-", " "))
+print(text.replace("-", " ", 2))`,
           },
           { type: 'h3', text: 'Searching and checking' },
           {
@@ -1031,18 +1085,58 @@ print("cat".replace("c", "b"))`,
               ['`isalpha()`', 'only letters?', '`"abc".isalpha()` gives `True`, `"ab1".isalpha()` gives `False`'],
             ],
           },
-          { type: 'h3', text: 'Try: searching and checking' },
+          { type: 'h3', text: 'find() and count()' },
           {
             type: 'code',
             runnable: true,
-            code: raw`print("hello".find("l"))
-print("hello".find("z"))
-print("banana".count("a"))
-print("python".startswith("py"))
-print("file.py".endswith(".py"))
-print("123".isdigit())
-print("abc".isalpha())
-print("ab1".isalpha())`,
+            label: 'find(x): index of the first match, or -1',
+            code: raw`word = "banana"
+print(word.find("n"))
+print(word.find("an"))
+print(word.find("z"))`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'count(x): how many times x appears',
+            code: raw`word = "banana"
+print(word.count("a"))
+print(word.count("an"))
+print(word.count("z"))`,
+          },
+          { type: 'h3', text: 'startswith() and endswith()' },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'startswith(x): does the text begin with x?',
+            code: raw`name = "python.py"
+print(name.startswith("py"))
+print(name.startswith("java"))`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'endswith(x): does the text end with x?',
+            code: raw`name = "python.py"
+print(name.endswith(".py"))
+print(name.endswith(".txt"))`,
+          },
+          { type: 'h3', text: 'isdigit() and isalpha()' },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'isdigit(): are all characters digits?',
+            code: raw`print("123".isdigit())
+print("12a".isdigit())
+print("".isdigit())`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'isalpha(): are all characters letters?',
+            code: raw`print("abc".isalpha())
+print("ab1".isalpha())
+print("hello world".isalpha())`,
           },
           { type: 'h3', text: 'Splitting and joining' },
           {
@@ -1052,6 +1146,42 @@ print("ab1".isalpha())`,
               ['`split()`', 'break into a list', '`"a b c".split()` gives `["a", "b", "c"]`'],
               ['`join()`', 'join a list into a string', '`"-".join(["a","b"])` gives `a-b`'],
             ],
+          },
+          { type: 'h3', text: 'split()' },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'split(): break the text into a list of words',
+            code: raw`text = "red green blue"
+print(text.split())
+print(len(text.split()))`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'split(x): break at every x',
+            code: raw`data = "Aman,22,Delhi"
+print(data.split(","))
+name = data.split(",")[0]
+print(name)`,
+          },
+          { type: 'h3', text: 'join()' },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'join(): glue the items of a list together',
+            code: raw`words = ["red", "green", "blue"]
+print("-".join(words))
+print(" ".join(words))
+print("".join(words))`,
+          },
+          {
+            type: 'code',
+            runnable: true,
+            label: 'split() and join() together',
+            code: raw`sentence = "python is easy"
+words = sentence.split()
+print("_".join(words))`,
           },
           { type: 'h3', text: 'Try the methods' },
           {
