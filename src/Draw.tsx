@@ -33,7 +33,7 @@ const TOOLS: { id: Tool; icon: string; label: string; title: string }[] = [
   { id: 'rect', icon: '▭', label: 'Box', title: 'Rectangle' },
   { id: 'ellipse', icon: '◯', label: 'Circle', title: 'Circle or oval' },
   { id: 'text', icon: 'T', label: 'Text', title: 'Click and type. Enter to finish, Shift+Enter for a new line' },
-  { id: 'select', icon: '⬚', label: 'Select', title: 'Click an item to move it. Delete removes it. Double-click text to edit' },
+  { id: 'select', icon: '⬚', label: 'Select', title: 'Click a drawing, or the code, to move it. Scroll the wheel to zoom it. Delete removes a drawing. Double-click text to edit' },
 ]
 const SHAPE_TOOLS = ['line', 'arrow', 'rect', 'ellipse']
 
@@ -183,6 +183,7 @@ type Gesture =
   | { type: 'draw'; item: Free | Shape }
   | { type: 'remove'; saved: boolean }
   | { type: 'move'; last: Pt }
+  | { type: 'code'; last: Pt }
 
 export default function Draw() {
   const [open, setOpen] = useState(false) // toolbar visible
@@ -193,6 +194,10 @@ export default function Draw() {
   const [size, setSize] = useState(SIZES[1])
   const [edit, setEdit] = useState<Edit | null>(null)
   const [boardCode, setBoardCode] = useState<{ code: string; title?: string } | null>(null)
+  const [codeT, setCodeT] = useState({ x: 0, y: 0, s: 1 }) // where the code sits on the board, and its zoom
+  const [codeSel, setCodeSel] = useState(false)
+  const [, bump] = useState(0)
+  const codeRef = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ x: number; y: number }>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('draw-pos') || 'null')
@@ -219,6 +224,13 @@ export default function Draw() {
 
   const layer: Layer = board ? 'board' : 'page'
   const drawing = pen || board
+
+  // choose what Select has picked (a drawn item, or the code on the board) and refresh the panel
+  const select = (it: Item | null, code = false) => {
+    selected.current = it
+    setCodeSel(code)
+    bump((n) => n + 1)
+  }
 
   const redraw = useCallback((which: Layer) => {
     const canvas = which === 'page' ? pageCanvas.current : boardCanvas.current
@@ -259,6 +271,8 @@ export default function Draw() {
       items.current.board = []
       history.current.board = []
       selected.current = null
+      setCodeSel(false)
+      setCodeT({ x: 0, y: 0, s: 1 })
       setEdit(null)
       setBoardCode(d)
       setPen(false)
@@ -273,14 +287,14 @@ export default function Draw() {
     const prev = history.current[layer].pop()
     if (!prev) return
     items.current[layer] = prev
-    selected.current = null
+    select(null)
     redraw(layer)
   }
   const clear = () => {
     if (!items.current[layer].length) return
     snapshot(layer)
     items.current[layer] = []
-    selected.current = null
+    select(null)
     redraw(layer)
   }
   const deleteSelected = () => {
@@ -288,7 +302,7 @@ export default function Draw() {
     if (!sel || !items.current[layer].includes(sel)) return
     snapshot(layer)
     items.current[layer] = items.current[layer].filter((i) => i !== sel)
-    selected.current = null
+    select(null)
     redraw(layer)
   }
 
@@ -352,8 +366,58 @@ export default function Draw() {
       g.saved = true
     }
     items.current[layer] = items.current[layer].filter((i) => i !== target)
-    if (selected.current === target) selected.current = null
+    if (selected.current === target) select(null)
     redraw(layer)
+  }
+
+  // zoom and centre: the picked drawn item, or else the code on the board
+  const scaleCode = (f: number) =>
+    setCodeT((c) => {
+      const s = Math.min(4, Math.max(0.3, c.s * f))
+      const w = codeRef.current?.offsetWidth ?? 0
+      const h = codeRef.current?.offsetHeight ?? 0
+      return { x: c.x - (w * (s - c.s)) / 2, y: c.y - (h * (s - c.s)) / 2, s }
+    })
+  const scaleItem = (it: Item, f: number) => {
+    snapshot(layer)
+    const b0 = bounds(it)
+    const [cx, cy] = [b0.x + b0.w / 2, b0.y + b0.h / 2]
+    if (it.k === 'free') it.pts = it.pts.map(([x, y]) => [cx + (x - cx) * f, cy + (y - cy) * f])
+    else if (it.k === 'shape') {
+      it.a = [cx + (it.a[0] - cx) * f, cy + (it.a[1] - cy) * f]
+      it.b = [cx + (it.b[0] - cx) * f, cy + (it.b[1] - cy) * f]
+    } else {
+      it.size = (Math.max(10, textPx(it.size) * f) - 16) / 3
+      const b1 = bounds(it)
+      move(it, cx - (b1.x + b1.w / 2), cy - (b1.y + b1.h / 2))
+    }
+    redraw(layer)
+  }
+  const zoom = (f: number) => {
+    if (selected.current) scaleItem(selected.current, f)
+    else if (board && boardCode) scaleCode(f)
+  }
+  const center = () => {
+    const it = selected.current
+    if (it) {
+      snapshot(layer)
+      const b = bounds(it)
+      move(it, window.innerWidth / 2 - (b.x + b.w / 2), window.innerHeight / 2 + offsetY() - (b.y + b.h / 2))
+      redraw(layer)
+    } else if (board && boardCode && codeRef.current) {
+      const el = codeRef.current
+      setCodeT((c) => ({
+        ...c,
+        x: (window.innerWidth - el.offsetWidth * c.s) / 2 - el.offsetLeft,
+        y: (window.innerHeight - el.offsetHeight * c.s) / 2 - el.offsetTop,
+      }))
+    }
+  }
+  const onWheel = (e: React.WheelEvent) => {
+    if (tool !== 'select') return
+    const f = e.deltaY < 0 ? 1.1 : 1 / 1.1
+    if (selected.current) scaleItem(selected.current, f)
+    else if (codeSel) scaleCode(f)
   }
 
   const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -368,11 +432,15 @@ export default function Draw() {
     e.currentTarget.setPointerCapture(e.pointerId)
     if (tool === 'select') {
       const target = topHit(p)
-      selected.current = target
+      const box = codeRef.current?.getBoundingClientRect()
       if (target) {
+        select(target)
         snapshot(layer)
         gesture.current = { type: 'move', last: p }
-      }
+      } else if (board && box && p[0] >= box.left && p[0] <= box.right && p[1] >= box.top && p[1] <= box.bottom) {
+        select(null, true)
+        gesture.current = { type: 'code', last: p }
+      } else select(null)
       redraw(layer)
     } else if (tool === 'remove') {
       gesture.current = { type: 'remove', saved: false }
@@ -401,6 +469,12 @@ export default function Draw() {
       }
     } else if (g.type === 'remove') {
       removeAt(point(e))
+      return
+    } else if (g.type === 'code') {
+      const p = point(e)
+      const [dx, dy] = [p[0] - g.last[0], p[1] - g.last[1]]
+      g.last = p
+      setCodeT((c) => ({ ...c, x: c.x + dx, y: c.y + dy }))
       return
     } else if (selected.current) {
       const p = point(e)
@@ -460,7 +534,7 @@ export default function Draw() {
 
   const pickTool = (t: Tool) => {
     commitEdit()
-    selected.current = null
+    select(null)
     redraw(layer)
     setTool(t)
   }
@@ -481,16 +555,16 @@ export default function Draw() {
 
   return (
     <>
-      <canvas ref={pageCanvas} className={canvasClass(pen && !board ? ' live' : '')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} />
+      <canvas ref={pageCanvas} className={canvasClass(pen && !board ? ' live' : '')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
       {board && (
         <div className="draw-board">
           {boardCode && (
-            <div className="draw-board-code">
+            <div ref={codeRef} className={'draw-board-code' + (codeSel ? ' sel' : '')} style={{ transform: `translate(${codeT.x}px, ${codeT.y}px) scale(${codeT.s})` }}>
               {boardCode.title && <p>{boardCode.title}</p>}
               <pre>{boardCode.code}</pre>
             </div>
           )}
-          <canvas ref={boardCanvas} className={canvasClass(' board live')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} />
+          <canvas ref={boardCanvas} className={canvasClass(' board live')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
           <button className="draw-board-close" onClick={() => setBoard(false)}>✕ Close board</button>
         </div>
       )}
@@ -565,6 +639,14 @@ export default function Draw() {
                     </button>
                   ))}
                 </div>
+                {(selected.current || (board && boardCode)) && (
+                  <div className="draw-zoom">
+                    <span>{selected.current ? 'Item' : 'Code'}</span>
+                    <button className="draw-btn" onClick={() => zoom(1 / 1.15)} title="Zoom out (or scroll the wheel with Select)">🔍−</button>
+                    <button className="draw-btn" onClick={() => zoom(1.15)} title="Zoom in (or scroll the wheel with Select)">🔍+</button>
+                    <button className="draw-btn" onClick={center} title="Move to the centre of the screen">Center</button>
+                  </div>
+                )}
                 <div className="draw-row two">
                   <button className="draw-btn" onClick={undo} title="Undo (Ctrl+Z)">↶ Undo</button>
                   <button className="draw-btn" onClick={clear}>🗑 Clear</button>
