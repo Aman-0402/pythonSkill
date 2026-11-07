@@ -19,6 +19,7 @@ const loadContents = () => import('./Contents')
 const Landing = page(() => import('./Landing'))
 const Contents = page(loadContents)
 const Lesson = page(() => import('./Lesson'))
+const Practice = page(() => import('./Practice'))
 
 function App() {
   const path = usePath().replace(/\/+$/, '')
@@ -32,7 +33,7 @@ function App() {
   return (
     <>
       <Suspense fallback={<div className="page-loading">Loading…</div>}>
-        {path === '/contents' ? <Contents /> : path.startsWith('/contents/') ? <Lesson slug={path.slice('/contents/'.length)} /> : <Landing />}
+        {path === '/contents' ? <Contents /> : path === '/practice' ? <Practice /> : path.startsWith('/contents/') ? <Lesson slug={path.slice('/contents/'.length)} /> : <Landing />}
       </Suspense>
       <Draw />
     </>

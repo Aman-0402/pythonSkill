@@ -70,6 +70,7 @@ Images/                       The owner's original pictures (PNG); committed by 
 Notes pdf/                    One PDF per session
 Quiz in CSV/                  One quiz CSV per session
 scripts/
+  practice-files.py           Builds public/practice-files/, its zip and src/practice-list.json (see "Practice files")
   notes-pdf.mjs               Builds a session PDF (see "Session PDFs")
   quiz-csv.mjs                Builds the quiz CSV files (see "Session quizzes")
   quiz-data/s1.mjs ... s18.mjs The quiz questions, one file per session
@@ -91,6 +92,7 @@ src/
   Highlight.tsx               Tiny Python syntax colouring used by code blocks and illustrations
   TryIt.tsx                   Editable code box that runs Python in the browser (Pyodide)
   progress.ts                 Remembers in this browser how far each lesson was read (localStorage key reading-progress)
+  Practice.tsx                The /practice page: every practice file to download, plus one zip (list comes from practice-list.json)
   Quiz.tsx                    Quick quiz slide: one random question at a time, loaded on demand from scripts/quiz-data/
   pyrun.ts                    Loads Pyodide and runs Python: `runPython(source)` gives text, error flag and chart PNGs (used by TryIt and the Draw board)
   lock.ts                     LOCK_FROM: sessions from this number to the end are locked on the website
@@ -292,6 +294,13 @@ The whole site is built to work on a phone (tested at 390x844, 360x740 and 820x1
 - **Landing logos:** see "Random logo placement" (the middle band stays free on phones).
 - To check a change on a phone: emulate a mobile device in Chrome DevTools, or in a script call `Emulation.setDeviceMetricsOverride` with `mobile: true`, and compare `document.documentElement.scrollWidth` with `clientWidth` (they must be equal).
 
+## Practice files (`public/practice-files/`, added 2026-11-08)
+
+- 43 files students download to run the lessons on their own computer, in five folders: `pandas/` (sessions 18 to 23, including `students.csv`, `marks.xlsx` and awkward CSVs for each `read_csv` option), `charts/` (24, 25), `file-handling/` (14, 15), `programs/` (scripts from sessions 2 to 15 that need `input()` or several files) and `capstone/` (raw and clean shop orders, a starter `notebook.ipynb`, README template, `requirements.txt`, in the folder layout from session 27). Also `README.txt` and `python-practice-files.zip`.
+- `/practice` lists them, linked from the top of Contents. Lessons 19 and 27 mention it.
+- **Run `python scripts/practice-files.py` after changing any lesson program or the shop data.** Programs and the shop data are read out of `content.ts`, never copied by hand; the rest uses the same values the lesson boxes type in. It needs pandas, numpy and openpyxl. Do not run it from inside `public/practice-files/`: Windows locks the folder and the rebuild stops halfway.
+- Title screens of sessions 19, 20, 22 and 23 read these files and show their real output. Keep them matching if the data changes.
+
 ## Code colours (Highlight.tsx, added 2026-11-08)
 
 - All code uses the colours of **VS Code Dark+** on its `#1e1e1e` background: purple control words, blue `def`/`True`/`None`, yellow functions, teal types and imported names (`pd`, `np`, `plt`), orange strings, green comments, light blue variables, and gold/pink/blue bracket pairs by depth. f-strings colour the `{expressions}` inside them; triple-quoted strings span lines.
@@ -390,6 +399,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 64. Fixed: long code in the board could not be scrolled. Wheel, Shift + wheel, arrow keys, Page Up/Down, Space, Home/End now scroll it, and a Fit button shrinks it to the screen. Tested with a 2030 px tall code block in a 804 px window (wheel moved it 600 px, Page Up 644 px, Fit made it 691 px tall).
 65. Full test and quick quiz slides (2026-11-08). Ran `tsc`, lint (warnings only), build, and all 722 runnable boxes in real browser Python with a clean namespace per box. Every error left is a deliberate one ("read the error", "fails on purpose", "fix the bug"). Fixed: the lesson 17 die-roll box crashed in the browser (`bincount` on 32-bit needs `dtype=np.int32`); arrow keys and Home/End on the board also moved the slides or page behind it; direct links to a slide did nothing on a fresh load (`Slides` now scrolls to the hash); labelled the frozenset box. Added quiz slides to all 30 lessons (see "Quick quiz slides") and `--check` to `quiz-csv.mjs`.
 66. Owner-approved UI upgrades: VS Code colours on all code, including editable boxes, full screen and the white board; Draw button moved off the title on phones; icon buttons on phones; A to F keys in quizzes; Contents shows ticks, a progress bar, "Continue from n%" that resumes at the last slide, and "Clear my progress" (`progress.ts`, this browser only; quiz slides are skipped when saving because their numbers change); pages load lazily (`App.tsx`), so a lesson no longer downloads three.js (main file 1,280 kB down to 245 kB, plus 474 kB of lesson text, 550 kB for the landing page only). A failed page load after a deploy reloads once. Tested on the dev server and the production build in headless Chrome, desktop and phone width.
+67. Practice files and a full recheck (2026-11-08). Added the pack above and the `/practice` page. Corrected invented title-screen outputs on sessions 19, 20, 21, 22, 23, 26, 27 and 29 so each shows what its code prints. Tested: all 722 boxes in browser Python (55 errors, all deliberate; 42 boxes draw charts), all 30 lessons, every download on the production build, and the pack unzipped and used as a student would (data files, lesson examples, typed input into every program, the starter notebook run top to bottom, raw orders cleaned to match `orders_clean.csv`).
 
 ## Gotchas and lessons learned
 

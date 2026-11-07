@@ -18,6 +18,7 @@ export default function Contents() {
       <header className="contents-head">
         <h1>Contents</h1>
         <p>{started ? `${finished} of ${lessons.length} sessions finished.` : 'Pick a topic to start learning.'}</p>
+        <Link href="/practice" className="practice-link">Practice files to download →</Link>
         {started && (
           <button
             type="button"

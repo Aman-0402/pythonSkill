@@ -1,0 +1,263 @@
+{
+ "zip": "python-practice-files.zip",
+ "files": [
+  {
+   "group": "Pandas",
+   "path": "pandas/students.csv",
+   "sessions": "18 to 20",
+   "what": "6 students with two blank marks: read_csv, head, info, describe, filters"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/marks_semicolon.csv",
+   "sessions": "19",
+   "what": "values split by semicolons: use sep=\";\""
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/marks_no_header.csv",
+   "sessions": "19",
+   "what": "no title line: use header=None and names=[...]"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/marks_tab.tsv",
+   "sessions": "19",
+   "what": "values split by tabs: use sep=\"\\t\""
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/marks_with_dash.csv",
+   "sessions": "19",
+   "what": "a dash for a missing value: use na_values=[\"-\"]"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/joined_dates.csv",
+   "sessions": "19, 21",
+   "what": "a date column: use parse_dates=[\"joined\"]"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/marks.xlsx",
+   "sessions": "19",
+   "what": "an Excel file with two sheets, Term 1 and Term 2"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/students_messy.csv",
+   "sessions": "21",
+   "what": "the messy table to clean: blanks, repeats, spaces, mixed capitals"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/class_students.csv",
+   "sessions": "20, 22",
+   "what": "8 clean students: groupby, agg, pivot_table"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/sales.csv",
+   "sessions": "22",
+   "what": "three months of sales for the sales summary"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/merge_students.csv",
+   "sessions": "23",
+   "what": "the left table for merge"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/merge_marks.csv",
+   "sessions": "23",
+   "what": "the right table for merge; ids 4 and 5 do not match"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/merge_tests.csv",
+   "sessions": "23",
+   "what": "one student, many tests: a one-to-many merge"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/sales_jan.csv",
+   "sessions": "23",
+   "what": "stack this with sales_feb.csv using concat"
+  },
+  {
+   "group": "Pandas",
+   "path": "pandas/sales_feb.csv",
+   "sessions": "23",
+   "what": "stack this with sales_jan.csv using concat"
+  },
+  {
+   "group": "Charts",
+   "path": "charts/monthly_sales.csv",
+   "sessions": "24",
+   "what": "six months of sales: line, bar and pie charts"
+  },
+  {
+   "group": "Charts",
+   "path": "charts/study_hours.csv",
+   "sessions": "24, 25",
+   "what": "60 students from the Seaborn lesson: box plot, scatter plot, heatmap, correlation"
+  },
+  {
+   "group": "File handling",
+   "path": "file-handling/marks.csv",
+   "sessions": "14, 18",
+   "what": "read it with the csv module, then with pandas"
+  },
+  {
+   "group": "File handling",
+   "path": "file-handling/people.csv",
+   "sessions": "14",
+   "what": "a CSV to read with csv.DictReader"
+  },
+  {
+   "group": "File handling",
+   "path": "file-handling/marks.txt",
+   "sessions": "14",
+   "what": "one student per line: split each line"
+  },
+  {
+   "group": "File handling",
+   "path": "file-handling/poem.txt",
+   "sessions": "14",
+   "what": "count the lines and the words"
+  },
+  {
+   "group": "File handling",
+   "path": "file-handling/todo.txt",
+   "sessions": "14",
+   "what": "the list used by todo.py"
+  },
+  {
+   "group": "File handling",
+   "path": "file-handling/scores.txt",
+   "sessions": "15",
+   "what": "one bad line on purpose: catch the ValueError"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-02/ask_name.py",
+   "sessions": "2",
+   "what": "uses input()"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-02/add_numbers.py",
+   "sessions": "2",
+   "what": "uses input() and int()"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-02/age_next_year.py",
+   "sessions": "2",
+   "what": "uses input() and int()"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-04/check_age.py",
+   "sessions": "4",
+   "what": "uses input() with if"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-05/password.py",
+   "sessions": "5",
+   "what": "a while loop with input()"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-10/marks_manager.py",
+   "sessions": "10",
+   "what": "the marks manager project"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-10/contact_book.py",
+   "sessions": "10",
+   "what": "the contact book project"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-11/read_number.py",
+   "sessions": "11",
+   "what": "a function that keeps asking until the input is valid"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-13/shapes.py",
+   "sessions": "13",
+   "what": "your own module"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-13/main.py",
+   "sessions": "13",
+   "what": "imports shapes.py from the same folder"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-13/my_project/main.py",
+   "sessions": "13",
+   "what": "imports from the tools package"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-14/todo.py",
+   "sessions": "14",
+   "what": "a to-do list saved in todo.txt"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-15/safe_input.py",
+   "sessions": "15",
+   "what": "input() made safe with try and except"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-13/my_project/tools/maths.py",
+   "sessions": "13",
+   "what": "a module inside the tools package"
+  },
+  {
+   "group": "Programs",
+   "path": "programs/session-13/my_project/tools/text.py",
+   "sessions": "13",
+   "what": "a module inside the tools package"
+  },
+  {
+   "group": "Capstone",
+   "path": "capstone/data/raw/orders.csv",
+   "sessions": "26 to 29",
+   "what": "the messy online shop orders, 308 rows. Never edit this one by hand"
+  },
+  {
+   "group": "Capstone",
+   "path": "capstone/data/clean/orders_clean.csv",
+   "sessions": "27 to 29",
+   "what": "the same orders after clean_orders, 298 rows, to check your own result"
+  },
+  {
+   "group": "Capstone",
+   "path": "capstone/requirements.txt",
+   "sessions": "29",
+   "what": "install everything with: pip install -r requirements.txt"
+  },
+  {
+   "group": "Capstone",
+   "path": "capstone/README.md",
+   "sessions": "29",
+   "what": "a README template to fill in"
+  },
+  {
+   "group": "Capstone",
+   "path": "capstone/notebook.ipynb",
+   "sessions": "27 to 29",
+   "what": "a starter notebook in the layout from session 29"
+  }
+ ]
+}

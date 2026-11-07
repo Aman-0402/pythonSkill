@@ -12267,7 +12267,7 @@ df = pd.DataFrame({
     hero: {
       file: 'load.py',
       lines: ['import pandas as pd', 'df = pd.read_csv("students.csv")', 'print(df.head(2))'],
-      output: '    name    city  age  maths\n0   Aman   Delhi   20     85\n1  Ankit  Mumbai   22     90',
+      output: '    name    city  age  maths  science\n0   Aman   Delhi   20   85.0     78.0\n1  Ankit  Mumbai   22   90.0     88.0',
     },
     sections: [
       {
@@ -12308,7 +12308,7 @@ df = pd.DataFrame({
             type: 'note',
             tone: 'tip',
             title: 'Files in the Try it boxes',
-            text: 'The Try it boxes run in your browser and cannot see files on your computer. So in this lesson we put the CSV text inside the code with `io.StringIO`, which acts like a file. On your own computer you simply write the file name: `pd.read_csv("students.csv")`.',
+            text: 'The Try it boxes run in your browser and cannot see files on your computer. So in this lesson we put the CSV text inside the code with `io.StringIO`, which acts like a file. On your own computer you simply write the file name: `pd.read_csv("students.csv")`. Download that file and the others used here from **Practice files** on the Contents page.',
           },
         ],
       },
@@ -13168,7 +13168,7 @@ Neha,78,
     hero: {
       file: 'filter.py',
       lines: ['import pandas as pd', 'df = pd.read_csv("students.csv")', 'print(df[df["maths"] > 80])'],
-      output: '    name    city  maths\n0   Aman   Delhi     85\n1  Ankit  Mumbai     90',
+      output: '    name    city  age  maths  science\n0   Aman   Delhi   20   85.0     78.0\n1  Ankit  Mumbai   22   90.0     88.0\n3  Rohit    Pune   23   92.0     95.0',
     },
     sections: [
       {
@@ -14014,7 +14014,7 @@ df = pd.DataFrame({
     summary: 'Missing values, duplicates, data types, renaming and string cleaning.',
     hero: {
       file: 'clean.py',
-      lines: ['import pandas as pd', 'df["city"] = df["city"].str.strip().str.title()', 'df = df.drop_duplicates()'],
+      lines: ['print("rows before:", len(df))', 'df["city"] = df["city"].str.strip().str.title()', 'df = df.drop_duplicates()', 'print("rows after:", len(df))'],
       output: 'rows before: 8\nrows after: 6',
     },
     sections: [
@@ -14715,8 +14715,8 @@ df = pd.DataFrame({"First Name": ["Aman"], " Total Marks ": [85], "CITY": ["Delh
     summary: 'groupby, agg, pivot_table and value_counts.',
     hero: {
       file: 'groups.py',
-      lines: ['import pandas as pd', 'print(df.groupby("city")["maths"].mean())'],
-      output: 'city\nDelhi     81.5\nMumbai    78.0\nPune      83.0',
+      lines: ['import pandas as pd', 'df = pd.read_csv("class_students.csv")', 'print(df.groupby("city")["maths"].mean().round(1).to_dict())'],
+      output: '{\'Delhi\': 81.3, \'Mumbai\': 83.7, \'Pune\': 83.0}',
     },
     sections: [
       {
@@ -15327,8 +15327,8 @@ df = pd.DataFrame({
     summary: 'sort_values, merge, concat and apply.',
     hero: {
       file: 'merge.py',
-      lines: ['import pandas as pd', 'both = pd.merge(students, marks, on="id")', 'print(both.sort_values("maths"))'],
-      output: '   id   name  maths\n1   2  Ankit     90\n0   1   Aman     85',
+      lines: ['import pandas as pd', 'students = pd.read_csv("merge_students.csv")', 'marks = pd.read_csv("merge_marks.csv")', 'both = pd.merge(students, marks, on="id")', 'print(both.sort_values("maths"))'],
+      output: '   id   name    city  maths\n2   3   Neha   Delhi     78\n0   1   Aman   Delhi     85\n1   2  Ankit  Mumbai     90',
     },
     sections: [
       {
@@ -17388,8 +17388,8 @@ df = pd.DataFrame({
     summary: 'A full workflow on a real-style dataset: look, question, chart, conclude.',
     hero: {
       file: 'eda.py',
-      lines: ['orders = make_orders()', 'orders.info()', 'print(orders.groupby("category")["amount"].sum())'],
-      output: 'category\nBags          ...\nBooks         ...\nGadgets       ...',
+      lines: ['orders = make_orders()', 'print(orders.shape)', 'print(orders.duplicated().sum())'],
+      output: '(308, 9)\n8',
     },
     sections: [
       {
@@ -17919,7 +17919,7 @@ df["city"] = df["city"].str.strip().str.title()
     summary: 'Pick a dataset, write your questions, then clean and prepare the data.',
     hero: {
       file: 'capstone.py',
-      lines: ['df = clean_orders(raw_orders)', 'check(df)', 'df.to_csv("orders_clean.csv", index=False)'],
+      lines: ['df = clean_orders(raw_orders)', 'check(df)', 'df.to_csv("orders_clean.csv", index=False)', 'print("saved", len(df), "rows")'],
       output: 'all checks passed\nsaved 298 rows',
     },
     sections: [
@@ -18054,7 +18054,7 @@ df["city"] = df["city"].str.strip().str.title()
         blocks: [
           {
             type: 'p',
-            text: 'On your computer you load your file with `read_csv`. Always keep the **raw file untouched** in its own folder and do all cleaning in code, so the work can be repeated.',
+            text: 'On your computer you load your file with `read_csv`. Always keep the **raw file untouched** in its own folder and do all cleaning in code, so the work can be repeated. The `capstone` folder in **Practice files** (on the Contents page) has this layout ready, with the shop data and a starter notebook.',
           },
           {
             type: 'code',
@@ -18922,7 +18922,7 @@ orders = clean_orders(make_orders())
     summary: 'Notebook layout, exporting to Excel and CSV, and presenting your findings.',
     hero: {
       file: 'report.py',
-      lines: ['with pd.ExcelWriter("report.xlsx") as w:', '    summary.to_excel(w, sheet_name="Summary")', '    orders.to_excel(w, sheet_name="Data", index=False)'],
+      lines: ['with pd.ExcelWriter("report.xlsx") as w:', '    summary.to_excel(w, sheet_name="Summary")', '    orders.to_excel(w, sheet_name="Data", index=False)', 'print("report.xlsx written: 2 sheets")'],
       output: 'report.xlsx written: 2 sheets',
     },
     sections: [

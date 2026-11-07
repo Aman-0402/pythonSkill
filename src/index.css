@@ -794,3 +794,16 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .topic-bar i { display: block; height: 100%; background: #2563eb; border-radius: 999px; }
 .progress-clear { margin-top: 10px; padding: 6px 14px; font: 600 0.95rem var(--body); color: #35506f; background: transparent; border: 1px solid #b9c9e2; border-radius: 999px; cursor: pointer; }
 .progress-clear:hover { color: #10203a; border-color: #10203a; }
+
+/* practice files page */
+.practice-link { display: inline-block; margin-top: 10px; font-weight: 600; color: #1d4ed8; }
+.contents-head .progress-clear { display: block; }
+.practice-all { display: inline-block; margin-top: 16px; padding: 12px 24px; font: 600 1.05rem var(--body); color: #fff; background: #1d4ed8; border-radius: 999px; }
+.practice-group { margin-top: 36px; }
+.practice-group h2 { margin: 0 0 12px; font: 800 1.6rem var(--display); color: #0f1b2d; }
+.practice-group ul { margin: 0; padding: 0; list-style: none; }
+.practice-group li { display: grid; grid-template-columns: minmax(180px, 280px) 130px 1fr; gap: 4px 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid #d3e0f5; }
+.practice-group a { font: 600 1rem var(--mono); color: #1d4ed8; overflow-wrap: anywhere; }
+.practice-session { font-size: 0.92rem; color: #51657a; }
+.practice-what { color: #35506f; }
+@media (max-width: 700px) { .practice-group li { grid-template-columns: 1fr auto; } .practice-what { grid-column: 1 / -1; } }
