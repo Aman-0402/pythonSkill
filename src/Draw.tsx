@@ -184,6 +184,7 @@ type Gesture =
   | { type: 'remove'; saved: boolean }
   | { type: 'move'; last: Pt }
   | { type: 'code'; last: Pt }
+  | { type: 'resize'; origin: Pt; d0: number; s0: number }
 
 export default function Draw() {
   const [open, setOpen] = useState(false) // toolbar visible
@@ -433,7 +434,11 @@ export default function Draw() {
     if (tool === 'select') {
       const target = topHit(p)
       const box = codeRef.current?.getBoundingClientRect()
-      if (target) {
+      if (!target && codeSel && box && Math.hypot(p[0] - box.right, p[1] - box.bottom) <= 18) {
+        // grab the corner handle: resize the code about its top-left corner
+        const d0 = Math.max(1, Math.hypot(p[0] - box.left, p[1] - box.top))
+        gesture.current = { type: 'resize', origin: [box.left, box.top], d0, s0: codeT.s }
+      } else if (target) {
         select(target)
         snapshot(layer)
         gesture.current = { type: 'move', last: p }
@@ -469,6 +474,11 @@ export default function Draw() {
       }
     } else if (g.type === 'remove') {
       removeAt(point(e))
+      return
+    } else if (g.type === 'resize') {
+      const p = point(e)
+      const s = Math.min(4, Math.max(0.3, (g.s0 * Math.hypot(p[0] - g.origin[0], p[1] - g.origin[1])) / g.d0))
+      setCodeT((c) => ({ ...c, s }))
       return
     } else if (g.type === 'code') {
       const p = point(e)
@@ -562,6 +572,7 @@ export default function Draw() {
             <div ref={codeRef} className={'draw-board-code' + (codeSel ? ' sel' : '')} style={{ transform: `translate(${codeT.x}px, ${codeT.y}px) scale(${codeT.s})` }}>
               {boardCode.title && <p>{boardCode.title}</p>}
               <pre>{boardCode.code}</pre>
+              {codeSel && <span className="draw-handle" style={{ width: 16 / codeT.s, height: 16 / codeT.s, right: -8 / codeT.s, bottom: -8 / codeT.s }} />}
             </div>
           )}
           <canvas ref={boardCanvas} className={canvasClass(' board live')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
