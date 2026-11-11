@@ -9,7 +9,14 @@ export default [
   [`Can a try block in the same file catch a SyntaxError?`, `No`, [`Yes, always`, `Only with finally`, `Only with raise`], `A SyntaxError happens before the program runs.`],
   [`Which keyword holds the risky code?`, `try`, [`except`, `finally`, `raise`], `try holds the code that might fail.`],
   [`Which keyword holds the plan for an error?`, `except`, [`try`, `else`, `assert`], `except runs when the matching error happens.`],
-  [`What is printed? try: print("A"); print(5 / 0); print("B") except ZeroDivisionError: print("C")`, `A then C`, [`A then B then C`, `A then B`, `C only`], `B is skipped because the error happens before it.`],
+  [`What is printed?
+
+try:
+    print("A")
+    print(5 / 0)
+    print("B")
+except ZeroDivisionError:
+    print("C")`, `A then C`, [`A then B then C`, `A then B`, `C only`], `B is skipped because the error happens before it.`],
   [`If no error happens in the try block, what happens to the except block?`, `It is skipped`, [`It runs anyway`, `It runs twice`, `It gives an error`], `except only runs after a matching error.`],
   [`What does as e give in except ValueError as e?`, `A name for the error object, so you can print its message`, [`The line number`, `The file name`, `A copy of the program`], `Printing e shows Python's own message.`],
   [`What does type(e).__name__ give for e from int("abc")?`, `ValueError`, [`int`, `str`, `Error`], `It is the name of the error type.`, `try:
@@ -27,7 +34,14 @@ except ValueError as e:
   [`Which error means the spaces at the start of a line are wrong?`, `IndentationError`, [`SpaceError`, `TabError only`, `NameError`], `Python uses indentation to know the blocks.`],
   [`In except (ValueError, TypeError):, what do the brackets do?`, `Handle both errors with one plan`, [`Handle only the first error`, `Make an error`, `Skip the try block`], `A tuple of error names matches any of them.`],
   [`How does Python pick among several except blocks?`, `It runs the first one that matches, checking in order`, [`It runs all of them`, `It runs the last one`, `It picks at random`], `Put the specific error before the general one.`],
-  [`What is printed? try: int("x") except Exception: print("general") except ValueError: print("specific")`, `general`, [`specific`, `general then specific`, `Nothing`], `Exception matches first, so ValueError can never run.`, `try:
+  [`What is printed?
+
+try:
+    int("x")
+except Exception:
+    print("general")
+except ValueError:
+    print("specific")`, `general`, [`specific`, `general then specific`, `Nothing`], `Exception matches first, so ValueError can never run.`, `try:
     int("x")
 except Exception:
     print("general")
@@ -35,8 +49,26 @@ except ValueError:
     print("specific")`],
   [`When does the else block of a try statement run?`, `Only when there was no error`, [`Only when there was an error`, `Always`, `Never`], `else holds the code for when all went well.`],
   [`When does the finally block run?`, `Always, whether there was an error or not`, [`Only when there is an error`, `Only when there is no error`, `Never`], `It is for clean-up.`],
-  [`What is printed? try: print(10 / 2) except ZeroDivisionError: print("error") else: print("ok") finally: print("done")`, `5.0 then ok then done`, [`5.0 then done`, `error then done`, `ok then done`], `No error, so else runs, and finally always runs.`],
-  [`What is printed? try: print(10 / 0) except ZeroDivisionError: print("error") else: print("ok") finally: print("done")`, `error then done`, [`error then ok then done`, `ok then done`, `done only`], `else is skipped after an error, and finally still runs.`],
+  [`What is printed?
+
+try:
+    print(10 / 2)
+except ZeroDivisionError:
+    print("error")
+else:
+    print("ok")
+finally:
+    print("done")`, `5.0 then ok then done`, [`5.0 then done`, `error then done`, `ok then done`], `No error, so else runs, and finally always runs.`],
+  [`What is printed?
+
+try:
+    print(10 / 0)
+except ZeroDivisionError:
+    print("error")
+else:
+    print("ok")
+finally:
+    print("done")`, `error then done`, [`error then ok then done`, `ok then done`, `done only`], `else is skipped after an error, and finally still runs.`],
   [`What does a function print when try returns a value and finally has a print?`, `The finally print runs before the value comes back`, [`The finally print is skipped`, `Only the return value is shown`, `An error appears`], `finally runs even when try has a return.`],
   [`What is the main job of finally?`, `Clean-up such as closing a file`, [`Catching errors`, `Making loops`, `Importing modules`], `It runs no matter what.`],
   [`What does the raise keyword do?`, `Makes an exception on purpose`, [`Catches an exception`, `Ends the program silently`, `Repeats the try block`], `Use it when your code finds something wrong.`],

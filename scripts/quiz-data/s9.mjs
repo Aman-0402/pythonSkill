@@ -7,9 +7,15 @@ export default [
   [`How do you find a value in a dictionary?`, `By its key`, [`By its position number`, `By its length`, `By its type`], `A dictionary looks values up by key, a list by position.`],
   [`Which of these can NOT be a dictionary key?`, `A list`, [`A string`, `A number`, `A tuple`], `Keys must be immutable, and a list can change.`],
   [`What error appears for d = {[1, 2]: "x"}?`, `TypeError`, [`KeyError`, `ValueError`, `NameError`], `A list is unhashable, so it cannot be a key.`],
-  [`What is printed? d = {"a": 1, "b": 2, "a": 3}; print(d)`, `{'a': 3, 'b': 2}`, [`{'a': 1, 'b': 2}`, `{'a': 1, 'b': 2, 'a': 3}`, `An error`], `A repeated key keeps only the last value.`, `d = {"a": 1, "b": 2, "a": 3}
+  [`What is printed?
+
+d = {"a": 1, "b": 2, "a": 3}
+print(d)`, `{'a': 3, 'b': 2}`, [`{'a': 1, 'b': 2}`, `{'a': 1, 'b': 2, 'a': 3}`, `An error`], `A repeated key keeps only the last value.`, `d = {"a": 1, "b": 2, "a": 3}
 print(d)`],
-  [`What is printed? d = {"a": 1, "b": 2, "a": 3}; print(len(d))`, `2`, [`3`, `1`, `6`], `The two "a" keys count as one.`, `d = {"a": 1, "b": 2, "a": 3}
+  [`What is printed?
+
+d = {"a": 1, "b": 2, "a": 3}
+print(len(d))`, `2`, [`3`, `1`, `6`], `The two "a" keys count as one.`, `d = {"a": 1, "b": 2, "a": 3}
 print(len(d))`],
   [`What does dict(x=1, y=2) give?`, `{'x': 1, 'y': 2}`, [`{x: 1, y: 2}`, `(x, 1, y, 2)`, `An error`], `dict() with names builds the same dictionary as {"x": 1, "y": 2}.`, `print(dict(x=1, y=2))`],
   [`What does student["age"] give when student = {"name": "Aman", "age": 20}?`, `20`, [`age`, `Aman`, `An error`], `Put the key in square brackets to get its value.`, `student = {"name": "Aman", "age": 20}
@@ -21,10 +27,18 @@ print(student.get("city"))`],
 print(student.get("city", "Unknown"))`],
   [`What does "Aman" in {"name": "Aman"} give?`, `False`, [`True`, `name`, `An error`], `in checks the keys, and "Aman" is a value.`, `print("Aman" in {"name": "Aman"})`],
   [`What does "name" in {"name": "Aman"} give?`, `True`, [`False`, `Aman`, `An error`], `"name" is a key, so in finds it.`, `print("name" in {"name": "Aman"})`],
-  [`What is d after d = {"a": 1}; d["b"] = 2?`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `{'b': 2}`, `An error`], `Assigning to a new key adds a pair.`, `d = {"a": 1}
+  [`What is printed?
+
+d = {"a": 1}
+d["b"] = 2
+print(d)`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `{'b': 2}`, `An error`], `Assigning to a new key adds a pair.`, `d = {"a": 1}
 d["b"] = 2
 print(d)`],
-  [`What is d after d = {"a": 1}; d["a"] = 10?`, `{'a': 10}`, [`{'a': 1, 'a': 10}`, `{'a': 1}`, `An error`], `Assigning to an existing key changes its value.`, `d = {"a": 1}
+  [`What is printed?
+
+d = {"a": 1}
+d["a"] = 10
+print(d)`, `{'a': 10}`, [`{'a': 1, 'a': 10}`, `{'a': 1}`, `An error`], `Assigning to an existing key changes its value.`, `d = {"a": 1}
 d["a"] = 10
 print(d)`],
   [`What does d.update({"b": 2, "c": 3}) do to d = {"a": 1}?`, `Adds both pairs`, [`Replaces the whole dictionary`, `Adds only the first pair`, `Gives an error`], `update() adds many pairs, and replaces the values of keys that exist.`],
@@ -51,7 +65,12 @@ print(sorted(marks))`],
   [`Which loop gives both the key and the value?`, `for k, v in d.items():`, [`for k, v in d:`, `for k, v in d.keys():`, `for k in d.values():`], `items() gives pairs, and the loop unpacks them.`],
   [`What does max(marks, key=marks.get) give when marks = {"maths": 90, "science": 85, "english": 78}?`, `maths`, [`90`, `science`, `english`], `It gives the key whose value is the biggest.`, `marks = {"maths": 90, "science": 85, "english": 78}
 print(max(marks, key=marks.get))`],
-  [`What is a after a = {"x": 1}; b = a; b["x"] = 99?`, `{'x': 99}`, [`{'x': 1}`, `{'x': 1, 'x': 99}`, `An error`], `b = a does not copy. Both names point to the same dictionary.`, `a = {"x": 1}
+  [`What is printed?
+
+a = {"x": 1}
+b = a
+b["x"] = 99
+print(a)`, `{'x': 99}`, [`{'x': 1}`, `{'x': 1, 'x': 99}`, `An error`], `b = a does not copy. Both names point to the same dictionary.`, `a = {"x": 1}
 b = a
 b["x"] = 99
 print(a)`],
@@ -60,10 +79,20 @@ print(a)`],
   [`What does students["Ankit"]["city"] read when students is a dictionary of dictionaries?`, `The city of Ankit`, [`The first letter of Ankit`, `The index of the city`, `Nothing, it is an error`], `The first brackets find Ankit's dictionary and the second find the city inside it.`],
   [`What does students["Aman"]["age"] = 21 do?`, `Changes Aman's age inside the nested dictionary`, [`Adds a new student`, `Replaces the whole students dictionary`, `Gives an error`], `Each pair of brackets goes one level deeper.`],
   [`What is a list of dictionaries good for?`, `Storing rows of data, one dictionary per row`, [`Sorting numbers`, `Removing duplicates`, `Making a set`], `For example one dictionary for each student.`],
-  [`What is printed? scores = {"Aman": [90, 80]}; scores["Aman"].append(70); print(scores["Aman"])`, `[90, 80, 70]`, [`[70]`, `[90, 80]`, `An error`], `The value is a list, so list methods work on it.`, `scores = {"Aman": [90, 80]}
+  [`What is printed?
+
+scores = {"Aman": [90, 80]}
+scores["Aman"].append(70)
+print(scores["Aman"])`, `[90, 80, 70]`, [`[70]`, `[90, 80]`, `An error`], `The value is a list, so list methods work on it.`, `scores = {"Aman": [90, 80]}
 scores["Aman"].append(70)
 print(scores["Aman"])`],
-  [`What is count after this loop? word = "banana"; count = {}; for ch in word: count[ch] = count.get(ch, 0) + 1`, `{'b': 1, 'a': 3, 'n': 2}`, [`{'b': 1, 'a': 1, 'n': 1}`, `{'a': 3, 'b': 1, 'n': 2, 'a': 1}`, `{'b': 1, 'a': 2, 'n': 3}`], `Each letter is a key and its count is the value.`, `word = "banana"
+  [`What is printed?
+
+word = "banana"
+count = {}
+for ch in word:
+    count[ch] = count.get(ch, 0) + 1
+print(count)`, `{'b': 1, 'a': 3, 'n': 2}`, [`{'b': 1, 'a': 1, 'n': 1}`, `{'a': 3, 'b': 1, 'n': 2, 'a': 1}`, `{'b': 1, 'a': 2, 'n': 3}`], `Each letter is a key and its count is the value.`, `word = "banana"
 count = {}
 for ch in word:
     count[ch] = count.get(ch, 0) + 1

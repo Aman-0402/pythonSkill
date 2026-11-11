@@ -9,7 +9,18 @@ export default [
   [`What does "Python Programming"[::-1][0] give?`, `g`, [`P`, `n`, `y`], `The reversed string starts with the last letter.`, `print("Python Programming"[::-1][0])`],
   [`What does "Python Programming".count("o") give?`, `2`, [`1`, `3`, `0`], `There is an o in Python and an o in Programming.`, `print("Python Programming".count("o"))`],
   [`What does f"{86.456:.1f}" give?`, `86.5`, [`86.4`, `86.456`, `86`], `:.1f keeps one decimal place and rounds.`, `print(f"{86.456:.1f}")`],
-  [`What is grade after marks = 72 with: if marks >= 90: A, elif marks >= 70: B, elif marks >= 50: C, else F?`, `B`, [`A`, `C`, `F`], `72 fails the first test and passes the second.`, `marks = 72
+  [`What is printed?
+
+marks = 72
+if marks >= 90:
+    grade = "A"
+elif marks >= 70:
+    grade = "B"
+elif marks >= 50:
+    grade = "C"
+else:
+    grade = "F"
+print(grade)`, `B`, [`A`, `C`, `F`], `72 fails the first test and passes the second.`, `marks = 72
 if marks >= 90:
     grade = "A"
 elif marks >= 70:
@@ -21,7 +32,14 @@ else:
 print(grade)`],
   [`What does print(72 > 50 and 72 < 80) show?`, `True`, [`False`, `72`, `An error`], `Both conditions are true.`, `print(72 > 50 and 72 < 80)`],
   [`What does continue do inside a loop?`, `Skips the rest of this round and goes to the next one`, [`Ends the loop`, `Repeats the same round`, `Stops the program`], `break ends the loop, continue only skips one round.`],
-  [`What is total after n = 5; total = 0; while n > 0: total += n; n -= 1?`, `15`, [`5`, `10`, `0`], `It adds 5 + 4 + 3 + 2 + 1.`, `n = 5
+  [`What is printed?
+
+n = 5
+total = 0
+while n > 0:
+    total += n
+    n -= 1
+print(total)`, `15`, [`5`, `10`, `0`], `It adds 5 + 4 + 3 + 2 + 1.`, `n = 5
 total = 0
 while n > 0:
     total += n
@@ -29,7 +47,12 @@ while n > 0:
 print(total)`],
   [`What does "*" * 3 give?`, `***`, [`3`, `* * *`, `An error`], `A string times a number repeats the string.`, `print("*" * 3)`],
   [`Which collection is written with round brackets and cannot be changed?`, `A tuple`, [`A list`, `A set`, `A dictionary`], `Tuples are immutable.`],
-  [`What is a after a = [1, 2, 3]; b = a; b.append(4)?`, `[1, 2, 3, 4]`, [`[1, 2, 3]`, `[4]`, `An error`], `b = a does not copy, so both names are the same list.`, `a = [1, 2, 3]
+  [`What is printed?
+
+a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)`, `[1, 2, 3, 4]`, [`[1, 2, 3]`, `[4]`, `An error`], `b = a does not copy, so both names are the same list.`, `a = [1, 2, 3]
 b = a
 b.append(4)
 print(a)`],
@@ -42,7 +65,11 @@ print(max(count, key=count.get))`],
   [`In the marks manager, what is stored in the dictionary students?`, `Each student name as a key and a list of marks as the value`, [`Each mark as a key and a name as the value`, `Only the names`, `A single total`], `The key is the name and the value is the list of marks.`],
   [`Why is a dictionary a good choice for the marks manager?`, `You can find a student directly by name`, [`It keeps the marks sorted`, `It stops marks being changed`, `It uses less typing`], `A dictionary looks values up by key.`],
   [`What does students.setdefault("Aman", []) do?`, `Creates an empty list for Aman only if Aman is missing`, [`Always replaces Aman's list with an empty one`, `Removes Aman`, `Gives an error if Aman is missing`], `If the key exists, nothing changes.`],
-  [`What is students after students = {}; students.setdefault("Aman", []).extend([90, 80])?`, `{'Aman': [90, 80]}`, [`{'Aman': []}`, `{}`, `{'Aman': [[90, 80]]}`], `setdefault gives a list, and extend adds the marks to it.`, `students = {}
+  [`What is printed?
+
+students = {}
+students.setdefault("Aman", []).extend([90, 80])
+print(students)`, `{'Aman': [90, 80]}`, [`{'Aman': []}`, `{}`, `{'Aman': [[90, 80]]}`], `setdefault gives a list, and extend adds the marks to it.`, `students = {}
 students.setdefault("Aman", []).extend([90, 80])
 print(students)`],
   [`What does sum(marks) / len(marks) work out for marks = [90, 80, 70]?`, `The average`, [`The total`, `The highest mark`, `The number of marks`], `The total divided by the count is the average.`],
@@ -62,10 +89,16 @@ print(sorted(averages, key=averages.get))`],
 print(students.pop("Zed", None))`],
   [`What does the contact book use as the value for each name?`, `Another dictionary with phone and email`, [`A list of numbers`, `A single string`, `A tuple of marks`], `That makes a nested dictionary.`],
   [`How do you read Ankit's phone from contacts = {"Ankit": {"phone": "912"}}?`, `contacts["Ankit"]["phone"]`, [`contacts["phone"]["Ankit"]`, `contacts["Ankit", "phone"]`, `contacts.phone.Ankit`], `One pair of brackets for each level.`],
-  [`What does [n for n in contacts if "am" in n.lower()] give for contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}?`, `['Aman', 'Amit']`, [`['Aman']`, `['Ankit']`, `['Aman', 'Amit', 'Ankit']`], `It keeps the names that contain am, ignoring capital letters.`, `contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}
+  [`What is printed?
+
+contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}
+print([n for n in contacts if "am" in n.lower()])`, `['Aman', 'Amit']`, [`['Aman']`, `['Ankit']`, `['Aman', 'Amit', 'Ankit']`], `It keeps the names that contain am, ignoring capital letters.`, `contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}
 print([n for n in contacts if "am" in n.lower()])`],
   [`Why use .lower() when searching for part of a name?`, `So "AM" and "am" match the same names`, [`To make the names shorter`, `To sort the names`, `To remove spaces`], `Lowercasing both sides makes the search ignore capital letters.`],
-  [`What does for name in sorted(contacts): do?`, `Goes through the names in alphabetical order`, [`Goes through the phone numbers`, `Removes the contacts`, `Goes through the names in the order added`], `sorted() on a dictionary sorts its keys.`],
+  [`What does this loop do?
+
+for name in sorted(contacts):
+    print(name)`, `Goes through the names in alphabetical order`, [`Goes through the phone numbers`, `Removes the contacts`, `Goes through the names in the order added`], `sorted() on a dictionary sorts its keys.`],
   [`What does contacts[name]["phone"] = "9000000000" do?`, `Changes the phone of an existing contact`, [`Deletes the contact`, `Makes a new dictionary called phone`, `Gives an error`], `It changes the value stored under phone inside the nested dictionary.`],
   [`What happens with del contacts["Zed"] when Zed is not a contact?`, `KeyError`, [`Nothing`, `TypeError`, `The first contact is deleted`], `That is why the program checks first, or uses pop with a default.`],
   [`Which code changes would make the marks manager show students who failed?`, `Loop through the averages and print the names with an average below 50`, [`Sort the names`, `Use a set of marks`, `Convert the dictionary to a tuple`], `A loop with an if on the average does it.`],

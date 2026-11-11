@@ -15,20 +15,41 @@ print(days[1:3])`],
   [`What does (1, 2, 2, 3, 2).count(2) give?`, `3`, [`2`, `1`, `5`], `count() says how many times 2 appears.`, `print((1, 2, 2, 3, 2).count(2))`],
   [`What does (1, 2, 2, 3, 2).index(3) give?`, `3`, [`4`, `2`, `1`], `index() gives the position of the first match, and 3 is at index 3.`, `print((1, 2, 2, 3, 2).index(3))`],
   [`Which are the only two tuple methods?`, `count() and index()`, [`append() and remove()`, `add() and discard()`, `sort() and reverse()`], `A tuple cannot change, so it only has methods that read.`],
-  [`What happens with t = (10, 20, 30); t[0] = 99?`, `TypeError`, [`t becomes (99, 20, 30)`, `IndexError`, `NameError`], `Tuples are immutable, so item assignment is not allowed.`],
-  [`What happens with t = (10, 20, 30); t.append(40)?`, `AttributeError`, [`t becomes (10, 20, 30, 40)`, `TypeError`, `ValueError`], `A tuple has no append method.`],
+  [`What happens here?
+
+t = (10, 20, 30)
+t[0] = 99`, `TypeError`, [`t becomes (99, 20, 30)`, `IndexError`, `NameError`], `Tuples are immutable, so item assignment is not allowed.`],
+  [`What happens here?
+
+t = (10, 20, 30)
+t.append(40)`, `AttributeError`, [`t becomes (10, 20, 30, 40)`, `TypeError`, `ValueError`], `A tuple has no append method.`],
   [`What does immutable mean?`, `It cannot be changed after it is created`, [`It cannot be printed`, `It can only hold numbers`, `It is stored in a file`], `Tuples, strings and numbers are immutable.`],
-  [`What is t after t = (10, 20, 30); t = t + (40,)?`, `(10, 20, 30, 40)`, [`(10, 20, 30, (40,))`, `(40, 10, 20, 30)`, `An error`], `You cannot change a tuple, but you can build a new one and reuse the name.`, `t = (10, 20, 30)
+  [`What is printed?
+
+t = (10, 20, 30)
+t = t + (40,)
+print(t)`, `(10, 20, 30, 40)`, [`(10, 20, 30, (40,))`, `(40, 10, 20, 30)`, `An error`], `You cannot change a tuple, but you can build a new one and reuse the name.`, `t = (10, 20, 30)
 t = t + (40,)
 print(t)`],
-  [`What is printed? t = (1, [2, 3]); t[1].append(4); print(t)`, `(1, [2, 3, 4])`, [`(1, [2, 3])`, `An error`, `(1, 2, 3, 4)`], `The tuple keeps the same list, and the list itself can still change.`, `t = (1, [2, 3])
+  [`What is printed?
+
+t = (1, [2, 3])
+t[1].append(4)
+print(t)`, `(1, [2, 3, 4])`, [`(1, [2, 3])`, `An error`, `(1, 2, 3, 4)`], `The tuple keeps the same list, and the list itself can still change.`, `t = (1, [2, 3])
 t[1].append(4)
 print(t)`],
   [`What does (1, 2) + (3, 4) give?`, `(1, 2, 3, 4)`, [`(4, 6)`, `((1, 2), (3, 4))`, `[1, 2, 3, 4]`], `+ joins two tuples into a new one.`, `print((1, 2) + (3, 4))`],
-  [`What is printed? x, y = (3, 4); print(x + y)`, `7`, [`34`, `(3, 4)`, `An error`], `Unpacking puts 3 in x and 4 in y.`, `x, y = (3, 4)
+  [`What is printed?
+
+x, y = (3, 4)
+print(x + y)`, `7`, [`34`, `(3, 4)`, `An error`], `Unpacking puts 3 in x and 4 in y.`, `x, y = (3, 4)
 print(x + y)`],
   [`What happens with a, b = (1, 2, 3)?`, `ValueError`, [`a is 1 and b is 2`, `TypeError`, `a is 1 and b is (2, 3)`], `The number of variables must match the number of items.`],
-  [`What is printed? a, b = 1, 2; a, b = b, a; print(a, b)`, `2 1`, [`1 2`, `2 2`, `1 1`], `Python can swap two variables in one line, with no third variable.`, `a, b = 1, 2
+  [`What is printed?
+
+a, b = 1, 2
+a, b = b, a
+print(a, b)`, `2 1`, [`1 2`, `2 2`, `1 1`], `Python can swap two variables in one line, with no third variable.`, `a, b = 1, 2
 a, b = b, a
 print(a, b)`],
   [`What are first and rest after first, *rest = (1, 2, 3, 4)?`, `1 and [2, 3, 4]`, [`1 and (2, 3, 4)`, `1 and 2`, `(1, 2, 3, 4) and []`], `The starred variable collects the extra items into a list.`, `first, *rest = (1, 2, 3, 4)
@@ -39,18 +60,32 @@ print(mid)`],
   [`What type does return min(nums), max(nums) give back?`, `tuple`, [`list`, `set`, `Two separate values`], `Returning several values with commas returns one tuple.`, `def f(nums):
     return min(nums), max(nums)
 print(type(f([1, 2])).__name__)`],
-  [`What is printed? for i, ch in enumerate("ab"): print(i, ch)`, `0 a 1 b`, [`a b`, `0 1`, `1 a 2 b`], `enumerate gives (index, item) tuples, and the loop unpacks them.`, `print(" ".join(f"{i} {ch}" for i, ch in enumerate("ab")))`],
+  [`What is printed?
+
+for i, ch in enumerate("ab"):
+    print(i, ch)`, `0 a 1 b`, [`a b`, `0 1`, `1 a 2 b`], `enumerate gives (index, item) tuples, and the loop unpacks them.`, `print(" ".join(f"{i} {ch}" for i, ch in enumerate("ab")))`],
   [`What is a set in Python?`, `A collection of unique items with no order`, [`An ordered collection that allows duplicates`, `A collection that cannot be changed`, `A block of text`], `Sets remove duplicates and have no order.`],
   [`Which of these is a set?`, `{1, 2, 3}`, [`[1, 2, 3]`, `(1, 2, 3)`, `"1, 2, 3"`], `Sets are written with curly brackets.`],
-  [`What is printed? s = {3, 1, 2, 3, 1}; print(len(s))`, `3`, [`5`, `2`, `6`], `The duplicates are removed, leaving 1, 2 and 3.`, `s = {3, 1, 2, 3, 1}
+  [`What is printed?
+
+s = {3, 1, 2, 3, 1}
+print(len(s))`, `3`, [`5`, `2`, `6`], `The duplicates are removed, leaving 1, 2 and 3.`, `s = {3, 1, 2, 3, 1}
 print(len(s))`],
   [`How do you make an empty set?`, `set()`, [`{}`, `[]`, `()`], `{} is an empty dictionary.`],
   [`What does sorted(set([5, 3, 5, 1, 3])) give?`, `[1, 3, 5]`, [`[5, 3, 5, 1, 3]`, `[1, 3, 3, 5, 5]`, `{1, 3, 5}`], `set() removes duplicates and sorted() puts the result in order, as a list.`, `print(sorted(set([5, 3, 5, 1, 3])))`],
-  [`What happens with s = {1, 2, 3}; print(s[0])?`, `TypeError`, [`1`, `IndexError`, `{1}`], `Sets have no order, so they cannot be indexed.`],
+  [`What happens here?
+
+s = {1, 2, 3}
+print(s[0])`, `TypeError`, [`1`, `IndexError`, `{1}`], `Sets have no order, so they cannot be indexed.`],
   [`What happens with s = {[1, 2], 3}?`, `TypeError, a list cannot go inside a set`, [`A set with a list and 3`, `The list is removed`, `NameError`], `Set items must be immutable, so a tuple (1, 2) is fine but a list is not.`],
   [`What is printed? print(2 in {1, 2, 3})`, `True`, [`False`, `2`, `An error`], `in checks membership, and it is very fast for sets.`, `print(2 in {1, 2, 3})`],
   [`What is the difference between remove() and discard()?`, `remove() gives an error if the item is missing, discard() does not`, [`discard() gives an error if the item is missing, remove() does not`, `They are exactly the same`, `remove() removes all items`], `Use discard() when you are not sure the item is in the set.`],
-  [`What is s after s = {1, 2}; s.add(3); s.add(2)?`, `{1, 2, 3}`, [`{1, 2, 3, 2}`, `{1, 2}`, `{3}`], `Adding an item that is already there changes nothing.`, `s = {1, 2}
+  [`What is printed?
+
+s = {1, 2}
+s.add(3)
+s.add(2)
+print(s)`, `{1, 2, 3}`, [`{1, 2, 3, 2}`, `{1, 2}`, `{3}`], `Adding an item that is already there changes nothing.`, `s = {1, 2}
 s.add(3)
 s.add(2)
 print(s)`],

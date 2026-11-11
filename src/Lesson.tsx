@@ -126,6 +126,8 @@ function toBands(sections: Section[]): Band[] {
 
 // Put quiz slides among the lesson slides at random slide numbers, different on each visit. The lesson is cut into equal
 // zones with one quiz in each, so they spread out and never land next to each other, on the first two slides or at the end.
+const QUIZ_SIZE = 3 // questions on each quiz slide
+
 function withQuizzes(bands: Band[]): Band[] {
   const count = Math.min(4, Math.max(1, Math.round(bands.length / 8)))
   const first = 2
@@ -134,7 +136,7 @@ function withQuizzes(bands: Band[]): Band[] {
   const out = [...bands]
   for (let n = count - 1; n >= 0; n--) {
     const spot = first + n * zone + Math.floor(Math.random() * Math.max(1, zone - 1))
-    out.splice(spot, 0, { id: `quiz-${n + 1}`, eyebrow: 'Check yourself', title: 'Quick quiz', blocks: [], quiz: spot / bands.length })
+    out.splice(spot, 0, { id: `quiz-${n + 1}`, eyebrow: `Check yourself · ${QUIZ_SIZE} questions`, title: 'Quick quiz', blocks: [], quiz: spot / bands.length })
   }
   return out
 }
@@ -270,7 +272,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
               <ul className="hero-facts">
                 <li><b>{bands.length}</b> slides</li>
                 <li><b>{tryItCount}</b> code boxes to run</li>
-                {quizCount > 0 && <li><b>{quizCount}</b> quick {quizCount === 1 ? 'quiz' : 'quizzes'}</li>}
+                {quizCount > 0 && <li><b>{quizCount}</b> quick {quizCount === 1 ? 'quiz' : 'quizzes'}, <b>{quizCount * QUIZ_SIZE}</b> questions</li>}
                 {lesson.tag && <li>{lesson.tag}</li>}
               </ul>
               <a href={'#' + bands[0].id} className="scroll-cue">Start reading ↓</a>
@@ -289,7 +291,7 @@ function Slides({ lesson }: { lesson: LessonData }) {
               <Art name={b.art} id={b.id} />
             </div>
             <div className="notes">
-              {b.quiz !== undefined && <Quiz session={session} progress={b.quiz} />}
+              {b.quiz !== undefined && <Quiz session={session} progress={b.quiz} count={QUIZ_SIZE} />}
               {b.blocks.map((blk, k) => (
                 <BlockView key={k} block={blk} />
               ))}

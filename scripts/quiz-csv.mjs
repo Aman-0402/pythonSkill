@@ -28,6 +28,11 @@ const only = onlyArg ? Number(onlyArg) : null
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F']
 const HEADER = ['Question', ...LETTERS.map((l) => `Option ${l}`), 'Correct', 'Explanation']
 
+// A question can hold code: a prompt, a blank line, then the code on its own lines (the website shows it as a code
+// block). A CSV cell stays on one line for the quiz app, so the code lines are joined with " ; ", keeping the indentation
+// spaces, the way the questions were written before.
+const oneLine = (q) => q.replace(/\n\n/, ' ').split('\n').join(' ; ')
+
 // small seeded random generator, so regenerating gives the same file
 const rng = (seed) => () => {
   seed = (seed + 0x6d2b79f5) | 0
@@ -68,7 +73,7 @@ for (let n = 1; n <= lessons.length; n++) {
     if (!question.trim() || !why.trim()) fail(`${tag}: empty question or explanation`)
     if (seen.has(question)) fail(`${tag}: duplicate question`)
     seen.add(question)
-    for (const text of [question, why, ...options]) {
+    for (const text of [oneLine(question), why, ...options]) {
       if (/[^\x20-\x7e]/.test(text)) fail(`${tag}: non-ASCII or control character in "${text.slice(0, 40)}"`)
     }
     if (run) {
@@ -90,7 +95,7 @@ for (let n = 1; n <= lessons.length; n++) {
     tally[correct]++
     const others = wrong.map((o) => ({ o, r: random() })).sort((a, b) => a.r - b.r).map((x) => x.o)
     const order = room.map((l) => ({ o: l === correct ? right : others.shift() }))
-    const cells = [question, ...LETTERS.map((_, k) => (order[k] ? order[k].o : '')), correct, why]
+    const cells = [oneLine(question), ...LETTERS.map((_, k) => (order[k] ? order[k].o : '')), correct, why]
     rows.push(cells.map(csvCell).join(','))
   })
 

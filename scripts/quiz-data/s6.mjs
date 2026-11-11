@@ -10,7 +10,11 @@ print(" ".join(buf.getvalue().split()))`
 
 export default [
   [`In a nested loop, how often does the inner loop run for each round of the outer loop?`, `From start to finish, every time`, [`Only once`, `Only in the first round`, `Never`], `For every round of the outer loop, the inner loop runs completely.`],
-  [`How many lines are printed by for i in range(1, 3): for j in range(1, 4): print(i, j) ?`, `6`, [`3`, `5`, `9`], `2 outer rounds times 3 inner rounds is 6.`, `count = 0
+  [`How many lines are printed?
+
+for i in range(1, 3):
+    for j in range(1, 4):
+        print(i, j)`, `6`, [`3`, `5`, `9`], `2 outer rounds times 3 inner rounds is 6.`, `count = 0
 for i in range(1, 3):
     for j in range(1, 4):
         count += 1
@@ -18,17 +22,33 @@ print(count)`],
   [`In a pattern program, what does the outer loop usually control?`, `The rows`, [`The columns only`, `The colours`, `The file name`], `The outer loop counts the rows, and the inner part prints what is inside each row.`],
   [`What does print("*", end="") do?`, `Prints a star and stays on the same line`, [`Prints a star and starts a new line`, `Prints nothing`, `Prints the word end`], `end="" removes the new line that print normally adds.`],
   [`Why is an empty print() used after the inner loop in a star rectangle?`, `To move to a new line after each row`, [`To print a blank star`, `To stop the program`, `To start a new loop`], `Without it the whole pattern would be on one line.`],
-  [`What does this print? for row in range(3): for col in range(5): print("*", end=""); print()`, `***** ***** *****`, [`*****`, `* * * * *`, `*** ***`], `It prints a rectangle of 3 rows with 5 stars each.`, flat(`for row in range(3):
+  [`What is printed?
+
+for row in range(3):
+    for col in range(5):
+        print("*", end="")
+    print()`, `***** ***** *****`, [`*****`, `* * * * *`, `*** ***`], `It prints a rectangle of 3 rows with 5 stars each.`, flat(`for row in range(3):
     for col in range(5):
         print("*", end="")
     print()`)],
-  [`How many stars are printed in the last row of for i in range(1, 6): print("*" * i) ?`, `5`, [`6`, `1`, `4`], `Row i has i stars, and the last value of i is 5.`, `for i in range(1, 6):
+  [`How many stars are printed in the last row?
+
+for i in range(1, 6):
+    print("*" * i)`, `5`, [`6`, `1`, `4`], `Row i has i stars, and the last value of i is 5.`, `for i in range(1, 6):
     row = "*" * i
 print(len(row))`],
   [`Which loop prints an inverted triangle that starts with 5 stars and ends with 1?`, `for i in range(5, 0, -1): print("*" * i)`, [`for i in range(1, 6): print("*" * i)`, `for i in range(5): print("*" * i)`, `for i in range(0, 5, -1): print("*" * i)`], `Counting down from 5 to 1 makes the rows shrink.`],
-  [`What does this print? for i in range(1, 4): print(str(i) * i)`, `1 22 333`, [`1 2 3`, `1 12 123`, `111 222 333`], `Row i repeats the text of i, i times.`, flat(`for i in range(1, 4):
+  [`What is printed?
+
+for i in range(1, 4):
+    print(str(i) * i)`, `1 22 333`, [`1 2 3`, `1 12 123`, `111 222 333`], `Row i repeats the text of i, i times.`, flat(`for i in range(1, 4):
     print(str(i) * i)`)],
-  [`What does the number triangle for i in range(1, 4): for j in range(1, i + 1): print(j, end=" "); print() print?`, `1 1 2 1 2 3`, [`1 2 3 1 2 3 1 2 3`, `1 1 1 2 2 2`, `1 2 3`], `Row i prints the numbers from 1 to i.`, flat(`for i in range(1, 4):
+  [`What is printed?
+
+for i in range(1, 4):
+    for j in range(1, i + 1):
+        print(j, end=" ")
+    print()`, `1 1 2 1 2 3`, [`1 2 3 1 2 3 1 2 3`, `1 1 1 2 2 2`, `1 2 3`], `Row i prints the numbers from 1 to i.`, flat(`for i in range(1, 4):
     for j in range(1, i + 1):
         print(j, end=" ")
     print()`)],
@@ -65,7 +85,10 @@ for _ in range(10):
     print(a, end=" ")
     a, b = b, a + b`)],
   [`In the Fibonacci program, what does a, b = b, a + b do?`, `Updates both values at once`, [`Swaps a and b only`, `Adds a and b to a list`, `Stops the loop`], `The next term becomes b and the new b is the sum, so no third variable is needed.`],
-  [`In for _ in range(10): what is the underscore?`, `A loop variable that we do not use`, [`A keyword`, `A string`, `An error`], `_ is a common name for a value you do not need.`],
+  [`In this loop, what is the underscore?
+
+for _ in range(10):
+    print("Hi")`, `A loop variable that we do not use`, [`A keyword`, `A string`, `An error`], `_ is a common name for a value you do not need.`],
   [`Which loop is the better choice for printing exactly 10 Fibonacci terms?`, `A for loop with range(10)`, [`A while loop with no limit`, `An if statement`, `A comment`], `You know the number of terms in advance.`],
   [`What is the reverse of the number 1221 found with rev = rev * 10 + n % 10 in a while loop?`, `1221`, [`1212`, `2112`, `1122`], `1221 reads the same forwards and backwards, so it is a palindrome number.`, `n = 1221
 rev = 0
@@ -80,13 +103,23 @@ while n > 0:
     n //= 10
 print(rev)`],
   [`What is a palindrome number?`, `A number that reads the same forwards and backwards`, [`A number with only even digits`, `A number divisible by itself`, `A number with 3 digits`], `For example 121 and 1221.`],
-  [`What is the GCD of 48 and 18 found with the loop while b != 0: a, b = b, a % b ?`, `6`, [`3`, `9`, `12`], `This is the Euclid method. The last non-zero value is 6.`, `a, b = 48, 18
+  [`What is printed?
+
+a, b = 48, 18
+while b != 0:
+    a, b = b, a % b
+print(a)`, `6`, [`3`, `9`, `12`], `This is the Euclid method. The last non-zero value is 6.`, `a, b = 48, 18
 while b != 0:
     a, b = b, a % b
 print(a)`],
   [`Which mistake puts the whole pattern on one line?`, `Forgetting print() after the inner loop`, [`Using range(1, 6)`, `Using a colon`, `Using 4 spaces`], `The empty print() at the outer loop level ends each row.`],
   [`Which range gives the numbers from 1 to n including n?`, `range(1, n + 1)`, [`range(1, n)`, `range(n)`, `range(1, n - 1)`], `The stop number is never included.`],
-  [`What does this print? for i in range(1, 4): for j in range(i): print(i, end=" "); print()`, `1 2 2 3 3 3`, [`1 2 3`, `1 1 1 2 2 2`, `1 22 333`], `Row i prints the number i, i times.`, flat(`for i in range(1, 4):
+  [`What is printed?
+
+for i in range(1, 4):
+    for j in range(i):
+        print(i, end=" ")
+    print()`, `1 2 2 3 3 3`, [`1 2 3`, `1 1 1 2 2 2`, `1 22 333`], `Row i prints the number i, i times.`, flat(`for i in range(1, 4):
     for j in range(i):
         print(i, end=" ")
     print()`)],

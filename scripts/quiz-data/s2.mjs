@@ -3,7 +3,11 @@
 export default [
   [`What is a variable?`, `A named container that stores a value in memory`, [`A fixed number that can never change`, `A kind of loop`, `A comment in the code`], `A variable has a name (the label) and a value (the thing inside), like a labelled box.`],
   [`What does the = sign mean in Python?`, `Store the right side in the left side (assignment)`, [`Both sides are equal, as in maths`, `Compare two values`, `Add two values`], `= is the assignment operator. To compare values you use ==.`],
-  [`What is printed? age = 25; age = 26; print(age)`, `26`, [`25`, `51`, `An error`], `A variable can be changed at any time. The newest value replaces the old one.`, `age = 25
+  [`What is printed?
+
+age = 25
+age = 26
+print(age)`, `26`, [`25`, `51`, `An error`], `A variable can be changed at any time. The newest value replaces the old one.`, `age = 25
 age = 26
 print(age)`],
   [`What does print(b) show after a, b, c = 1, 2, 3 ?`, `2`, [`1`, `3`, `(1, 2, 3)`], `Each name gets the value in the same position: a is 1, b is 2 and c is 3.`, `a, b, c = 1, 2, 3
@@ -22,7 +26,11 @@ print(x + y)`],
   [`What is the data type of None?`, `NoneType`, [`bool`, `str`, `int`], `None means no value, and its type is NoneType.`, `print(type(None).__name__)`],
   [`Which one is written correctly as a Python boolean?`, `True`, [`true`, `TRUE`, `yes`], `True and False start with a capital letter.`],
   [`Which function tells you the type of a value?`, `type()`, [`kind()`, `typeof()`, `class()`], `type(10) shows the type of 10.`],
-  [`What is printed? x = 5; x = "five"; print(type(x).__name__)`, `str`, [`int`, `float`, `An error`], `Python is dynamically typed, so one variable can hold different types at different times.`, `x = 5
+  [`What is printed?
+
+x = 5
+x = "five"
+print(type(x).__name__)`, `str`, [`int`, `float`, `An error`], `Python is dynamically typed, so one variable can hold different types at different times.`, `x = 5
 x = "five"
 print(type(x).__name__)`],
   [`What type of value does input() always return?`, `A string (str)`, [`An integer`, `A float`, `A boolean`], `Even if the user types 5, input() gives the text "5". Convert it with int() or float() when you need a number.`],
@@ -36,7 +44,12 @@ print(type(x).__name__)`],
   [`What does bool("hi") give?`, `True`, [`False`, `"hi"`, `An error`], `Any non-empty string is True.`, `print(bool("hi"))`],
   [`What does print(10 // 3) show?`, `3`, [`3.3333333333333335`, `1`, `4`], `// is floor division.`, `print(10 // 3)`],
   [`What does print(4 / 2) show?`, `2.0`, [`2`, `"2"`, `0.5`], `/ always returns a float, even when the answer is a whole number.`, `print(4 / 2)`],
-  [`What is printed? x = 10; x += 5; x *= 2; print(x)`, `30`, [`25`, `20`, `15`], `x += 5 makes it 15, and then x *= 2 makes it 30.`, `x = 10
+  [`What is printed?
+
+x = 10
+x += 5
+x *= 2
+print(x)`, `30`, [`25`, `20`, `15`], `x += 5 makes it 15, and then x *= 2 makes it 30.`, `x = 10
 x += 5
 x *= 2
 print(x)`],
@@ -44,7 +57,11 @@ print(x)`],
   [`What does print((2 + 3) * 4) show?`, `20`, [`14`, `24`, `9`], `Brackets come first: 2 + 3 is 5, times 4 is 20.`, `print((2 + 3) * 4)`],
   [`What is the correct order of operator precedence from highest to lowest?`, `Brackets, then **, then * / // %, then + -`, [`+ -, then * / // %, then **, then brackets`, `** first, then brackets, then + -, then * /`, `* / first, then brackets, then ** , then + -`], `Brackets are first. The power operator ** comes next, then multiplication, division, floor division and remainder, and last addition and subtraction.`],
   [`Which line prints Age: 25 without an error?`, `print("Age: " + str(25))`, [`print("Age: " + 25)`, `print(Age: 25)`, `print("Age:" ++ 25)`], `Mixing a string and a number with + needs str(). A comma in print() works without it: print("Age:", 25).`],
-  [`What is printed? a, b = 1, 2; a, b = b, a; print(a, b)`, `2 1`, [`1 2`, `1 1`, `2 2`], `a, b = b, a swaps the two values without a third variable.`, `a, b = 1, 2
+  [`What is printed?
+
+a, b = 1, 2
+a, b = b, a
+print(a, b)`, `2 1`, [`1 2`, `1 1`, `2 2`], `a, b = b, a swaps the two values without a third variable.`, `a, b = 1, 2
 a, b = b, a
 print(a, b)`],
   [`What does print(a ** b) show for a, b = 10, 3 ?`, `1000`, [`30`, `13`, `100`], `** is power: 10 to the power 3 is 1000.`, `a, b = 10, 3

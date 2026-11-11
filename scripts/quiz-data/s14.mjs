@@ -28,7 +28,10 @@ print(f.closed)`],
     f.write("apple\\nbanana\\n")
 with open("f.txt") as f:
     print(f.readlines())`],
-  [`What does for line in f: do?`, `Goes through the file one line at a time`, [`Reads the whole file at once`, `Reads one character at a time`, `Writes lines to the file`], `This works well even for big files.`],
+  [`What does this loop do?
+
+for line in f:
+    print(line)`, `Goes through the file one line at a time`, [`Reads the whole file at once`, `Reads one character at a time`, `Writes lines to the file`], `This works well even for big files.`],
   [`What does line.strip() remove?`, `The spaces and newline at both ends`, [`All the vowels`, `Only the first letter`, `Every space in the line`], `strip cleans the ends of the text.`],
   [`What type is everything read from a text file?`, `str`, [`int`, `float`, `list`], `Convert with int() or float() before doing maths.`],
   [`What is the total for a file with the lines 70, 85 and 90 after adding int(line) for each line?`, `245`, [`7085`, `0`, `An error`], `int() turns each line into a number.`, `with open("m.txt", "w") as f:
@@ -45,12 +48,22 @@ with open("p.txt") as f:
     print(repr(f.read()))`],
   [`What does f.seek(0) do?`, `Jumps back to the start of the file`, [`Closes the file`, `Deletes the first line`, `Reads the first line`], `Then you can read the file again.`],
   [`What does f.tell() give?`, `The current position in the file`, [`The size of the file`, `The number of lines`, `The file name`], `It is how far you are into the file.`],
-  [`What is in w.txt after writing first, then opening again with "w" and writing second?`, `second`, [`first and second`, `first`, `Nothing`], `The second open with w erased the file.`, `with open("w.txt", "w") as f:
+  [`What is in w.txt after this code?
+
+with open("w.txt", "w") as f:
+    f.write("first")
+with open("w.txt", "w") as f:
+    f.write("second")`, `second`, [`first and second`, `first`, `Nothing`], `The second open with w erased the file.`, `with open("w.txt", "w") as f:
     f.write("first")
 with open("w.txt", "w") as f:
     f.write("second")
 print(open("w.txt").read())`],
-  [`What is in log.txt after writing Start, then appending Step with mode a?`, `Start then Step`, [`Only Step`, `Only Start`, `Nothing`], `Append keeps the old content and adds to the end.`],
+  [`What is in log.txt after this code?
+
+with open("log.txt", "w") as f:
+    f.write("Start\\n")
+with open("log.txt", "a") as f:
+    f.write("Step\\n")`, `Start then Step`, [`Only Step`, `Only Start`, `Nothing`], `Append keeps the old content and adds to the end.`],
   [`Which line counts the words in a line of text?`, `len(line.split())`, [`len(line)`, `line.count()`, `line.words()`], `split gives a list of words, and len counts them.`],
   [`What does enumerate(f, start=1) give while reading a file?`, `Line numbers starting at 1 with each line`, [`Only the line numbers`, `The words in each line`, `The file size`], `It pairs a counter with each line.`],
   [`Can one with statement open two files?`, `Yes, separate them with a comma`, [`No, only one`, `Only if both are text`, `Only in append mode`], `For example with open(a) as src, open(b, "w") as dst.`],

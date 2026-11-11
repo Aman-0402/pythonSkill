@@ -32,7 +32,11 @@ print(s[-3])`],
   [`What does "123".isdigit() give?`, `True`, [`False`, `123`, `An error`], `isdigit() is True when the string has only digits.`, `print("123".isdigit())`],
   [`What does "a b c".split() give?`, `['a', 'b', 'c']`, [`abc`, `a-b-c`, `['a b c']`], `split() breaks the string into a list of words.`, `print("a b c".split())`],
   [`What does "-".join(["a", "b"]) give?`, `a-b`, [`ab-`, `-a-b`, `['a-b']`], `join() puts the text between the items of the list.`, `print("-".join(["a", "b"]))`],
-  [`What is printed? name = "aman"; name.upper(); print(name)`, `aman`, [`AMAN`, `Aman`, `None`], `String methods return a new string. They do not change the original, so name is still aman.`, `name = "aman"
+  [`What is printed?
+
+name = "aman"
+name.upper()
+print(name)`, `aman`, [`AMAN`, `Aman`, `None`], `String methods return a new string. They do not change the original, so name is still aman.`, `name = "aman"
 name.upper()
 print(name)`],
   [`What does print("Hello" + "World") show?`, `HelloWorld`, [`Hello World`, `Hello+World`, `An error`], `+ joins strings (concatenation) without adding a space.`, `print("Hello" + "World")`],

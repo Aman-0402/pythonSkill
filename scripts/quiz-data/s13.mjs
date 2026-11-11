@@ -62,7 +62,10 @@ print(Counter("banana").most_common(1))`],
   [`Which file marks a folder as a package?`, `__init__.py`, [`package.py`, `main.py`, `setup.txt`], `It can be empty.`],
   [`What does from tools import maths mean?`, `Import the maths module from the tools package`, [`Import tools from maths`, `Import every module in Python`, `Run the tools file`], `from package import module.`],
   [`What is the value of __name__ when a file is run directly?`, `__main__`, [`main`, `__file__`, `None`], `Python sets it to "__main__" for the file you start.`, `print(__name__)`],
-  [`When does code under if __name__ == "__main__": run?`, `Only when the file is started directly, not when it is imported`, [`Only when it is imported`, `Never`, `Every time any file runs`], `This keeps test code quiet when imported.`],
+  [`When does the code under this line run?
+
+if __name__ == "__main__":
+    main()`, `Only when the file is started directly, not when it is imported`, [`Only when it is imported`, `Never`, `Every time any file runs`], `This keeps test code quiet when imported.`],
   [`What is pip?`, `The tool that installs Python packages`, [`A Python loop`, `A text editor`, `A kind of variable`], `pip downloads packages from PyPI.`],
   [`Where do you type pip install commands?`, `In the terminal (Command Prompt or PowerShell)`, [`Inside a Python file`, `In the Try it box`, `In a print statement`], `pip is a command line tool.`],
   [`Which command installs the requests package?`, `pip install requests`, [`import requests`, `python requests`, `pip get requests`], `pip install name downloads and installs it.`],
