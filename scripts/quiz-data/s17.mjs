@@ -7,7 +7,13 @@ export default [
 print(np.array([10, 20, 30, 40]) // 3)`],
   [`What does np.array([10, 20, 30, 40]) % 3 give?`, `[1 2 0 1]`, [`[ 3  6 10 13]`, `[0 0 0 0]`, `[1 1 1 1]`], `% gives the remainder of each item.`, `import numpy as np
 print(np.array([10, 20, 30, 40]) % 3)`],
-  [`What is the total cost for price [100, 250, 80] and qty [2, 1, 5]?`, `850`, [`430`, `1000`, `600`], `200 + 250 + 400 is 850.`, `import numpy as np
+  [`What is the total cost?
+
+import numpy as np
+
+price = np.array([100, 250, 80])
+qty = np.array([2, 1, 5])
+print((price * qty).sum())`, `850`, [`430`, `1000`, `600`], `200 + 250 + 400 is 850.`, `import numpy as np
 print((np.array([100, 250, 80]) * np.array([2, 1, 5])).sum())`],
   [`What does np.sqrt(np.array([1, 4, 9, 16])) give?`, `[1. 2. 3. 4.]`, [`[1 2 3 4]`, `[1 16 81 256]`, `10.0`], `The square root of each item, as floats.`, `import numpy as np
 print(np.sqrt(np.array([1, 4, 9, 16])))`],
@@ -30,7 +36,12 @@ print(np.array([0, 25, 37, 100]) * 9 / 5 + 32)`],
 print(np.clip(np.array([-5, 3, 12, 7, 20]), 0, 10))`],
   [`What does (marks > 90).any() mean?`, `True if at least one mark is above 90`, [`True if every mark is above 90`, `The number of marks above 90`, `The biggest mark`], `any needs just one match.`],
   [`What does (marks > 30).all() mean?`, `True only if every mark is above 30`, [`True if one mark is above 30`, `The number of marks`, `The smallest mark`], `all needs every item to match.`],
-  [`How many marks are 50 or more in [45, 82, 67, 91, 38, 74]?`, `4`, [`2`, `6`, `3`], `82, 67, 91 and 74 are 50 or more.`, `import numpy as np
+  [`What is printed?
+
+import numpy as np
+
+marks = np.array([45, 82, 67, 91, 38, 74])
+print((marks >= 50).sum())`, `4`, [`2`, `6`, `3`], `82, 67, 91 and 74 are 50 or more.`, `import numpy as np
 marks = np.array([45, 82, 67, 91, 38, 74])
 print((marks >= 50).sum())`],
   [`What does np.count_nonzero(marks < 50) count?`, `How many marks are below 50`, [`The sum of the marks below 50`, `The biggest mark`, `The marks equal to 0`], `True counts as non-zero.`],

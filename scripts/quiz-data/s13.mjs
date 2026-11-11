@@ -28,7 +28,14 @@ print(math.pow(2, 3))`],
   [`What does random.shuffle(cards) return?`, `None, because it changes the list in place`, [`A new shuffled list`, `The first card`, `The number of cards`], `Do not write cards = random.shuffle(cards).`],
   [`How is random.sample(items, 3) different from choosing 3 times with choice?`, `sample never picks the same item twice`, [`sample always picks the first 3`, `sample gives a float`, `There is no difference`], `Each item can appear at most once in a sample.`],
   [`What does random.seed(10) do?`, `Makes the random numbers repeat the same way each time`, [`Makes the numbers truly random`, `Deletes the random module`, `Stops randint working`], `The same seed gives the same sequence.`],
-  [`What is printed by seeding with 10 twice and comparing the two lists?`, `True`, [`False`, `None`, `An error`], `Same seed, same numbers.`, `import random
+  [`What is printed?
+
+import random
+random.seed(10)
+a = [random.randint(1, 100) for _ in range(3)]
+random.seed(10)
+b = [random.randint(1, 100) for _ in range(3)]
+print(a == b)`, `True`, [`False`, `None`, `An error`], `Same seed, same numbers.`, `import random
 random.seed(10)
 a = [random.randint(1, 100) for _ in range(3)]
 random.seed(10)

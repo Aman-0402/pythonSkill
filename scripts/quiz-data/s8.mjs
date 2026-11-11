@@ -8,9 +8,13 @@ export default [
   [`What is the type of (5)?`, `int`, [`tuple`, `list`, `str`], `Brackets alone do not make a tuple. The comma does, so (5,) is the tuple.`, `print(type((5)).__name__)`],
   [`What is the type of (5,)?`, `tuple`, [`int`, `list`, `set`], `The trailing comma makes it a one-item tuple.`, `print(type((5,)).__name__)`],
   [`What does tuple("abc") give?`, `('a', 'b', 'c')`, [`('abc',)`, `['a', 'b', 'c']`, `{'a', 'b', 'c'}`], `tuple() turns the characters of a string into separate items.`, `print(tuple("abc"))`],
-  [`What does days[-1] give when days = ("Mon", "Tue", "Wed", "Thu", "Fri")?`, `Fri`, [`Mon`, `Thu`, `An error`], `-1 is the last item, as in lists.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
+  [`What does days[-1] give?
+
+days = ("Mon", "Tue", "Wed", "Thu", "Fri")`, `Fri`, [`Mon`, `Thu`, `An error`], `-1 is the last item, as in lists.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
 print(days[-1])`],
-  [`What does days[1:3] give when days = ("Mon", "Tue", "Wed", "Thu", "Fri")?`, `('Tue', 'Wed')`, [`('Mon', 'Tue', 'Wed')`, `('Tue', 'Wed', 'Thu')`, `['Tue', 'Wed']`], `The stop index is not included, and slicing a tuple gives a tuple.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
+  [`What does days[1:3] give?
+
+days = ("Mon", "Tue", "Wed", "Thu", "Fri")`, `('Tue', 'Wed')`, [`('Mon', 'Tue', 'Wed')`, `('Tue', 'Wed', 'Thu')`, `['Tue', 'Wed']`], `The stop index is not included, and slicing a tuple gives a tuple.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
 print(days[1:3])`],
   [`What does (1, 2, 2, 3, 2).count(2) give?`, `3`, [`2`, `1`, `5`], `count() says how many times 2 appears.`, `print((1, 2, 2, 3, 2).count(2))`],
   [`What does (1, 2, 2, 3, 2).index(3) give?`, `3`, [`4`, `2`, `1`], `index() gives the position of the first match, and 3 is at index 3.`, `print((1, 2, 2, 3, 2).index(3))`],
@@ -44,7 +48,9 @@ print(t)`],
 x, y = (3, 4)
 print(x + y)`, `7`, [`34`, `(3, 4)`, `An error`], `Unpacking puts 3 in x and 4 in y.`, `x, y = (3, 4)
 print(x + y)`],
-  [`What happens with a, b = (1, 2, 3)?`, `ValueError`, [`a is 1 and b is 2`, `TypeError`, `a is 1 and b is (2, 3)`], `The number of variables must match the number of items.`],
+  [`What happens here?
+
+a, b = (1, 2, 3)`, `ValueError`, [`a is 1 and b is 2`, `TypeError`, `a is 1 and b is (2, 3)`], `The number of variables must match the number of items.`],
   [`What is printed?
 
 a, b = 1, 2
@@ -52,12 +58,19 @@ a, b = b, a
 print(a, b)`, `2 1`, [`1 2`, `2 2`, `1 1`], `Python can swap two variables in one line, with no third variable.`, `a, b = 1, 2
 a, b = b, a
 print(a, b)`],
-  [`What are first and rest after first, *rest = (1, 2, 3, 4)?`, `1 and [2, 3, 4]`, [`1 and (2, 3, 4)`, `1 and 2`, `(1, 2, 3, 4) and []`], `The starred variable collects the extra items into a list.`, `first, *rest = (1, 2, 3, 4)
+  [`What are first and rest after this line?
+
+first, *rest = (1, 2, 3, 4)`, `1 and [2, 3, 4]`, [`1 and (2, 3, 4)`, `1 and 2`, `(1, 2, 3, 4) and []`], `The starred variable collects the extra items into a list.`, `first, *rest = (1, 2, 3, 4)
 print(first, "and", rest)`],
-  [`What is mid after a, *mid, z = (1, 2, 3, 4, 5)?`, `[2, 3, 4]`, [`(2, 3, 4)`, `[1, 5]`, `2`], `The star takes everything between the first and the last.`, `a, *mid, z = (1, 2, 3, 4, 5)
+  [`What is mid after this line?
+
+a, *mid, z = (1, 2, 3, 4, 5)`, `[2, 3, 4]`, [`(2, 3, 4)`, `[1, 5]`, `2`], `The star takes everything between the first and the last.`, `a, *mid, z = (1, 2, 3, 4, 5)
 print(mid)`],
   [`How many starred variables are allowed in one unpacking?`, `Only one`, [`As many as you like`, `Two`, `None`], `With two stars Python could not tell how to split the items.`],
-  [`What type does return min(nums), max(nums) give back?`, `tuple`, [`list`, `set`, `Two separate values`], `Returning several values with commas returns one tuple.`, `def f(nums):
+  [`What type does min_max give back?
+
+def min_max(nums):
+    return min(nums), max(nums)`, `tuple`, [`list`, `set`, `Two separate values`], `Returning several values with commas returns one tuple.`, `def f(nums):
     return min(nums), max(nums)
 print(type(f([1, 2])).__name__)`],
   [`What is printed?
@@ -77,7 +90,9 @@ print(len(s))`],
 
 s = {1, 2, 3}
 print(s[0])`, `TypeError`, [`1`, `IndexError`, `{1}`], `Sets have no order, so they cannot be indexed.`],
-  [`What happens with s = {[1, 2], 3}?`, `TypeError, a list cannot go inside a set`, [`A set with a list and 3`, `The list is removed`, `NameError`], `Set items must be immutable, so a tuple (1, 2) is fine but a list is not.`],
+  [`What happens here?
+
+s = {[1, 2], 3}`, `TypeError, a list cannot go inside a set`, [`A set with a list and 3`, `The list is removed`, `NameError`], `Set items must be immutable, so a tuple (1, 2) is fine but a list is not.`],
   [`What is printed? print(2 in {1, 2, 3})`, `True`, [`False`, `2`, `An error`], `in checks membership, and it is very fast for sets.`, `print(2 in {1, 2, 3})`],
   [`What is the difference between remove() and discard()?`, `remove() gives an error if the item is missing, discard() does not`, [`discard() gives an error if the item is missing, remove() does not`, `They are exactly the same`, `remove() removes all items`], `Use discard() when you are not sure the item is in the set.`],
   [`What is printed?
@@ -97,7 +112,11 @@ print(s)`],
   [`What does {1, 2}.isdisjoint({3, 4}) give?`, `True`, [`False`, `{}`, `An error`], `The two sets have nothing in common, so they are disjoint.`, `print({1, 2}.isdisjoint({3, 4}))`],
   [`What does a |= {4} do to the set a?`, `Adds 4 to a in place`, [`Makes a new set and leaves a alone`, `Removes 4 from a`, `Gives an error`], `|= is the in-place union.`],
   [`What is a frozenset?`, `An immutable set`, [`A set with no items`, `A set that keeps its order`, `A list of sets`], `It cannot be changed, so add() gives an error.`],
-  [`What does sorted(set(a) & set(b)) print when a = [1, 2, 3, 3] and b = [3, 4, 5]?`, `[3]`, [`[3, 3]`, `[1, 2, 3, 4, 5]`, `[1, 2]`], `The only common item is 3.`, `a = [1, 2, 3, 3]
+  [`What is printed?
+
+a = [1, 2, 3, 3]
+b = [3, 4, 5]
+print(sorted(set(a) & set(b)))`, `[3]`, [`[3, 3]`, `[1, 2, 3, 4, 5]`, `[1, 2]`], `The only common item is 3.`, `a = [1, 2, 3, 3]
 b = [3, 4, 5]
 print(sorted(set(a) & set(b)))`],
   [`Which one is the best to remove duplicates from a list?`, `Convert it to a set`, [`Convert it to a tuple`, `Use append()`, `Use sorted() alone`], `A set keeps only unique items. Use sorted() on the result if you need an order.`],

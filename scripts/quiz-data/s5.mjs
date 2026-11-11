@@ -66,7 +66,14 @@ print("Finished")`, `Finished`, [`This never prints Finished`, `This never print
 while count <= 5:
     print("This never prints")
 print("Finished")`)],
-  [`What is the sum of the digits of n = 1234 found with n % 10 and n //= 10 in a while loop?`, `10`, [`1234`, `24`, `4`], `1 + 2 + 3 + 4 is 10.`, `n = 1234
+  [`What is printed?
+
+n = 1234
+total = 0
+while n > 0:
+    total += n % 10
+    n //= 10
+print(total)`, `10`, [`1234`, `24`, `4`], `1 + 2 + 3 + 4 is 10.`, `n = 1234
 total = 0
 while n > 0:
     total += n % 10

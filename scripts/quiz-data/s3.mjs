@@ -9,11 +9,17 @@ export default [
   [`Which line prints I'm "happy" with both kinds of quote?`, `print("I'm \\"happy\\"")`, [`print("I'm "happy"")`, `print('I'm "happy"')`, `print(I'm "happy")`], `Use a backslash before the inner double quote: \\" . Then the string does not end early.`],
   [`In the string "Python", what is the index of the first character P?`, `0`, [`1`, `-1`, `6`], `Indexing starts from 0.`],
   [`What does "Python"[-1] give?`, `n`, [`P`, `y`, `An error`], `Negative indexes count from the end, so -1 is the last character.`, `print("Python"[-1])`],
-  [`What does s[3] give when s = "Python"?`, `h`, [`t`, `o`, `y`], `P is 0, y is 1, t is 2 and h is 3.`, `s = "Python"
+  [`What does s[3] give?
+
+s = "Python"`, `h`, [`t`, `o`, `y`], `P is 0, y is 1, t is 2 and h is 3.`, `s = "Python"
 print(s[3])`],
-  [`What does s[-3] give when s = "Python"?`, `h`, [`t`, `o`, `n`], `Counting back from the end: n is -1, o is -2 and h is -3.`, `s = "Python"
+  [`What does s[-3] give?
+
+s = "Python"`, `h`, [`t`, `o`, `n`], `Counting back from the end: n is -1, o is -2 and h is -3.`, `s = "Python"
 print(s[-3])`],
-  [`What happens with s[6] when s = "Python"?`, `IndexError`, [`It gives n`, `TypeError`, `It gives an empty string`], `The valid indexes are 0 to 5, so 6 is out of range.`],
+  [`What happens with s[6]?
+
+s = "Python"`, `IndexError`, [`It gives n`, `TypeError`, `It gives an empty string`], `The valid indexes are 0 to 5, so 6 is out of range.`],
   [`What happens when you run s[0] = "J" on a string?`, `TypeError, because strings are immutable`, [`The first letter changes to J`, `IndexError`, `SyntaxError`], `Strings cannot be changed in place. Build a new string instead.`],
   [`In string[start:stop:step], what is true about the stop index?`, `It is not included`, [`It is included`, `It must be negative`, `It must be even`], `s[0:6] gives the characters at positions 0 to 5.`],
   [`What does "Python Programming"[0:6] give?`, `Python`, [`Python `, `Progra`, `ython`], `Positions 0 to 5 are the letters of Python.`, `print("Python Programming"[0:6])`],
@@ -42,21 +48,38 @@ print(name)`],
   [`What does print("Hello" + "World") show?`, `HelloWorld`, [`Hello World`, `Hello+World`, `An error`], `+ joins strings (concatenation) without adding a space.`, `print("Hello" + "World")`],
   [`What does print("ab" * 3) show?`, `ababab`, [`ab3`, `abababab`, `An error`], `* repeats a string.`, `print("ab" * 3)`],
   [`What does print("z" not in "apple") show?`, `True`, [`False`, `z`, `An error`], `There is no z in apple, so not in is True.`, `print("z" not in "apple")`],
-  [`What does f"{price:.2f}" show when price = 49.5678?`, `49.57`, [`49.5678`, `49.56`, `49.6`], `.2f shows 2 decimal places, and rounds the last digit.`, `price = 49.5678
+  [`What is printed?
+
+price = 49.5678
+print(f"{price:.2f}")`, `49.57`, [`49.5678`, `49.56`, `49.6`], `.2f shows 2 decimal places, and rounds the last digit.`, `price = 49.5678
 print(f"{price:.2f}")`],
   [`What does print(f"{1000000:,}") show?`, `1,000,000`, [`1000000`, `1.000.000`, `1,0,0`], `A comma after the colon adds thousand separators.`, `print(f"{1000000:,}")`],
-  [`What does print(f"Next year I will be {age + 1}") show when age = 25?`, `Next year I will be 26`, [`Next year I will be age + 1`, `Next year I will be 25`, `Next year I will be {26}`], `You can put a calculation inside the curly braces of an f-string.`, `age = 25
+  [`What is printed?
+
+age = 25
+print(f"Next year I will be {age + 1}")`, `Next year I will be 26`, [`Next year I will be age + 1`, `Next year I will be 25`, `Next year I will be {26}`], `You can put a calculation inside the curly braces of an f-string.`, `age = 25
 print(f"Next year I will be {age + 1}")`],
   [`What is the difference between = and == ?`, `= assigns a value and == compares two values`, [`= compares and == assigns`, `They mean the same thing`, `== is only used with strings`], `Mixing them up is the classic beginner mistake.`],
   [`What does print(10 != 20) show?`, `True`, [`False`, `10`, `An error`], `!= means not equal. 10 and 20 are different, so the result is True.`, `print(10 != 20)`],
   [`What does print(10 >= 10) show?`, `True`, [`False`, `10`, `An error`], `>= means greater than or equal to.`, `print(10 >= 10)`],
-  [`What does print(age > 18 and marks > 75) show for age = 22 and marks = 80?`, `True`, [`False`, `22`, `80`], `and is True only if both parts are True. Both are.`, `age = 22
+  [`What is printed?
+
+age = 22
+marks = 80
+print(age > 18 and marks > 75)`, `True`, [`False`, `22`, `80`], `and is True only if both parts are True. Both are.`, `age = 22
 marks = 80
 print(age > 18 and marks > 75)`],
-  [`What does print(age > 25 or marks > 75) show for age = 22 and marks = 80?`, `True`, [`False`, `22`, `An error`], `or is True if at least one part is True. marks > 75 is True.`, `age = 22
+  [`What is printed?
+
+age = 22
+marks = 80
+print(age > 25 or marks > 75)`, `True`, [`False`, `22`, `An error`], `or is True if at least one part is True. marks > 75 is True.`, `age = 22
 marks = 80
 print(age > 25 or marks > 75)`],
-  [`What does print(not age > 18) show for age = 22?`, `False`, [`True`, `22`, `An error`], `age > 18 is True, and not reverses it.`, `age = 22
+  [`What is printed?
+
+age = 22
+print(not age > 18)`, `False`, [`True`, `22`, `An error`], `age > 18 is True, and not reverses it.`, `age = 22
 print(not age > 18)`],
   [`What is True and False?`, `False`, [`True`, `None`, `An error`], `and needs both sides to be True.`, `print(True and False)`],
   [`What is False or False?`, `False`, [`True`, `None`, `An error`], `or needs at least one True side.`, `print(False or False)`],
@@ -64,6 +87,9 @@ print(not age > 18)`],
   [`What does print("a" < "b") show?`, `True`, [`False`, `a`, `An error`], `Strings are compared letter by letter, and a comes before b.`, `print("a" < "b")`],
   [`What does print(5 + 3 > 7 and 10 % 3 == 1) show?`, `True`, [`False`, `8`, `An error`], `5 + 3 > 7 is True, and 10 % 3 is 1, so both parts are True.`, `print(5 + 3 > 7 and 10 % 3 == 1)`],
   [`Which operator has the lowest precedence?`, `or`, [`and`, `not`, `**`], `The order from high to low is brackets, **, * / // %, + -, comparisons, not, and, or.`],
-  [`What does print(x is None) show after x = None?`, `True`, [`False`, `None`, `An error`], `is None checks whether the value is None.`, `x = None
+  [`What is printed?
+
+x = None
+print(x is None)`, `True`, [`False`, `None`, `An error`], `is None checks whether the value is None.`, `x = None
 print(x is None)`],
 ]

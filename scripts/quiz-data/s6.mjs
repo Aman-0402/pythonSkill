@@ -52,11 +52,19 @@ for i in range(1, 4):
     for j in range(1, i + 1):
         print(j, end=" ")
     print()`)],
-  [`In a pyramid with n = 4 rows, how many spaces come before the stars in the first row?`, `3`, [`4`, `0`, `1`], `The first row needs n - i spaces: 4 - 1 is 3.`, `n = 4
+  [`How many spaces come before the star in the first row?
+
+n = 4
+for i in range(1, n + 1):
+    print(" " * (n - i) + "*" * (2 * i - 1))`, `3`, [`4`, `0`, `1`], `The first row needs n - i spaces: 4 - 1 is 3.`, `n = 4
 i = 1
 print(n - i)`],
   [`In a pyramid, how many stars are in row i?`, `2 * i - 1`, [`i`, `2 * i`, `i * i`], `The rows have 1, 3, 5, 7 ... stars, which are the odd numbers.`],
-  [`How many stars are in row 4 of a pyramid made with "*" * (2 * i - 1) ?`, `7`, [`8`, `4`, `5`], `2 * 4 - 1 is 7.`, `i = 4
+  [`How many stars are in the last row?
+
+n = 4
+for i in range(1, n + 1):
+    print(" " * (n - i) + "*" * (2 * i - 1))`, `7`, [`8`, `4`, `5`], `2 * 4 - 1 is 7.`, `i = 4
 print(len("*" * (2 * i - 1)))`],
   [`What is the factorial of 5?`, `120`, [`25`, `15`, `100`], `5 x 4 x 3 x 2 x 1 is 120.`, `fact = 1
 for i in range(1, 6):
@@ -80,7 +88,12 @@ for n in range(2, 31):
     if all(n % i != 0 for i in range(2, n)):
         count += 1
 print(count)`],
-  [`What are the first 10 terms of the Fibonacci series?`, `0 1 1 2 3 5 8 13 21 34`, [`1 2 3 4 5 6 7 8 9 10`, `0 1 2 3 5 8 13 21 34 55`, `1 1 2 4 8 16 32 64 128 256`], `Each number is the sum of the two before it.`, flat(`a, b = 0, 1
+  [`What is printed?
+
+a, b = 0, 1
+for _ in range(10):
+    print(a, end=" ")
+    a, b = b, a + b`, `0 1 1 2 3 5 8 13 21 34`, [`1 2 3 4 5 6 7 8 9 10`, `0 1 2 3 5 8 13 21 34 55`, `1 1 2 4 8 16 32 64 128 256`], `Each number is the sum of the two before it.`, flat(`a, b = 0, 1
 for _ in range(10):
     print(a, end=" ")
     a, b = b, a + b`)],
@@ -90,13 +103,27 @@ for _ in range(10):
 for _ in range(10):
     print("Hi")`, `A loop variable that we do not use`, [`A keyword`, `A string`, `An error`], `_ is a common name for a value you do not need.`],
   [`Which loop is the better choice for printing exactly 10 Fibonacci terms?`, `A for loop with range(10)`, [`A while loop with no limit`, `An if statement`, `A comment`], `You know the number of terms in advance.`],
-  [`What is the reverse of the number 1221 found with rev = rev * 10 + n % 10 in a while loop?`, `1221`, [`1212`, `2112`, `1122`], `1221 reads the same forwards and backwards, so it is a palindrome number.`, `n = 1221
+  [`What is printed?
+
+n = 1221
+rev = 0
+while n > 0:
+    rev = rev * 10 + n % 10
+    n //= 10
+print(rev)`, `1221`, [`1212`, `2112`, `1122`], `1221 reads the same forwards and backwards, so it is a palindrome number.`, `n = 1221
 rev = 0
 while n > 0:
     rev = rev * 10 + n % 10
     n //= 10
 print(rev)`],
-  [`What is the reverse of the number 123?`, `321`, [`123`, `132`, `213`], `The digits are taken from the end one by one.`, `n = 123
+  [`What is printed?
+
+n = 123
+rev = 0
+while n > 0:
+    rev = rev * 10 + n % 10
+    n //= 10
+print(rev)`, `321`, [`123`, `132`, `213`], `The digits are taken from the end one by one.`, `n = 123
 rev = 0
 while n > 0:
     rev = rev * 10 + n % 10

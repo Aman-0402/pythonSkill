@@ -23,8 +23,16 @@ add_item("b")
 add_item("c")`, `['a'] then ['a', 'b'] then ['a', 'b', 'c']`, [`['a'] then ['b'] then ['c']`, `Three empty lists`, `An error`], `The same default list is shared, so it keeps growing.`],
   [`What is the safe default for a parameter that should start as an empty list?`, `None, then make the list inside the function`, [`[] written in the definition`, `{}`, `0`], `Use items=None and write: if items is None: items = [].`],
   [`What does book(author="Ankit", title="Data Tricks") show the benefit of?`, `The order of keyword arguments does not matter`, [`Keyword arguments must be in order`, `Parameters must be strings`, `The function runs faster`], `Named arguments are matched by name, not by position.`],
-  [`Which call is a SyntaxError for def book(title, author)?`, `book(title="Python", "Aman")`, [`book("Python", author="Aman")`, `book(author="Aman", title="Python")`, `book("Python", "Aman")`], `A positional argument cannot follow a keyword argument.`],
-  [`What is args inside def total(*args) when called as total(1, 2, 3)?`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 6`, `The dictionary {1, 2, 3}`], `A single star collects extra positional arguments into a tuple.`],
+  [`Which call is a SyntaxError for this function?
+
+def book(title, author):
+    print(title, "by", author)`, `book(title="Python", "Aman")`, [`book("Python", author="Aman")`, `book(author="Aman", title="Python")`, `book("Python", "Aman")`], `A positional argument cannot follow a keyword argument.`],
+  [`What is args inside the function for this call?
+
+def total(*args):
+    return sum(args)
+
+total(1, 2, 3)`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 6`, `The dictionary {1, 2, 3}`], `A single star collects extra positional arguments into a tuple.`],
   [`What is printed?
 
 def total(*args):
@@ -32,22 +40,45 @@ def total(*args):
 print(total(10, 20, 30, 40))`, `100`, [`10`, `40`, `An error`], `All four arguments are collected and added.`, `def total(*args):
     return sum(args)
 print(total(10, 20, 30, 40))`],
-  [`What is others in show(1, 2, 3) for def show(first, *others)?`, `(2, 3)`, [`(1, 2, 3)`, `[2, 3]`, `2`], `first takes 1 and others collects the rest into a tuple.`, `def show(first, *others):
+  [`What is others for this call?
+
+def show(first, *others):
+    return others
+
+show(1, 2, 3)`, `(2, 3)`, [`(1, 2, 3)`, `[2, 3]`, `2`], `first takes 1 and others collects the rest into a tuple.`, `def show(first, *others):
     return others
 print(show(1, 2, 3))`],
-  [`What is kwargs inside def profile(**kwargs) when called as profile(name="Aman", age=20)?`, `{'name': 'Aman', 'age': 20}`, [`('Aman', 20)`, `['name', 'age']`, `Nothing, it is an error`], `A double star collects extra keyword arguments into a dictionary.`, `def profile(**kwargs):
+  [`What is printed?
+
+def profile(**kwargs):
+    return kwargs
+print(profile(name="Aman", age=20))`, `{'name': 'Aman', 'age': 20}`, [`('Aman', 20)`, `['name', 'age']`, `Nothing, it is an error`], `A double star collects extra keyword arguments into a dictionary.`, `def profile(**kwargs):
     return kwargs
 print(profile(name="Aman", age=20))`],
   [`In what order are parameters written in a definition?`, `Normal parameters, then *args, then **kwargs`, [`**kwargs, then *args, then normal parameters`, `*args, then normal parameters, then **kwargs`, `Any order`], `For example def demo(a, b=2, *args, **kwargs).`],
-  [`What does demo(1, 5, 6, 7, x=10) show for args in def demo(a, b=2, *args, **kwargs)?`, `(6, 7)`, [`(1, 5, 6, 7)`, `(5, 6, 7)`, `[6, 7]`], `1 goes to a and 5 goes to b, so 6 and 7 are left for args.`, `def demo(a, b=2, *args, **kwargs):
+  [`What is printed?
+
+def demo(a, b=2, *args, **kwargs):
+    return args
+print(demo(1, 5, 6, 7, x=10))`, `(6, 7)`, [`(1, 5, 6, 7)`, `(5, 6, 7)`, `[6, 7]`], `1 goes to a and 5 goes to b, so 6 and 7 are left for args.`, `def demo(a, b=2, *args, **kwargs):
     return args
 print(demo(1, 5, 6, 7, x=10))`],
-  [`What does volume(*[2, 3, 4]) do for def volume(length, width, height)?`, `Passes 2, 3 and 4 as three arguments`, [`Passes one list argument`, `Gives an error`, `Multiplies the list by itself`], `The star in a call spreads the list into separate arguments.`],
+  [`What does the last line do?
+
+def volume(length, width, height):
+    return length * width * height
+
+volume(*[2, 3, 4])`, `Passes 2, 3 and 4 as three arguments`, [`Passes one list argument`, `Gives an error`, `Multiplies the list by itself`], `The star in a call spreads the list into separate arguments.`],
   [`What does volume(**{"length": 5, "width": 2, "height": 3}) do?`, `Passes the dictionary items as keyword arguments`, [`Passes the dictionary as one argument`, `Gives an error`, `Passes only the keys`], `The double star in a call spreads a dictionary into keyword arguments.`],
   [`What does print(*[5, 1, 9]) show?`, `5 1 9`, [`[5, 1, 9]`, `(5, 1, 9)`, `5, 1, 9`], `The star spreads the items, so print gets three arguments.`, `print(*[5, 1, 9])`],
   [`What does {**{"a": 1}, **{"b": 2}} give?`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `[{'a': 1}, {'b': 2}]`, `An error`], `The double stars merge two dictionaries.`, `print({**{"a": 1}, **{"b": 2}})`],
   [`How can a parameter be made keyword-only?`, `Write it after *args or after a bare *`, [`Write it before the first parameter`, `Give it a default of None`, `Write it in capital letters`], `For example def connect(host, *, port=80).`],
-  [`What error appears for connect("example.com", 443) when def connect(host, *, port=80)?`, `TypeError`, [`NameError`, `SyntaxError`, `ValueError`], `port can only be given by name, as port=443.`],
+  [`What error appears for the last line?
+
+def connect(host, *, port=80):
+    print(host, port)
+
+connect("example.com", 443)`, `TypeError`, [`NameError`, `SyntaxError`, `ValueError`], `port can only be given by name, as port=443.`],
   [`Can a function be stored in a variable?`, `Yes, a function is a value like any other`, [`No, only numbers and strings can`, `Only lambda functions can`, `Only built-in functions can`], `say = shout makes say another name for the same function.`],
   [`Why do we write apply(shout, "hi") and not apply(shout(), "hi")?`, `shout() would call it right away, but we want to pass the function itself`, [`The brackets are not allowed in a call`, `apply needs a string`, `shout() would return a function`], `Without brackets you pass the function, and with brackets you pass its result.`],
   [`What is printed?

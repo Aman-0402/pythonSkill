@@ -10,9 +10,15 @@ age = 26
 print(age)`, `26`, [`25`, `51`, `An error`], `A variable can be changed at any time. The newest value replaces the old one.`, `age = 25
 age = 26
 print(age)`],
-  [`What does print(b) show after a, b, c = 1, 2, 3 ?`, `2`, [`1`, `3`, `(1, 2, 3)`], `Each name gets the value in the same position: a is 1, b is 2 and c is 3.`, `a, b, c = 1, 2, 3
+  [`What is printed?
+
+a, b, c = 1, 2, 3
+print(b)`, `2`, [`1`, `3`, `(1, 2, 3)`], `Each name gets the value in the same position: a is 1, b is 2 and c is 3.`, `a, b, c = 1, 2, 3
 print(b)`],
-  [`What does print(x + y) show after x = y = 0 ?`, `0`, [`1`, `00`, `An error`], `x = y = 0 gives both variables the value 0.`, `x = y = 0
+  [`What is printed?
+
+x = y = 0
+print(x + y)`, `0`, [`1`, `00`, `An error`], `x = y = 0 gives both variables the value 0.`, `x = y = 0
 print(x + y)`],
   [`Which of these is a valid variable name?`, `student_name`, [`1student`, `my name`, `total-marks`], `Names cannot start with a digit, and cannot contain spaces or hyphens.`],
   [`Which of these is NOT a valid variable name?`, `class`, [`marks2`, `_count`, `Age`], `class is a keyword, so it cannot be used as a variable name.`],
@@ -64,7 +70,10 @@ a, b = b, a
 print(a, b)`, `2 1`, [`1 2`, `1 1`, `2 2`], `a, b = b, a swaps the two values without a third variable.`, `a, b = 1, 2
 a, b = b, a
 print(a, b)`],
-  [`What does print(a ** b) show for a, b = 10, 3 ?`, `1000`, [`30`, `13`, `100`], `** is power: 10 to the power 3 is 1000.`, `a, b = 10, 3
+  [`What is printed?
+
+a, b = 10, 3
+print(a ** b)`, `1000`, [`30`, `13`, `100`], `** is power: 10 to the power 3 is 1000.`, `a, b = 10, 3
 print(a ** b)`],
   [`True or false: a variable can be changed after it is created.`, `True`, [`False`], `A variable can be changed at any time by assigning a new value.`],
 ]

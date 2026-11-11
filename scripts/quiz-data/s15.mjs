@@ -19,7 +19,12 @@ except ZeroDivisionError:
     print("C")`, `A then C`, [`A then B then C`, `A then B`, `C only`], `B is skipped because the error happens before it.`],
   [`If no error happens in the try block, what happens to the except block?`, `It is skipped`, [`It runs anyway`, `It runs twice`, `It gives an error`], `except only runs after a matching error.`],
   [`What does as e give in except ValueError as e?`, `A name for the error object, so you can print its message`, [`The line number`, `The file name`, `A copy of the program`], `Printing e shows Python's own message.`],
-  [`What does type(e).__name__ give for e from int("abc")?`, `ValueError`, [`int`, `str`, `Error`], `It is the name of the error type.`, `try:
+  [`What is printed?
+
+try:
+    int("abc")
+except ValueError as e:
+    print(type(e).__name__)`, `ValueError`, [`int`, `str`, `Error`], `It is the name of the error type.`, `try:
     int("abc")
 except ValueError as e:
     print(type(e).__name__)`],
@@ -87,13 +92,28 @@ finally:
   [`What does assert square(5) == 25 do when it is true?`, `Nothing, the program carries on`, [`Prints True`, `Stops the program`, `Raises an error`], `assert only complains when the condition is false.`],
   [`What error does a failing assert raise?`, `AssertionError`, [`ValueError`, `TypeError`, `TestError`], `You can add a message after a comma.`],
   [`When should you use try and except instead of assert?`, `For problems that can happen in real use, like bad input or a missing file`, [`To test your own code`, `Never`, `Only inside loops`], `assert is for checking your own code.`],
-  [`What does to_number("hello") give when it returns None on ValueError?`, `None`, [`0`, `An error`, `hello`], `The except block returns None instead of crashing.`, `def to_number(text):
+  [`What is printed?
+
+def to_number(text):
+    try:
+        return float(text)
+    except ValueError:
+        return None
+print(to_number("hello"))`, `None`, [`0`, `An error`, `hello`], `The except block returns None instead of crashing.`, `def to_number(text):
     try:
         return float(text)
     except ValueError:
         return None
 print(to_number("hello"))`],
-  [`What is the total when the lines of a file are 80, abc and 95 and bad lines are skipped with try?`, `175`, [`0`, `An error`, `80`], `The abc line is skipped and the loop carries on.`, `total = 0
+  [`What is printed?
+
+total = 0
+for line in ["80", "abc", "95"]:
+    try:
+        total += int(line)
+    except ValueError:
+        pass
+print(total)`, `175`, [`0`, `An error`, `80`], `The abc line is skipped and the loop carries on.`, `total = 0
 for line in ["80", "abc", "95"]:
     try:
         total += int(line)

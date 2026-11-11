@@ -56,11 +56,15 @@ print(a)`, `[1, 2, 3, 4]`, [`[1, 2, 3]`, `[4]`, `An error`], `b = a does not cop
 b = a
 b.append(4)
 print(a)`],
-  [`What is y after x, *y = (1, 2, 3)?`, `[2, 3]`, [`(2, 3)`, `2`, `[1, 2, 3]`], `The starred variable takes the rest as a list.`, `x, *y = (1, 2, 3)
+  [`What is y after this line?
+
+x, *y = (1, 2, 3)`, `[2, 3]`, [`(2, 3)`, `2`, `[1, 2, 3]`], `The starred variable takes the rest as a list.`, `x, *y = (1, 2, 3)
 print(y)`],
   [`What does len({1, 2, 2, 3}) give?`, `3`, [`4`, `2`, `1`], `The set keeps only 1, 2 and 3.`, `print(len({1, 2, 2, 3}))`],
   [`What does {"a": 1}.get("b", 0) + 5 give?`, `5`, [`6`, `An error`, `None`], `get() returns the default 0 for a missing key.`, `print({"a": 1}.get("b", 0) + 5)`],
-  [`What does max(count, key=count.get) give for count = {'to': 2, 'be': 2, 'or': 1}?`, `to`, [`2`, `or`, `be`], `It returns the key with the biggest value, and the first one wins a tie.`, `count = {'to': 2, 'be': 2, 'or': 1}
+  [`What does max(count, key=count.get) give?
+
+count = {'to': 2, 'be': 2, 'or': 1}`, `to`, [`2`, `or`, `be`], `It returns the key with the biggest value, and the first one wins a tie.`, `count = {'to': 2, 'be': 2, 'or': 1}
 print(max(count, key=count.get))`],
   [`In the marks manager, what is stored in the dictionary students?`, `Each student name as a key and a list of marks as the value`, [`Each mark as a key and a name as the value`, `Only the names`, `A single total`], `The key is the name and the value is the list of marks.`],
   [`Why is a dictionary a good choice for the marks manager?`, `You can find a student directly by name`, [`It keeps the marks sorted`, `It stops marks being changed`, `It uses less typing`], `A dictionary looks values up by key.`],
@@ -72,11 +76,16 @@ students.setdefault("Aman", []).extend([90, 80])
 print(students)`, `{'Aman': [90, 80]}`, [`{'Aman': []}`, `{}`, `{'Aman': [[90, 80]]}`], `setdefault gives a list, and extend adds the marks to it.`, `students = {}
 students.setdefault("Aman", []).extend([90, 80])
 print(students)`],
-  [`What does sum(marks) / len(marks) work out for marks = [90, 80, 70]?`, `The average`, [`The total`, `The highest mark`, `The number of marks`], `The total divided by the count is the average.`],
+  [`What does the second line work out?
+
+marks = [90, 80, 70]
+result = sum(marks) / len(marks)`, `The average`, [`The total`, `The highest mark`, `The number of marks`], `The total divided by the count is the average.`],
   [`What is the average of [90, 80, 70]?`, `80.0`, [`240`, `80`, `70.0`], `The total is 240 and 240 / 3 is 80.0.`, `print(sum([90, 80, 70]) / len([90, 80, 70]))`],
   [`In f"{name:<8}{total:>6}", what does :<8 do?`, `Pads the name to 8 characters, aligned to the left`, [`Cuts the name to 8 characters`, `Repeats the name 8 times`, `Makes the name 8 characters bigger`], `:<8 is left aligned in a width of 8, and :>6 is right aligned in a width of 6.`],
   [`What does reverse=True do in sorted(averages, key=averages.get, reverse=True)?`, `Puts the biggest average first`, [`Puts the smallest average first`, `Reverses the names`, `Removes duplicates`], `The default order is smallest to biggest.`],
-  [`What does sorted(averages, key=averages.get) give when averages = {"Aman": 80, "Ankit": 90, "Kabir": 70}?`, `['Kabir', 'Aman', 'Ankit']`, [`['Ankit', 'Aman', 'Kabir']`, `[70, 80, 90]`, `['Aman', 'Kabir', 'Ankit']`], `The names are sorted by their values, smallest first.`, `averages = {"Aman": 80, "Ankit": 90, "Kabir": 70}
+  [`What does sorted(averages, key=averages.get) give?
+
+averages = {"Aman": 80, "Ankit": 90, "Kabir": 70}`, `['Kabir', 'Aman', 'Ankit']`, [`['Ankit', 'Aman', 'Kabir']`, `[70, 80, 90]`, `['Aman', 'Kabir', 'Ankit']`], `The names are sorted by their values, smallest first.`, `averages = {"Aman": 80, "Ankit": 90, "Kabir": 70}
 print(sorted(averages, key=averages.get))`],
   [`What does enumerate(ranked, start=1) do in a ranking loop?`, `Numbers the items from 1`, [`Starts the loop at the second item`, `Sorts the items`, `Counts the items`], `The rank then starts at 1 instead of 0.`],
   [`What does "add Aman 90 80".split() give?`, `['add', 'Aman', '90', '80']`, [`['add Aman 90 80']`, `['add', 'Aman', 90, 80]`, `('add', 'Aman', '90', '80')`], `split() breaks the text into words, and they are all strings.`, `print("add Aman 90 80".split())`],
@@ -85,10 +94,14 @@ print(sorted(averages, key=averages.get))`],
   [`Why does the command loop use break for the quit command?`, `To end the loop and stop asking for commands`, [`To skip one command`, `To delete the students`, `To print the report`], `break leaves the loop.`],
   [`Why is while True with a break used for a menu?`, `The menu repeats until the user chooses to quit`, [`It runs the menu only once`, `It sorts the choices`, `It stops the user typing`], `The loop never ends by itself, so break ends it when the user quits.`],
   [`What happens with int(input("Mark: ")) if the user types abc?`, `ValueError`, [`The mark becomes 0`, `The mark becomes abc`, `Nothing, it asks again`], `int() cannot turn the word abc into a number.`],
-  [`What does students.pop("Zed", None) give when Zed is not in students?`, `None`, [`An error`, `Zed`, `An empty list`], `With a default, pop() does not raise a KeyError.`, `students = {"Aman": [1]}
+  [`What does students.pop("Zed", None) give?
+
+students = {"Aman": [90, 80]}`, `None`, [`An error`, `Zed`, `An empty list`], `With a default, pop() does not raise a KeyError.`, `students = {"Aman": [1]}
 print(students.pop("Zed", None))`],
   [`What does the contact book use as the value for each name?`, `Another dictionary with phone and email`, [`A list of numbers`, `A single string`, `A tuple of marks`], `That makes a nested dictionary.`],
-  [`How do you read Ankit's phone from contacts = {"Ankit": {"phone": "912"}}?`, `contacts["Ankit"]["phone"]`, [`contacts["phone"]["Ankit"]`, `contacts["Ankit", "phone"]`, `contacts.phone.Ankit`], `One pair of brackets for each level.`],
+  [`How do you read Ankit's phone?
+
+contacts = {"Ankit": {"phone": "912"}}`, `contacts["Ankit"]["phone"]`, [`contacts["phone"]["Ankit"]`, `contacts["Ankit", "phone"]`, `contacts.phone.Ankit`], `One pair of brackets for each level.`],
   [`What is printed?
 
 contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}

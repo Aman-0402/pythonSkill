@@ -6,7 +6,9 @@ export default [
   [`What does type({}) show?`, `<class 'dict'>`, [`<class 'set'>`, `<class 'list'>`, `<class 'tuple'>`], `Empty curly brackets make a dictionary, not a set.`, `print(type({}))`],
   [`How do you find a value in a dictionary?`, `By its key`, [`By its position number`, `By its length`, `By its type`], `A dictionary looks values up by key, a list by position.`],
   [`Which of these can NOT be a dictionary key?`, `A list`, [`A string`, `A number`, `A tuple`], `Keys must be immutable, and a list can change.`],
-  [`What error appears for d = {[1, 2]: "x"}?`, `TypeError`, [`KeyError`, `ValueError`, `NameError`], `A list is unhashable, so it cannot be a key.`],
+  [`What error appears here?
+
+d = {[1, 2]: "x"}`, `TypeError`, [`KeyError`, `ValueError`, `NameError`], `A list is unhashable, so it cannot be a key.`],
   [`What is printed?
 
 d = {"a": 1, "b": 2, "a": 3}
@@ -18,12 +20,18 @@ d = {"a": 1, "b": 2, "a": 3}
 print(len(d))`, `2`, [`3`, `1`, `6`], `The two "a" keys count as one.`, `d = {"a": 1, "b": 2, "a": 3}
 print(len(d))`],
   [`What does dict(x=1, y=2) give?`, `{'x': 1, 'y': 2}`, [`{x: 1, y: 2}`, `(x, 1, y, 2)`, `An error`], `dict() with names builds the same dictionary as {"x": 1, "y": 2}.`, `print(dict(x=1, y=2))`],
-  [`What does student["age"] give when student = {"name": "Aman", "age": 20}?`, `20`, [`age`, `Aman`, `An error`], `Put the key in square brackets to get its value.`, `student = {"name": "Aman", "age": 20}
+  [`What does student["age"] give?
+
+student = {"name": "Aman", "age": 20}`, `20`, [`age`, `Aman`, `An error`], `Put the key in square brackets to get its value.`, `student = {"name": "Aman", "age": 20}
 print(student["age"])`],
   [`What error appears for student["city"] when the key "city" does not exist?`, `KeyError`, [`IndexError`, `TypeError`, `NameError`], `Reading a missing key gives a KeyError.`],
-  [`What does student.get("city") give when "city" is not a key?`, `None`, [`An error`, `An empty string`, `0`], `get() returns None instead of an error.`, `student = {"name": "Aman"}
+  [`What does student.get("city") give?
+
+student = {"name": "Aman", "age": 20}`, `None`, [`An error`, `An empty string`, `0`], `get() returns None instead of an error.`, `student = {"name": "Aman"}
 print(student.get("city"))`],
-  [`What does student.get("city", "Unknown") give when "city" is not a key?`, `Unknown`, [`None`, `city`, `An error`], `The second argument is the default value.`, `student = {"name": "Aman"}
+  [`What does student.get("city", "Unknown") give?
+
+student = {"name": "Aman", "age": 20}`, `Unknown`, [`None`, `city`, `An error`], `The second argument is the default value.`, `student = {"name": "Aman"}
 print(student.get("city", "Unknown"))`],
   [`What does "Aman" in {"name": "Aman"} give?`, `False`, [`True`, `name`, `An error`], `in checks the keys, and "Aman" is a value.`, `print("Aman" in {"name": "Aman"})`],
   [`What does "name" in {"name": "Aman"} give?`, `True`, [`False`, `Aman`, `An error`], `"name" is a key, so in finds it.`, `print("name" in {"name": "Aman"})`],
@@ -41,29 +49,50 @@ d["a"] = 10
 print(d)`, `{'a': 10}`, [`{'a': 1, 'a': 10}`, `{'a': 1}`, `An error`], `Assigning to an existing key changes its value.`, `d = {"a": 1}
 d["a"] = 10
 print(d)`],
-  [`What does d.update({"b": 2, "c": 3}) do to d = {"a": 1}?`, `Adds both pairs`, [`Replaces the whole dictionary`, `Adds only the first pair`, `Gives an error`], `update() adds many pairs, and replaces the values of keys that exist.`],
-  [`What does d.setdefault("a", 99) give when d = {"a": 1}?`, `1`, [`99`, `None`, `An error`], `The key exists, so setdefault keeps the old value and returns it.`, `d = {"a": 1}
+  [`What does the second line do to d?
+
+d = {"a": 1}
+d.update({"b": 2, "c": 3})`, `Adds both pairs`, [`Replaces the whole dictionary`, `Adds only the first pair`, `Gives an error`], `update() adds many pairs, and replaces the values of keys that exist.`],
+  [`What does d.setdefault("a", 99) give?
+
+d = {"a": 1}`, `1`, [`99`, `None`, `An error`], `The key exists, so setdefault keeps the old value and returns it.`, `d = {"a": 1}
 print(d.setdefault("a", 99))`],
-  [`What does d.pop("a") give when d = {"a": 1, "b": 2}?`, `1`, [`a`, `{'b': 2}`, `None`], `pop() removes the key and returns its value.`, `d = {"a": 1, "b": 2}
+  [`What does d.pop("a") give?
+
+d = {"a": 1, "b": 2}`, `1`, [`a`, `{'b': 2}`, `None`], `pop() removes the key and returns its value.`, `d = {"a": 1, "b": 2}
 print(d.pop("a"))`],
-  [`What does d.pop("z", "not found") give when "z" is not a key?`, `not found`, [`An error`, `None`, `z`], `With a default value there is no error.`, `d = {"a": 1}
+  [`What does d.pop("z", "not found") give?
+
+d = {"a": 1}`, `not found`, [`An error`, `None`, `z`], `With a default value there is no error.`, `d = {"a": 1}
 print(d.pop("z", "not found"))`],
   [`What does popitem() remove?`, `The last pair added`, [`The first pair`, `A random value`, `Every pair`], `popitem() removes and returns the last (key, value) pair.`],
   [`Which statement removes the key "b" from d?`, `del d["b"]`, [`d.remove("b")`, `d.delete("b")`, `d["b"].clear()`], `del d[key] removes the pair.`],
   [`What does d.clear() do?`, `Removes every pair`, [`Removes only the last pair`, `Deletes the variable d`, `Copies d`], `The dictionary stays but becomes empty.`],
-  [`What does list(marks.keys()) give when marks = {"maths": 90, "science": 85}?`, `['maths', 'science']`, [`[90, 85]`, `[('maths', 90), ('science', 85)]`, `['maths', 90]`], `keys() gives the keys.`, `marks = {"maths": 90, "science": 85}
+  [`What does list(marks.keys()) give?
+
+marks = {"maths": 90, "science": 85}`, `['maths', 'science']`, [`[90, 85]`, `[('maths', 90), ('science', 85)]`, `['maths', 90]`], `keys() gives the keys.`, `marks = {"maths": 90, "science": 85}
 print(list(marks.keys()))`],
-  [`What does list(marks.values()) give when marks = {"maths": 90, "science": 85}?`, `[90, 85]`, [`['maths', 'science']`, `[('maths', 90), ('science', 85)]`, `[175]`], `values() gives the values.`, `marks = {"maths": 90, "science": 85}
+  [`What does list(marks.values()) give?
+
+marks = {"maths": 90, "science": 85}`, `[90, 85]`, [`['maths', 'science']`, `[('maths', 90), ('science', 85)]`, `[175]`], `values() gives the values.`, `marks = {"maths": 90, "science": 85}
 print(list(marks.values()))`],
-  [`What does list(marks.items()) give when marks = {"maths": 90, "science": 85}?`, `[('maths', 90), ('science', 85)]`, [`['maths', 'science']`, `[90, 85]`, `{'maths': 90, 'science': 85}`], `items() gives (key, value) pairs as tuples.`, `marks = {"maths": 90, "science": 85}
+  [`What does list(marks.items()) give?
+
+marks = {"maths": 90, "science": 85}`, `[('maths', 90), ('science', 85)]`, [`['maths', 'science']`, `[90, 85]`, `{'maths': 90, 'science': 85}`], `items() gives (key, value) pairs as tuples.`, `marks = {"maths": 90, "science": 85}
 print(list(marks.items()))`],
-  [`What does sum(marks.values()) give when marks = {"maths": 90, "science": 85, "english": 78}?`, `253`, [`3`, `90`, `175`], `It adds up all the values.`, `marks = {"maths": 90, "science": 85, "english": 78}
+  [`What does sum(marks.values()) give?
+
+marks = {"maths": 90, "science": 85, "english": 78}`, `253`, [`3`, `90`, `175`], `It adds up all the values.`, `marks = {"maths": 90, "science": 85, "english": 78}
 print(sum(marks.values()))`],
-  [`What does sorted(marks) give when marks = {"maths": 90, "science": 85, "english": 78}?`, `['english', 'maths', 'science']`, [`[78, 85, 90]`, `['maths', 'science', 'english']`, `[('english', 78), ('maths', 90), ('science', 85)]`], `sorted() on a dictionary sorts its keys and gives a list.`, `marks = {"maths": 90, "science": 85, "english": 78}
+  [`What does sorted(marks) give?
+
+marks = {"maths": 90, "science": 85, "english": 78}`, `['english', 'maths', 'science']`, [`[78, 85, 90]`, `['maths', 'science', 'english']`, `[('english', 78), ('maths', 90), ('science', 85)]`], `sorted() on a dictionary sorts its keys and gives a list.`, `marks = {"maths": 90, "science": 85, "english": 78}
 print(sorted(marks))`],
   [`What does a plain for loop over a dictionary give each time?`, `A key`, [`A value`, `A (key, value) pair`, `An index number`], `Looping goes through the keys. Use items() for both.`],
   [`Which loop gives both the key and the value?`, `for k, v in d.items():`, [`for k, v in d:`, `for k, v in d.keys():`, `for k in d.values():`], `items() gives pairs, and the loop unpacks them.`],
-  [`What does max(marks, key=marks.get) give when marks = {"maths": 90, "science": 85, "english": 78}?`, `maths`, [`90`, `science`, `english`], `It gives the key whose value is the biggest.`, `marks = {"maths": 90, "science": 85, "english": 78}
+  [`What does max(marks, key=marks.get) give?
+
+marks = {"maths": 90, "science": 85, "english": 78}`, `maths`, [`90`, `science`, `english`], `It gives the key whose value is the biggest.`, `marks = {"maths": 90, "science": 85, "english": 78}
 print(max(marks, key=marks.get))`],
   [`What is printed?
 
@@ -98,7 +127,9 @@ for ch in word:
     count[ch] = count.get(ch, 0) + 1
 print(count)`],
   [`Why does count.get(ch, 0) + 1 work for a new letter?`, `get() gives 0 when the key is missing, so the first count is 1`, [`get() gives None, which can be added`, `get() creates the key with value 1`, `It does not work, it gives an error`], `The default 0 avoids a KeyError for the first time a letter is seen.`],
-  [`What does len(count) give for count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}?`, `5`, [`8`, `3`, `1`], `It counts the different words, not the total number of words.`, `count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}
+  [`What does len(count) give?
+
+count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}`, `5`, [`8`, `3`, `1`], `It counts the different words, not the total number of words.`, `count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}
 print(len(count))`],
   [`Which method turns a sentence into a list of words, ready for counting?`, `split()`, [`join()`, `strip()`, `count()`], `"a b c".split() gives ['a', 'b', 'c'].`],
   [`What does groups.setdefault("a", []).append("apple") do?`, `Adds apple to the list stored under the key "a", making the list first if needed`, [`Replaces the list under "a" with apple`, `Gives an error if "a" is missing`, `Counts the words`], `setdefault gives a list to append to, even for a new key.`],

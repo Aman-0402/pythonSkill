@@ -50,7 +50,19 @@ if number % 2 == 0:
 else:
     print("Odd")`],
   [`What does elif stand for?`, `else if`, [`end if`, `else loop`, `each if`], `elif checks another condition only if the earlier ones were False.`],
-  [`What grade is printed for marks = 82? The ladder is: >= 90 A+, >= 75 A, >= 60 B, >= 40 C, else Fail`, `Grade A`, [`Grade A+`, `Grade B`, `Fail`], `82 is not >= 90, but it is >= 75, so Grade A is printed and the rest is skipped.`, `marks = 82
+  [`What grade is printed?
+
+marks = 82
+if marks >= 90:
+    print("Grade A+")
+elif marks >= 75:
+    print("Grade A")
+elif marks >= 60:
+    print("Grade B")
+elif marks >= 40:
+    print("Grade C")
+else:
+    print("Fail")`, `Grade A`, [`Grade A+`, `Grade B`, `Fail`], `82 is not >= 90, but it is >= 75, so Grade A is printed and the rest is skipped.`, `marks = 82
 if marks >= 90:
     print("Grade A+")
 elif marks >= 75:
@@ -75,14 +87,26 @@ if marks >= 40:
 elif marks >= 75:
     print("Grade A")`],
   [`Which condition should come first in an elif ladder for grades?`, `The most specific one, such as marks >= 90`, [`The easiest one, such as marks >= 40`, `The else block`, `It does not matter`], `Because Python stops at the first True condition, the order matters.`],
-  [`x = 15. How many lines are printed by two separate if statements, if x > 10 and if x > 5, each printing a message?`, `2`, [`1`, `0`, `3`], `Separate if statements are all checked. Both conditions are True, so both messages print.`, `x = 15
+  [`How many lines are printed?
+
+x = 15
+if x > 10:
+    print("Bigger than 10")
+if x > 5:
+    print("Bigger than 5")`, `2`, [`1`, `0`, `3`], `Separate if statements are all checked. Both conditions are True, so both messages print.`, `x = 15
 count = 0
 if x > 10:
     count += 1
 if x > 5:
     count += 1
 print(count)`],
-  [`x = 15. How many lines are printed if the second check is elif x > 5 instead of a separate if?`, `1`, [`2`, `0`, `3`], `An elif is checked only if the earlier ones were False. The first one is True, so the elif is skipped.`, `x = 15
+  [`How many lines are printed?
+
+x = 15
+if x > 10:
+    print("Bigger than 10")
+elif x > 5:
+    print("Bigger than 5")`, `1`, [`2`, `0`, `3`], `An elif is checked only if the earlier ones were False. The first one is True, so the elif is skipped.`, `x = 15
 count = 0
 if x > 10:
     count += 1
@@ -110,7 +134,19 @@ if age >= 18:
 else:
     print("Too young")`],
   [`When is a nested if better than using and?`, `When you need a different message for each failure`, [`When you only need both checks to pass`, `Never`, `When there is only one condition`], `and is shorter when both checks simply need to pass. Nesting lets you react to each failure separately.`],
-  [`What is the largest of a, b, c = 12, 45, 30 found with nested ifs?`, `45`, [`12`, `30`, `87`], `a is not the largest, and b is greater than c, so b (45) is largest.`, `a, b, c = 12, 45, 30
+  [`What is printed?
+
+a, b, c = 12, 45, 30
+if a >= b:
+    if a >= c:
+        print(a)
+    else:
+        print(c)
+else:
+    if b >= c:
+        print(b)
+    else:
+        print(c)`, `45`, [`12`, `30`, `87`], `a is not the largest, and b is greater than c, so b (45) is largest.`, `a, b, c = 12, 45, 30
 if a >= b:
     if a >= c:
         print(a)
@@ -121,7 +157,10 @@ else:
         print(b)
     else:
         print(c)`],
-  [`What does print(18 <= age <= 60) show when age = 30?`, `True`, [`False`, `30`, `An error`], `Python allows a range check written like in maths.`, `age = 30
+  [`What is printed?
+
+age = 30
+print(18 <= age <= 60)`, `True`, [`False`, `30`, `An error`], `Python allows a range check written like in maths.`, `age = 30
 print(18 <= age <= 60)`],
   [`What is printed?
 
@@ -166,7 +205,10 @@ if age >= 18:
     print("Adult")`, `TypeError`, [`SyntaxError`, `IndentationError`, `NameError`], `You cannot compare text with a number. Convert with int(age) first.`],
   [`Why must you convert input() with int() before comparing it to a number?`, `Because input() always returns text`, [`Because int() makes the program faster`, `Because numbers cannot be compared`, `Because input() returns a list`], `Text and numbers cannot be compared with >= or <=.`],
   [`Which of these is a leap year rule?`, `Divisible by 4 and not by 100, or divisible by 400`, [`Divisible by 2`, `Divisible by 10`, `Divisible by 4 only`], `2024 is a leap year, 1900 is not, and 2000 is.`],
-  [`What is the result of 2024 being a leap year with the rule (year % 4 == 0 and year % 100 != 0) or year % 400 == 0 ?`, `True`, [`False`, `2024`, `An error`], `2024 is divisible by 4 and not by 100.`, `year = 2024
+  [`What is printed?
+
+year = 2024
+print((year % 4 == 0 and year % 100 != 0) or year % 400 == 0)`, `True`, [`False`, `2024`, `An error`], `2024 is divisible by 4 and not by 100.`, `year = 2024
 print((year % 4 == 0 and year % 100 != 0) or year % 400 == 0)`],
   [`What is printed?
 

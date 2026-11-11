@@ -45,7 +45,12 @@ print(list(pd.DataFrame({"name": ["Aman"], "maths": [85]}).columns))`],
   [`What error appears for df["Maths"] when the column is called maths?`, `KeyError`, [`NameError`, `ValueError`, `TypeError`], `Column names are case sensitive.`],
   [`What does df.iloc[1:3] give?`, `Rows at positions 1 and 2`, [`Rows at positions 1, 2 and 3`, `Columns 1 and 2`, `Only row 3`], `iloc slices stop before the end.`],
   [`Which operators combine row conditions in pandas?`, `& for and, | for or, with each condition in brackets`, [`and, or`, `&& and ||`, `+ and -`], `The same rule as in NumPy.`],
-  [`How many rows does df[df["maths"] >= 80] keep for maths marks [85, 70, 92, 55]?`, `2`, [`1`, `3`, `4`], `85 and 92 are 80 or more.`, `import pandas as pd
+  [`How many rows does the filter keep?
+
+import pandas as pd
+
+df = pd.DataFrame({"maths": [85, 70, 92, 55]})
+df[df["maths"] >= 80]`, `2`, [`1`, `3`, `4`], `85 and 92 are 80 or more.`, `import pandas as pd
 df = pd.DataFrame({"maths": [85, 70, 92, 55]})
 print(len(df[df["maths"] >= 80]))`],
   [`How do you add a new column called total?`, `Assign to it: df["total"] = ...`, [`df.add("total")`, `df.append("total")`, `You cannot`], `Assigning to a new name adds a column.`],

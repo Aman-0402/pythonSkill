@@ -11,20 +11,32 @@ export default [
   [`What does the letter b in "rb" mean?`, `Binary file, such as an image`, [`Big file`, `Backup`, `Both read and write`], `Without b the file is treated as text.`],
   [`What happens when you open a file that does not exist with mode "r"?`, `FileNotFoundError`, [`It is created empty`, `ValueError`, `Nothing`], `Reading needs the file to be there.`],
   [`Does f.write("Hi") add a new line after Hi?`, `No`, [`Yes`, `Only on Windows`, `Only in append mode`], `Put \\n in the text when you want a new line.`],
-  [`What does the file hold after f.write("a") and f.write("b")?`, `ab`, [`a then b on two lines`, `b`, `An error`], `write adds no newline, so both go on one line.`, `with open("t.txt", "w") as f:
+  [`What does t.txt hold after this code?
+
+with open("t.txt", "w") as f:
+    f.write("a")
+    f.write("b")`, `ab`, [`a then b on two lines`, `b`, `An error`], `write adds no newline, so both go on one line.`, `with open("t.txt", "w") as f:
     f.write("a")
     f.write("b")
 print(open("t.txt").read())`],
   [`What does writelines(["x", "y"]) do about new lines?`, `It does not add them, so you must include \\n yourself`, [`It adds a newline after each item`, `It adds a blank line at the end`, `It sorts the items`], `The strings are written exactly as they are.`],
   [`Why use the with statement for files?`, `It closes the file automatically when the block ends`, [`It makes the file bigger`, `It makes the file read only`, `It is required for print`], `That stops open files being left behind.`],
-  [`What is f.closed after the with block ends?`, `True`, [`False`, `None`, `An error`], `The file was closed for you.`, `with open("d.txt", "w") as f:
+  [`What is f.closed after the with block ends?
+
+with open("d.txt", "w") as f:
+    f.write("hi")`, `True`, [`False`, `None`, `An error`], `The file was closed for you.`, `with open("d.txt", "w") as f:
     f.write("hi")
 print(f.closed)`],
   [`What does as f do in with open("a.txt") as f?`, `Gives the file object the name f`, [`Copies the file`, `Closes the file`, `Renames the file`], `You use f inside the block.`],
   [`What does f.read() give?`, `The whole file as one string`, [`The next line only`, `A list of lines`, `The file name`], `read gets everything at once.`],
   [`What does f.readline() give?`, `The next line, including its newline`, [`The whole file`, `All lines as a list`, `The first word`], `Each call moves to the next line.`],
   [`What does f.readlines() give?`, `A list of all the lines`, [`One long string`, `A tuple of words`, `The number of lines`], `Each item in the list ends with a newline.`],
-  [`What does readlines() give for a file with the lines apple and banana?`, `['apple\\n', 'banana\\n']`, [`['apple', 'banana']`, `'apple banana'`, `('apple', 'banana')`], `Each line keeps its newline character.`, `with open("f.txt", "w") as f:
+  [`What is printed?
+
+with open("f.txt", "w") as f:
+    f.write("apple\\nbanana\\n")
+with open("f.txt") as f:
+    print(f.readlines())`, `['apple\\n', 'banana\\n']`, [`['apple', 'banana']`, `'apple banana'`, `('apple', 'banana')`], `Each line keeps its newline character.`, `with open("f.txt", "w") as f:
     f.write("apple\\nbanana\\n")
 with open("f.txt") as f:
     print(f.readlines())`],
@@ -34,14 +46,28 @@ for line in f:
     print(line)`, `Goes through the file one line at a time`, [`Reads the whole file at once`, `Reads one character at a time`, `Writes lines to the file`], `This works well even for big files.`],
   [`What does line.strip() remove?`, `The spaces and newline at both ends`, [`All the vowels`, `Only the first letter`, `Every space in the line`], `strip cleans the ends of the text.`],
   [`What type is everything read from a text file?`, `str`, [`int`, `float`, `list`], `Convert with int() or float() before doing maths.`],
-  [`What is the total for a file with the lines 70, 85 and 90 after adding int(line) for each line?`, `245`, [`7085`, `0`, `An error`], `int() turns each line into a number.`, `with open("m.txt", "w") as f:
+  [`What is printed?
+
+with open("m.txt", "w") as f:
+    f.write("70\\n85\\n90\\n")
+total = 0
+with open("m.txt") as f:
+    for line in f:
+        total += int(line)
+print(total)`, `245`, [`7085`, `0`, `An error`], `int() turns each line into a number.`, `with open("m.txt", "w") as f:
     f.write("70\\n85\\n90\\n")
 total = 0
 with open("m.txt") as f:
     for line in f:
         total += int(line)
 print(total)`],
-  [`What does repr() show for the second f.read() when the file has been read once?`, `''`, [`'abc'`, `None`, `An error`], `After reading, the position is at the end of the file.`, `with open("p.txt", "w") as f:
+  [`What is printed?
+
+with open("p.txt", "w") as f:
+    f.write("abc")
+with open("p.txt") as f:
+    f.read()
+    print(repr(f.read()))`, `''`, [`'abc'`, `None`, `An error`], `After reading, the position is at the end of the file.`, `with open("p.txt", "w") as f:
     f.write("abc")
 with open("p.txt") as f:
     f.read()
@@ -78,7 +104,13 @@ print(Path("quick.txt").suffix)`],
   [`What does CSV stand for?`, `Comma separated values`, [`Computer stored values`, `Column sorted view`, `Copy save verify`], `Each line is a row and commas separate the columns.`],
   [`Why open a CSV file with newline=""?`, `To stop blank lines appearing between rows on Windows`, [`To sort the rows`, `To make the file read only`, `To add a header`], `Always use it with the csv module.`],
   [`What does writer.writerows(list_of_lists) do?`, `Writes many rows at once`, [`Writes only the first row`, `Reads many rows`, `Deletes the rows`], `writerow writes one row.`],
-  [`What does next(csv.reader(f)) give for a file whose only row is a,85?`, `['a', '85']`, [`['a', 85]`, `{'a': 85}`, `('a', 85)`], `Each row is a list of strings, so the 85 is text.`, `import csv
+  [`What is printed?
+
+import csv
+with open("r.csv", "w", newline="") as f:
+    csv.writer(f).writerows([["a", 85]])
+with open("r.csv", newline="") as f:
+    print(next(csv.reader(f)))`, `['a', '85']`, [`['a', 85]`, `{'a': 85}`, `('a', 85)`], `Each row is a list of strings, so the 85 is text.`, `import csv
 with open("r.csv", "w", newline="") as f:
     csv.writer(f).writerows([["a", 85]])
 with open("r.csv", newline="") as f:
@@ -88,7 +120,12 @@ with open("r.csv", newline="") as f:
   [`What does DictWriter's writeheader() write?`, `The first line with the column names`, [`The last row`, `A blank line`, `The file name`], `The names come from fieldnames.`],
   [`What error appears for f.write(5) on a text file?`, `TypeError`, [`ValueError`, `NameError`, `FileNotFoundError`], `write needs a string, so write str(5).`],
   [`Why might all your text end up on one line?`, `You forgot to put \\n at the end of each line`, [`The file is too big`, `You used mode r`, `Python hides new lines`], `write does not add a newline for you.`],
-  [`What is the size of a file after writing hi?`, `2`, [`1`, `3`, `0`], `os.path.getsize gives the size in bytes, and hi is 2 characters.`, `import os
+  [`What is printed?
+
+import os
+with open("s.txt", "w") as f:
+    f.write("hi")
+print(os.path.getsize("s.txt"))`, `2`, [`1`, `3`, `0`], `os.path.getsize gives the size in bytes, and hi is 2 characters.`, `import os
 with open("s.txt", "w") as f:
     f.write("hi")
 print(os.path.getsize("s.txt"))`],

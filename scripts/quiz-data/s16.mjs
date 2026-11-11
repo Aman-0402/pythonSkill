@@ -44,21 +44,43 @@ print(np.array([1.9, 2.5, 3.1]).astype(int))`],
   [`Which reshape fails for an array with 12 items?`, `reshape(5, 3)`, [`reshape(3, 4)`, `reshape(2, 6)`, `reshape(12, 1)`], `5 times 3 is 15, not 12.`],
   [`What does -1 mean in a.reshape(3, -1)?`, `Work this size out for me`, [`Make the array negative`, `Reverse the array`, `Remove the last item`], `NumPy works out the missing size.`],
   [`What does a.T do?`, `Swaps the rows and columns`, [`Sorts the array`, `Adds a total`, `Deletes the first row`], `T is the transpose.`],
-  [`What is a[-1] for a = np.array([10, 20, 30, 40, 50])?`, `50`, [`10`, `40`, `An error`], `Negative positions count from the end.`, `import numpy as np
+  [`What is a[-1]?
+
+import numpy as np
+
+a = np.array([10, 20, 30, 40, 50])`, `50`, [`10`, `40`, `An error`], `Negative positions count from the end.`, `import numpy as np
 print(np.array([10, 20, 30, 40, 50])[-1])`],
-  [`What is a[1, 2] for a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])?`, `6`, [`4`, `8`, `2`], `Row 1, column 2.`, `import numpy as np
+  [`What is a[1, 2]?
+
+import numpy as np
+
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])`, `6`, [`4`, `8`, `2`], `Row 1, column 2.`, `import numpy as np
 a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 print(a[1, 2])`],
-  [`What is a[2] for a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])?`, `[7 8 9]`, [`[3 6 9]`, `9`, `[1 2 3]`], `One index gives a whole row.`, `import numpy as np
+  [`What is a[2]?
+
+import numpy as np
+
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])`, `[7 8 9]`, [`[3 6 9]`, `9`, `[1 2 3]`], `One index gives a whole row.`, `import numpy as np
 a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 print(a[2])`],
-  [`What does a[2:5] give for a = np.arange(10, 100, 10)?`, `[30 40 50]`, [`[30 40 50 60]`, `[20 30 40]`, `[20 30 40 50 60]`], `Positions 2, 3 and 4, with the stop not included.`, `import numpy as np
+  [`What does a[2:5] give?
+
+import numpy as np
+
+a = np.arange(10, 100, 10)`, `[30 40 50]`, [`[30 40 50 60]`, `[20 30 40]`, `[20 30 40 50 60]`], `Positions 2, 3 and 4, with the stop not included.`, `import numpy as np
 a = np.arange(10, 100, 10)
 print(a[2:5])`],
   [`What does a[::-1] do?`, `Reverses the array`, [`Sorts it`, `Removes the last item`, `Makes it empty`], `A step of -1 goes backwards.`],
   [`What does a[::2] give for np.arange(10, 100, 10)?`, `[10 30 50 70 90]`, [`[20 40 60 80]`, `[10 20]`, `[10 30 50 70]`], `Every second item.`, `import numpy as np
 print(np.arange(10, 100, 10)[::2])`],
-  [`What is a after part = a[1:4] and part[0] = 99 with a = np.array([1, 2, 3, 4, 5])?`, `[ 1 99  3  4  5]`, [`[1 2 3 4 5]`, `[99  2  3  4  5]`, `[99  3  4]`], `A slice is a view, so the original changes too.`, `import numpy as np
+  [`What is a after this code?
+
+import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])
+part = a[1:4]
+part[0] = 99`, `[ 1 99  3  4  5]`, [`[1 2 3 4 5]`, `[99  2  3  4  5]`, `[99  3  4]`], `A slice is a view, so the original changes too.`, `import numpy as np
 a = np.array([1, 2, 3, 4, 5])
 part = a[1:4]
 part[0] = 99

@@ -4,7 +4,10 @@
 export default [
   [`What is 7 // 2 in Python?`, `3`, [`3.5`, `1`, `4`], `// is whole-number division.`, `print(7 // 2)`],
   [`What does "python"[1:4] give?`, `yth`, [`pyt`, `ytho`, `tho`], `The end index is not included.`, `print("python"[1:4])`],
-  [`How many times does for i in range(3, 10, 2) run?`, `4`, [`3`, `5`, `7`], `It gives 3, 5, 7 and 9.`, `print(len(range(3, 10, 2)))`],
+  [`How many times does this loop run?
+
+for i in range(3, 10, 2):
+    print(i)`, `4`, [`3`, `5`, `7`], `It gives 3, 5, 7 and 9.`, `print(len(range(3, 10, 2)))`],
   [`What is the difference between a list and a tuple?`, `A list can change and a tuple cannot`, [`A tuple can change and a list cannot`, `They are the same`, `A list holds only numbers`], `Tuples are immutable.`],
   [`Which safely reads a key that may be missing?`, `d.get(key)`, [`d[key]`, `d.key()`, `d.find(key)`], `It gives None instead of an error.`],
   [`In SQL, which keyword filters rows?`, `WHERE`, [`SELECT`, `FROM`, `ORDER BY`], `It matches a pandas condition.`],

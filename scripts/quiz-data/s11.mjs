@@ -13,7 +13,10 @@ def greet():
   [`What does print(type(greet)) show for a function greet?`, `<class 'function'>`, [`<class 'str'>`, `<class 'NoneType'>`, `<class 'tuple'>`], `A function is an object of type function.`, `def greet():
     pass
 print(type(greet))`],
-  [`In def greet(name):, what is name?`, `A parameter`, [`An argument`, `A return value`, `A keyword`], `A parameter is the name inside the brackets of def.`],
+  [`In this function, what is name?
+
+def greet(name):
+    print("Hello", name)`, `A parameter`, [`An argument`, `A return value`, `A keyword`], `A parameter is the name inside the brackets of def.`],
   [`In greet("Aman"), what is "Aman"?`, `An argument`, [`A parameter`, `A return value`, `A keyword`], `An argument is the real value passed in the call.`],
   [`What is printed?
 
@@ -22,7 +25,12 @@ def add(a, b):
 add(3, 4)`, `7`, [`34`, `a + b`, `None`], `3 goes to a and 4 goes to b.`, `def add(a, b):
     print(a + b)
 add(3, 4)`],
-  [`What error appears for add(3) when def add(a, b) needs two arguments?`, `TypeError`, [`NameError`, `ValueError`, `IndexError`], `A required argument is missing.`],
+  [`What error appears for the last line?
+
+def add(a, b):
+    return a + b
+
+add(3)`, `TypeError`, [`NameError`, `ValueError`, `IndexError`], `A required argument is missing.`],
   [`How are arguments matched to parameters by default?`, `By position`, [`By name only`, `By alphabetical order`, `By their type`], `The first argument goes to the first parameter.`],
   [`What does return do?`, `Sends a value back and ends the function`, [`Prints a value on the screen`, `Repeats the function`, `Deletes the function`], `The value goes back to where the function was called.`],
   [`What is printed?
@@ -66,7 +74,12 @@ print(sign(0))`, `zero`, [`positive`, `negative`, `None`], `Neither condition is
     return "zero"
 print(sign(0))`],
   [`What type does return min(nums), max(nums) give back?`, `A tuple`, [`A list`, `Two separate values`, `A set`], `Several values separated by commas make one tuple.`],
-  [`What is low after low, high = min_max([4, 9, 2, 7]) when min_max returns min(nums), max(nums)?`, `2`, [`9`, `4`, `(2, 9)`], `The returned tuple is unpacked into low and high.`, `def min_max(nums):
+  [`What is low after this code?
+
+def min_max(nums):
+    return min(nums), max(nums)
+
+low, high = min_max([4, 9, 2, 7])`, `2`, [`9`, `4`, `(2, 9)`], `The returned tuple is unpacked into low and high.`, `def min_max(nums):
     return min(nums), max(nums)
 low, high = min_max([4, 9, 2, 7])
 print(low)`],
@@ -99,7 +112,12 @@ print(power(exponent=3, base=2))`, `8`, [`9`, `6`, `An error`], `Keyword argumen
     return base ** exponent
 print(power(exponent=3, base=2))`],
   [`Which definition is a mistake?`, `def f(a=1, b):`, [`def f(a, b=1):`, `def f(a, b):`, `def f(a=1, b=2):`], `Parameters with a default must come after those without one.`],
-  [`What is nums inside def total(*nums) when called as total(1, 2, 3)?`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 1`, `The number 6`], `The star collects the extra arguments into a tuple.`],
+  [`What is nums inside the function for this call?
+
+def total(*nums):
+    return sum(nums)
+
+total(1, 2, 3)`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 1`, `The number 6`], `The star collects the extra arguments into a tuple.`],
   [`What is printed?
 
 def total(*nums):
