@@ -416,6 +416,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 73. Quiz questions with code now show it as a real code block on the slide (102 questions in sessions 2 to 15 rewritten from one-line form).
 74. Each quiz slide is now a set of 3 questions with "Question n of 3", progress dots and a score at the end, as the owner asked ("the mcq should tell how many mcq are there in slide").
 75. Second pass on quiz code: 99 more questions that described code in words or hid setup in the sentence now show a code block (201 in all).
+76. Easier examples first (2026-11-16, the owner said "we have to make easy example on some cases" about the `break` slide). A very small example now comes before the harder one on slides where the first example was a jump: session 4 (if/else: weather before even/odd; elif: three temperature choices before the grade ladder; nested: a two-line login example first), session 5 (digits: `n % 10` and `n // 10` shown alone before the digit-sum loop; break: "Stop at 3" before "first multiple of 7"), session 6 (primes: a `12 % 3 == 0` check before the prime loop), session 7 (list removing split into `remove`/`pop` and `pop(0)`/`del`/`clear`), session 8 (set `add`/`update` and `remove`/`discard` in two boxes), session 9 (dict `pop`/`del` and `popitem`/`clear` in two boxes; looping keys alone before `values()` and `items()`). All the new boxes run in Python, and "Stop at 3" was run in the browser. **The PDFs for sessions 4 to 9 are now out of date** (the owner's hold on regenerating PDFs still stands). A rule for new lessons: the first example on a slide should use one new idea; put the realistic version second.
 
 ## Gotchas and lessons learned
 
@@ -442,6 +443,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 
 - **UI upgrades need the owner's OK first** (they said: "if you think you can upgrade better ui then ask me and do"). Ask with concrete options, then do only what they pick.
 - **Offered, not chosen:** one quiz score for the whole session with a summary at the end; line numbers and a Copy button in code boxes; dark mode for slides; a Practice files button on slides that use a file; a smaller snake on phones so it cannot cover the title.
+- **Easy-example audit:** only sessions 4 to 9 were checked for jumps in difficulty (first example with depth 3 or more, 9 or more lines, or `%`, `//`, nesting). Sessions 11 to 18 and 21 to 30 were not; do the same check there if the owner asks.
 - **Waiting on the owner:** (1) "say when" for PDFs and quiz CSVs of sessions 19 to 30; (2) the closing "Next class" lines and the roadmap in lesson 30 are assistant guesses, and the course plan may continue past session 30; (3) Draw panel caveats: shapes are outline only, Select cannot recolour, and moving, zooming or resizing the board code is not part of Undo.
 
 - Not yet done: `input()` support in the Try it box. Direct links to a slide work, but there is no share button for them.

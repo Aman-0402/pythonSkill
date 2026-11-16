@@ -1604,6 +1604,21 @@ print("You can vote")`,
           },
           {
             type: 'code',
+            label: 'Two choices',
+            runnable: true,
+            code: raw`weather = "rain"
+if weather == "rain":
+    print("Take an umbrella")
+else:
+    print("Enjoy the sun")`,
+          },
+          {
+            type: 'p',
+            text: 'The same idea with a number: `%` gives the **remainder**, so `number % 2 == 0` means the number is even.',
+          },
+          {
+            type: 'code',
+            label: 'Even or odd',
             runnable: true,
             code: raw`number = 7
 if number % 2 == 0:
@@ -1639,6 +1654,22 @@ else:
           {
             type: 'p',
             text: 'Use `elif` (short for **else if**) when there are **more than two choices**. Python checks from the top and runs the **first block whose condition is True**, then skips the rest.',
+          },
+          {
+            type: 'code',
+            label: 'Three choices',
+            runnable: true,
+            code: raw`temperature = 30
+if temperature > 35:
+    print("Very hot")
+elif temperature > 25:
+    print("Warm")
+else:
+    print("Cool")`,
+          },
+          {
+            type: 'p',
+            text: 'The same idea with more choices, a grade ladder:',
           },
           {
             type: 'code',
@@ -1714,6 +1745,21 @@ elif x > 5:
           {
             type: 'p',
             text: 'An `if` **inside another** `if` is called a nested condition. The inner check happens **only if the outer one is True**.',
+          },
+          {
+            type: 'code',
+            label: 'The smallest nested example',
+            runnable: true,
+            code: raw`logged_in = True
+is_admin = False
+if logged_in:
+    print("Welcome")
+    if is_admin:
+        print("Open the admin panel")`,
+          },
+          {
+            type: 'p',
+            text: 'A bigger one, with a different message for each case:',
           },
           {
             type: 'code',
@@ -2215,6 +2261,22 @@ print("Finished")`,
           },
           { type: 'h3', text: 'Sum of the digits of a number' },
           {
+            type: 'p',
+            text: 'Two small tools first: `n % 10` is the **last digit**, and `n // 10` **removes** the last digit.',
+          },
+          {
+            type: 'code',
+            label: 'Last digit and the rest',
+            runnable: true,
+            code: raw`n = 1234
+print(n % 10)
+print(n // 10)`,
+          },
+          {
+            type: 'p',
+            text: 'Now repeat that in a loop and add up every digit:',
+          },
+          {
             type: 'code',
             runnable: true,
             code: raw`n = 1234
@@ -2290,6 +2352,21 @@ print("Access granted")`,
           },
           {
             type: 'code',
+            runnable: true,
+            label: 'Stop at 3',
+            code: raw`for i in range(1, 6):
+    if i == 3:
+        break
+    print(i)
+print("Loop ended")`,
+          },
+          {
+            type: 'p',
+            text: 'Without `break` it would print 1 to 5. With `break` it stops as soon as `i` is 3. A real use is searching: find the **first** multiple of 7.',
+          },
+          {
+            type: 'code',
+            label: 'First multiple of 7',
             runnable: true,
             code: raw`for number in range(1, 20):
     if number % 7 == 0:
@@ -2719,6 +2796,17 @@ print(fact)`,
           {
             type: 'p',
             text: 'Idea: try to divide `n` by every number from 2 up to `n - 1`. If **any** divides it, it is **not prime**.',
+          },
+          {
+            type: 'code',
+            label: 'Divisible? (remainder 0)',
+            runnable: true,
+            code: raw`print(12 % 3 == 0)   # True: 3 divides 12
+print(12 % 5 == 0)   # False: 5 does not`,
+          },
+          {
+            type: 'p',
+            text: 'Now put that check inside a loop, for every number from 2 up to `n - 1`:',
           },
           {
             type: 'code',
@@ -3153,11 +3241,18 @@ print(fruits)`,
           {
             type: 'code',
             runnable: true,
+            label: 'remove and pop',
             code: raw`nums = [10, 20, 30, 20, 40]
 nums.remove(20)
 print(nums)
 last = nums.pop()
-print(last, nums)
+print(last, nums)`,
+          },
+          {
+            type: 'code',
+            label: 'pop(0), del and clear',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40]
 first = nums.pop(0)
 print(first, nums)
 del nums[0]
@@ -3966,14 +4061,21 @@ print(sorted(set(nums)))`,
           {
             type: 'code',
             runnable: true,
+            label: 'add and update',
             code: raw`s = {1, 2}
 s.add(3)
 s.add(2)
 print(s)
 s.update([3, 4, 5])
-print(s)
+print(s)`,
+          },
+          {
+            type: 'code',
+            label: 'remove and discard',
+            runnable: true,
+            code: raw`s = {1, 2, 3, 4, 5}
 s.remove(5)
-s.discard(99)
+s.discard(99)   # no error: 99 is not there
 print(s)`,
           },
           {
@@ -4468,11 +4570,18 @@ print(d)`,
           {
             type: 'code',
             runnable: true,
+            label: 'pop and del',
             code: raw`d = {"a": 1, "b": 2, "c": 3, "d": 4}
 print(d.pop("a"))
 print(d.pop("z", "not found"))
 del d["b"]
-print(d)
+print(d)`,
+          },
+          {
+            type: 'code',
+            label: 'popitem and clear',
+            runnable: true,
+            code: raw`d = {"c": 3, "d": 4}
 print(d.popitem())
 print(d)
 d.clear()
@@ -4541,10 +4650,21 @@ print(sorted(marks))`,
           {
             type: 'code',
             runnable: true,
-            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
+            label: 'Keys',
+            code: raw`marks = {"maths": 90, "science": 85}
 
 for subject in marks:
-    print(subject)
+    print(subject)`,
+          },
+          {
+            type: 'p',
+            text: 'Add `values()` for the values, and `items()` for the key and the value together:',
+          },
+          {
+            type: 'code',
+            label: 'values() and items()',
+            runnable: true,
+            code: raw`marks = {"maths": 90, "science": 85, "english": 78}
 
 for value in marks.values():
     print(value)
