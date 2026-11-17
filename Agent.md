@@ -425,6 +425,7 @@ The code font (JetBrains Mono) turns `>=`, `!=` and `==` into single symbols. Le
 81. Lists (session 6): the owner asked to remove slides 64 and 65 (numbers after item 80, quiz slides not counted): the mistakes slides "append: a list inside a list" and "extend: the items added". Lists now has 69 slides and 61 boxes. If the owner meant the numbers before item 80, other slides were meant (the mistakes table and "A missing item").
 82. Lists (session 6): owner asked to remove the "Every row" and "Every item" slides from "Lists inside lists" (loops over a 2D list). That section now ends at "One item". Lists has 67 slides, 59 boxes. (An earlier request to remove the two "Basic questions" and "Harder questions" slides was done and then undone at the owner's request; they are still in.)
 83. Lists (session 6): owner asked to remove the "Picking items with a condition" slide (the even-numbers filter loop) from "Loops over lists". The next slide, "A shorter way (preview)", stays. Lists has 66 slides, 58 boxes.
+84. Lists (session 6) is finished after the owner's review: the owner said "create the pdf and quiz csv", so `Notes pdf/Session 6 - Lists.pdf` and `Quiz in CSV/Session 6 - Lists.csv` (45 questions) were regenerated on 2026-11-18, **for this session only**; the hold on other sessions stands until the owner says so. One quiz question asks which line makes a real copy of a list (`a.copy()`), but that slide was removed from the lesson (`copy()` is only in the mistakes table).
 
 ## Gotchas and lessons learned
 
