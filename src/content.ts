@@ -3402,22 +3402,6 @@ for row in matrix:
             code: raw`nums = [1, 2, 3]
 nums.remove(10)`,
           },
-          { type: 'h3', text: 'append: a list inside a list' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = [1, 2]
-a.append([3, 4])
-print(a)`,
-          },
-          { type: 'h3', text: 'extend: the items added' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`b = [1, 2]
-b.extend([3, 4])
-print(b)`,
-          },
         ],
       },
       {
