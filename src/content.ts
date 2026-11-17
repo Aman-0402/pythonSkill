@@ -3351,32 +3351,6 @@ print(matrix[1])`,
             code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
 print(matrix[1][2])`,
           },
-          { type: 'h3', text: 'Every row' },
-          {
-            type: 'p',
-            text: 'A `for` loop gives one **row** at a time.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
-for row in matrix:
-    print(row)`,
-          },
-          { type: 'h3', text: 'Every item' },
-          {
-            type: 'p',
-            text: 'A loop inside a loop visits **every item**.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
-for row in matrix:
-    for item in row:
-        print(item, end=" ")
-    print()`,
-          },
         ],
       },
       {
