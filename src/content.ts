@@ -3408,6 +3408,28 @@ nums.remove(10)`,
         id: 's7-practice',
         title: 'Practice questions',
         blocks: [
+          { type: 'h3', text: 'Basic questions' },
+          {
+            type: 'ul',
+            items: [
+              'Make a list of 5 numbers and print the sum and the average.',
+              'Find the largest number in a list without using `max()`.',
+              'Count how many even numbers are in a list.',
+              'Print every item of a list with its index.',
+              'Print a list in reverse order without using `reverse()` or slicing.',
+            ],
+          },
+          { type: 'h3', text: 'Harder questions' },
+          {
+            type: 'ul',
+            items: [
+              'Remove the duplicates from a list.',
+              'Find the second largest number in a list.',
+              'Join two lists and sort the result.',
+              'Take numbers from the user until they type 0, then print the list and its total.',
+              'Make a list of the squares of the numbers 1 to 10.',
+            ],
+          },
           { type: 'h3', text: 'Find the output: slices' },
           {
             type: 'code',
