@@ -3220,44 +3220,12 @@ b = a
 b.append(4)
 print(a)`,
           },
-          { type: 'h3', text: 'Making a real copy' },
-          {
-            type: 'p',
-            text: 'Use `copy()` to get a **separate** list.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = [1, 2, 3]
-c = a.copy()
-c.append(5)
-print(a)
-print(c)`,
-          },
-          {
-            type: 'note',
-            tone: 'tip',
-            title: 'Ask',
-            text: 'Why did `a` change when we only appended to `b`, but not when we appended to `c`?',
-          },
         ],
       },
       {
         id: 's7-loops',
         title: 'Loops over lists',
         blocks: [
-          { type: 'h3', text: 'Go through every item' },
-          {
-            type: 'p',
-            text: 'A `for` loop takes the items **one by one**.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`fruits = ["apple", "banana", "mango"]
-for fruit in fruits:
-    print(fruit)`,
-          },
           { type: 'h3', text: 'Adding up the items' },
           {
             type: 'p',
