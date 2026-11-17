@@ -3287,21 +3287,6 @@ for n in range(1, 6):
     squares.append(n * n)
 print(squares)`,
           },
-          { type: 'h3', text: 'Picking items with a condition' },
-          {
-            type: 'p',
-            text: 'Add an item to the new list **only if** it passes a test.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`nums = [4, 7, 10, 3, 8]
-evens = []
-for n in nums:
-    if n % 2 == 0:
-        evens.append(n)
-print(evens)`,
-          },
           { type: 'h3', text: 'A shorter way (preview)' },
           {
             type: 'p',
