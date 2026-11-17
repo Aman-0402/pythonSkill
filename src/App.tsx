@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, type ComponentType } from 'react'
+import Loader from './Loader'
 import Draw from './Draw'
 import { usePath } from './router'
 
@@ -32,7 +33,7 @@ function App() {
 
   return (
     <>
-      <Suspense fallback={<div className="page-loading">Loading…</div>}>
+      <Suspense fallback={<Loader />}>
         {path === '/contents' ? <Contents /> : path === '/practice' ? <Practice /> : path.startsWith('/contents/') ? <Lesson slug={path.slice('/contents/'.length)} /> : <Landing />}
       </Suspense>
       <Draw />

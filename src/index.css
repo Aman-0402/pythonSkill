@@ -788,7 +788,24 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .quiz-keys { font-weight: 500; opacity: 0.7; }
 
 /* page while it loads */
-.page-loading { display: grid; place-items: center; min-height: 100vh; font: 600 1.1rem var(--body); color: #51657a; background: #eef3fb; }
+.page-loading { display: grid; place-content: center; justify-items: center; gap: 18px; min-height: 100vh; background: radial-gradient(circle at 50% 40%, #16314f, #0b1626 70%); color: #bcd0e6; }
+.snake-ring { width: min(46vw, 190px); height: auto; overflow: visible; filter: drop-shadow(0 0 14px rgba(46, 227, 138, 0.35)); }
+.snake-track { fill: none; stroke: rgba(255, 255, 255, 0.07); stroke-width: 3; stroke-dasharray: 1 7; }
+.snake-spin { transform-origin: 60px 60px; animation: snake-turn 1.9s linear infinite; }
+.snake-body { fill: none; stroke: var(--green); stroke-linecap: round; }
+.snake-body:nth-child(odd) { stroke: #3ddc97; }
+.snake-head { fill: var(--green); }
+.snake-eye { fill: #fff; }
+.snake-pupil { fill: #0b1626; }
+.snake-tongue { fill: none; stroke: #ff5d73; stroke-width: 2; stroke-linecap: round; transform-box: fill-box; transform-origin: 50% 100%; animation: snake-flick 0.7s ease-in-out infinite; }
+.snake-label { margin: 0; font: 600 1.05rem var(--mono); letter-spacing: 0.04em; }
+.snake-dots i { font-style: normal; animation: snake-dot 1.2s infinite; }
+.snake-dots i:nth-child(2) { animation-delay: 0.2s; }
+.snake-dots i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes snake-turn { to { transform: rotate(360deg); } }
+@keyframes snake-flick { 0%, 55%, 100% { transform: scaleY(0.3); opacity: 0.4; } 70% { transform: scaleY(1); opacity: 1; } }
+@keyframes snake-dot { 0%, 60%, 100% { opacity: 0.2; } 30% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .snake-spin { animation-duration: 6s; } .snake-tongue, .snake-dots i { animation: none; } }
 
 /* contents: what has been read */
 .topic { position: relative; }
