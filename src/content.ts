@@ -3054,7 +3054,10 @@ print("GCD =", a)`,
         id: 's7-recap',
         title: 'Recap',
         blocks: [
-          { type: 'p', text: '**Ask the class:**' },
+          {
+            type: 'p',
+            text: '**Ask the class:**',
+          },
           {
             type: 'ul',
             items: [
@@ -3071,36 +3074,106 @@ print("GCD =", a)`,
         blocks: [
           {
             type: 'p',
-            text: 'A list is an **ordered collection of items** inside square brackets `[ ]`, separated by commas. One variable can hold **many values**.',
+            text: 'A **list** keeps **many values in one variable**. We write the values inside square brackets `[ ]`, separated by commas.',
           },
           {
             type: 'code',
             label: 'lists.py',
             runnable: true,
-            code: raw`numbers = [10, 20, 30]
-names = ["Aman", "Ankit"]
-mixed = [1, "two", 3.0, True]
-empty = []
-print(numbers, names, mixed, empty)
-print(len(numbers))
-print(type(numbers))`,
+            code: raw`fruits = ["apple", "banana", "mango"]
+print(fruits)`,
           },
           {
             type: 'ul',
             items: [
-              '**Ordered:** every item has a position (index), starting from 0.',
-              '**Mixed types allowed:** one list can hold numbers, text and more.',
-              '**Mutable:** you can change, add and remove items after the list is made.',
-              '**Duplicates allowed:** the same value can appear many times.',
+              'The variable `fruits` holds **three** values.',
+              'The values stay in the **order** we wrote them.',
             ],
           },
-          { type: 'h3', text: 'Making a list from other things' },
+          { type: 'h3', text: 'Numbers in a list' },
+          {
+            type: 'p',
+            text: 'A list can hold numbers too. Here are three marks in one variable.',
+          },
           {
             type: 'code',
             runnable: true,
-            code: raw`print(list("Python"))
-print(list(range(1, 6)))
-print("a b c".split())`,
+            code: raw`marks = [85, 90, 78]
+print(marks)`,
+          },
+          { type: 'h3', text: 'How many items? len()' },
+          {
+            type: 'p',
+            text: '`len()` tells you **how many items** are in a list.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+print(len(fruits))`,
+          },
+          { type: 'h3', text: 'An empty list' },
+          {
+            type: 'p',
+            text: 'A list with nothing inside is written `[]`. We start with an empty list when we want to **add items later**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`items = []
+print(items)
+print(len(items))`,
+          },
+          { type: 'h3', text: 'Mixed types' },
+          {
+            type: 'p',
+            text: 'One list can hold **different kinds** of values: a number, text, a decimal and a True or False.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`mixed = [1, "two", 3.0, True]
+print(mixed)`,
+          },
+          { type: 'h3', text: 'Four facts about lists' },
+          {
+            type: 'ul',
+            items: [
+              '**Ordered:** every item has a position (its **index**), starting from 0.',
+              '**Mixed types allowed:** numbers, text and more in one list.',
+              '**Duplicates allowed:** the same value can appear many times, like `[5, 5, 5]`.',
+              '**Mutable:** you can change, add and remove items after the list is made.',
+            ],
+          },
+          { type: 'h3', text: 'list() from a word' },
+          {
+            type: 'p',
+            text: '`list()` turns other things into a list. A word becomes a list of **letters**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(list("Python"))`,
+          },
+          { type: 'h3', text: 'list() from range()' },
+          {
+            type: 'p',
+            text: '`range()` makes numbers. Put `list()` around it to **see** them as a list.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print(list(range(1, 6)))`,
+          },
+          { type: 'h3', text: 'split() gives a list' },
+          {
+            type: 'p',
+            text: '`split()` breaks a sentence into a **list of words**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`print("a b c".split())`,
           },
           {
             type: 'note',
@@ -3116,7 +3189,7 @@ print("a b c".split())`,
         blocks: [
           {
             type: 'p',
-            text: 'Indexing works **exactly like strings**: the first item is at index **0**, and **negative** indexes count from the end.',
+            text: 'Every item has a **position** called an **index**. Counting starts at **0**, not 1.',
           },
           {
             type: 'code',
@@ -3125,13 +3198,48 @@ print("a b c".split())`,
             0        1         2        3
            -4       -3        -2       -1`,
           },
+          { type: 'h3', text: 'The first item' },
+          {
+            type: 'p',
+            text: 'Write the index in square brackets after the list name. The first item is index **0**.',
+          },
           {
             type: 'code',
             runnable: true,
             code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
-print(fruits[0])
-print(fruits[2])
-print(fruits[-1])
+print(fruits[0])`,
+          },
+          { type: 'h3', text: 'Another position' },
+          {
+            type: 'p',
+            text: 'Index **2** is the **third** item, because we start counting at 0.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
+print(fruits[2])`,
+          },
+          { type: 'h3', text: 'The last item' },
+          {
+            type: 'p',
+            text: 'A **negative** index counts from the **end**. `-1` is the last item.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
+print(fruits[-1])`,
+          },
+          { type: 'h3', text: 'Second from the end' },
+          {
+            type: 'p',
+            text: '`-2` is the second item from the end.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
 print(fruits[-2])`,
           },
           {
@@ -3142,16 +3250,20 @@ print(fruits[-2])`,
           },
           { type: 'h3', text: 'Going past the end' },
           {
+            type: 'p',
+            text: 'There is no item at index 4 in a list of four items. Python shows an error.',
+          },
+          {
             type: 'code',
             label: 'Try it: read the error',
             runnable: true,
             code: raw`fruits = ["apple", "banana", "mango", "kiwi"]
 print(fruits[4])`,
           },
-          { type: 'h3', text: 'Lists can be changed' },
+          { type: 'h3', text: 'Change an item' },
           {
             type: 'p',
-            text: 'Unlike strings, a list is **mutable**. You can replace an item by assigning to its index.',
+            text: 'Unlike a string, a list can be **changed**. Put the new value into an index with `=`.',
           },
           {
             type: 'code',
@@ -3168,28 +3280,83 @@ print(fruits)`,
         blocks: [
           {
             type: 'p',
-            text: 'Syntax: `list[start:stop:step]`. The **stop index is not included**, and a slice **gives a new list**.',
+            text: '**Slicing** takes a **part** of a list. We write `list[start:stop]`.',
+          },
+          {
+            type: 'code',
+            label: 'From index 1 up to 4',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50, 60]
+print(nums[1:4])`,
+          },
+          {
+            type: 'ul',
+            items: [
+              'It **starts** at index 1.',
+              'It stops **before** index 4: the **stop is not included**.',
+              'A slice gives a **new list**.',
+            ],
+          },
+          { type: 'h3', text: 'From the beginning' },
+          {
+            type: 'p',
+            text: 'Leave out the start to begin at the **first** item.',
           },
           {
             type: 'code',
             runnable: true,
             code: raw`nums = [10, 20, 30, 40, 50, 60]
-print(nums[1:4])
-print(nums[:3])
-print(nums[3:])
-print(nums[::2])
-print(nums[::-1])
-print(nums[-2:])`,
+print(nums[:3])`,
+          },
+          { type: 'h3', text: 'To the end' },
+          {
+            type: 'p',
+            text: 'Leave out the stop to go to the **last** item.',
           },
           {
-            type: 'ul',
-            items: [
-              'Leaving out **start** means from the beginning, leaving out **stop** means to the end.',
-              'A step of **-1** reverses the list.',
-              '`nums[:]` makes a **copy** of the whole list.',
-            ],
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50, 60]
+print(nums[3:])`,
           },
-          { type: 'h3', text: 'Changing a slice' },
+          { type: 'h3', text: 'The last items' },
+          {
+            type: 'p',
+            text: 'Negative numbers work in a slice too. `-2:` means the **last two** items.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50, 60]
+print(nums[-2:])`,
+          },
+          { type: 'h3', text: 'Every second item' },
+          {
+            type: 'p',
+            text: 'A third number is the **step**. A step of 2 takes every second item.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50, 60]
+print(nums[::2])`,
+          },
+          { type: 'h3', text: 'Reverse a list' },
+          {
+            type: 'p',
+            text: 'A step of **-1** goes backwards, so the list comes out **reversed**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50, 60]
+print(nums[::-1])`,
+          },
+          { type: 'h3', text: 'Replace a part' },
+          {
+            type: 'p',
+            text: 'You can also **assign** to a slice to change several items at once.',
+          },
           {
             type: 'code',
             runnable: true,
@@ -3205,94 +3372,219 @@ print(nums)`,
         blocks: [
           {
             type: 'p',
-            text: 'Methods are called with a dot, like string methods. Unlike string methods, most list methods **change the list itself**.',
+            text: 'A **method** is a command that belongs to a list. We write it with a **dot**: `list.method()`. Most list methods **change the list itself**.',
           },
-          { type: 'h3', text: 'Adding items' },
           {
-            type: 'table',
-            head: ['Method', 'What it does'],
-            rows: [
-              ['`append(x)`', 'adds `x` at the **end**'],
-              ['`insert(i, x)`', 'adds `x` at **position i**'],
-              ['`extend(items)`', 'adds **every item** of another list at the end'],
-            ],
+            type: 'code',
+            label: 'The first method: sort()',
+            runnable: true,
+            code: raw`nums = [3, 1, 2]
+nums.sort()
+print(nums)`,
+          },
+          { type: 'h3', text: 'Adding: append()' },
+          {
+            type: 'p',
+            text: '`append(x)` adds `x` at the **end** of the list.',
           },
           {
             type: 'code',
             runnable: true,
             code: raw`fruits = ["apple", "banana"]
 fruits.append("mango")
+print(fruits)`,
+          },
+          { type: 'h3', text: 'Adding: insert()' },
+          {
+            type: 'p',
+            text: '`insert(i, x)` adds `x` at **position i**. The other items move along.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana"]
 fruits.insert(1, "kiwi")
+print(fruits)`,
+          },
+          { type: 'h3', text: 'Adding: extend()' },
+          {
+            type: 'p',
+            text: '`extend(items)` adds **every item** of another list at the end.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana"]
 fruits.extend(["grapes", "orange"])
 print(fruits)`,
           },
-          { type: 'h3', text: 'Removing items' },
+          { type: 'h3', text: 'Removing: remove()' },
           {
-            type: 'table',
-            head: ['Method', 'What it does'],
-            rows: [
-              ['`remove(x)`', 'removes the **first** `x`'],
-              ['`pop()`', 'removes and **returns** the last item'],
-              ['`pop(i)`', 'removes and returns the item at **position i**'],
-              ['`del list[i]`', 'removes the item at position `i`'],
-              ['`clear()`', 'removes **everything**'],
-            ],
+            type: 'p',
+            text: '`remove(x)` removes the **first** `x` it finds.',
           },
           {
             type: 'code',
             runnable: true,
-            label: 'remove and pop',
             code: raw`nums = [10, 20, 30, 20, 40]
 nums.remove(20)
-print(nums)
-last = nums.pop()
-print(last, nums)`,
+print(nums)`,
+          },
+          { type: 'h3', text: 'Removing: pop()' },
+          {
+            type: 'p',
+            text: '`pop()` removes the **last** item and **gives it back**.',
           },
           {
             type: 'code',
-            label: 'pop(0), del and clear',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40]
+last = nums.pop()
+print(last)
+print(nums)`,
+          },
+          { type: 'h3', text: 'Removing: pop(i)' },
+          {
+            type: 'p',
+            text: '`pop(i)` removes the item at **position i** and gives it back.',
+          },
+          {
+            type: 'code',
             runnable: true,
             code: raw`nums = [10, 20, 30, 40]
 first = nums.pop(0)
-print(first, nums)
+print(first)
+print(nums)`,
+          },
+          { type: 'h3', text: 'Removing: del' },
+          {
+            type: 'p',
+            text: '`del nums[i]` removes the item at position `i`, without giving it back.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40]
 del nums[0]
-print(nums)
+print(nums)`,
+          },
+          { type: 'h3', text: 'Removing: clear()' },
+          {
+            type: 'p',
+            text: '`clear()` removes **everything**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [10, 20, 30]
 nums.clear()
 print(nums)`,
           },
-          { type: 'h3', text: 'Searching' },
+          { type: 'h3', text: 'Searching: index()' },
+          {
+            type: 'p',
+            text: '`index(x)` tells you the **position** of the first `x`.',
+          },
           {
             type: 'code',
             runnable: true,
             code: raw`colors = ["red", "green", "blue", "green"]
-print(colors.index("blue"))
-print(colors.count("green"))
+print(colors.index("blue"))`,
+          },
+          { type: 'h3', text: 'Searching: count()' },
+          {
+            type: 'p',
+            text: '`count(x)` tells you **how many times** `x` appears.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`colors = ["red", "green", "blue", "green"]
+print(colors.count("green"))`,
+          },
+          { type: 'h3', text: 'Searching: in' },
+          {
+            type: 'p',
+            text: '`in` checks whether a value is **in the list**. The answer is True or False.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`colors = ["red", "green", "blue", "green"]
 print("red" in colors)
 print("pink" in colors)`,
           },
-          { type: 'h3', text: 'Sorting and reversing' },
+          { type: 'h3', text: 'Sorting: sort()' },
+          {
+            type: 'p',
+            text: '`sort()` puts the items in **order**, smallest first.',
+          },
           {
             type: 'code',
             runnable: true,
             code: raw`nums = [5, 2, 9, 1]
 nums.sort()
-print(nums)
-nums.sort(reverse=True)
-print(nums)
-nums.reverse()
-print(nums)
-print(sorted([3, 1, 2]))`,
+print(nums)`,
           },
+          { type: 'h3', text: 'Sorting: biggest first' },
           {
             type: 'p',
-            text: '`sort()` **changes the list**. `sorted()` leaves the list alone and **gives a new sorted list**.',
+            text: 'Add `reverse=True` to sort from the **biggest** down.',
           },
-          { type: 'h3', text: 'Useful functions' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [5, 2, 9, 1]
+nums.sort(reverse=True)
+print(nums)`,
+          },
+          { type: 'h3', text: 'Reversing: reverse()' },
+          {
+            type: 'p',
+            text: '`reverse()` flips the list around. It does **not** sort it.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [5, 2, 9, 1]
+nums.reverse()
+print(nums)`,
+          },
+          { type: 'h3', text: 'sorted() gives a new list' },
+          {
+            type: 'p',
+            text: '`sort()` **changes** the list. `sorted()` leaves the list alone and **gives a new sorted list**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [3, 1, 2]
+print(sorted(nums))
+print(nums)`,
+          },
+          { type: 'h3', text: 'len(), min() and max()' },
+          {
+            type: 'p',
+            text: 'These three functions work on a whole list.',
+          },
           {
             type: 'code',
             runnable: true,
             code: raw`marks = [72, 85, 60, 91]
-print(len(marks), min(marks), max(marks), sum(marks))
+print(len(marks))
+print(min(marks))
+print(max(marks))`,
+          },
+          { type: 'h3', text: 'sum() and the average' },
+          {
+            type: 'p',
+            text: '`sum()` adds all the items. The **average** is the sum divided by the number of items.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`marks = [72, 85, 60, 91]
+print(sum(marks))
 print(sum(marks) / len(marks))`,
           },
           { type: 'h3', text: 'These methods return None' },
@@ -3310,6 +3602,25 @@ result = nums.sort()
 print(result)
 print(nums)`,
           },
+          { type: 'h3', text: 'All the methods in one table' },
+          {
+            type: 'table',
+            head: ['Method', 'What it does'],
+            rows: [
+              ['`append(x)`', 'adds `x` at the **end**'],
+              ['`insert(i, x)`', 'adds `x` at **position i**'],
+              ['`extend(items)`', 'adds **every item** of another list'],
+              ['`remove(x)`', 'removes the **first** `x`'],
+              ['`pop()`', 'removes and **returns** the last item'],
+              ['`pop(i)`', 'removes and returns the item at **position i**'],
+              ['`del list[i]`', 'removes the item at position `i`'],
+              ['`clear()`', 'removes **everything**'],
+              ['`index(x)`', 'the **position** of the first `x`'],
+              ['`count(x)`', 'how many times `x` appears'],
+              ['`sort()`', 'puts the list in order'],
+              ['`reverse()`', 'flips the list around'],
+            ],
+          },
         ],
       },
       {
@@ -3317,29 +3628,55 @@ print(nums)`,
         title: 'List operations',
         blocks: [
           {
+            type: 'p',
+            text: 'Some operators you already know work on lists too. Start with `+`, which **joins** two lists into a new one.',
+          },
+          {
             type: 'code',
             runnable: true,
             code: raw`a = [1, 2, 3]
 b = [4, 5]
-print(a + b)
-print(b * 3)
-print(2 in a)
-print(7 not in a)
-print(a == [1, 2, 3])`,
+print(a + b)`,
+          },
+          { type: 'h3', text: '* repeats a list' },
+          {
+            type: 'p',
+            text: '`*` **repeats** a list.',
           },
           {
-            type: 'ul',
-            items: [
-              '`+` **joins** two lists into a new one.',
-              '`*` **repeats** a list.',
-              '`in` and `not in` check whether a value is **present**.',
-              '`==` compares **all items in order**.',
-            ],
+            type: 'code',
+            runnable: true,
+            code: raw`b = [4, 5]
+print(b * 3)`,
+          },
+          { type: 'h3', text: 'in and not in' },
+          {
+            type: 'p',
+            text: '`in` and `not in` check whether a value is **present**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3]
+print(2 in a)
+print(7 not in a)`,
+          },
+          { type: 'h3', text: '== compares lists' },
+          {
+            type: 'p',
+            text: '`==` compares **all the items, in order**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3]
+print(a == [1, 2, 3])
+print(a == [3, 2, 1])`,
           },
           { type: 'h3', text: 'Copying a list' },
           {
             type: 'p',
-            text: '`b = a` does **not** copy the list. Both names point to the **same list**.',
+            text: '`b = a` does **not** copy the list. Both names point to the **same list**, so changing one changes the other.',
           },
           {
             type: 'code',
@@ -3347,7 +3684,17 @@ print(a == [1, 2, 3])`,
             code: raw`a = [1, 2, 3]
 b = a
 b.append(4)
-print(a)
+print(a)`,
+          },
+          { type: 'h3', text: 'Making a real copy' },
+          {
+            type: 'p',
+            text: 'Use `copy()` to get a **separate** list.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = [1, 2, 3]
 c = a.copy()
 c.append(5)
 print(a)
@@ -3357,7 +3704,7 @@ print(c)`,
             type: 'note',
             tone: 'tip',
             title: 'Ask',
-            text: 'Why did `a` change when we only appended to `b`?',
+            text: 'Why did `a` change when we only appended to `b`, but not when we appended to `c`?',
           },
         ],
       },
@@ -3367,26 +3714,53 @@ print(c)`,
         blocks: [
           { type: 'h3', text: 'Go through every item' },
           {
+            type: 'p',
+            text: 'A `for` loop takes the items **one by one**.',
+          },
+          {
             type: 'code',
             runnable: true,
             code: raw`fruits = ["apple", "banana", "mango"]
 for fruit in fruits:
     print(fruit)`,
           },
-          { type: 'h3', text: 'When you also need the index' },
+          { type: 'h3', text: 'Adding up the items' },
+          {
+            type: 'p',
+            text: 'Start a total at 0 and add each item to it.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`nums = [4, 7, 10]
+total = 0
+for n in nums:
+    total += n
+print(total)`,
+          },
+          { type: 'h3', text: 'When you also need the index: range(len())' },
+          {
+            type: 'p',
+            text: '`range(len(fruits))` gives the **indexes** 0, 1, 2 ...',
+          },
           {
             type: 'code',
             runnable: true,
             code: raw`fruits = ["apple", "banana", "mango"]
 for i in range(len(fruits)):
-    print(i, fruits[i])
-print("---")
-for i, fruit in enumerate(fruits):
-    print(i, fruit)`,
+    print(i, fruits[i])`,
           },
+          { type: 'h3', text: 'When you also need the index: enumerate()' },
           {
             type: 'p',
             text: '`enumerate()` hands you the **index and the item together**, which is shorter and harder to get wrong.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`fruits = ["apple", "banana", "mango"]
+for i, fruit in enumerate(fruits):
+    print(i, fruit)`,
           },
           { type: 'h3', text: 'With a while loop' },
           {
@@ -3400,6 +3774,10 @@ while i < len(fruits):
           },
           { type: 'h3', text: 'Building a list in a loop' },
           {
+            type: 'p',
+            text: 'Start with an **empty list**, then `append()` inside the loop.',
+          },
+          {
             type: 'code',
             runnable: true,
             code: raw`squares = []
@@ -3407,11 +3785,11 @@ for n in range(1, 6):
     squares.append(n * n)
 print(squares)`,
           },
+          { type: 'h3', text: 'Picking items with a condition' },
           {
             type: 'p',
-            text: 'Start with an **empty list**, then `append()` inside the loop.',
+            text: 'Add an item to the new list **only if** it passes a test.',
           },
-          { type: 'h3', text: 'Picking items with a condition' },
           {
             type: 'code',
             runnable: true,
@@ -3447,18 +3825,46 @@ print(squares)`,
             type: 'code',
             runnable: true,
             code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
-print(matrix[0])
-print(matrix[1][2])
+print(matrix)`,
+          },
+          { type: 'h3', text: 'One row' },
+          {
+            type: 'p',
+            text: '`matrix[1]` is the **second row**.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix[1])`,
+          },
+          { type: 'h3', text: 'One item' },
+          {
+            type: 'p',
+            text: '`matrix[1][2]` is the **third item of the second row**: first the row, then the item.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix[1][2])`,
+          },
+          { type: 'h3', text: 'Every row' },
+          {
+            type: 'p',
+            text: 'A `for` loop gives one **row** at a time.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`matrix = [[1, 2, 3], [4, 5, 6]]
 for row in matrix:
     print(row)`,
           },
+          { type: 'h3', text: 'Every item' },
           {
-            type: 'ul',
-            items: [
-              '`matrix[1]` is the **second row**.',
-              '`matrix[1][2]` is the **third item of the second row**.',
-              'A nested `for` loop visits **every item**.',
-            ],
+            type: 'p',
+            text: 'A loop inside a loop visits **every item**.',
           },
           {
             type: 'code',
@@ -3494,14 +3900,19 @@ for row in matrix:
             code: raw`nums = [1, 2, 3]
 nums.remove(10)`,
           },
-          { type: 'h3', text: 'append or extend?' },
+          { type: 'h3', text: 'append: a list inside a list' },
           {
             type: 'code',
             runnable: true,
             code: raw`a = [1, 2]
 a.append([3, 4])
-print(a)
-b = [1, 2]
+print(a)`,
+          },
+          { type: 'h3', text: 'extend: the items added' },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`b = [1, 2]
 b.extend([3, 4])
 print(b)`,
           },
@@ -3513,7 +3924,7 @@ print(b)`,
         blocks: [
           { type: 'h3', text: 'Basic questions' },
           {
-            type: 'ol',
+            type: 'ul',
             items: [
               'Make a list of 5 numbers and print the sum and the average.',
               'Find the largest number in a list without using `max()`.',
@@ -3524,8 +3935,7 @@ print(b)`,
           },
           { type: 'h3', text: 'Harder questions' },
           {
-            type: 'ol',
-            start: 6,
+            type: 'ul',
             items: [
               'Remove the duplicates from a list.',
               'Find the second largest number in a list.',
@@ -3534,14 +3944,21 @@ print(b)`,
               'Make a list of the squares of the numbers 1 to 10.',
             ],
           },
-          { type: 'h3', text: 'Find the output' },
+          { type: 'h3', text: 'Find the output: slices' },
           {
             type: 'code',
             label: 'Work out the output first, then press Run to check',
             runnable: true,
             code: raw`nums = [10, 20, 30, 40, 50]
 print(nums[1:4])
-print(nums[::-1][0])
+print(nums[::-1][0])`,
+          },
+          { type: 'h3', text: 'Find the output: changing the list' },
+          {
+            type: 'code',
+            label: 'Work out the output first, then press Run to check',
+            runnable: true,
+            code: raw`nums = [10, 20, 30, 40, 50]
 nums.append(60)
 nums.pop(0)
 print(nums)
@@ -3565,11 +3982,12 @@ print(len(nums))`,
           {
             type: 'ul',
             items: [
+              'Make a list of your **5 favourite foods** and print the first and the last one.',
               'Write a program that takes **5 marks**, stores them in a list, and prints the **highest, lowest and average**.',
               'Write a program that **separates** a list of numbers into two lists: **even** and **odd**.',
               'Write a program that **rotates** a list by one position: `[1, 2, 3, 4]` becomes `[2, 3, 4, 1]`.',
               'Write a program that finds the **common items** of two lists.',
-              'Revise the **list methods** tables, especially which methods **return None**.',
+              'Revise the **list methods** table, especially which methods **return None**.',
             ],
           },
           {
