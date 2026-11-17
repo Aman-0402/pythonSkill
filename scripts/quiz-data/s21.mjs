@@ -1,20 +1,20 @@
-// Session 21: Data Cleaning
+// Session 21: Grouping and Aggregation
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`Why work on df.copy() while cleaning?`, `So the original table stays safe`, [`It makes the code faster`, `It removes blanks`, `pandas requires it`], `If you make a mistake you can start again from df.`],
-  [`What does df.isna().mean() give?`, `The fraction of missing values per column`, [`The average of each column`, `The number of rows`, `The missing rows`], `0.5 means half of the column is missing.`],
-  [`What is usually a good fill value for a text category such as city?`, `The mode, the most common value`, [`The mean`, `Zero`, `The maximum`], `A mean makes no sense for text.`],
-  [`For money data with a few huge values, which fill is usually better?`, `The median`, [`The mean`, `The maximum`, `The first value`], `The median is not pulled by extreme values.`],
-  [`What does ffill() do?`, `Copies the previous value forward`, [`Fills blanks with zero`, `Fills blanks with the mean`, `Removes the blanks`], `It suits ordered data such as daily readings.`],
-  [`What does dropna(subset=["maths"]) remove?`, `Rows where maths is blank`, [`The maths column`, `All blank rows in any column`, `Rows where maths is not blank`], `Other columns may still have blanks.`],
-  [`What does df.duplicated() mark as True?`, `Rows identical to an earlier row`, [`The first copy of each row`, `Rows with blanks`, `Every row`], `The first copy is False.`],
-  [`What does keep="last" do in drop_duplicates?`, `Keeps the last copy of each duplicate`, [`Keeps every copy`, `Removes every copy`, `Keeps only the last row of the table`], `The default is keep="first".`],
-  [`Why clean the text before dropping duplicates?`, `Spaces and capitals can hide real duplicates`, [`It is faster`, `drop_duplicates only works on numbers`, `Text must be sorted first`], `Delhi and " delhi" are different strings until cleaned.`],
-  [`What is the sum of the text values "20", "22" in a pandas column?`, `2022`, [`42`, `An error`, `0`], `Text is joined, not added.`, `import pandas as pd
-print(pd.Series(["20", "22"]).sum())`],
-  [`Why does astype(int) fail on a column with NaN?`, `NaN cannot be stored as a whole number`, [`NaN is text`, `int only works on strings`, `It never fails`], `Fill the blanks first or use astype(float).`],
-  [`What does .str.strip() do?`, `Removes spaces at both ends`, [`Removes all letters`, `Splits the text`, `Changes capitals`], `It does not touch spaces in the middle.`],
-  [`What does expand=True do in str.split?`, `Returns the pieces as separate columns`, [`Makes the text longer`, `Adds more rows`, `Sorts the pieces`], `Without it you get lists.`],
-  [`What does clip(lower=0, upper=100) do?`, `Squeezes values into the range 0 to 100`, [`Removes rows outside the range`, `Rounds the values`, `Counts the values`], `-5 becomes 0 and 120 becomes 100.`],
+  [`What are the three steps behind groupby?`, `Split, apply, combine`, [`Load, clean, save`, `Sort, filter, print`, `Read, write, close`], `Split into groups, calculate, and join the answers.`],
+  [`What does df.groupby("city")["maths"].mean() give?`, `The average maths of each city`, [`The average of all maths`, `The cities sorted by maths`, `The number of cities`], `One number per group.`],
+  [`What is the difference between size() and count()?`, `size counts all rows, count skips blanks`, [`They are the same`, `size skips blanks, count does not`, `count works only on text`], `A group with a blank shows it clearly.`],
+  [`What does df.groupby("city") print on its own?`, `Only a group object, no results`, [`A table of averages`, `The city names`, `An error`], `You must add a calculation such as mean().`],
+  [`What does unstack() do to a two-level result?`, `Moves the inner level into columns`, [`Deletes the inner level`, `Sorts the rows`, `Makes a chart`], `It gives a handy cross-table.`],
+  [`How do you turn group names back into a normal column?`, `reset_index()`, [`set_index()`, `unstack()`, `rename()`], `as_index=False gives the same result directly.`],
+  [`What is the form of named aggregation?`, `avg=("maths", "mean")`, [`avg="maths.mean"`, `mean=avg("maths")`, `("maths", "avg")=mean`], `The new name goes on the left.`],
+  [`What does a dictionary in agg do?`, `Picks a calculation for each column`, [`Renames the groups`, `Filters the rows`, `Sorts the columns`], `For example {"maths": "mean", "science": "max"}.`],
+  [`What must a function given to agg return?`, `One value for the group`, [`A whole table`, `A list per row`, `Nothing`], `It receives a group as a Series.`],
+  [`What is the main difference between agg and transform?`, `transform keeps every row, agg gives one row per group`, [`transform is only for text`, `agg keeps every row`, `They are the same`], `Use transform to compare each row with its group.`],
+  [`What does value_counts(normalize=True) show?`, `The fraction of each value`, [`The count of each value`, `The sorted values`, `Only the top value`], `0.5 means half of the rows.`],
+  [`Which gives counts of each pair as a table?`, `pd.crosstab(df["city"], df["gender"])`, [`df.pair("city", "gender")`, `df.city.gender.count()`, `pd.merge(df["city"], df["gender"])`], `Add margins=True for the totals.`],
+  [`In pivot_table, what goes in index=?`, `What runs down the rows`, [`What runs across the top`, `The numbers to summarise`, `The calculation`], `columns= goes across and values= holds the numbers.`],
+  [`What is the default aggfunc of pivot_table?`, `mean`, [`sum`, `count`, `max`], `Pass aggfunc="sum" to change it.`],
+  [`Why do group results for Jan, Feb, Mar come out as Feb, Jan, Mar?`, `Groups are sorted alphabetically`, [`pandas shuffles them`, `Feb has the most rows`, `It is a bug`], `Use reindex or real dates to fix the order.`],
 ]

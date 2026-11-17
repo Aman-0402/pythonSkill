@@ -7,12 +7,12 @@ import { clearProgress, readProgress } from './progress'
 // the course in stages, by session number
 const stages = [
   { name: 'Python basics', from: 1, to: 4 },
-  { name: 'Loops and collections', from: 5, to: 10 },
-  { name: 'Organising code', from: 11, to: 15 },
-  { name: 'NumPy', from: 16, to: 17 },
-  { name: 'Pandas', from: 18, to: 23 },
-  { name: 'Charts', from: 24, to: 25 },
-  { name: 'Projects', from: 26, to: 30 },
+  { name: 'Loops and collections', from: 5, to: 9 },
+  { name: 'Organising code', from: 10, to: 14 },
+  { name: 'NumPy', from: 15, to: 16 },
+  { name: 'Pandas', from: 17, to: 22 },
+  { name: 'Charts', from: 23, to: 24 },
+  { name: 'Projects', from: 25, to: 29 },
 ]
 
 export default function Contents() {

@@ -1,208 +1,120 @@
-// Session 11: Functions
+// Session 11: Advanced Functions
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`What is a function?`, `A named block of code that can be run again and again`, [`A kind of variable that stores text`, `A loop that never ends`, `A comment in the code`], `You define it once and call it whenever you need it.`],
-  [`Which keyword defines a function?`, `def`, [`func`, `function`, `define`], `A function starts with def.`],
-  [`What does a function definition need after the brackets?`, `A colon and an indented body`, [`A semicolon`, `A closing word like end`, `Nothing`], `The colon starts the body, which is indented.`],
-  [`Does this code run the print?
-
-def greet():
-    print("Hi")`, `No, it only defines the function`, [`Yes, immediately`, `Yes, but twice`, `Only if there is a return`], `The body runs only when the function is called.`],
-  [`How do you call a function named greet?`, `greet()`, [`greet`, `call greet`, `def greet`], `The brackets run it. Without them you only name the function.`],
-  [`What does print(type(greet)) show for a function greet?`, `<class 'function'>`, [`<class 'str'>`, `<class 'NoneType'>`, `<class 'tuple'>`], `A function is an object of type function.`, `def greet():
-    pass
-print(type(greet))`],
-  [`In this function, what is name?
-
-def greet(name):
-    print("Hello", name)`, `A parameter`, [`An argument`, `A return value`, `A keyword`], `A parameter is the name inside the brackets of def.`],
-  [`In greet("Aman"), what is "Aman"?`, `An argument`, [`A parameter`, `A return value`, `A keyword`], `An argument is the real value passed in the call.`],
+  [`What is a default argument?`, `A value a parameter uses when the caller leaves it out`, [`A value that cannot be changed`, `The first argument of every function`, `A value that is always printed`], `A parameter with a default becomes optional.`],
   [`What is printed?
 
-def add(a, b):
-    print(a + b)
-add(3, 4)`, `7`, [`34`, `a + b`, `None`], `3 goes to a and 4 goes to b.`, `def add(a, b):
-    print(a + b)
-add(3, 4)`],
+def welcome(name, greeting="Hello"):
+    return greeting + ", " + name
+print(welcome("Aman"))`, `Hello, Aman`, [`Aman, Hello`, `Hello Aman`, `An error`], `The default greeting is used.`, `def welcome(name, greeting="Hello"):
+    return greeting + ", " + name
+print(welcome("Aman"))`],
+  [`Which definition is correct?`, `def f(a, b=1):`, [`def f(a=1, b):`, `def f(=1, b):`, `def f(a, b=):`], `Parameters with a default must come after those without one.`],
+  [`When is a default value created?`, `Once, when the function is defined`, [`Every time the function is called`, `Only when the caller gives it`, `When the program ends`], `That is why a list used as a default is shared by every call.`],
+  [`What do the three calls return?
+
+def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+add_item("a")
+add_item("b")
+add_item("c")`, `['a'] then ['a', 'b'] then ['a', 'b', 'c']`, [`['a'] then ['b'] then ['c']`, `Three empty lists`, `An error`], `The same default list is shared, so it keeps growing.`],
+  [`What is the safe default for a parameter that should start as an empty list?`, `None, then make the list inside the function`, [`[] written in the definition`, `{}`, `0`], `Use items=None and write: if items is None: items = [].`],
+  [`What does book(author="Ankit", title="Data Tricks") show the benefit of?`, `The order of keyword arguments does not matter`, [`Keyword arguments must be in order`, `Parameters must be strings`, `The function runs faster`], `Named arguments are matched by name, not by position.`],
+  [`Which call is a SyntaxError for this function?
+
+def book(title, author):
+    print(title, "by", author)`, `book(title="Python", "Aman")`, [`book("Python", author="Aman")`, `book(author="Aman", title="Python")`, `book("Python", "Aman")`], `A positional argument cannot follow a keyword argument.`],
+  [`What is args inside the function for this call?
+
+def total(*args):
+    return sum(args)
+
+total(1, 2, 3)`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 6`, `The dictionary {1, 2, 3}`], `A single star collects extra positional arguments into a tuple.`],
+  [`What is printed?
+
+def total(*args):
+    return sum(args)
+print(total(10, 20, 30, 40))`, `100`, [`10`, `40`, `An error`], `All four arguments are collected and added.`, `def total(*args):
+    return sum(args)
+print(total(10, 20, 30, 40))`],
+  [`What is others for this call?
+
+def show(first, *others):
+    return others
+
+show(1, 2, 3)`, `(2, 3)`, [`(1, 2, 3)`, `[2, 3]`, `2`], `first takes 1 and others collects the rest into a tuple.`, `def show(first, *others):
+    return others
+print(show(1, 2, 3))`],
+  [`What is printed?
+
+def profile(**kwargs):
+    return kwargs
+print(profile(name="Aman", age=20))`, `{'name': 'Aman', 'age': 20}`, [`('Aman', 20)`, `['name', 'age']`, `Nothing, it is an error`], `A double star collects extra keyword arguments into a dictionary.`, `def profile(**kwargs):
+    return kwargs
+print(profile(name="Aman", age=20))`],
+  [`In what order are parameters written in a definition?`, `Normal parameters, then *args, then **kwargs`, [`**kwargs, then *args, then normal parameters`, `*args, then normal parameters, then **kwargs`, `Any order`], `For example def demo(a, b=2, *args, **kwargs).`],
+  [`What is printed?
+
+def demo(a, b=2, *args, **kwargs):
+    return args
+print(demo(1, 5, 6, 7, x=10))`, `(6, 7)`, [`(1, 5, 6, 7)`, `(5, 6, 7)`, `[6, 7]`], `1 goes to a and 5 goes to b, so 6 and 7 are left for args.`, `def demo(a, b=2, *args, **kwargs):
+    return args
+print(demo(1, 5, 6, 7, x=10))`],
+  [`What does the last line do?
+
+def volume(length, width, height):
+    return length * width * height
+
+volume(*[2, 3, 4])`, `Passes 2, 3 and 4 as three arguments`, [`Passes one list argument`, `Gives an error`, `Multiplies the list by itself`], `The star in a call spreads the list into separate arguments.`],
+  [`What does volume(**{"length": 5, "width": 2, "height": 3}) do?`, `Passes the dictionary items as keyword arguments`, [`Passes the dictionary as one argument`, `Gives an error`, `Passes only the keys`], `The double star in a call spreads a dictionary into keyword arguments.`],
+  [`What does print(*[5, 1, 9]) show?`, `5 1 9`, [`[5, 1, 9]`, `(5, 1, 9)`, `5, 1, 9`], `The star spreads the items, so print gets three arguments.`, `print(*[5, 1, 9])`],
+  [`What does {**{"a": 1}, **{"b": 2}} give?`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `[{'a': 1}, {'b': 2}]`, `An error`], `The double stars merge two dictionaries.`, `print({**{"a": 1}, **{"b": 2}})`],
+  [`How can a parameter be made keyword-only?`, `Write it after *args or after a bare *`, [`Write it before the first parameter`, `Give it a default of None`, `Write it in capital letters`], `For example def connect(host, *, port=80).`],
   [`What error appears for the last line?
 
-def add(a, b):
-    return a + b
+def connect(host, *, port=80):
+    print(host, port)
 
-add(3)`, `TypeError`, [`NameError`, `ValueError`, `IndexError`], `A required argument is missing.`],
-  [`How are arguments matched to parameters by default?`, `By position`, [`By name only`, `By alphabetical order`, `By their type`], `The first argument goes to the first parameter.`],
-  [`What does return do?`, `Sends a value back and ends the function`, [`Prints a value on the screen`, `Repeats the function`, `Deletes the function`], `The value goes back to where the function was called.`],
+connect("example.com", 443)`, `TypeError`, [`NameError`, `SyntaxError`, `ValueError`], `port can only be given by name, as port=443.`],
+  [`Can a function be stored in a variable?`, `Yes, a function is a value like any other`, [`No, only numbers and strings can`, `Only lambda functions can`, `Only built-in functions can`], `say = shout makes say another name for the same function.`],
+  [`Why do we write apply(shout, "hi") and not apply(shout(), "hi")?`, `shout() would call it right away, but we want to pass the function itself`, [`The brackets are not allowed in a call`, `apply needs a string`, `shout() would return a function`], `Without brackets you pass the function, and with brackets you pass its result.`],
   [`What is printed?
 
-def square(n):
-    return n * n
-print(square(7))`, `49`, [`14`, `7`, `None`], `7 times 7 is 49.`, `def square(n):
-    return n * n
-print(square(7))`],
+def apply(func, value):
+    return func(value)
+print(apply(len, "python"))`, `6`, [`python`, `len`, `An error`], `func is len, so func("python") is len("python").`, `def apply(func, value):
+    return func(value)
+print(apply(len, "python"))`],
+  [`What is a lambda?`, `A small nameless function written in one line`, [`A kind of loop`, `A way to import a module`, `A function that cannot take arguments`], `The pattern is lambda parameters: expression.`],
+  [`What does (lambda n: n * n)(6) give?`, `36`, [`6`, `12`, `lambda`], `The lambda squares its argument.`, `print((lambda n: n * n)(6))`],
+  [`What does sorted(["banana", "kiwi", "apple", "fig"], key=len) give?`, `['fig', 'kiwi', 'apple', 'banana']`, [`['apple', 'banana', 'fig', 'kiwi']`, `['banana', 'apple', 'kiwi', 'fig']`, `[3, 4, 5, 6]`], `key=len sorts by the length of each word.`, `print(sorted(["banana", "kiwi", "apple", "fig"], key=len))`],
+  [`What does max(["banana", "kiwi", "fig"], key=len) give?`, `banana`, [`kiwi`, `fig`, `6`], `banana is the longest word.`, `print(max(["banana", "kiwi", "fig"], key=len))`],
+  [`What does sorted(students, key=lambda s: s[1], reverse=True) do for a list of (name, marks) tuples?`, `Sorts by marks, highest first`, [`Sorts by name`, `Sorts by marks, lowest first`, `Reverses the tuples`], `s[1] is the marks and reverse=True puts the biggest first.`],
+  [`What does map(function, items) do?`, `Applies the function to every item`, [`Keeps only some items`, `Sorts the items`, `Adds all the items`], `map gives the result of the function for each item.`],
+  [`What does list(map(lambda n: n * n, [1, 2, 3, 4])) give?`, `[1, 4, 9, 16]`, [`[2, 4, 6, 8]`, `30`, `[1, 2, 3, 4]`], `Each number is squared.`, `print(list(map(lambda n: n * n, [1, 2, 3, 4])))`],
+  [`What does list(map(str, [1, 2, 3])) give?`, `['1', '2', '3']`, [`[1, 2, 3]`, `'123'`, `An error`], `str is applied to every item.`, `print(list(map(str, [1, 2, 3])))`],
+  [`What does list(map(lambda x, y: x + y, [1, 2, 3], [10, 20, 30])) give?`, `[11, 22, 33]`, [`[1, 2, 3, 10, 20, 30]`, `[11, 22]`, `66`], `map takes one item from each list at a time.`, `print(list(map(lambda x, y: x + y, [1, 2, 3], [10, 20, 30])))`],
+  [`Why is list() put around map(...)?`, `map gives a map object, and list() shows its values`, [`map needs it to run`, `list() sorts the result`, `It is only a habit`], `Printing map(...) shows an object, not the values.`],
+  [`What does filter(function, items) do?`, `Keeps only the items for which the function is True`, [`Changes every item`, `Removes the first item`, `Counts the items`], `The function must answer True or False for each item.`],
+  [`What does list(filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6])) give?`, `[2, 4, 6]`, [`[1, 3, 5]`, `[1, 2, 3, 4, 5, 6]`, `[True, False]`], `It keeps the even numbers.`, `print(list(filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6])))`],
+  [`What does list(filter(None, ["apple", "", "kiwi", ""])) give?`, `['apple', 'kiwi']`, [`['', '']`, `['apple', '', 'kiwi', '']`, `An error`], `filter(None, items) removes every falsy item, such as an empty string.`, `print(list(filter(None, ["apple", "", "kiwi", ""])))`],
+  [`What does list(map(lambda n: n * n, filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6]))) give?`, `[4, 16, 36]`, [`[1, 9, 25]`, `[1, 4, 9, 16, 25, 36]`, `[2, 4, 6]`], `It filters the even numbers first, then squares them.`, `print(list(map(lambda n: n * n, filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6]))))`],
+  [`Which list comprehension does the same as filter(lambda n: n > 3, nums)?`, `[n for n in nums if n > 3]`, [`[n > 3 for n in nums]`, `[n * 3 for n in nums]`, `[n for n in nums] > 3`], `A comprehension with if keeps the matching items.`],
+  [`Which comprehension does the same as map(f, items)?`, `[f(x) for x in items]`, [`[x for x in items if f(x)]`, `[f for x in items]`, `f(items)`], `It applies f to every item.`],
+  [`What does dict(zip(["Aman", "Ankit"], [85, 92])) give?`, `{'Aman': 85, 'Ankit': 92}`, [`[('Aman', 85), ('Ankit', 92)]`, `{'Aman', 'Ankit', 85, 92}`, `An error`], `zip pairs the items up, and dict() turns the pairs into a dictionary.`, `print(dict(zip(["Aman", "Ankit"], [85, 92])))`],
+  [`What does reduce(lambda a, b: a + b, [1, 2, 3, 4, 5]) give?`, `15`, [`5`, `120`, `[1, 2, 3, 4, 5]`], `reduce combines the items into one value, here their sum.`, `from functools import reduce
+print(reduce(lambda a, b: a + b, [1, 2, 3, 4, 5]))`],
   [`What is printed?
 
-def square(n):
-    return n * n
-print(square(3) + square(4))`, `25`, [`49`, `7`, `14`], `9 + 16 is 25.`, `def square(n):
-    return n * n
-print(square(3) + square(4))`],
-  [`What does a function give back when it has no return?`, `None`, [`0`, `An empty string`, `An error`], `Every function gives back something, and without return it is None.`],
-  [`What does the last line print?
-
-def show(n):
-    print(n * 2)
-
-b = show(5)
-print(b)`, `None`, [`10`, `5`, `An error`], `show() prints 10 but returns nothing, so b is None.`],
-  [`What is the difference between print and return?`, `print only shows a value, return gives it back so it can be used`, [`They are exactly the same`, `return shows a value, print gives it back`, `print ends the function`], `A returned value can be stored and used in more maths.`],
-  [`Why is show_double(5) + 1 an error when show_double only prints?`, `It returns None, and None + 1 does not work`, [`print cannot take numbers`, `5 is the wrong type`, `Functions cannot be used in maths`], `You need return to get the value out.`],
-  [`What happens to code written after a return line in a function?`, `It never runs`, [`It runs before the return`, `It runs after the program ends`, `It gives an error`], `return ends the function immediately.`],
-  [`What is printed?
-
-def sign(n):
-    if n > 0:
-        return "positive"
-    elif n < 0:
-        return "negative"
-    return "zero"
-print(sign(0))`, `zero`, [`positive`, `negative`, `None`], `Neither condition is true, so the last return runs.`, `def sign(n):
-    if n > 0:
-        return "positive"
-    elif n < 0:
-        return "negative"
-    return "zero"
-print(sign(0))`],
-  [`What type does return min(nums), max(nums) give back?`, `A tuple`, [`A list`, `Two separate values`, `A set`], `Several values separated by commas make one tuple.`],
-  [`What is low after this code?
-
-def min_max(nums):
-    return min(nums), max(nums)
-
-low, high = min_max([4, 9, 2, 7])`, `2`, [`9`, `4`, `(2, 9)`], `The returned tuple is unpacked into low and high.`, `def min_max(nums):
-    return min(nums), max(nums)
-low, high = min_max([4, 9, 2, 7])
-print(low)`],
-  [`What is printed?
-
-def is_even(n):
-    return n % 2 == 0
-print(is_even(7))`, `False`, [`True`, `1`, `None`], `7 % 2 is 1, so the comparison is False.`, `def is_even(n):
-    return n % 2 == 0
-print(is_even(7))`],
-  [`What is printed?
-
-def greet(name, greeting="Hello"):
-    return greeting + ", " + name
-print(greet("Aman"))`, `Hello, Aman`, [`Aman, Hello`, `Hello Aman`, `An error`], `The default greeting is used.`, `def greet(name, greeting="Hello"):
-    return greeting + ", " + name
-print(greet("Aman"))`],
-  [`What is printed?
-
-def power(base, exponent=2):
-    return base ** exponent
-print(power(5))`, `25`, [`10`, `5`, `32`], `The default exponent is 2.`, `def power(base, exponent=2):
-    return base ** exponent
-print(power(5))`],
-  [`What is printed?
-
-def power(base, exponent=2):
-    return base ** exponent
-print(power(exponent=3, base=2))`, `8`, [`9`, `6`, `An error`], `Keyword arguments can come in any order. 2 to the power 3 is 8.`, `def power(base, exponent=2):
-    return base ** exponent
-print(power(exponent=3, base=2))`],
-  [`Which definition is a mistake?`, `def f(a=1, b):`, [`def f(a, b=1):`, `def f(a, b):`, `def f(a=1, b=2):`], `Parameters with a default must come after those without one.`],
-  [`What is nums inside the function for this call?
-
-def total(*nums):
-    return sum(nums)
-
-total(1, 2, 3)`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 1`, `The number 6`], `The star collects the extra arguments into a tuple.`],
-  [`What is printed?
-
-def total(*nums):
-    return sum(nums)
-print(total())`, `0`, [`None`, `An error`, `An empty tuple`], `With no arguments nums is empty, and sum of nothing is 0.`, `def total(*nums):
-    return sum(nums)
-print(total())`],
-  [`What is a docstring?`, `A string on the first line of a function that describes it`, [`A string that is printed when the function runs`, `A comment that Python ignores completely`, `A kind of parameter`], `You can read it with function.__doc__.`],
-  [`What is a local variable?`, `A variable made inside a function`, [`A variable made outside all functions`, `A variable with a short name`, `A variable that cannot change`], `It exists only while the function runs.`],
-  [`What error appears when you print a local variable outside its function?`, `NameError`, [`TypeError`, `ValueError`, `KeyError`], `Outside the function that name does not exist.`],
-  [`Can a function read a global variable without any special keyword?`, `Yes`, [`No, it needs the global keyword`, `Only if it is a number`, `Only if it is a parameter`], `Reading works. The global keyword is only needed to change it.`],
-  [`What is printed?
-
-x = 10
-def change():
-    x = 99
-change()
-print(x)`, `10`, [`99`, `None`, `An error`], `Assigning inside the function makes a new local x, and the global stays 10.`, `x = 10
-def change():
-    x = 99
-change()
-print(x)`],
-  [`What does the global keyword do inside a function?`, `Lets the function change a global variable`, [`Makes the function run faster`, `Makes a variable a constant`, `Imports a module`], `Without it, assigning makes a new local variable.`],
-  [`What is printed?
-
-count = 0
-def add_one():
-    global count
-    count += 1
-add_one()
-add_one()
-print(count)`, `2`, [`0`, `1`, `An error`], `Each call adds one to the global.`, `count = 0
-def add_one():
-    global count
-    count += 1
-add_one()
-add_one()
-print(count)`],
-  [`What is the better habit than using global?`, `Pass values in as arguments and send results out with return`, [`Use more global variables`, `Avoid writing functions`, `Use longer names`], `That keeps functions easy to understand and test.`],
-  [`What is printed?
-
-def add_item(items):
-    items.append("new")
-stuff = ["a", "b"]
-add_item(stuff)
-print(stuff)`, `['a', 'b', 'new']`, [`['a', 'b']`, `['new']`, `An error`], `The function gets the same list, so the change is visible outside.`, `def add_item(items):
-    items.append("new")
-stuff = ["a", "b"]
-add_item(stuff)
-print(stuff)`],
-  [`What is printed?
-
-def add_ten(n):
-    n = n + 10
-x = 5
-add_ten(x)
-print(x)`, `5`, [`15`, `None`, `An error`], `Numbers cannot be changed in place, so n is only a local change.`, `def add_ten(n):
-    n = n + 10
-x = 5
-add_ten(x)
-print(x)`],
-  [`How do you stop a function changing your list?`, `Pass a copy, such as stuff.copy()`, [`Use return`, `Use a tuple name`, `You cannot stop it`], `The function then changes only the copy.`],
-  [`What is printed?
-
-def factorial(n):
-    return 1 if n <= 1 else n * factorial(n - 1)
-print(factorial(5))`, `120`, [`24`, `5`, `15`], `5 * 4 * 3 * 2 * 1 is 120.`, `def factorial(n):
-    return 1 if n <= 1 else n * factorial(n - 1)
-print(factorial(5))`],
-  [`What is recursion?`, `A function that calls itself`, [`A loop that never stops`, `A function with no parameters`, `A function inside a loop`], `It needs a stopping case, or it never ends.`],
-  [`What does isdigit() check in "123".isdigit()?`, `That the text has only digits`, [`That the text is a float`, `That the text is a list`, `That the text is positive`], `It gives True for "123" and False for "12a".`],
-  [`Why does read_number use a while True loop with return?`, `It keeps asking until the input is valid, then return ends the loop and the function`, [`It asks exactly three times`, `It stops at the first input`, `It converts text to float`], `return leaves both the loop and the function.`],
-  [`Why did the marks manager get easier to read with functions?`, `Each job has a name and the main code is short`, [`Functions make programs run faster`, `Functions remove the need for dictionaries`, `Functions make the file smaller by half`], `Functions give names to jobs.`],
-  [`What is printed?
-
-def double(n):
-    n * 2
-print(double(4))`, `None`, [`8`, `4`, `An error`], `The function calculates n * 2 but never returns it.`, `def double(n):
-    n * 2
-print(double(4))`],
-  [`What is printed?
-
-def f(a, b=2):
-    return a * b
-print(f(f(2)))`, `8`, [`4`, `6`, `2`], `f(2) is 4, and f(4) is 8.`, `def f(a, b=2):
-    return a * b
-print(f(f(2)))`],
+def make_multiplier(n):
+    return lambda x: x * n
+double = make_multiplier(2)
+print(double(5))`, `10`, [`2`, `5`, `7`], `make_multiplier(2) returns a function that multiplies by 2.`, `def make_multiplier(n):
+    return lambda x: x * n
+double = make_multiplier(2)
+print(double(5))`],
+  [`What is wrong with map(f(), items)?`, `f() calls the function, but map needs the function itself`, [`Nothing, it is correct`, `map needs a lambda`, `items must be a tuple`], `Write map(f, items), without brackets after f.`],
 ]

@@ -1,22 +1,23 @@
-// Session 19: Loading and Inspecting Data
+// Session 19: Selecting and Filtering
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`Which function loads a CSV file into a DataFrame?`, `pd.read_csv`, [`pd.open_csv`, `pd.load`, `df.read`], `read_csv reads the file and gives back a DataFrame.`],
-  [`What does read_csv normally do with the first line of the file?`, `Uses it as the column names`, [`Skips it`, `Treats it as the first row of data`, `Uses it as the index`], `Use header=None if the file has no title line.`],
-  [`What does an empty place in a CSV file become in pandas?`, `NaN`, [`0`, `An empty list`, `An error`], `NaN means a missing value.`],
-  [`Which option tells read_csv that values are split by semicolons?`, `sep=";"`, [`split=";"`, `comma=";"`, `delimiter_char=";"`], `If the table looks like one wide column, the separator is probably wrong.`],
-  [`What does usecols=["name", "maths"] do?`, `Loads only those columns`, [`Renames the columns`, `Sorts by those columns`, `Drops those columns`], `It saves memory on big files.`],
-  [`What does nrows=100 do in read_csv?`, `Reads only the first 100 rows`, [`Reads only the last 100 rows`, `Skips 100 rows`, `Limits the file to 100 columns`], `It is a quick way to peek at a huge file.`],
-  [`A column uses a dash for missing values. How do you read the dash as NaN?`, `na_values=["-"]`, [`fillna("-")`, `missing="-"`, `dropna("-")`], `Then the column can stay numeric.`],
-  [`Which extra package does read_excel need for .xlsx files?`, `openpyxl`, [`numpy`, `csvkit`, `xlrd3`], `Install it once with pip install openpyxl.`],
-  [`What does sheet_name=None do in read_excel?`, `Reads every sheet into a dictionary`, [`Reads no sheets`, `Reads the last sheet`, `Gives an error`], `The keys are sheet names and the values are DataFrames.`],
-  [`How many rows does df.head() show by default?`, `5`, [`1`, `10`, `All of them`], `Give a number for a different count, such as df.head(2).`, `import pandas as pd
-print(len(pd.DataFrame({"a": range(8)}).head()))`],
-  [`Which call picks random rows from a table?`, `df.sample(3)`, [`df.random(3)`, `df.pick(3)`, `df.head(3)`], `Add random_state= to get the same rows every time.`],
-  [`Which call shows column types and non-null counts in one view?`, `df.info()`, [`df.shape`, `df.head()`, `df.columns`], `It is the best one-glance health check.`],
-  [`In df.describe(), what does the 50% row show?`, `The median`, [`The mean`, `Half of the maximum`, `The number of rows`], `The 50% mark is the middle value.`],
-  [`Why might a marks column be float64 instead of int64?`, `It contains NaN`, [`The marks are too big`, `The file is a CSV`, `It has too many rows`], `NaN is a float, so the whole column becomes float.`],
-  [`Which line counts the missing values in each column?`, `df.isna().sum()`, [`df.count_missing()`, `df.info().sum()`, `df.dropna().sum()`], `Each True counts as 1.`],
-  [`Why use index=False in to_csv?`, `So the row numbers are not written as a column`, [`So the file is smaller by half`, `So the headers are removed`, `So the file is sorted`], `Otherwise you see Unnamed: 0 when you read it back.`],
+  [`What does df["name"] give you?`, `One column, as a Series`, [`One row`, `A DataFrame with one row`, `The column names`], `One pair of brackets gives a Series.`],
+  [`How do you select two columns?`, `df[["name", "maths"]]`, [`df["name", "maths"]`, `df.name.maths`, `df("name", "maths")`], `A list of names inside the brackets gives a DataFrame.`],
+  [`What does loc use to pick rows and columns?`, `Labels`, [`Positions`, `Colours`, `Sizes`], `Remember: l for label.`],
+  [`What does iloc use to pick rows and columns?`, `Positions`, [`Labels`, `Column names`, `Conditions only`], `Remember: i for integer position.`],
+  [`How many rows does df.loc[1:3] give with the default index?`, `3`, [`2`, `4`, `1`], `Label slices include the end.`, `import pandas as pd
+print(len(pd.DataFrame({"a": range(6)}).loc[1:3]))`],
+  [`How many rows does df.iloc[1:3] give?`, `2`, [`3`, `4`, `1`], `Position slices stop before the end.`, `import pandas as pd
+print(len(pd.DataFrame({"a": range(6)}).iloc[1:3]))`],
+  [`Which gives the last row of a table?`, `df.iloc[-1]`, [`df.loc[-1]`, `df[-1]`, `df.last()`], `Negative positions count from the end.`],
+  [`What is a mask in pandas?`, `A column of True and False used to filter rows`, [`A hidden column`, `A chart style`, `A kind of index`], `df[mask] keeps the rows where the mask is True.`],
+  [`Which symbol means AND between two conditions?`, `&`, [`and`, `+`, `&&`], `The word and fails with a Series.`],
+  [`Which symbol means OR between two conditions?`, `|`, [`or`, `||`, `/`], `Put each condition in brackets.`],
+  [`Which symbol reverses a condition?`, `~`, [`!`, `not`, `-`], `~(a) means NOT a.`],
+  [`Why are brackets needed in (df["a"] > 1) & (df["b"] < 5)?`, `Because & is done before > and <`, [`They only make it look neat`, `They make it faster`, `Brackets turn it into a list`], `Without them you get an error.`],
+  [`What is the short way to check for one of several cities?`, `df["city"].isin(["Delhi", "Pune"])`, [`df["city"].among("Delhi", "Pune")`, `df["city"] == ["Delhi", "Pune"]`, `df["city"].contains("Delhi", "Pune")`], `isin replaces many == joined with |.`],
+  [`Does between(75, 90) include 75 and 90?`, `Yes, both ends`, [`No, neither end`, `Only 75`, `Only 90`], `Both ends are included by default.`],
+  [`Which line changes cells safely?`, `df.loc[df["maths"] < 50, "maths"] = 50`, [`df[df["maths"] < 50]["maths"] = 50`, `df.maths < 50 = 50`, `df.change("maths", 50)`], `Chained brackets may change a copy, not the table.`],
+  [`Which function turns numbers stored as text into NaN when they cannot convert?`, `pd.to_numeric(col, errors="coerce")`, [`col.astype(int)`, `col.fillna(0)`, `pd.to_text(col)`], `astype(int) would crash instead.`],
 ]

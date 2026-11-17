@@ -1,143 +1,122 @@
-// Session 9: Dictionaries
+// Session 9: Revision and Mini Project
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`What is a dictionary in Python?`, `A collection of key-value pairs`, [`An ordered list of numbers only`, `A collection of unique items with no keys`, `A block of text inside quotes`], `A dictionary stores values that you find by their keys.`],
-  [`What does type({}) show?`, `<class 'dict'>`, [`<class 'set'>`, `<class 'list'>`, `<class 'tuple'>`], `Empty curly brackets make a dictionary, not a set.`, `print(type({}))`],
-  [`How do you find a value in a dictionary?`, `By its key`, [`By its position number`, `By its length`, `By its type`], `A dictionary looks values up by key, a list by position.`],
-  [`Which of these can NOT be a dictionary key?`, `A list`, [`A string`, `A number`, `A tuple`], `Keys must be immutable, and a list can change.`],
-  [`What error appears here?
-
-d = {[1, 2]: "x"}`, `TypeError`, [`KeyError`, `ValueError`, `NameError`], `A list is unhashable, so it cannot be a key.`],
+  [`What does print(type("42")) show?`, `<class 'str'>`, [`<class 'int'>`, `<class 'float'>`, `<class 'bool'>`], `Anything inside quotes is a string.`, `print(type("42"))`],
+  [`What type does input() always give?`, `str`, [`int`, `float`, `It depends on what is typed`], `Use int() or float() to do maths on what the user types.`],
+  [`What does int("42") + 1 give?`, `43`, [`421`, `42`, `An error`], `int() turns the text into a number first.`, `print(int("42") + 1)`],
+  [`What does str(7) + "8" give?`, `78`, [`15`, `An error`, `7 8`], `Both sides are text, so + joins them.`, `print(str(7) + "8")`],
+  [`What does "Python Programming"[::-1][0] give?`, `g`, [`P`, `n`, `y`], `The reversed string starts with the last letter.`, `print("Python Programming"[::-1][0])`],
+  [`What does "Python Programming".count("o") give?`, `2`, [`1`, `3`, `0`], `There is an o in Python and an o in Programming.`, `print("Python Programming".count("o"))`],
+  [`What does f"{86.456:.1f}" give?`, `86.5`, [`86.4`, `86.456`, `86`], `:.1f keeps one decimal place and rounds.`, `print(f"{86.456:.1f}")`],
   [`What is printed?
 
-d = {"a": 1, "b": 2, "a": 3}
-print(d)`, `{'a': 3, 'b': 2}`, [`{'a': 1, 'b': 2}`, `{'a': 1, 'b': 2, 'a': 3}`, `An error`], `A repeated key keeps only the last value.`, `d = {"a": 1, "b": 2, "a": 3}
-print(d)`],
+marks = 72
+if marks >= 90:
+    grade = "A"
+elif marks >= 70:
+    grade = "B"
+elif marks >= 50:
+    grade = "C"
+else:
+    grade = "F"
+print(grade)`, `B`, [`A`, `C`, `F`], `72 fails the first test and passes the second.`, `marks = 72
+if marks >= 90:
+    grade = "A"
+elif marks >= 70:
+    grade = "B"
+elif marks >= 50:
+    grade = "C"
+else:
+    grade = "F"
+print(grade)`],
+  [`What does print(72 > 50 and 72 < 80) show?`, `True`, [`False`, `72`, `An error`], `Both conditions are true.`, `print(72 > 50 and 72 < 80)`],
+  [`What does continue do inside a loop?`, `Skips the rest of this round and goes to the next one`, [`Ends the loop`, `Repeats the same round`, `Stops the program`], `break ends the loop, continue only skips one round.`],
   [`What is printed?
 
-d = {"a": 1, "b": 2, "a": 3}
-print(len(d))`, `2`, [`3`, `1`, `6`], `The two "a" keys count as one.`, `d = {"a": 1, "b": 2, "a": 3}
-print(len(d))`],
-  [`What does dict(x=1, y=2) give?`, `{'x': 1, 'y': 2}`, [`{x: 1, y: 2}`, `(x, 1, y, 2)`, `An error`], `dict() with names builds the same dictionary as {"x": 1, "y": 2}.`, `print(dict(x=1, y=2))`],
-  [`What does student["age"] give?
-
-student = {"name": "Aman", "age": 20}`, `20`, [`age`, `Aman`, `An error`], `Put the key in square brackets to get its value.`, `student = {"name": "Aman", "age": 20}
-print(student["age"])`],
-  [`What error appears for student["city"] when the key "city" does not exist?`, `KeyError`, [`IndexError`, `TypeError`, `NameError`], `Reading a missing key gives a KeyError.`],
-  [`What does student.get("city") give?
-
-student = {"name": "Aman", "age": 20}`, `None`, [`An error`, `An empty string`, `0`], `get() returns None instead of an error.`, `student = {"name": "Aman"}
-print(student.get("city"))`],
-  [`What does student.get("city", "Unknown") give?
-
-student = {"name": "Aman", "age": 20}`, `Unknown`, [`None`, `city`, `An error`], `The second argument is the default value.`, `student = {"name": "Aman"}
-print(student.get("city", "Unknown"))`],
-  [`What does "Aman" in {"name": "Aman"} give?`, `False`, [`True`, `name`, `An error`], `in checks the keys, and "Aman" is a value.`, `print("Aman" in {"name": "Aman"})`],
-  [`What does "name" in {"name": "Aman"} give?`, `True`, [`False`, `Aman`, `An error`], `"name" is a key, so in finds it.`, `print("name" in {"name": "Aman"})`],
+n = 5
+total = 0
+while n > 0:
+    total += n
+    n -= 1
+print(total)`, `15`, [`5`, `10`, `0`], `It adds 5 + 4 + 3 + 2 + 1.`, `n = 5
+total = 0
+while n > 0:
+    total += n
+    n -= 1
+print(total)`],
+  [`What does "*" * 3 give?`, `***`, [`3`, `* * *`, `An error`], `A string times a number repeats the string.`, `print("*" * 3)`],
+  [`Which collection is written with round brackets and cannot be changed?`, `A tuple`, [`A list`, `A set`, `A dictionary`], `Tuples are immutable.`],
   [`What is printed?
 
-d = {"a": 1}
-d["b"] = 2
-print(d)`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `{'b': 2}`, `An error`], `Assigning to a new key adds a pair.`, `d = {"a": 1}
-d["b"] = 2
-print(d)`],
-  [`What is printed?
-
-d = {"a": 1}
-d["a"] = 10
-print(d)`, `{'a': 10}`, [`{'a': 1, 'a': 10}`, `{'a': 1}`, `An error`], `Assigning to an existing key changes its value.`, `d = {"a": 1}
-d["a"] = 10
-print(d)`],
-  [`What does the second line do to d?
-
-d = {"a": 1}
-d.update({"b": 2, "c": 3})`, `Adds both pairs`, [`Replaces the whole dictionary`, `Adds only the first pair`, `Gives an error`], `update() adds many pairs, and replaces the values of keys that exist.`],
-  [`What does d.setdefault("a", 99) give?
-
-d = {"a": 1}`, `1`, [`99`, `None`, `An error`], `The key exists, so setdefault keeps the old value and returns it.`, `d = {"a": 1}
-print(d.setdefault("a", 99))`],
-  [`What does d.pop("a") give?
-
-d = {"a": 1, "b": 2}`, `1`, [`a`, `{'b': 2}`, `None`], `pop() removes the key and returns its value.`, `d = {"a": 1, "b": 2}
-print(d.pop("a"))`],
-  [`What does d.pop("z", "not found") give?
-
-d = {"a": 1}`, `not found`, [`An error`, `None`, `z`], `With a default value there is no error.`, `d = {"a": 1}
-print(d.pop("z", "not found"))`],
-  [`What does popitem() remove?`, `The last pair added`, [`The first pair`, `A random value`, `Every pair`], `popitem() removes and returns the last (key, value) pair.`],
-  [`Which statement removes the key "b" from d?`, `del d["b"]`, [`d.remove("b")`, `d.delete("b")`, `d["b"].clear()`], `del d[key] removes the pair.`],
-  [`What does d.clear() do?`, `Removes every pair`, [`Removes only the last pair`, `Deletes the variable d`, `Copies d`], `The dictionary stays but becomes empty.`],
-  [`What does list(marks.keys()) give?
-
-marks = {"maths": 90, "science": 85}`, `['maths', 'science']`, [`[90, 85]`, `[('maths', 90), ('science', 85)]`, `['maths', 90]`], `keys() gives the keys.`, `marks = {"maths": 90, "science": 85}
-print(list(marks.keys()))`],
-  [`What does list(marks.values()) give?
-
-marks = {"maths": 90, "science": 85}`, `[90, 85]`, [`['maths', 'science']`, `[('maths', 90), ('science', 85)]`, `[175]`], `values() gives the values.`, `marks = {"maths": 90, "science": 85}
-print(list(marks.values()))`],
-  [`What does list(marks.items()) give?
-
-marks = {"maths": 90, "science": 85}`, `[('maths', 90), ('science', 85)]`, [`['maths', 'science']`, `[90, 85]`, `{'maths': 90, 'science': 85}`], `items() gives (key, value) pairs as tuples.`, `marks = {"maths": 90, "science": 85}
-print(list(marks.items()))`],
-  [`What does sum(marks.values()) give?
-
-marks = {"maths": 90, "science": 85, "english": 78}`, `253`, [`3`, `90`, `175`], `It adds up all the values.`, `marks = {"maths": 90, "science": 85, "english": 78}
-print(sum(marks.values()))`],
-  [`What does sorted(marks) give?
-
-marks = {"maths": 90, "science": 85, "english": 78}`, `['english', 'maths', 'science']`, [`[78, 85, 90]`, `['maths', 'science', 'english']`, `[('english', 78), ('maths', 90), ('science', 85)]`], `sorted() on a dictionary sorts its keys and gives a list.`, `marks = {"maths": 90, "science": 85, "english": 78}
-print(sorted(marks))`],
-  [`What does a plain for loop over a dictionary give each time?`, `A key`, [`A value`, `A (key, value) pair`, `An index number`], `Looping goes through the keys. Use items() for both.`],
-  [`Which loop gives both the key and the value?`, `for k, v in d.items():`, [`for k, v in d:`, `for k, v in d.keys():`, `for k in d.values():`], `items() gives pairs, and the loop unpacks them.`],
-  [`What does max(marks, key=marks.get) give?
-
-marks = {"maths": 90, "science": 85, "english": 78}`, `maths`, [`90`, `science`, `english`], `It gives the key whose value is the biggest.`, `marks = {"maths": 90, "science": 85, "english": 78}
-print(max(marks, key=marks.get))`],
-  [`What is printed?
-
-a = {"x": 1}
+a = [1, 2, 3]
 b = a
-b["x"] = 99
-print(a)`, `{'x': 99}`, [`{'x': 1}`, `{'x': 1, 'x': 99}`, `An error`], `b = a does not copy. Both names point to the same dictionary.`, `a = {"x": 1}
+b.append(4)
+print(a)`, `[1, 2, 3, 4]`, [`[1, 2, 3]`, `[4]`, `An error`], `b = a does not copy, so both names are the same list.`, `a = [1, 2, 3]
 b = a
-b["x"] = 99
+b.append(4)
 print(a)`],
-  [`Which line makes a real copy of a dictionary a?`, `a.copy()`, [`b = a`, `a.same()`, `a[:]`], `copy() makes a new dictionary.`],
-  [`What does {"x": 1, "y": 2} | {"y": 20, "z": 30} give?`, `{'x': 1, 'y': 20, 'z': 30}`, [`{'x': 1, 'y': 2, 'z': 30}`, `{'x': 1, 'y': 22, 'z': 30}`, `An error`], `When the same key is in both, the second dictionary wins.`, `print({"x": 1, "y": 2} | {"y": 20, "z": 30})`],
-  [`What does students["Ankit"]["city"] read when students is a dictionary of dictionaries?`, `The city of Ankit`, [`The first letter of Ankit`, `The index of the city`, `Nothing, it is an error`], `The first brackets find Ankit's dictionary and the second find the city inside it.`],
-  [`What does students["Aman"]["age"] = 21 do?`, `Changes Aman's age inside the nested dictionary`, [`Adds a new student`, `Replaces the whole students dictionary`, `Gives an error`], `Each pair of brackets goes one level deeper.`],
-  [`What is a list of dictionaries good for?`, `Storing rows of data, one dictionary per row`, [`Sorting numbers`, `Removing duplicates`, `Making a set`], `For example one dictionary for each student.`],
+  [`What is y after this line?
+
+x, *y = (1, 2, 3)`, `[2, 3]`, [`(2, 3)`, `2`, `[1, 2, 3]`], `The starred variable takes the rest as a list.`, `x, *y = (1, 2, 3)
+print(y)`],
+  [`What does len({1, 2, 2, 3}) give?`, `3`, [`4`, `2`, `1`], `The set keeps only 1, 2 and 3.`, `print(len({1, 2, 2, 3}))`],
+  [`What does {"a": 1}.get("b", 0) + 5 give?`, `5`, [`6`, `An error`, `None`], `get() returns the default 0 for a missing key.`, `print({"a": 1}.get("b", 0) + 5)`],
+  [`What does max(count, key=count.get) give?
+
+count = {'to': 2, 'be': 2, 'or': 1}`, `to`, [`2`, `or`, `be`], `It returns the key with the biggest value, and the first one wins a tie.`, `count = {'to': 2, 'be': 2, 'or': 1}
+print(max(count, key=count.get))`],
+  [`In the marks manager, what is stored in the dictionary students?`, `Each student name as a key and a list of marks as the value`, [`Each mark as a key and a name as the value`, `Only the names`, `A single total`], `The key is the name and the value is the list of marks.`],
+  [`Why is a dictionary a good choice for the marks manager?`, `You can find a student directly by name`, [`It keeps the marks sorted`, `It stops marks being changed`, `It uses less typing`], `A dictionary looks values up by key.`],
+  [`What does students.setdefault("Aman", []) do?`, `Creates an empty list for Aman only if Aman is missing`, [`Always replaces Aman's list with an empty one`, `Removes Aman`, `Gives an error if Aman is missing`], `If the key exists, nothing changes.`],
   [`What is printed?
 
-scores = {"Aman": [90, 80]}
-scores["Aman"].append(70)
-print(scores["Aman"])`, `[90, 80, 70]`, [`[70]`, `[90, 80]`, `An error`], `The value is a list, so list methods work on it.`, `scores = {"Aman": [90, 80]}
-scores["Aman"].append(70)
-print(scores["Aman"])`],
+students = {}
+students.setdefault("Aman", []).extend([90, 80])
+print(students)`, `{'Aman': [90, 80]}`, [`{'Aman': []}`, `{}`, `{'Aman': [[90, 80]]}`], `setdefault gives a list, and extend adds the marks to it.`, `students = {}
+students.setdefault("Aman", []).extend([90, 80])
+print(students)`],
+  [`What does the second line work out?
+
+marks = [90, 80, 70]
+result = sum(marks) / len(marks)`, `The average`, [`The total`, `The highest mark`, `The number of marks`], `The total divided by the count is the average.`],
+  [`What is the average of [90, 80, 70]?`, `80.0`, [`240`, `80`, `70.0`], `The total is 240 and 240 / 3 is 80.0.`, `print(sum([90, 80, 70]) / len([90, 80, 70]))`],
+  [`In f"{name:<8}{total:>6}", what does :<8 do?`, `Pads the name to 8 characters, aligned to the left`, [`Cuts the name to 8 characters`, `Repeats the name 8 times`, `Makes the name 8 characters bigger`], `:<8 is left aligned in a width of 8, and :>6 is right aligned in a width of 6.`],
+  [`What does reverse=True do in sorted(averages, key=averages.get, reverse=True)?`, `Puts the biggest average first`, [`Puts the smallest average first`, `Reverses the names`, `Removes duplicates`], `The default order is smallest to biggest.`],
+  [`What does sorted(averages, key=averages.get) give?
+
+averages = {"Aman": 80, "Ankit": 90, "Kabir": 70}`, `['Kabir', 'Aman', 'Ankit']`, [`['Ankit', 'Aman', 'Kabir']`, `[70, 80, 90]`, `['Aman', 'Kabir', 'Ankit']`], `The names are sorted by their values, smallest first.`, `averages = {"Aman": 80, "Ankit": 90, "Kabir": 70}
+print(sorted(averages, key=averages.get))`],
+  [`What does enumerate(ranked, start=1) do in a ranking loop?`, `Numbers the items from 1`, [`Starts the loop at the second item`, `Sorts the items`, `Counts the items`], `The rank then starts at 1 instead of 0.`],
+  [`What does "add Aman 90 80".split() give?`, `['add', 'Aman', '90', '80']`, [`['add Aman 90 80']`, `['add', 'Aman', 90, 80]`, `('add', 'Aman', '90', '80')`], `split() breaks the text into words, and they are all strings.`, `print("add Aman 90 80".split())`],
+  [`What does [int(x) for x in ["90", "80"]] give?`, `[90, 80]`, [`['90', '80']`, `[170]`, `An error`], `This list comprehension turns each text mark into a number.`, `print([int(x) for x in ["90", "80"]])`],
+  [`In the command loop, what does the final else catch?`, `Commands the program does not know`, [`The quit command`, `Empty marks`, `Duplicate names`], `It prints "Unknown command" for anything else.`],
+  [`Why does the command loop use break for the quit command?`, `To end the loop and stop asking for commands`, [`To skip one command`, `To delete the students`, `To print the report`], `break leaves the loop.`],
+  [`Why is while True with a break used for a menu?`, `The menu repeats until the user chooses to quit`, [`It runs the menu only once`, `It sorts the choices`, `It stops the user typing`], `The loop never ends by itself, so break ends it when the user quits.`],
+  [`What happens with int(input("Mark: ")) if the user types abc?`, `ValueError`, [`The mark becomes 0`, `The mark becomes abc`, `Nothing, it asks again`], `int() cannot turn the word abc into a number.`],
+  [`What does students.pop("Zed", None) give?
+
+students = {"Aman": [90, 80]}`, `None`, [`An error`, `Zed`, `An empty list`], `With a default, pop() does not raise a KeyError.`, `students = {"Aman": [1]}
+print(students.pop("Zed", None))`],
+  [`What does the contact book use as the value for each name?`, `Another dictionary with phone and email`, [`A list of numbers`, `A single string`, `A tuple of marks`], `That makes a nested dictionary.`],
+  [`How do you read Ankit's phone?
+
+contacts = {"Ankit": {"phone": "912"}}`, `contacts["Ankit"]["phone"]`, [`contacts["phone"]["Ankit"]`, `contacts["Ankit", "phone"]`, `contacts.phone.Ankit`], `One pair of brackets for each level.`],
   [`What is printed?
 
-word = "banana"
-count = {}
-for ch in word:
-    count[ch] = count.get(ch, 0) + 1
-print(count)`, `{'b': 1, 'a': 3, 'n': 2}`, [`{'b': 1, 'a': 1, 'n': 1}`, `{'a': 3, 'b': 1, 'n': 2, 'a': 1}`, `{'b': 1, 'a': 2, 'n': 3}`], `Each letter is a key and its count is the value.`, `word = "banana"
-count = {}
-for ch in word:
-    count[ch] = count.get(ch, 0) + 1
-print(count)`],
-  [`Why does count.get(ch, 0) + 1 work for a new letter?`, `get() gives 0 when the key is missing, so the first count is 1`, [`get() gives None, which can be added`, `get() creates the key with value 1`, `It does not work, it gives an error`], `The default 0 avoids a KeyError for the first time a letter is seen.`],
-  [`What does len(count) give?
+contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}
+print([n for n in contacts if "am" in n.lower()])`, `['Aman', 'Amit']`, [`['Aman']`, `['Ankit']`, `['Aman', 'Amit', 'Ankit']`], `It keeps the names that contain am, ignoring capital letters.`, `contacts = {"Aman": 1, "Amit": 2, "Ankit": 3}
+print([n for n in contacts if "am" in n.lower()])`],
+  [`Why use .lower() when searching for part of a name?`, `So "AM" and "am" match the same names`, [`To make the names shorter`, `To sort the names`, `To remove spaces`], `Lowercasing both sides makes the search ignore capital letters.`],
+  [`What does this loop do?
 
-count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}`, `5`, [`8`, `3`, `1`], `It counts the different words, not the total number of words.`, `count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}
-print(len(count))`],
-  [`Which method turns a sentence into a list of words, ready for counting?`, `split()`, [`join()`, `strip()`, `count()`], `"a b c".split() gives ['a', 'b', 'c'].`],
-  [`What does groups.setdefault("a", []).append("apple") do?`, `Adds apple to the list stored under the key "a", making the list first if needed`, [`Replaces the list under "a" with apple`, `Gives an error if "a" is missing`, `Counts the words`], `setdefault gives a list to append to, even for a new key.`],
-  [`What does {n: n * n for n in range(1, 4)} give?`, `{1: 1, 2: 4, 3: 9}`, [`[1, 4, 9]`, `{1, 4, 9}`, `{1: 2, 2: 4, 3: 6}`], `This is a dictionary comprehension.`, `print({n: n * n for n in range(1, 4)})`],
-  [`What does {v: k for k, v in {"a": 1, "b": 2}.items()} give?`, `{1: 'a', 2: 'b'}`, [`{'a': 1, 'b': 2}`, `{'a', 'b'}`, `An error`], `It swaps keys and values.`, `print({v: k for k, v in {"a": 1, "b": 2}.items()})`],
-  [`True or false: a dictionary keeps the order in which pairs were added.`, `True`, [`False`], `Dictionaries remember their insertion order.`],
-  [`True or false: "x" in d checks the values of d.`, `False`, [`True`], `in checks the keys.`],
-  [`Which one would you use for a phone book?`, `A dictionary`, [`A tuple`, `A set`, `A list of numbers`], `You look up a number by a name, which is a key.`],
-  [`Which one is best for the unique words in a story?`, `A set`, [`A dictionary`, `A tuple`, `A string`], `A set keeps each item only once.`],
-  [`How do you make an empty dictionary?`, `{}`, [`set()`, `[]`, `()`], `{} is an empty dictionary, and set() is an empty set.`],
+for name in sorted(contacts):
+    print(name)`, `Goes through the names in alphabetical order`, [`Goes through the phone numbers`, `Removes the contacts`, `Goes through the names in the order added`], `sorted() on a dictionary sorts its keys.`],
+  [`What does contacts[name]["phone"] = "9000000000" do?`, `Changes the phone of an existing contact`, [`Deletes the contact`, `Makes a new dictionary called phone`, `Gives an error`], `It changes the value stored under phone inside the nested dictionary.`],
+  [`What happens with del contacts["Zed"] when Zed is not a contact?`, `KeyError`, [`Nothing`, `TypeError`, `The first contact is deleted`], `That is why the program checks first, or uses pop with a default.`],
+  [`Which code changes would make the marks manager show students who failed?`, `Loop through the averages and print the names with an average below 50`, [`Sort the names`, `Use a set of marks`, `Convert the dictionary to a tuple`], `A loop with an if on the average does it.`],
+  [`Which is better for storing a project's data: one dictionary or many separate variables?`, `One dictionary`, [`Many separate variables`, `A single string`, `A tuple of variables`], `A dictionary scales to any number of students.`],
+  [`True or false: a program should be built all at once and tested at the end.`, `False`, [`True`], `Build and test one small step at a time.`],
+  [`True or false: the browser runner can run programs that use input().`, `False`, [`True`], `In the notes the browser examples use a list of commands instead, and the input() versions run on your computer.`],
+  [`How does a program remember students after it closes?`, `It must save them to a file`, [`Variables are saved automatically`, `The dictionary stays in memory`, `It cannot be done`], `Variables disappear when the program ends. Files come in a later class.`],
 ]

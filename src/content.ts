@@ -21,7 +21,7 @@ export type Lesson = {
 }
 
 const raw = String.raw
-// The shared 'online shop orders' data used by lessons 26 to 29: a generator (with real-world mess on purpose) and the cleaning function from lesson 27.
+// The shared 'online shop orders' data used by lessons 25 to 28: a generator (with real-world mess on purpose) and the cleaning function from lesson 26.
 const SHOP = raw`import numpy as np
 import pandas as pd
 
@@ -2575,472 +2575,6 @@ print(total)`,
     ],
   },
   {
-    slug: 'loop-practice',
-    title: 'Loop Practice',
-    summary: 'Practise nested loops, print patterns, and write number programs: factorial, prime numbers and Fibonacci.',
-    hero: {
-      file: 'pattern.py',
-      lines: ['for i in range(1, 4):', '    print("*" * i)'],
-      output: '*\n**\n***',
-    },
-    sections: [
-      {
-        id: 's6-recap',
-        title: 'Recap',
-        blocks: [
-          { type: 'p', text: '**Ask the class:**' },
-          {
-            type: 'ul',
-            items: [
-              'What is the difference between `break` and `continue`?',
-              'Which numbers does `range(1, 5)` give?',
-              'When do you choose a `while` loop instead of a `for` loop?',
-            ],
-          },
-        ],
-      },
-      {
-        id: 's6-nested',
-        title: 'Nested loops: how they run',
-        blocks: [
-          {
-            type: 'p',
-            text: 'For **every round of the outer loop**, the inner loop runs **from start to finish**.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for i in range(1, 3):
-    for j in range(1, 4):
-        print("i =", i, " j =", j)`,
-          },
-          {
-            type: 'table',
-            head: ['Outer i', 'Inner j runs', 'Lines printed'],
-            rows: [
-              ['1', '1, 2, 3', '3'],
-              ['2', '1, 2, 3', '3'],
-            ],
-          },
-          {
-            type: 'ul',
-            items: [
-              'The outer loop handles the **rows**.',
-              'The inner loop handles the **columns** in each row.',
-              'Total rounds = outer rounds x inner rounds (here 2 x 3 = 6).',
-            ],
-          },
-          {
-            type: 'note',
-            tone: 'tip',
-            title: 'Ask',
-            text: 'How many lines would print if the outer loop was `range(1, 6)` and the inner loop was `range(1, 5)`?',
-          },
-        ],
-      },
-      {
-        id: 's6-patterns',
-        title: 'Pattern programs',
-        blocks: [
-          {
-            type: 'p',
-            text: 'Every pattern is built the same way: the **outer loop counts the rows**, and **inside each row** you print spaces, stars or numbers and then move to the next line.',
-          },
-          { type: 'h3', text: 'A rectangle of stars' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for row in range(3):
-    for col in range(5):
-        print("*", end="")
-    print()`,
-          },
-          {
-            type: 'ul',
-            items: [
-              '`end=""` keeps the stars on the **same line**.',
-              'The empty `print()` after the inner loop **starts a new line**.',
-            ],
-          },
-          { type: 'h3', text: 'Right triangle' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for i in range(1, 6):
-    print("*" * i)`,
-          },
-          {
-            type: 'p',
-            text: 'Row `i` has `i` stars. String repetition (`"*" * i`) does the inner loop for you.',
-          },
-          { type: 'h3', text: 'Inverted triangle' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for i in range(5, 0, -1):
-    print("*" * i)`,
-          },
-          {
-            type: 'note',
-            tone: 'tip',
-            title: 'Ask',
-            text: 'Which part of the program makes the triangle shrink?',
-          },
-          { type: 'h3', text: 'Number triangle' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for i in range(1, 6):
-    for j in range(1, i + 1):
-        print(j, end=" ")
-    print()`,
-          },
-          { type: 'h3', text: 'The same number in each row' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for i in range(1, 6):
-    print(str(i) * i)`,
-          },
-          { type: 'h3', text: 'Pyramid' },
-          {
-            type: 'p',
-            text: 'Each row needs **spaces first**, then an **odd number of stars** (1, 3, 5, ...).',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`n = 4
-for i in range(1, n + 1):
-    print(" " * (n - i) + "*" * (2 * i - 1))`,
-          },
-          { type: 'h3', text: 'Pattern recipe' },
-          {
-            type: 'table',
-            head: ['Step', 'Question to ask'],
-            rows: [
-              ['1', 'How many **rows** are there? That is the outer loop.'],
-              ['2', 'In row `i`, how many **spaces** come first?'],
-              ['3', 'In row `i`, how many **stars or numbers** are printed?'],
-              ['4', 'Do I need `end=""`, or can I build the row as one string?'],
-            ],
-          },
-        ],
-      },
-      {
-        id: 's6-factorial',
-        title: 'Factorial',
-        blocks: [
-          {
-            type: 'p',
-            text: 'The factorial of `n` is the **product of all numbers from 1 to n**. So `5! = 5 x 4 x 3 x 2 x 1 = 120`. By definition `0! = 1`.',
-          },
-          {
-            type: 'code',
-            label: 'With a for loop',
-            runnable: true,
-            code: raw`n = 5
-fact = 1
-for i in range(1, n + 1):
-    fact *= i
-print(n, "! =", fact)`,
-          },
-          {
-            type: 'ul',
-            items: [
-              'Start `fact` at **1**, not 0 (anything times 0 is 0).',
-              'Set it **before** the loop, so it is not reset in every round.',
-            ],
-          },
-          { type: 'h3', text: 'With a while loop' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`n = 5
-fact = 1
-while n > 1:
-    fact *= n
-    n -= 1
-print(fact)`,
-          },
-          { type: 'h3', text: 'Factorials from 1 to 6' },
-          {
-            type: 'p',
-            text: 'Here a loop inside a loop works out many factorials. Notice that `fact = 1` is **reset for every number**.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for n in range(1, 7):
-    fact = 1
-    for i in range(1, n + 1):
-        fact *= i
-    print(n, "! =", fact)`,
-          },
-          {
-            type: 'note',
-            tone: 'tip',
-            title: 'Ask',
-            text: 'What would go wrong if `fact = 1` was written before the outer loop instead?',
-          },
-        ],
-      },
-      {
-        id: 's6-prime',
-        title: 'Prime numbers',
-        blocks: [
-          {
-            type: 'p',
-            text: 'A **prime number** is greater than 1 and divisible only by **1 and itself**: 2, 3, 5, 7, 11, 13 ...',
-          },
-          {
-            type: 'p',
-            text: 'Idea: try to divide `n` by every number from 2 up to `n - 1`. If **any** divides it, it is **not prime**.',
-          },
-          {
-            type: 'code',
-            label: 'Divisible? (remainder 0)',
-            runnable: true,
-            code: raw`print(12 % 3 == 0)   # True: 3 divides 12
-print(12 % 5 == 0)   # False: 5 does not`,
-          },
-          {
-            type: 'p',
-            text: 'Now put that check inside a loop, for every number from 2 up to `n - 1`:',
-          },
-          {
-            type: 'code',
-            label: 'Is n prime?',
-            runnable: true,
-            code: raw`n = 29
-is_prime = n > 1
-for i in range(2, n):
-    if n % i == 0:
-        is_prime = False
-        break
-if is_prime:
-    print(n, "is prime")
-else:
-    print(n, "is not prime")`,
-          },
-          {
-            type: 'ul',
-            items: [
-              '`is_prime` is a **flag**: it starts as True and flips to False if a divisor is found.',
-              '`break` stops at the **first divisor**, because one is enough.',
-              '`n > 1` makes sure 0 and 1 are not called prime.',
-            ],
-          },
-          { type: 'h3', text: 'A faster check' },
-          {
-            type: 'p',
-            text: 'A divisor can only be as big as the **square root** of `n`, so you can stop there.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`n = 97
-is_prime = n > 1
-for i in range(2, int(n ** 0.5) + 1):
-    if n % i == 0:
-        is_prime = False
-        break
-print(n, "is prime" if is_prime else "is not prime")`,
-          },
-          { type: 'h3', text: 'All primes up to 30' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`for n in range(2, 31):
-    is_prime = True
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            is_prime = False
-            break
-    if is_prime:
-        print(n, end=" ")`,
-          },
-        ],
-      },
-      {
-        id: 's6-fibonacci',
-        title: 'Fibonacci series',
-        blocks: [
-          {
-            type: 'p',
-            text: 'Each number is the **sum of the two before it**: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 ...',
-          },
-          {
-            type: 'code',
-            label: 'First 10 terms',
-            runnable: true,
-            code: raw`a, b = 0, 1
-for _ in range(10):
-    print(a, end=" ")
-    a, b = b, a + b`,
-          },
-          {
-            type: 'ul',
-            items: [
-              '`a` and `b` hold the **current and next** terms.',
-              '`a, b = b, a + b` updates **both at once**, so no third variable is needed.',
-              '`_` is a loop variable we do not use. It is a common name for that.',
-            ],
-          },
-          { type: 'h3', text: 'Fibonacci while a value stays small' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a, b = 0, 1
-while a < 100:
-    print(a, end=" ")
-    a, b = b, a + b`,
-          },
-          {
-            type: 'note',
-            tone: 'tip',
-            title: 'Ask',
-            text: 'Which loop is better when you want exactly 10 terms? Which when you want all terms below 100?',
-          },
-        ],
-      },
-      {
-        id: 's6-number-programs',
-        title: 'More number programs',
-        blocks: [
-          { type: 'h3', text: 'Reverse a number and check a palindrome' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`n = 1221
-original = n
-rev = 0
-while n > 0:
-    rev = rev * 10 + n % 10
-    n //= 10
-print(rev)
-if rev == original:
-    print("Palindrome number")
-else:
-    print("Not a palindrome")`,
-          },
-          {
-            type: 'p',
-            text: 'Each round takes the **last digit** (`n % 10`), adds it to the **end of `rev`**, and drops it from `n` (`n //= 10`).',
-          },
-          { type: 'h3', text: 'GCD (greatest common divisor)' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a, b = 48, 18
-while b != 0:
-    a, b = b, a % b
-print("GCD =", a)`,
-          },
-          {
-            type: 'p',
-            text: 'This is **Euclid method**: replace the pair with (smaller, remainder) until the remainder is 0.',
-          },
-        ],
-      },
-      {
-        id: 's6-tips',
-        title: 'Tips and common mistakes',
-        blocks: [
-          {
-            type: 'table',
-            head: ['Mistake', 'What happens', 'Fix'],
-            rows: [
-              ['Forgetting `print()` after the inner loop', 'the whole pattern is on one line', 'add `print()` at the outer loop level'],
-              ['`range(1, n)` when you need n', 'the last row or number is missing', 'use `range(1, n + 1)`'],
-              ['Starting `fact = 0`', 'the answer is always 0', 'start the product at 1'],
-              ['Setting `fact = 1` outside the outer loop', 'the numbers keep growing across rounds', 'reset it inside the outer loop'],
-              ['Wrong indentation of `print()`', 'prints too often or only once', 'check which loop it belongs to'],
-            ],
-          },
-          { type: 'h3', text: 'Pattern without the new line' },
-          {
-            type: 'code',
-            label: 'Try it: add the missing print() so each row gets its own line',
-            runnable: true,
-            code: raw`for i in range(1, 5):
-    for j in range(1, i + 1):
-        print("*", end="")`,
-          },
-        ],
-      },
-      {
-        id: 's6-practice',
-        title: 'Practice questions',
-        blocks: [
-          { type: 'h3', text: 'Pattern questions' },
-          {
-            type: 'ol',
-            items: [
-              'Print a square of stars with 4 rows and 4 columns.',
-              'Print a right triangle of numbers: `1`, `1 2`, `1 2 3`, ...',
-              'Print an inverted triangle of numbers: `1 2 3 4 5`, `1 2 3 4`, ...',
-              'Print a pyramid of stars with 5 rows.',
-              'Print a hollow square of stars (stars only on the border).',
-            ],
-          },
-          { type: 'h3', text: 'Number program questions' },
-          {
-            type: 'ol',
-            start: 6,
-            items: [
-              'Take a number and print its factorial.',
-              'Take a number and check whether it is prime.',
-              'Print all prime numbers between 1 and 100.',
-              'Print the first `n` Fibonacci numbers.',
-              'Take a number and check whether it is a palindrome.',
-            ],
-          },
-          { type: 'h3', text: 'Find the output' },
-          {
-            type: 'code',
-            label: 'Work out the output first, then press Run to check',
-            runnable: true,
-            code: raw`for i in range(1, 4):
-    for j in range(i):
-        print(i, end=" ")
-    print()`,
-          },
-          { type: 'h3', text: 'Try a pattern' },
-          {
-            type: 'code',
-            label: 'Your turn: print a square of 4 x 4 stars, then press Run',
-            runnable: true,
-            code: raw`# use two loops and print()
-`,
-          },
-        ],
-      },
-      {
-        id: 's6-homework',
-        title: 'Homework and wrap-up',
-        blocks: [
-          {
-            type: 'ul',
-            items: [
-              'Print a **diamond** of stars (a pyramid followed by an inverted pyramid).',
-              'Print **Armstrong numbers** between 1 and 1000 (a number is an Armstrong number if the sum of the cubes of its digits equals the number, for example 153).',
-              'Find all **perfect numbers** up to 1000 (a number equal to the sum of its divisors smaller than itself, for example 6 = 1 + 2 + 3).',
-              'Take two numbers and print all **prime numbers between them**.',
-              'Print the **multiplication tables from 1 to 5** side by side using nested loops.',
-            ],
-          },
-          {
-            type: 'note',
-            tone: 'tip',
-            title: 'Next class',
-            text: 'Lists.',
-          },
-        ],
-      },
-    ],
-  },
-  {
     slug: 'lists',
     title: 'Lists',
     summary: 'Store many values in one variable: indexing, slicing, methods, list operations and loops over lists.',
@@ -5514,7 +5048,7 @@ print(len(d))`,
   {
     slug: 'revision-and-mini-project',
     title: 'Revision and Mini Project',
-    summary: 'Revise sessions 1 to 9, then build a student marks manager and a contact book step by step.',
+    summary: 'Revise sessions 1 to 8, then build a student marks manager and a contact book step by step.',
     tag: 'Project',
     hero: {
       file: 'marks_manager.py',
@@ -5548,7 +5082,7 @@ print(len(d))`,
           {
             type: 'ol',
             items: [
-              '**Revise** sessions 1 to 9 with short examples.',
+              '**Revise** sessions 1 to 8 with short examples.',
               '**Project 1:** a student marks manager.',
               '**Project 2:** a contact book.',
               'Practice and homework.',
@@ -5575,10 +5109,9 @@ print(len(d))`,
               ['3', 'Strings and operators', 'indexing, slicing, methods, f-strings, comparison and logical operators'],
               ['4', 'Conditional statements', '`if`, `elif`, `else`, nested conditions'],
               ['5', 'Loops', '`for`, `while`, `range()`, `break`, `continue`'],
-              ['6', 'Loop practice', 'nested loops, patterns, number programs'],
-              ['7', 'Lists', 'indexing, slicing, methods, loops over lists'],
-              ['8', 'Tuples and sets', 'immutability, unpacking, set operations'],
-              ['9', 'Dictionaries', 'key-value pairs, nested data, counting'],
+              ['6', 'Lists', 'indexing, slicing, methods, loops over lists'],
+              ['7', 'Tuples and sets', 'immutability, unpacking, set operations'],
+              ['8', 'Dictionaries', 'key-value pairs, nested data, counting'],
             ],
           },
         ],
@@ -6509,7 +6042,7 @@ print(sign(5), sign(-2), sign(0))`,
           { type: 'h3', text: 'Returning many values' },
           {
             type: 'p',
-            text: 'Returning several values with commas gives **one tuple**. Unpack it, like in Session 8.',
+            text: 'Returning several values with commas gives **one tuple**. Unpack it, like in Session 7.',
           },
           {
             type: 'code',
@@ -6606,7 +6139,7 @@ print(total())`,
             type: 'note',
             tone: 'tip',
             title: 'Note',
-            text: 'This is the same `*` idea as star unpacking in Session 8. `print()` itself works this way.',
+            text: 'This is the same `*` idea as star unpacking in Session 7. `print()` itself works this way.',
           },
         ],
       },
@@ -20043,12 +19576,12 @@ df = pd.DataFrame({"city": ["Delhi", "Pune", "Delhi", "Mumbai"], "revenue": [500
             head: ['Stage', 'Sessions', 'What you can do'],
             rows: [
               ['**Python basics**', '1 to 4', 'variables, types, strings, operators, `if` / `elif` / `else`'],
-              ['**Repeating and collecting**', '5 to 10', 'loops, lists, tuples, sets, dictionaries, a mini project'],
-              ['**Organising code**', '11 to 15', 'functions, modules, packages, files, exceptions'],
-              ['**Numbers**', '16 to 17', 'NumPy: arrays, vectorised maths, broadcasting'],
-              ['**Tables**', '18 to 23', 'pandas: load, inspect, select, filter, clean, group, merge'],
-              ['**Pictures**', '24 to 25', 'Matplotlib and Seaborn charts'],
-              ['**Projects**', '26 to 29', 'EDA, the capstone, notebooks, reports and presentations'],
+              ['**Repeating and collecting**', '5 to 9', 'loops, lists, tuples, sets, dictionaries, a mini project'],
+              ['**Organising code**', '10 to 14', 'functions, modules, packages, files, exceptions'],
+              ['**Numbers**', '15 to 16', 'NumPy: arrays, vectorised maths, broadcasting'],
+              ['**Tables**', '17 to 22', 'pandas: load, inspect, select, filter, clean, group, merge'],
+              ['**Pictures**', '23 to 24', 'Matplotlib and Seaborn charts'],
+              ['**Projects**', '25 to 28', 'EDA, the capstone, notebooks, reports and presentations'],
             ],
           },
         ],
@@ -20113,7 +19646,7 @@ df = pd.DataFrame({"city": ["Delhi", "Pune", "Delhi", "Mumbai"], "revenue": [500
               ['20 to 24', 'Excellent. Move on to the roadmap.'],
               ['15 to 19', 'Good. Revise the sessions of the questions you missed.'],
               ['10 to 14', 'Fair. Re-run the Try it boxes of those sessions.'],
-              ['Under 10', 'Go back over sessions 1 to 18 slowly, then try again.'],
+              ['Under 10', 'Go back over sessions 1 to 17 slowly, then try again.'],
             ],
           },
         ],

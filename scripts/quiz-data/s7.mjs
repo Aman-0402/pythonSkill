@@ -1,182 +1,127 @@
-// Session 7: Lists
+// Session 7: Tuples and Sets
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
-// runs the code and prints everything it printed on one line, so a multi-line output can be checked as one answer
-const flat = (code) => `import io, contextlib
-buf = io.StringIO()
-with contextlib.redirect_stdout(buf):
-${code.split('\n').map((l) => '    ' + l).join('\n')}
-print(" ".join(buf.getvalue().split()))`
-
 export default [
-  [`What is a list in Python?`, `An ordered collection of items inside square brackets`, [`A single number with decimals`, `A block of text inside quotes`, `A loop that repeats`], `One variable can hold many values in a list.`],
-  [`Which of these is a list?`, `[10, 20, 30]`, [`(10, 20, 30)`, `"10, 20, 30"`, `{10 20 30}`], `Lists are written with square brackets, with commas between the items.`],
-  [`Which statements about lists are true?`, `They are ordered, they can hold mixed types, and they can be changed`, [`They cannot hold text`, `They cannot be changed after creation`, `Every item must have a different value`, `They can only hold numbers`], `Lists are ordered, allow duplicates and mixed types, and are mutable.`],
-  [`What does len([10, 20, 30]) give?`, `3`, [`2`, `30`, `60`], `len() gives the number of items.`, `print(len([10, 20, 30]))`],
-  [`What does list("Python") give?`, `['P', 'y', 't', 'h', 'o', 'n']`, [`['Python']`, `"Python"`, `['P', 'y', 't', 'h', 'o']`], `list() turns the characters of a string into separate items.`, `print(list("Python"))`],
-  [`What is the index of the first item in a list?`, `0`, [`1`, `-1`, `It depends on the list`], `Indexing starts from 0, like strings.`],
-  [`What does fruits[-1] give?
+  [`What is a tuple in Python?`, `An ordered collection in round brackets that cannot be changed`, [`An ordered collection in square brackets that can be changed`, `A collection of unique items with no order`, `A block of text inside quotes`], `A tuple looks like a list but is immutable.`],
+  [`Which of these is a tuple?`, `(10, 20, 30)`, [`[10, 20, 30]`, `{10, 20, 30}`, `"10, 20, 30"`], `Tuples use round brackets.`],
+  [`What does type((3, 4)) show?`, `<class 'tuple'>`, [`<class 'list'>`, `<class 'set'>`, `<class 'int'>`], `Round brackets with commas make a tuple.`, `print(type((3, 4)))`],
+  [`What is the type of (5)?`, `int`, [`tuple`, `list`, `str`], `Brackets alone do not make a tuple. The comma does, so (5,) is the tuple.`, `print(type((5)).__name__)`],
+  [`What is the type of (5,)?`, `tuple`, [`int`, `list`, `set`], `The trailing comma makes it a one-item tuple.`, `print(type((5,)).__name__)`],
+  [`What does tuple("abc") give?`, `('a', 'b', 'c')`, [`('abc',)`, `['a', 'b', 'c']`, `{'a', 'b', 'c'}`], `tuple() turns the characters of a string into separate items.`, `print(tuple("abc"))`],
+  [`What does days[-1] give?
 
-fruits = ["apple", "banana", "mango", "kiwi"]`, `kiwi`, [`apple`, `mango`, `An error`], `-1 is the last item.`, `fruits = ["apple", "banana", "mango", "kiwi"]
-print(fruits[-1])`],
-  [`What does fruits[2] give?
+days = ("Mon", "Tue", "Wed", "Thu", "Fri")`, `Fri`, [`Mon`, `Thu`, `An error`], `-1 is the last item, as in lists.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
+print(days[-1])`],
+  [`What does days[1:3] give?
 
-fruits = ["apple", "banana", "mango", "kiwi"]`, `mango`, [`banana`, `kiwi`, `apple`], `Index 0 is apple, 1 is banana and 2 is mango.`, `fruits = ["apple", "banana", "mango", "kiwi"]
-print(fruits[2])`],
-  [`What error appears for fruits[4] when the list has 4 items?`, `IndexError`, [`TypeError`, `ValueError`, `NameError`], `The valid indexes are 0 to 3.`],
-  [`Lists are mutable. Which line proves it?`, `fruits[1] = "orange"`, [`s[0] = "J" on a string`, `len(fruits)`, `print(fruits)`], `You can replace an item by assigning to its index. Strings cannot be changed this way.`],
-  [`What does nums[1:4] give?
+days = ("Mon", "Tue", "Wed", "Thu", "Fri")`, `('Tue', 'Wed')`, [`('Mon', 'Tue', 'Wed')`, `('Tue', 'Wed', 'Thu')`, `['Tue', 'Wed']`], `The stop index is not included, and slicing a tuple gives a tuple.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
+print(days[1:3])`],
+  [`What does (1, 2, 2, 3, 2).count(2) give?`, `3`, [`2`, `1`, `5`], `count() says how many times 2 appears.`, `print((1, 2, 2, 3, 2).count(2))`],
+  [`What does (1, 2, 2, 3, 2).index(3) give?`, `3`, [`4`, `2`, `1`], `index() gives the position of the first match, and 3 is at index 3.`, `print((1, 2, 2, 3, 2).index(3))`],
+  [`Which are the only two tuple methods?`, `count() and index()`, [`append() and remove()`, `add() and discard()`, `sort() and reverse()`], `A tuple cannot change, so it only has methods that read.`],
+  [`What happens here?
 
-nums = [10, 20, 30, 40, 50, 60]`, `[20, 30, 40]`, [`[10, 20, 30, 40]`, `[20, 30, 40, 50]`, `[10, 20, 30]`], `The stop index is not included.`, `nums = [10, 20, 30, 40, 50, 60]
-print(nums[1:4])`],
-  [`What does nums[::-1] give?
+t = (10, 20, 30)
+t[0] = 99`, `TypeError`, [`t becomes (99, 20, 30)`, `IndexError`, `NameError`], `Tuples are immutable, so item assignment is not allowed.`],
+  [`What happens here?
 
-nums = [10, 20, 30]`, `[30, 20, 10]`, [`[10, 20, 30]`, `[30]`, `[20, 10]`], `A step of -1 reverses the list.`, `nums = [10, 20, 30]
-print(nums[::-1])`],
-  [`What does nums[-2:] give?
-
-nums = [10, 20, 30, 40, 50, 60]`, `[50, 60]`, [`[10, 20]`, `[60]`, `[40, 50, 60]`], `-2 means the second item from the end, and the missing stop means to the end.`, `nums = [10, 20, 30, 40, 50, 60]
-print(nums[-2:])`],
-  [`What does nums[:] do?`, `Makes a copy of the whole list`, [`Deletes the list`, `Reverses the list`, `Gives an error`], `A slice gives a new list, so nums[:] is a copy.`],
+t = (10, 20, 30)
+t.append(40)`, `AttributeError`, [`t becomes (10, 20, 30, 40)`, `TypeError`, `ValueError`], `A tuple has no append method.`],
+  [`What does immutable mean?`, `It cannot be changed after it is created`, [`It cannot be printed`, `It can only hold numbers`, `It is stored in a file`], `Tuples, strings and numbers are immutable.`],
   [`What is printed?
 
-nums = [10, 20, 30, 40, 50]
-nums[1:3] = [21, 31]
-print(nums)`, `[10, 21, 31, 40, 50]`, [`[10, 21, 31, 30, 40, 50]`, `[21, 31]`, `[10, 20, 21, 31, 40, 50]`], `Assigning to a slice replaces those items.`, `nums = [10, 20, 30, 40, 50]
-nums[1:3] = [21, 31]
-print(nums)`],
-  [`Which method adds an item at the end of a list?`, `append()`, [`insert()`, `add()`, `push()`], `append(x) adds x at the end.`],
-  [`What does fruits.insert(1, "kiwi") do?`, `Adds kiwi at position 1`, [`Adds kiwi at the end`, `Replaces the item at position 1`, `Removes kiwi`], `insert(i, x) puts x at position i and moves the rest along.`],
+t = (10, 20, 30)
+t = t + (40,)
+print(t)`, `(10, 20, 30, 40)`, [`(10, 20, 30, (40,))`, `(40, 10, 20, 30)`, `An error`], `You cannot change a tuple, but you can build a new one and reuse the name.`, `t = (10, 20, 30)
+t = t + (40,)
+print(t)`],
   [`What is printed?
 
-fruits = ["apple", "banana"]
-fruits.extend(["grapes", "orange"])
-print(fruits)`, `['apple', 'banana', 'grapes', 'orange']`, [`['apple', 'banana', ['grapes', 'orange']]`, `['grapes', 'orange']`, `['apple', 'grapes', 'banana', 'orange']`], `extend() adds every item of another list at the end.`, `fruits = ["apple", "banana"]
-fruits.extend(["grapes", "orange"])
-print(fruits)`],
-  [`What is the difference between a and b after this code?
-
-a = [1, 2]
-a.append([3, 4])
-
-b = [1, 2]
-b.extend([3, 4])`, `append gives [1, 2, [3, 4]] and extend gives [1, 2, 3, 4]`, [`Both give [1, 2, 3, 4]`, `append gives [1, 2, 3, 4] and extend gives [1, 2, [3, 4]]`, `Both give [1, 2, [3, 4]]`], `append adds one item, which here is a list. extend adds each item.`, `a = [1, 2]
-a.append([3, 4])
-b = [1, 2]
-b.extend([3, 4])
-print("append gives", a, "and extend gives", b)`],
+t = (1, [2, 3])
+t[1].append(4)
+print(t)`, `(1, [2, 3, 4])`, [`(1, [2, 3])`, `An error`, `(1, 2, 3, 4)`], `The tuple keeps the same list, and the list itself can still change.`, `t = (1, [2, 3])
+t[1].append(4)
+print(t)`],
+  [`What does (1, 2) + (3, 4) give?`, `(1, 2, 3, 4)`, [`(4, 6)`, `((1, 2), (3, 4))`, `[1, 2, 3, 4]`], `+ joins two tuples into a new one.`, `print((1, 2) + (3, 4))`],
   [`What is printed?
 
-nums = [10, 20, 30, 20, 40]
-nums.remove(20)
-print(nums)`, `[10, 30, 20, 40]`, [`[10, 30, 40]`, `[10, 20, 30, 40]`, `[10, 20, 30, 20]`], `remove(x) removes only the first x.`, `nums = [10, 20, 30, 20, 40]
-nums.remove(20)
-print(nums)`],
-  [`What does pop() do with no number?`, `Removes and returns the last item`, [`Removes and returns the first item`, `Removes every item`, `Returns None and changes nothing`], `pop(i) takes the item at position i instead.`],
+x, y = (3, 4)
+print(x + y)`, `7`, [`34`, `(3, 4)`, `An error`], `Unpacking puts 3 in x and 4 in y.`, `x, y = (3, 4)
+print(x + y)`],
+  [`What happens here?
+
+a, b = (1, 2, 3)`, `ValueError`, [`a is 1 and b is 2`, `TypeError`, `a is 1 and b is (2, 3)`], `The number of variables must match the number of items.`],
   [`What is printed?
 
-nums = [10, 30, 20, 40]
-last = nums.pop()
-print(last)`, `40`, [`10`, `20`, `[10, 30, 20]`], `pop() returns the item it removes.`, `nums = [10, 30, 20, 40]
-last = nums.pop()
-print(last)`],
-  [`What does nums.clear() do?`, `Removes every item from the list`, [`Removes only the last item`, `Deletes the variable nums`, `Sorts the list`], `The list stays, but it becomes empty.`],
-  [`What error does the second line cause?
+a, b = 1, 2
+a, b = b, a
+print(a, b)`, `2 1`, [`1 2`, `2 2`, `1 1`], `Python can swap two variables in one line, with no third variable.`, `a, b = 1, 2
+a, b = b, a
+print(a, b)`],
+  [`What are first and rest after this line?
 
-nums = [1, 2, 3]
-nums.remove(10)`, `ValueError`, [`IndexError`, `TypeError`, `KeyError`], `You can check with 10 in nums before removing.`],
-  [`What does colors.index("blue") give?
+first, *rest = (1, 2, 3, 4)`, `1 and [2, 3, 4]`, [`1 and (2, 3, 4)`, `1 and 2`, `(1, 2, 3, 4) and []`], `The starred variable collects the extra items into a list.`, `first, *rest = (1, 2, 3, 4)
+print(first, "and", rest)`],
+  [`What is mid after this line?
 
-colors = ["red", "green", "blue", "green"]`, `2`, [`3`, `1`, `-1`], `index() gives the position of the first match.`, `colors = ["red", "green", "blue", "green"]
-print(colors.index("blue"))`],
-  [`What does colors.count("green") give?
+a, *mid, z = (1, 2, 3, 4, 5)`, `[2, 3, 4]`, [`(2, 3, 4)`, `[1, 5]`, `2`], `The star takes everything between the first and the last.`, `a, *mid, z = (1, 2, 3, 4, 5)
+print(mid)`],
+  [`How many starred variables are allowed in one unpacking?`, `Only one`, [`As many as you like`, `Two`, `None`], `With two stars Python could not tell how to split the items.`],
+  [`What type does min_max give back?
 
-colors = ["red", "green", "blue", "green"]`, `2`, [`1`, `3`, `4`], `count() gives how many times the item appears.`, `colors = ["red", "green", "blue", "green"]
-print(colors.count("green"))`],
-  [`What does "pink" in colors give?
-
-colors = ["red", "green", "blue"]`, `False`, [`True`, `None`, `An error`], `in checks whether a value is present in the list.`, `colors = ["red", "green", "blue"]
-print("pink" in colors)`],
+def min_max(nums):
+    return min(nums), max(nums)`, `tuple`, [`list`, `set`, `Two separate values`], `Returning several values with commas returns one tuple.`, `def f(nums):
+    return min(nums), max(nums)
+print(type(f([1, 2])).__name__)`],
   [`What is printed?
 
-nums = [5, 2, 9, 1]
-nums.sort(reverse=True)
-print(nums)`, `[9, 5, 2, 1]`, [`[1, 2, 5, 9]`, `[5, 2, 9, 1]`, `[1, 9, 2, 5]`], `reverse=True sorts from the biggest to the smallest.`, `nums = [5, 2, 9, 1]
-nums.sort(reverse=True)
-print(nums)`],
-  [`What is the difference between sort() and sorted()?`, `sort() changes the list, sorted() gives a new sorted list`, [`They are exactly the same`, `sort() gives a new list, sorted() changes the list`, `sorted() only works on strings`], `sorted() leaves the original list alone.`],
+for i, ch in enumerate("ab"):
+    print(i, ch)`, `0 a 1 b`, [`a b`, `0 1`, `1 a 2 b`], `enumerate gives (index, item) tuples, and the loop unpacks them.`, `print(" ".join(f"{i} {ch}" for i, ch in enumerate("ab")))`],
+  [`What is a set in Python?`, `A collection of unique items with no order`, [`An ordered collection that allows duplicates`, `A collection that cannot be changed`, `A block of text`], `Sets remove duplicates and have no order.`],
+  [`Which of these is a set?`, `{1, 2, 3}`, [`[1, 2, 3]`, `(1, 2, 3)`, `"1, 2, 3"`], `Sets are written with curly brackets.`],
   [`What is printed?
 
-marks = [72, 85, 60, 91]
-print(len(marks), min(marks), max(marks), sum(marks))`, `4 60 91 308`, [`4 72 91 308`, `4 60 91 240`, `3 60 91 308`], `len is 4, the smallest is 60, the biggest is 91, and the total is 308.`, `marks = [72, 85, 60, 91]
-print(len(marks), min(marks), max(marks), sum(marks))`],
-  [`What is average after this code?
+s = {3, 1, 2, 3, 1}
+print(len(s))`, `3`, [`5`, `2`, `6`], `The duplicates are removed, leaving 1, 2 and 3.`, `s = {3, 1, 2, 3, 1}
+print(len(s))`],
+  [`How do you make an empty set?`, `set()`, [`{}`, `[]`, `()`], `{} is an empty dictionary.`],
+  [`What does sorted(set([5, 3, 5, 1, 3])) give?`, `[1, 3, 5]`, [`[5, 3, 5, 1, 3]`, `[1, 3, 3, 5, 5]`, `{1, 3, 5}`], `set() removes duplicates and sorted() puts the result in order, as a list.`, `print(sorted(set([5, 3, 5, 1, 3])))`],
+  [`What happens here?
 
-marks = [72, 85, 60, 91]
-average = sum(marks) / len(marks)`, `77.0`, [`77`, `308`, `76.5`], `308 divided by 4 is 77.0, as a float.`, `marks = [72, 85, 60, 91]
-print(sum(marks) / len(marks))`],
+s = {1, 2, 3}
+print(s[0])`, `TypeError`, [`1`, `IndexError`, `{1}`], `Sets have no order, so they cannot be indexed.`],
+  [`What happens here?
+
+s = {[1, 2], 3}`, `TypeError, a list cannot go inside a set`, [`A set with a list and 3`, `The list is removed`, `NameError`], `Set items must be immutable, so a tuple (1, 2) is fine but a list is not.`],
+  [`What is printed? print(2 in {1, 2, 3})`, `True`, [`False`, `2`, `An error`], `in checks membership, and it is very fast for sets.`, `print(2 in {1, 2, 3})`],
+  [`What is the difference between remove() and discard()?`, `remove() gives an error if the item is missing, discard() does not`, [`discard() gives an error if the item is missing, remove() does not`, `They are exactly the same`, `remove() removes all items`], `Use discard() when you are not sure the item is in the set.`],
   [`What is printed?
 
-nums = [3, 1, 2]
-result = nums.sort()
-print(result)`, `None`, [`[1, 2, 3]`, `[3, 1, 2]`, `An error`], `sort() changes the list and returns None. Do not write nums = nums.sort().`, `nums = [3, 1, 2]
-result = nums.sort()
-print(result)`],
-  [`What does [1, 2, 3] + [4, 5] give?`, `[1, 2, 3, 4, 5]`, [`[5, 7, 3]`, `[[1, 2, 3], [4, 5]]`, `An error`], `+ joins two lists into a new one.`, `print([1, 2, 3] + [4, 5])`],
-  [`What does [4, 5] * 3 give?`, `[4, 5, 4, 5, 4, 5]`, [`[12, 15]`, `[4, 5, 3]`, `[[4, 5], 3]`], `* repeats a list.`, `print([4, 5] * 3)`],
+s = {1, 2}
+s.add(3)
+s.add(2)
+print(s)`, `{1, 2, 3}`, [`{1, 2, 3, 2}`, `{1, 2}`, `{3}`], `Adding an item that is already there changes nothing.`, `s = {1, 2}
+s.add(3)
+s.add(2)
+print(s)`],
+  [`What does {1, 2, 3, 4} | {3, 4, 5, 6} give?`, `{1, 2, 3, 4, 5, 6}`, [`{3, 4}`, `{1, 2}`, `{1, 2, 5, 6}`], `| is union, everything in either set.`, `print({1, 2, 3, 4} | {3, 4, 5, 6})`],
+  [`What does {1, 2, 3, 4} & {3, 4, 5, 6} give?`, `{3, 4}`, [`{1, 2, 3, 4, 5, 6}`, `{1, 2}`, `{1, 2, 5, 6}`], `& is intersection, only what is in both.`, `print({1, 2, 3, 4} & {3, 4, 5, 6})`],
+  [`What does {1, 2, 3, 4} - {3, 4, 5, 6} give?`, `{1, 2}`, [`{5, 6}`, `{3, 4}`, `{1, 2, 5, 6}`], `- is difference, in the first set but not in the second.`, `print({1, 2, 3, 4} - {3, 4, 5, 6})`],
+  [`What does {1, 2, 3, 4} ^ {3, 4, 5, 6} give?`, `{1, 2, 5, 6}`, [`{3, 4}`, `{1, 2, 3, 4, 5, 6}`, `{1, 2}`], `^ is symmetric difference, in one set but not in both.`, `print({1, 2, 3, 4} ^ {3, 4, 5, 6})`],
+  [`What does {1, 2} <= {1, 2, 3} check?`, `Whether the first set is a subset of the second`, [`Whether they have nothing in common`, `Whether the first set is bigger`, `Whether they are equal`], `<= is the same as issubset().`],
+  [`What does {1, 2}.isdisjoint({3, 4}) give?`, `True`, [`False`, `{}`, `An error`], `The two sets have nothing in common, so they are disjoint.`, `print({1, 2}.isdisjoint({3, 4}))`],
+  [`What does a |= {4} do to the set a?`, `Adds 4 to a in place`, [`Makes a new set and leaves a alone`, `Removes 4 from a`, `Gives an error`], `|= is the in-place union.`],
+  [`What is a frozenset?`, `An immutable set`, [`A set with no items`, `A set that keeps its order`, `A list of sets`], `It cannot be changed, so add() gives an error.`],
   [`What is printed?
 
-a = [1, 2, 3]
-b = a
-b.append(4)
-print(a)`, `[1, 2, 3, 4]`, [`[1, 2, 3]`, `[4]`, `An error`], `b = a does not copy the list. Both names point to the same list.`, `a = [1, 2, 3]
-b = a
-b.append(4)
-print(a)`],
-  [`Which line makes a real copy of the list a?`, `a.copy()`, [`b = a`, `a == a`, `len(a)`], `a[:] also makes a copy.`],
-  [`Which loop goes through every item of a list called fruits?`, `for fruit in fruits:`, [`for fruit of fruits`, `for (fruit in fruits)`, `loop fruit in fruits:`], `The loop variable takes one item at a time.`],
-  [`What does enumerate(fruits) give you in a loop?`, `The index and the item together`, [`Only the items`, `Only the indexes in reverse`, `The length of the list`], `for i, fruit in enumerate(fruits): gives both.`],
-  [`What is printed?
-
-squares = []
-for n in range(1, 6):
-    squares.append(n * n)
-print(squares)`, `[1, 4, 9, 16, 25]`, [`[1, 2, 3, 4, 5]`, `[0, 1, 4, 9, 16]`, `[2, 4, 6, 8, 10]`], `Start with an empty list, then append inside the loop.`, `squares = []
-for n in range(1, 6):
-    squares.append(n * n)
-print(squares)`],
-  [`What is evens after this loop?
-
-nums = [4, 7, 10, 3, 8]
-evens = []
-for n in nums:
-    if n % 2 == 0:
-        evens.append(n)`, `[4, 10, 8]`, [`[7, 3]`, `[4, 7, 10, 3, 8]`, `[10, 8]`], `Only items with n % 2 == 0 are appended.`, `nums = [4, 7, 10, 3, 8]
-evens = []
-for n in nums:
-    if n % 2 == 0:
-        evens.append(n)
-print(evens)`],
-  [`What does [n * n for n in range(1, 6)] give?`, `[1, 4, 9, 16, 25]`, [`[1, 2, 3, 4, 5]`, `[2, 4, 6, 8, 10]`, `An error`], `This is a list comprehension, a one-line way to build a list.`, `print([n * n for n in range(1, 6)])`],
-  [`What does matrix[1][2] give?
-
-matrix = [[1, 2, 3], [4, 5, 6]]`, `6`, [`2`, `3`, `5`], `matrix[1] is the second row [4, 5, 6], and index 2 is its third item.`, `matrix = [[1, 2, 3], [4, 5, 6]]
-print(matrix[1][2])`],
-  [`What is printed?
-
-matrix = [[1, 2, 3], [4, 5, 6]]
-print(matrix[0])`, `[1, 2, 3]`, [`1`, `[1, 4]`, `[[1, 2, 3]]`], `matrix[0] is the first row.`, `matrix = [[1, 2, 3], [4, 5, 6]]
-print(matrix[0])`],
-  [`What is printed?
-
-nums = [10, 20, 30, 40, 50]
-nums.append(60)
-nums.pop(0)
-print(len(nums))`, `5`, [`4`, `6`, `7`], `Appending makes 6 items, and pop(0) removes one, so 5 remain.`, `nums = [10, 20, 30, 40, 50]
-nums.append(60)
-nums.pop(0)
-print(len(nums))`],
-  [`True or false: this is the correct way to add 5 to nums.
-
-nums = nums.append(5)`, `False`, [`True`], `append() returns None, so nums would become None. Just write nums.append(5).`],
+a = [1, 2, 3, 3]
+b = [3, 4, 5]
+print(sorted(set(a) & set(b)))`, `[3]`, [`[3, 3]`, `[1, 2, 3, 4, 5]`, `[1, 2]`], `The only common item is 3.`, `a = [1, 2, 3, 3]
+b = [3, 4, 5]
+print(sorted(set(a) & set(b)))`],
+  [`Which one is the best to remove duplicates from a list?`, `Convert it to a set`, [`Convert it to a tuple`, `Use append()`, `Use sorted() alone`], `A set keeps only unique items. Use sorted() on the result if you need an order.`],
+  [`Which collection is best for checking quickly whether an item is present?`, `A set`, [`A tuple`, `A list`, `A string`], `Membership checks on a set are very fast.`],
+  [`Which collections keep the order of their items?`, `Lists and tuples`, [`Sets and tuples`, `Lists and sets`, `Only lists`], `Sets have no order.`],
+  [`True or false: a tuple can never contain a list.`, `False`, [`True`], `A tuple can hold a list. The list can still change, but the tuple keeps the same list.`],
+  [`True or false: a set can contain a tuple such as (1, 2).`, `True`, [`False`], `A tuple is immutable, so it is allowed inside a set.`],
 ]

@@ -1,120 +1,85 @@
-// Session 12: Advanced Functions
+// Session 12: Modules and Packages
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`What is a default argument?`, `A value a parameter uses when the caller leaves it out`, [`A value that cannot be changed`, `The first argument of every function`, `A value that is always printed`], `A parameter with a default becomes optional.`],
+  [`What is a module?`, `A Python file with ready-made code you can import`, [`A kind of loop`, `A type of variable`, `A comment block`], `A module holds functions and values that you can reuse.`],
+  [`What is the standard library?`, `The modules that come with Python`, [`A website that sells Python books`, `A folder of your own files`, `Only the math module`], `It is often called "batteries included".`],
+  [`Which line loads the math module?`, `import math`, [`load math`, `include math`, `use math`], `import is the keyword that loads a module.`],
+  [`What does math.sqrt(144) give?`, `12.0`, [`12`, `72`, `144`], `sqrt gives the square root as a float.`, `import math
+print(math.sqrt(144))`],
+  [`What does the dot in math.sqrt mean?`, `sqrt is a function inside the math module`, [`sqrt is a variable you made`, `math is inside sqrt`, `It joins two numbers`], `The dot goes inside the module.`],
+  [`How do you use sqrt without writing math. each time?`, `from math import sqrt`, [`import sqrt from math`, `import math.sqrt as sqrt`, `use math.sqrt`], `from module import name brings the name in directly.`],
+  [`What does import math as m let you write?`, `m.sqrt(16)`, [`math.sqrt(16)`, `as.sqrt(16)`, `sqrt(16)`], `as gives the module a shorter name.`],
+  [`Why should you avoid from math import *?`, `You cannot tell where names come from and it can hide your own names`, [`It makes Python slower than 10 times`, `It is a syntax error`, `It deletes the math module`], `Import only the names you need.`],
+  [`What does math.floor(3.9) give?`, `3`, [`4`, `3.9`, `3.0`], `floor rounds down.`, `import math
+print(math.floor(3.9))`],
+  [`What does math.ceil(3.1) give?`, `4`, [`3`, `3.1`, `4.0`], `ceil rounds up.`, `import math
+print(math.ceil(3.1))`],
+  [`What does math.factorial(5) give?`, `120`, [`25`, `15`, `5`], `5 * 4 * 3 * 2 * 1 is 120.`, `import math
+print(math.factorial(5))`],
+  [`What does math.gcd(12, 18) give?`, `6`, [`36`, `3`, `216`], `6 is the biggest number that divides both 12 and 18.`, `import math
+print(math.gcd(12, 18))`],
+  [`What does math.pow(2, 3) give?`, `8.0`, [`8`, `6`, `9`], `math.pow always gives a float.`, `import math
+print(math.pow(2, 3))`],
+  [`What does round(2.5) give in Python?`, `2`, [`3`, `2.5`, `2.0`], `A half is rounded to the nearest even number.`, `print(round(2.5))`],
+  [`What does random.randint(1, 6) give?`, `A whole number from 1 to 6, both included`, [`A float from 1 to 6`, `A whole number from 1 to 5`, `Always 1`], `randint includes both ends.`],
+  [`What does random.random() give?`, `A float from 0.0 up to but not including 1.0`, [`A whole number from 0 to 10`, `Always 0.5`, `A float from 1 to 6`], `It is a number between 0 and 1.`],
+  [`What does random.choice(["a", "b", "c"]) give?`, `One random item from the list`, [`The whole list shuffled`, `Always the first item`, `Three items`], `choice picks a single item.`],
+  [`What does random.shuffle(cards) return?`, `None, because it changes the list in place`, [`A new shuffled list`, `The first card`, `The number of cards`], `Do not write cards = random.shuffle(cards).`],
+  [`How is random.sample(items, 3) different from choosing 3 times with choice?`, `sample never picks the same item twice`, [`sample always picks the first 3`, `sample gives a float`, `There is no difference`], `Each item can appear at most once in a sample.`],
+  [`What does random.seed(10) do?`, `Makes the random numbers repeat the same way each time`, [`Makes the numbers truly random`, `Deletes the random module`, `Stops randint working`], `The same seed gives the same sequence.`],
   [`What is printed?
 
-def welcome(name, greeting="Hello"):
-    return greeting + ", " + name
-print(welcome("Aman"))`, `Hello, Aman`, [`Aman, Hello`, `Hello Aman`, `An error`], `The default greeting is used.`, `def welcome(name, greeting="Hello"):
-    return greeting + ", " + name
-print(welcome("Aman"))`],
-  [`Which definition is correct?`, `def f(a, b=1):`, [`def f(a=1, b):`, `def f(=1, b):`, `def f(a, b=):`], `Parameters with a default must come after those without one.`],
-  [`When is a default value created?`, `Once, when the function is defined`, [`Every time the function is called`, `Only when the caller gives it`, `When the program ends`], `That is why a list used as a default is shared by every call.`],
-  [`What do the three calls return?
+import random
+random.seed(10)
+a = [random.randint(1, 100) for _ in range(3)]
+random.seed(10)
+b = [random.randint(1, 100) for _ in range(3)]
+print(a == b)`, `True`, [`False`, `None`, `An error`], `Same seed, same numbers.`, `import random
+random.seed(10)
+a = [random.randint(1, 100) for _ in range(3)]
+random.seed(10)
+b = [random.randint(1, 100) for _ in range(3)]
+print(a == b)`],
+  [`Why is random not safe for real passwords?`, `Its numbers can be predicted, so Python has the secrets module for that`, [`It only makes numbers`, `It is too slow`, `It cannot make letters`], `Use secrets for anything security related.`],
+  [`What does "".join(random.choice(letters) for _ in range(10)) build?`, `A string of 10 random characters`, [`A list of 10 letters`, `A number`, `The same letter 10 times`], `join glues the 10 chosen characters together.`],
+  [`Which module has the timedelta class?`, `datetime`, [`time`, `calendar`, `delta`], `datetime has date, datetime and timedelta.`],
+  [`What does date(2026, 8, 15).year give?`, `2026`, [`8`, `15`, `2026-08-15`], `.year, .month and .day read the parts.`, `from datetime import date
+print(date(2026, 8, 15).year)`],
+  [`What does print(date(2026, 8, 15)) show?`, `2026-08-15`, [`15/08/2026`, `August 15 2026`, `date(2026, 8, 15)`], `A date prints as year-month-day.`, `from datetime import date
+print(date(2026, 8, 15))`],
+  [`What type do you get from subtracting two dates?`, `timedelta`, [`date`, `int`, `str`], `The result is a length of time.`, `from datetime import date
+print(type(date(2026, 3, 1) - date(2026, 1, 1)).__name__)`],
+  [`How many days from 1 Jan 2026 to 1 Mar 2026?`, `59`, [`58`, `60`, `31`], `January has 31 days and February 2026 has 28.`, `from datetime import date
+print((date(2026, 3, 1) - date(2026, 1, 1)).days)`],
+  [`What does date(2026, 1, 1) + timedelta(days=30) give?`, `2026-01-31`, [`2026-01-30`, `2026-02-01`, `2026-01-01`], `Add 30 days to 1 January.`, `from datetime import date, timedelta
+print(date(2026, 1, 1) + timedelta(days=30))`],
+  [`What does weekday() return for a Monday?`, `0`, [`1`, `7`, `Monday`], `Monday is 0 and Sunday is 6.`, `from datetime import date
+print(date(2026, 8, 17).weekday())`],
+  [`Which method turns a date into text?`, `strftime`, [`strptime`, `parse`, `totext`], `strftime formats a date as text.`],
+  [`Which method reads text into a date?`, `strptime`, [`strftime`, `read`, `fromtext`], `strptime parses text.`],
+  [`What does datetime(2026, 8, 5, 9, 30).strftime("%d/%m/%Y") give?`, `05/08/2026`, [`2026/08/05`, `5/8/2026`, `08/05/2026`], `%d is the day, %m the month, %Y the year.`, `from datetime import datetime
+print(datetime(2026, 8, 5, 9, 30).strftime("%d/%m/%Y"))`],
+  [`Which code gives the full month name, like August?`, `%B`, [`%b`, `%m`, `%M`], `%b is the short name and %m is the number.`],
+  [`What does statistics.median([70, 85, 85, 90, 100]) give?`, `85`, [`86`, `90`, `70`], `The middle value of the sorted list is 85.`, `import statistics
+print(statistics.median([70, 85, 85, 90, 100]))`],
+  [`What does Counter("banana").most_common(1) give?`, `[('a', 3)]`, [`[('b', 1)]`, `['a']`, `[('n', 2)]`], `a appears 3 times, which is the most.`, `from collections import Counter
+print(Counter("banana").most_common(1))`],
+  [`What is a package?`, `A folder of modules`, [`A single function`, `A kind of variable`, `A Python comment`], `A package folder holds an __init__.py file and modules.`],
+  [`Which file marks a folder as a package?`, `__init__.py`, [`package.py`, `main.py`, `setup.txt`], `It can be empty.`],
+  [`What does from tools import maths mean?`, `Import the maths module from the tools package`, [`Import tools from maths`, `Import every module in Python`, `Run the tools file`], `from package import module.`],
+  [`What is the value of __name__ when a file is run directly?`, `__main__`, [`main`, `__file__`, `None`], `Python sets it to "__main__" for the file you start.`, `print(__name__)`],
+  [`When does the code under this line run?
 
-def add_item(item, items=[]):
-    items.append(item)
-    return items
-
-add_item("a")
-add_item("b")
-add_item("c")`, `['a'] then ['a', 'b'] then ['a', 'b', 'c']`, [`['a'] then ['b'] then ['c']`, `Three empty lists`, `An error`], `The same default list is shared, so it keeps growing.`],
-  [`What is the safe default for a parameter that should start as an empty list?`, `None, then make the list inside the function`, [`[] written in the definition`, `{}`, `0`], `Use items=None and write: if items is None: items = [].`],
-  [`What does book(author="Ankit", title="Data Tricks") show the benefit of?`, `The order of keyword arguments does not matter`, [`Keyword arguments must be in order`, `Parameters must be strings`, `The function runs faster`], `Named arguments are matched by name, not by position.`],
-  [`Which call is a SyntaxError for this function?
-
-def book(title, author):
-    print(title, "by", author)`, `book(title="Python", "Aman")`, [`book("Python", author="Aman")`, `book(author="Aman", title="Python")`, `book("Python", "Aman")`], `A positional argument cannot follow a keyword argument.`],
-  [`What is args inside the function for this call?
-
-def total(*args):
-    return sum(args)
-
-total(1, 2, 3)`, `The tuple (1, 2, 3)`, [`The list [1, 2, 3]`, `The number 6`, `The dictionary {1, 2, 3}`], `A single star collects extra positional arguments into a tuple.`],
-  [`What is printed?
-
-def total(*args):
-    return sum(args)
-print(total(10, 20, 30, 40))`, `100`, [`10`, `40`, `An error`], `All four arguments are collected and added.`, `def total(*args):
-    return sum(args)
-print(total(10, 20, 30, 40))`],
-  [`What is others for this call?
-
-def show(first, *others):
-    return others
-
-show(1, 2, 3)`, `(2, 3)`, [`(1, 2, 3)`, `[2, 3]`, `2`], `first takes 1 and others collects the rest into a tuple.`, `def show(first, *others):
-    return others
-print(show(1, 2, 3))`],
-  [`What is printed?
-
-def profile(**kwargs):
-    return kwargs
-print(profile(name="Aman", age=20))`, `{'name': 'Aman', 'age': 20}`, [`('Aman', 20)`, `['name', 'age']`, `Nothing, it is an error`], `A double star collects extra keyword arguments into a dictionary.`, `def profile(**kwargs):
-    return kwargs
-print(profile(name="Aman", age=20))`],
-  [`In what order are parameters written in a definition?`, `Normal parameters, then *args, then **kwargs`, [`**kwargs, then *args, then normal parameters`, `*args, then normal parameters, then **kwargs`, `Any order`], `For example def demo(a, b=2, *args, **kwargs).`],
-  [`What is printed?
-
-def demo(a, b=2, *args, **kwargs):
-    return args
-print(demo(1, 5, 6, 7, x=10))`, `(6, 7)`, [`(1, 5, 6, 7)`, `(5, 6, 7)`, `[6, 7]`], `1 goes to a and 5 goes to b, so 6 and 7 are left for args.`, `def demo(a, b=2, *args, **kwargs):
-    return args
-print(demo(1, 5, 6, 7, x=10))`],
-  [`What does the last line do?
-
-def volume(length, width, height):
-    return length * width * height
-
-volume(*[2, 3, 4])`, `Passes 2, 3 and 4 as three arguments`, [`Passes one list argument`, `Gives an error`, `Multiplies the list by itself`], `The star in a call spreads the list into separate arguments.`],
-  [`What does volume(**{"length": 5, "width": 2, "height": 3}) do?`, `Passes the dictionary items as keyword arguments`, [`Passes the dictionary as one argument`, `Gives an error`, `Passes only the keys`], `The double star in a call spreads a dictionary into keyword arguments.`],
-  [`What does print(*[5, 1, 9]) show?`, `5 1 9`, [`[5, 1, 9]`, `(5, 1, 9)`, `5, 1, 9`], `The star spreads the items, so print gets three arguments.`, `print(*[5, 1, 9])`],
-  [`What does {**{"a": 1}, **{"b": 2}} give?`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `[{'a': 1}, {'b': 2}]`, `An error`], `The double stars merge two dictionaries.`, `print({**{"a": 1}, **{"b": 2}})`],
-  [`How can a parameter be made keyword-only?`, `Write it after *args or after a bare *`, [`Write it before the first parameter`, `Give it a default of None`, `Write it in capital letters`], `For example def connect(host, *, port=80).`],
-  [`What error appears for the last line?
-
-def connect(host, *, port=80):
-    print(host, port)
-
-connect("example.com", 443)`, `TypeError`, [`NameError`, `SyntaxError`, `ValueError`], `port can only be given by name, as port=443.`],
-  [`Can a function be stored in a variable?`, `Yes, a function is a value like any other`, [`No, only numbers and strings can`, `Only lambda functions can`, `Only built-in functions can`], `say = shout makes say another name for the same function.`],
-  [`Why do we write apply(shout, "hi") and not apply(shout(), "hi")?`, `shout() would call it right away, but we want to pass the function itself`, [`The brackets are not allowed in a call`, `apply needs a string`, `shout() would return a function`], `Without brackets you pass the function, and with brackets you pass its result.`],
-  [`What is printed?
-
-def apply(func, value):
-    return func(value)
-print(apply(len, "python"))`, `6`, [`python`, `len`, `An error`], `func is len, so func("python") is len("python").`, `def apply(func, value):
-    return func(value)
-print(apply(len, "python"))`],
-  [`What is a lambda?`, `A small nameless function written in one line`, [`A kind of loop`, `A way to import a module`, `A function that cannot take arguments`], `The pattern is lambda parameters: expression.`],
-  [`What does (lambda n: n * n)(6) give?`, `36`, [`6`, `12`, `lambda`], `The lambda squares its argument.`, `print((lambda n: n * n)(6))`],
-  [`What does sorted(["banana", "kiwi", "apple", "fig"], key=len) give?`, `['fig', 'kiwi', 'apple', 'banana']`, [`['apple', 'banana', 'fig', 'kiwi']`, `['banana', 'apple', 'kiwi', 'fig']`, `[3, 4, 5, 6]`], `key=len sorts by the length of each word.`, `print(sorted(["banana", "kiwi", "apple", "fig"], key=len))`],
-  [`What does max(["banana", "kiwi", "fig"], key=len) give?`, `banana`, [`kiwi`, `fig`, `6`], `banana is the longest word.`, `print(max(["banana", "kiwi", "fig"], key=len))`],
-  [`What does sorted(students, key=lambda s: s[1], reverse=True) do for a list of (name, marks) tuples?`, `Sorts by marks, highest first`, [`Sorts by name`, `Sorts by marks, lowest first`, `Reverses the tuples`], `s[1] is the marks and reverse=True puts the biggest first.`],
-  [`What does map(function, items) do?`, `Applies the function to every item`, [`Keeps only some items`, `Sorts the items`, `Adds all the items`], `map gives the result of the function for each item.`],
-  [`What does list(map(lambda n: n * n, [1, 2, 3, 4])) give?`, `[1, 4, 9, 16]`, [`[2, 4, 6, 8]`, `30`, `[1, 2, 3, 4]`], `Each number is squared.`, `print(list(map(lambda n: n * n, [1, 2, 3, 4])))`],
-  [`What does list(map(str, [1, 2, 3])) give?`, `['1', '2', '3']`, [`[1, 2, 3]`, `'123'`, `An error`], `str is applied to every item.`, `print(list(map(str, [1, 2, 3])))`],
-  [`What does list(map(lambda x, y: x + y, [1, 2, 3], [10, 20, 30])) give?`, `[11, 22, 33]`, [`[1, 2, 3, 10, 20, 30]`, `[11, 22]`, `66`], `map takes one item from each list at a time.`, `print(list(map(lambda x, y: x + y, [1, 2, 3], [10, 20, 30])))`],
-  [`Why is list() put around map(...)?`, `map gives a map object, and list() shows its values`, [`map needs it to run`, `list() sorts the result`, `It is only a habit`], `Printing map(...) shows an object, not the values.`],
-  [`What does filter(function, items) do?`, `Keeps only the items for which the function is True`, [`Changes every item`, `Removes the first item`, `Counts the items`], `The function must answer True or False for each item.`],
-  [`What does list(filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6])) give?`, `[2, 4, 6]`, [`[1, 3, 5]`, `[1, 2, 3, 4, 5, 6]`, `[True, False]`], `It keeps the even numbers.`, `print(list(filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6])))`],
-  [`What does list(filter(None, ["apple", "", "kiwi", ""])) give?`, `['apple', 'kiwi']`, [`['', '']`, `['apple', '', 'kiwi', '']`, `An error`], `filter(None, items) removes every falsy item, such as an empty string.`, `print(list(filter(None, ["apple", "", "kiwi", ""])))`],
-  [`What does list(map(lambda n: n * n, filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6]))) give?`, `[4, 16, 36]`, [`[1, 9, 25]`, `[1, 4, 9, 16, 25, 36]`, `[2, 4, 6]`], `It filters the even numbers first, then squares them.`, `print(list(map(lambda n: n * n, filter(lambda n: n % 2 == 0, [1, 2, 3, 4, 5, 6]))))`],
-  [`Which list comprehension does the same as filter(lambda n: n > 3, nums)?`, `[n for n in nums if n > 3]`, [`[n > 3 for n in nums]`, `[n * 3 for n in nums]`, `[n for n in nums] > 3`], `A comprehension with if keeps the matching items.`],
-  [`Which comprehension does the same as map(f, items)?`, `[f(x) for x in items]`, [`[x for x in items if f(x)]`, `[f for x in items]`, `f(items)`], `It applies f to every item.`],
-  [`What does dict(zip(["Aman", "Ankit"], [85, 92])) give?`, `{'Aman': 85, 'Ankit': 92}`, [`[('Aman', 85), ('Ankit', 92)]`, `{'Aman', 'Ankit', 85, 92}`, `An error`], `zip pairs the items up, and dict() turns the pairs into a dictionary.`, `print(dict(zip(["Aman", "Ankit"], [85, 92])))`],
-  [`What does reduce(lambda a, b: a + b, [1, 2, 3, 4, 5]) give?`, `15`, [`5`, `120`, `[1, 2, 3, 4, 5]`], `reduce combines the items into one value, here their sum.`, `from functools import reduce
-print(reduce(lambda a, b: a + b, [1, 2, 3, 4, 5]))`],
-  [`What is printed?
-
-def make_multiplier(n):
-    return lambda x: x * n
-double = make_multiplier(2)
-print(double(5))`, `10`, [`2`, `5`, `7`], `make_multiplier(2) returns a function that multiplies by 2.`, `def make_multiplier(n):
-    return lambda x: x * n
-double = make_multiplier(2)
-print(double(5))`],
-  [`What is wrong with map(f(), items)?`, `f() calls the function, but map needs the function itself`, [`Nothing, it is correct`, `map needs a lambda`, `items must be a tuple`], `Write map(f, items), without brackets after f.`],
+if __name__ == "__main__":
+    main()`, `Only when the file is started directly, not when it is imported`, [`Only when it is imported`, `Never`, `Every time any file runs`], `This keeps test code quiet when imported.`],
+  [`What is pip?`, `The tool that installs Python packages`, [`A Python loop`, `A text editor`, `A kind of variable`], `pip downloads packages from PyPI.`],
+  [`Where do you type pip install commands?`, `In the terminal (Command Prompt or PowerShell)`, [`Inside a Python file`, `In the Try it box`, `In a print statement`], `pip is a command line tool.`],
+  [`Which command installs the requests package?`, `pip install requests`, [`import requests`, `python requests`, `pip get requests`], `pip install name downloads and installs it.`],
+  [`Which command removes a package?`, `pip uninstall name`, [`pip remove name`, `pip delete name`, `pip clear name`], `uninstall is the pip word for removing.`],
+  [`What is a virtual environment for?`, `Giving each project its own private set of packages`, [`Running Python faster`, `Making a website`, `Backing up files`], `Different projects can use different package versions.`],
+  [`What does pip freeze > requirements.txt do?`, `Saves the list of packages and versions to a file`, [`Deletes all packages`, `Stops pip working`, `Installs requirements.txt`], `Others can then run pip install -r requirements.txt.`],
+  [`What error appears for import mathh when no such module exists?`, `ModuleNotFoundError`, [`NameError`, `SyntaxError`, `TypeError`], `Python cannot find a module with that name.`],
+  [`What error appears for sqrt(9) after only import math?`, `NameError`, [`ModuleNotFoundError`, `TypeError`, `ValueError`], `You need math.sqrt(9).`],
+  [`What happens if you name your own file random.py?`, `It hides the real random module and your imports break`, [`Nothing, it is fine`, `Python deletes it`, `It runs faster`], `Never name your files like standard modules.`],
 ]

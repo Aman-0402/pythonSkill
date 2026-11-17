@@ -1,23 +1,20 @@
-// Session 20: Selecting and Filtering
+// Session 20: Data Cleaning
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`What does df["name"] give you?`, `One column, as a Series`, [`One row`, `A DataFrame with one row`, `The column names`], `One pair of brackets gives a Series.`],
-  [`How do you select two columns?`, `df[["name", "maths"]]`, [`df["name", "maths"]`, `df.name.maths`, `df("name", "maths")`], `A list of names inside the brackets gives a DataFrame.`],
-  [`What does loc use to pick rows and columns?`, `Labels`, [`Positions`, `Colours`, `Sizes`], `Remember: l for label.`],
-  [`What does iloc use to pick rows and columns?`, `Positions`, [`Labels`, `Column names`, `Conditions only`], `Remember: i for integer position.`],
-  [`How many rows does df.loc[1:3] give with the default index?`, `3`, [`2`, `4`, `1`], `Label slices include the end.`, `import pandas as pd
-print(len(pd.DataFrame({"a": range(6)}).loc[1:3]))`],
-  [`How many rows does df.iloc[1:3] give?`, `2`, [`3`, `4`, `1`], `Position slices stop before the end.`, `import pandas as pd
-print(len(pd.DataFrame({"a": range(6)}).iloc[1:3]))`],
-  [`Which gives the last row of a table?`, `df.iloc[-1]`, [`df.loc[-1]`, `df[-1]`, `df.last()`], `Negative positions count from the end.`],
-  [`What is a mask in pandas?`, `A column of True and False used to filter rows`, [`A hidden column`, `A chart style`, `A kind of index`], `df[mask] keeps the rows where the mask is True.`],
-  [`Which symbol means AND between two conditions?`, `&`, [`and`, `+`, `&&`], `The word and fails with a Series.`],
-  [`Which symbol means OR between two conditions?`, `|`, [`or`, `||`, `/`], `Put each condition in brackets.`],
-  [`Which symbol reverses a condition?`, `~`, [`!`, `not`, `-`], `~(a) means NOT a.`],
-  [`Why are brackets needed in (df["a"] > 1) & (df["b"] < 5)?`, `Because & is done before > and <`, [`They only make it look neat`, `They make it faster`, `Brackets turn it into a list`], `Without them you get an error.`],
-  [`What is the short way to check for one of several cities?`, `df["city"].isin(["Delhi", "Pune"])`, [`df["city"].among("Delhi", "Pune")`, `df["city"] == ["Delhi", "Pune"]`, `df["city"].contains("Delhi", "Pune")`], `isin replaces many == joined with |.`],
-  [`Does between(75, 90) include 75 and 90?`, `Yes, both ends`, [`No, neither end`, `Only 75`, `Only 90`], `Both ends are included by default.`],
-  [`Which line changes cells safely?`, `df.loc[df["maths"] < 50, "maths"] = 50`, [`df[df["maths"] < 50]["maths"] = 50`, `df.maths < 50 = 50`, `df.change("maths", 50)`], `Chained brackets may change a copy, not the table.`],
-  [`Which function turns numbers stored as text into NaN when they cannot convert?`, `pd.to_numeric(col, errors="coerce")`, [`col.astype(int)`, `col.fillna(0)`, `pd.to_text(col)`], `astype(int) would crash instead.`],
+  [`Why work on df.copy() while cleaning?`, `So the original table stays safe`, [`It makes the code faster`, `It removes blanks`, `pandas requires it`], `If you make a mistake you can start again from df.`],
+  [`What does df.isna().mean() give?`, `The fraction of missing values per column`, [`The average of each column`, `The number of rows`, `The missing rows`], `0.5 means half of the column is missing.`],
+  [`What is usually a good fill value for a text category such as city?`, `The mode, the most common value`, [`The mean`, `Zero`, `The maximum`], `A mean makes no sense for text.`],
+  [`For money data with a few huge values, which fill is usually better?`, `The median`, [`The mean`, `The maximum`, `The first value`], `The median is not pulled by extreme values.`],
+  [`What does ffill() do?`, `Copies the previous value forward`, [`Fills blanks with zero`, `Fills blanks with the mean`, `Removes the blanks`], `It suits ordered data such as daily readings.`],
+  [`What does dropna(subset=["maths"]) remove?`, `Rows where maths is blank`, [`The maths column`, `All blank rows in any column`, `Rows where maths is not blank`], `Other columns may still have blanks.`],
+  [`What does df.duplicated() mark as True?`, `Rows identical to an earlier row`, [`The first copy of each row`, `Rows with blanks`, `Every row`], `The first copy is False.`],
+  [`What does keep="last" do in drop_duplicates?`, `Keeps the last copy of each duplicate`, [`Keeps every copy`, `Removes every copy`, `Keeps only the last row of the table`], `The default is keep="first".`],
+  [`Why clean the text before dropping duplicates?`, `Spaces and capitals can hide real duplicates`, [`It is faster`, `drop_duplicates only works on numbers`, `Text must be sorted first`], `Delhi and " delhi" are different strings until cleaned.`],
+  [`What is the sum of the text values "20", "22" in a pandas column?`, `2022`, [`42`, `An error`, `0`], `Text is joined, not added.`, `import pandas as pd
+print(pd.Series(["20", "22"]).sum())`],
+  [`Why does astype(int) fail on a column with NaN?`, `NaN cannot be stored as a whole number`, [`NaN is text`, `int only works on strings`, `It never fails`], `Fill the blanks first or use astype(float).`],
+  [`What does .str.strip() do?`, `Removes spaces at both ends`, [`Removes all letters`, `Splits the text`, `Changes capitals`], `It does not touch spaces in the middle.`],
+  [`What does expand=True do in str.split?`, `Returns the pieces as separate columns`, [`Makes the text longer`, `Adds more rows`, `Sorts the pieces`], `Without it you get lists.`],
+  [`What does clip(lower=0, upper=100) do?`, `Squeezes values into the range 0 to 100`, [`Removes rows outside the range`, `Rounds the values`, `Counts the values`], `-5 becomes 0 and 120 becomes 100.`],
 ]

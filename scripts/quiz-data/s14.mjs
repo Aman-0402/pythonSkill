@@ -1,134 +1,125 @@
-// Session 14: File Handling
+// Session 14: Exception Handling
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`Why do programs save data in files?`, `Variables vanish when the program ends, but a file keeps the data on the disk`, [`Files make the program run faster`, `Variables cannot hold text`, `Files are needed to use print`], `A file is still there the next time you run the program.`],
-  [`Which function opens a file?`, `open()`, [`file()`, `read()`, `load()`], `open(name, mode) gives back a file object.`],
-  [`What is the default mode of open()?`, `r (read)`, [`w (write)`, `a (append)`, `x (create)`], `If you give no mode, the file is opened for reading.`],
-  [`What does mode "w" do to a file that already has content?`, `It erases the old content`, [`It adds to the end`, `It keeps the old content`, `It gives an error`], `Opening with "w" starts the file empty.`],
-  [`Which mode adds text to the end of a file?`, `a`, [`w`, `r`, `x`], `a means append.`],
-  [`What does mode "x" do?`, `Creates a new file and fails if it already exists`, [`Erases the file`, `Reads the file`, `Appends to the file`], `x is for exclusive creation.`],
-  [`What does the letter b in "rb" mean?`, `Binary file, such as an image`, [`Big file`, `Backup`, `Both read and write`], `Without b the file is treated as text.`],
-  [`What happens when you open a file that does not exist with mode "r"?`, `FileNotFoundError`, [`It is created empty`, `ValueError`, `Nothing`], `Reading needs the file to be there.`],
-  [`Does f.write("Hi") add a new line after Hi?`, `No`, [`Yes`, `Only on Windows`, `Only in append mode`], `Put \\n in the text when you want a new line.`],
-  [`What does t.txt hold after this code?
-
-with open("t.txt", "w") as f:
-    f.write("a")
-    f.write("b")`, `ab`, [`a then b on two lines`, `b`, `An error`], `write adds no newline, so both go on one line.`, `with open("t.txt", "w") as f:
-    f.write("a")
-    f.write("b")
-print(open("t.txt").read())`],
-  [`What does writelines(["x", "y"]) do about new lines?`, `It does not add them, so you must include \\n yourself`, [`It adds a newline after each item`, `It adds a blank line at the end`, `It sorts the items`], `The strings are written exactly as they are.`],
-  [`Why use the with statement for files?`, `It closes the file automatically when the block ends`, [`It makes the file bigger`, `It makes the file read only`, `It is required for print`], `That stops open files being left behind.`],
-  [`What is f.closed after the with block ends?
-
-with open("d.txt", "w") as f:
-    f.write("hi")`, `True`, [`False`, `None`, `An error`], `The file was closed for you.`, `with open("d.txt", "w") as f:
-    f.write("hi")
-print(f.closed)`],
-  [`What does as f do in with open("a.txt") as f?`, `Gives the file object the name f`, [`Copies the file`, `Closes the file`, `Renames the file`], `You use f inside the block.`],
-  [`What does f.read() give?`, `The whole file as one string`, [`The next line only`, `A list of lines`, `The file name`], `read gets everything at once.`],
-  [`What does f.readline() give?`, `The next line, including its newline`, [`The whole file`, `All lines as a list`, `The first word`], `Each call moves to the next line.`],
-  [`What does f.readlines() give?`, `A list of all the lines`, [`One long string`, `A tuple of words`, `The number of lines`], `Each item in the list ends with a newline.`],
+  [`What is an exception?`, `An error that happens while the program is running`, [`A comment in the code`, `A kind of loop`, `A way to import a module`], `If nothing handles it, the program stops.`],
+  [`What error does print(10 / 0) cause?`, `ZeroDivisionError`, [`ValueError`, `TypeError`, `NameError`], `You cannot divide by zero.`],
+  [`Does the line after a crashing line still run if nothing handles the error?`, `No, the program stops`, [`Yes, always`, `Only if it is a print`, `Only the first time`], `An unhandled exception ends the program.`],
+  [`When does a SyntaxError appear?`, `Before the program runs, because Python cannot read the code`, [`Only when the program divides by zero`, `Only when a file is missing`, `Only at the end`], `The code itself is broken.`],
+  [`Can a try block in the same file catch a SyntaxError?`, `No`, [`Yes, always`, `Only with finally`, `Only with raise`], `A SyntaxError happens before the program runs.`],
+  [`Which keyword holds the risky code?`, `try`, [`except`, `finally`, `raise`], `try holds the code that might fail.`],
+  [`Which keyword holds the plan for an error?`, `except`, [`try`, `else`, `assert`], `except runs when the matching error happens.`],
   [`What is printed?
 
-with open("f.txt", "w") as f:
-    f.write("apple\\nbanana\\n")
-with open("f.txt") as f:
-    print(f.readlines())`, `['apple\\n', 'banana\\n']`, [`['apple', 'banana']`, `'apple banana'`, `('apple', 'banana')`], `Each line keeps its newline character.`, `with open("f.txt", "w") as f:
-    f.write("apple\\nbanana\\n")
-with open("f.txt") as f:
-    print(f.readlines())`],
-  [`What does this loop do?
-
-for line in f:
-    print(line)`, `Goes through the file one line at a time`, [`Reads the whole file at once`, `Reads one character at a time`, `Writes lines to the file`], `This works well even for big files.`],
-  [`What does line.strip() remove?`, `The spaces and newline at both ends`, [`All the vowels`, `Only the first letter`, `Every space in the line`], `strip cleans the ends of the text.`],
-  [`What type is everything read from a text file?`, `str`, [`int`, `float`, `list`], `Convert with int() or float() before doing maths.`],
+try:
+    print("A")
+    print(5 / 0)
+    print("B")
+except ZeroDivisionError:
+    print("C")`, `A then C`, [`A then B then C`, `A then B`, `C only`], `B is skipped because the error happens before it.`],
+  [`If no error happens in the try block, what happens to the except block?`, `It is skipped`, [`It runs anyway`, `It runs twice`, `It gives an error`], `except only runs after a matching error.`],
+  [`What does as e give in except ValueError as e?`, `A name for the error object, so you can print its message`, [`The line number`, `The file name`, `A copy of the program`], `Printing e shows Python's own message.`],
   [`What is printed?
 
-with open("m.txt", "w") as f:
-    f.write("70\\n85\\n90\\n")
+try:
+    int("abc")
+except ValueError as e:
+    print(type(e).__name__)`, `ValueError`, [`int`, `str`, `Error`], `It is the name of the error type.`, `try:
+    int("abc")
+except ValueError as e:
+    print(type(e).__name__)`],
+  [`What error does int("abc") cause?`, `ValueError`, [`TypeError`, `NameError`, `KeyError`], `The type is right (text) but the value is not a number.`],
+  [`What error does "5" + 3 cause?`, `TypeError`, [`ValueError`, `SyntaxError`, `NameError`], `You cannot add text and a number.`],
+  [`What error does print(total) cause when total was never made?`, `NameError`, [`TypeError`, `KeyError`, `ValueError`], `The name does not exist.`],
+  [`What error does [1, 2][5] cause?`, `IndexError`, [`KeyError`, `ValueError`, `TypeError`], `The position is out of range.`],
+  [`What error does {"a": 1}["b"] cause?`, `KeyError`, [`IndexError`, `NameError`, `ValueError`], `The key is not in the dictionary.`],
+  [`What error does "hi".push(1) cause?`, `AttributeError`, [`TypeError`, `NameError`, `KeyError`], `A string has no method called push.`],
+  [`What error does open("nope.txt") cause when the file is missing?`, `FileNotFoundError`, [`NameError`, `ValueError`, `ModuleNotFoundError`], `Reading a missing file fails.`],
+  [`What error does import mathh cause?`, `ModuleNotFoundError`, [`NameError`, `ImportantError`, `FileNotFoundError`], `No module has that name.`],
+  [`Which error means the spaces at the start of a line are wrong?`, `IndentationError`, [`SpaceError`, `TabError only`, `NameError`], `Python uses indentation to know the blocks.`],
+  [`In except (ValueError, TypeError):, what do the brackets do?`, `Handle both errors with one plan`, [`Handle only the first error`, `Make an error`, `Skip the try block`], `A tuple of error names matches any of them.`],
+  [`How does Python pick among several except blocks?`, `It runs the first one that matches, checking in order`, [`It runs all of them`, `It runs the last one`, `It picks at random`], `Put the specific error before the general one.`],
+  [`What is printed?
+
+try:
+    int("x")
+except Exception:
+    print("general")
+except ValueError:
+    print("specific")`, `general`, [`specific`, `general then specific`, `Nothing`], `Exception matches first, so ValueError can never run.`, `try:
+    int("x")
+except Exception:
+    print("general")
+except ValueError:
+    print("specific")`],
+  [`When does the else block of a try statement run?`, `Only when there was no error`, [`Only when there was an error`, `Always`, `Never`], `else holds the code for when all went well.`],
+  [`When does the finally block run?`, `Always, whether there was an error or not`, [`Only when there is an error`, `Only when there is no error`, `Never`], `It is for clean-up.`],
+  [`What is printed?
+
+try:
+    print(10 / 2)
+except ZeroDivisionError:
+    print("error")
+else:
+    print("ok")
+finally:
+    print("done")`, `5.0 then ok then done`, [`5.0 then done`, `error then done`, `ok then done`], `No error, so else runs, and finally always runs.`],
+  [`What is printed?
+
+try:
+    print(10 / 0)
+except ZeroDivisionError:
+    print("error")
+else:
+    print("ok")
+finally:
+    print("done")`, `error then done`, [`error then ok then done`, `ok then done`, `done only`], `else is skipped after an error, and finally still runs.`],
+  [`What does a function print when try returns a value and finally has a print?`, `The finally print runs before the value comes back`, [`The finally print is skipped`, `Only the return value is shown`, `An error appears`], `finally runs even when try has a return.`],
+  [`What is the main job of finally?`, `Clean-up such as closing a file`, [`Catching errors`, `Making loops`, `Importing modules`], `It runs no matter what.`],
+  [`What does the raise keyword do?`, `Makes an exception on purpose`, [`Catches an exception`, `Ends the program silently`, `Repeats the try block`], `Use it when your code finds something wrong.`],
+  [`Which error fits raise when a function gets age -3?`, `ValueError`, [`NameError`, `SyntaxError`, `IndexError`], `The type is right but the value is not acceptable.`],
+  [`Which part catches the error: the function that raises it or the code that calls it?`, `The code that calls it decides and catches`, [`The function that raises it`, `Python catches it by itself`, `Nobody can catch it`], `The function raises, the caller handles.`],
+  [`What does a custom exception class inherit from?`, `Exception`, [`int`, `str`, `print`], `class MyError(Exception): pass makes a new error type.`],
+  [`What is wrong with a bare except: that has no error name?`, `It catches every error, even your own typing mistakes`, [`It is a syntax error`, `It only catches ValueError`, `It runs faster`], `You never learn what really went wrong.`],
+  [`What is better than a bare except?`, `except Exception as e, then print or log e`, [`except: pass`, `Removing try`, `A longer try block`], `At least you see the error message.`],
+  [`Why is except: pass a bad habit?`, `It hides bugs without any message`, [`It makes the file bigger`, `It stops the program`, `It is not allowed`], `The error is thrown away without a word.`],
+  [`How big should a try block be?`, `Small, only the line that can fail`, [`As big as the whole program`, `Always 10 lines`, `It does not matter`], `A small block shows exactly what failed.`],
+  [`Which line of a traceback should you read first?`, `The last line`, [`The first line`, `The middle line`, `Any line`], `It names the error and gives the reason.`],
+  [`What do the File ... line N lines of a traceback show?`, `The chain of calls that led to the error`, [`The list of imported modules`, `The variables`, `The output so far`], `The last step is where it crashed.`],
+  [`What does print(type(x)) help you find?`, `Which type a value really has, which solves many TypeError problems`, [`The size of x`, `The name of the file`, `The line number`], `Text and numbers are easy to mix up.`],
+  [`What is print debugging?`, `Printing values to see what the program is doing`, [`Deleting all print lines`, `Using only the debugger`, `Printing the whole file`], `Remove the debug prints when you are done.`],
+  [`What is an off by one error?`, `Counting one step too many or too few, such as forgetting that range(5) stops at 4`, [`Using one line too many`, `Writing one extra space`, `Missing one import`], `Check your start and end values.`],
+  [`What does assert square(5) == 25 do when it is true?`, `Nothing, the program carries on`, [`Prints True`, `Stops the program`, `Raises an error`], `assert only complains when the condition is false.`],
+  [`What error does a failing assert raise?`, `AssertionError`, [`ValueError`, `TypeError`, `TestError`], `You can add a message after a comma.`],
+  [`When should you use try and except instead of assert?`, `For problems that can happen in real use, like bad input or a missing file`, [`To test your own code`, `Never`, `Only inside loops`], `assert is for checking your own code.`],
+  [`What is printed?
+
+def to_number(text):
+    try:
+        return float(text)
+    except ValueError:
+        return None
+print(to_number("hello"))`, `None`, [`0`, `An error`, `hello`], `The except block returns None instead of crashing.`, `def to_number(text):
+    try:
+        return float(text)
+    except ValueError:
+        return None
+print(to_number("hello"))`],
+  [`What is printed?
+
 total = 0
-with open("m.txt") as f:
-    for line in f:
+for line in ["80", "abc", "95"]:
+    try:
         total += int(line)
-print(total)`, `245`, [`7085`, `0`, `An error`], `int() turns each line into a number.`, `with open("m.txt", "w") as f:
-    f.write("70\\n85\\n90\\n")
-total = 0
-with open("m.txt") as f:
-    for line in f:
+    except ValueError:
+        pass
+print(total)`, `175`, [`0`, `An error`, `80`], `The abc line is skipped and the loop carries on.`, `total = 0
+for line in ["80", "abc", "95"]:
+    try:
         total += int(line)
+    except ValueError:
+        pass
 print(total)`],
-  [`What is printed?
-
-with open("p.txt", "w") as f:
-    f.write("abc")
-with open("p.txt") as f:
-    f.read()
-    print(repr(f.read()))`, `''`, [`'abc'`, `None`, `An error`], `After reading, the position is at the end of the file.`, `with open("p.txt", "w") as f:
-    f.write("abc")
-with open("p.txt") as f:
-    f.read()
-    print(repr(f.read()))`],
-  [`What does f.seek(0) do?`, `Jumps back to the start of the file`, [`Closes the file`, `Deletes the first line`, `Reads the first line`], `Then you can read the file again.`],
-  [`What does f.tell() give?`, `The current position in the file`, [`The size of the file`, `The number of lines`, `The file name`], `It is how far you are into the file.`],
-  [`What is in w.txt after this code?
-
-with open("w.txt", "w") as f:
-    f.write("first")
-with open("w.txt", "w") as f:
-    f.write("second")`, `second`, [`first and second`, `first`, `Nothing`], `The second open with w erased the file.`, `with open("w.txt", "w") as f:
-    f.write("first")
-with open("w.txt", "w") as f:
-    f.write("second")
-print(open("w.txt").read())`],
-  [`What is in log.txt after this code?
-
-with open("log.txt", "w") as f:
-    f.write("Start\\n")
-with open("log.txt", "a") as f:
-    f.write("Step\\n")`, `Start then Step`, [`Only Step`, `Only Start`, `Nothing`], `Append keeps the old content and adds to the end.`],
-  [`Which line counts the words in a line of text?`, `len(line.split())`, [`len(line)`, `line.count()`, `line.words()`], `split gives a list of words, and len counts them.`],
-  [`What does enumerate(f, start=1) give while reading a file?`, `Line numbers starting at 1 with each line`, [`Only the line numbers`, `The words in each line`, `The file size`], `It pairs a counter with each line.`],
-  [`Can one with statement open two files?`, `Yes, separate them with a comma`, [`No, only one`, `Only if both are text`, `Only in append mode`], `For example with open(a) as src, open(b, "w") as dst.`],
-  [`What does os.path.exists("data.txt") return when the file is there?`, `True`, [`False`, `None`, `The file content`], `It answers True or False.`],
-  [`Which function deletes a file?`, `os.remove()`, [`os.delete()`, `os.erase()`, `os.clear()`], `os.remove(path) deletes the file.`],
-  [`What does os.listdir() give?`, `The names of the files in the folder`, [`The size of the folder`, `The Python version`, `The file content`], `It is a list of names.`],
-  [`Which path style is safest on Windows?`, `Forward slashes, like C:/Users/Aman/marks.txt`, [`C:\\new\\table.txt`, `C:|Users|Aman`, `C;Users;Aman`], `Backslashes can turn into special characters such as \\n and \\t.`],
-  [`What does Path("quick.txt").suffix give?`, `.txt`, [`quick`, `txt`, `quick.txt`], `suffix is the file extension with its dot.`, `from pathlib import Path
-print(Path("quick.txt").suffix)`],
-  [`What does Path.read_text() do?`, `Reads a whole file as a string in one call`, [`Reads one line`, `Deletes the file`, `Writes text`], `write_text and read_text are one-line helpers.`],
-  [`Why add encoding="utf-8" when opening a text file?`, `So names with special letters are saved safely on every computer`, [`To make the file smaller`, `To make it read only`, `To make it faster`], `utf-8 handles letters like e with two dots and Hindi text.`],
-  [`What does CSV stand for?`, `Comma separated values`, [`Computer stored values`, `Column sorted view`, `Copy save verify`], `Each line is a row and commas separate the columns.`],
-  [`Why open a CSV file with newline=""?`, `To stop blank lines appearing between rows on Windows`, [`To sort the rows`, `To make the file read only`, `To add a header`], `Always use it with the csv module.`],
-  [`What does writer.writerows(list_of_lists) do?`, `Writes many rows at once`, [`Writes only the first row`, `Reads many rows`, `Deletes the rows`], `writerow writes one row.`],
-  [`What is printed?
-
-import csv
-with open("r.csv", "w", newline="") as f:
-    csv.writer(f).writerows([["a", 85]])
-with open("r.csv", newline="") as f:
-    print(next(csv.reader(f)))`, `['a', '85']`, [`['a', 85]`, `{'a': 85}`, `('a', 85)`], `Each row is a list of strings, so the 85 is text.`, `import csv
-with open("r.csv", "w", newline="") as f:
-    csv.writer(f).writerows([["a", 85]])
-with open("r.csv", newline="") as f:
-    print(next(csv.reader(f)))`],
-  [`What does next(reader) do at the start of a CSV loop?`, `Takes off the header row`, [`Closes the file`, `Reads the last row`, `Sorts the rows`], `The loop then starts at the data.`],
-  [`What does csv.DictReader give for each row?`, `A dictionary using the header names as keys`, [`A list of numbers`, `A set`, `A string`], `You can write row["name"] instead of counting columns.`],
-  [`What does DictWriter's writeheader() write?`, `The first line with the column names`, [`The last row`, `A blank line`, `The file name`], `The names come from fieldnames.`],
-  [`What error appears for f.write(5) on a text file?`, `TypeError`, [`ValueError`, `NameError`, `FileNotFoundError`], `write needs a string, so write str(5).`],
-  [`Why might all your text end up on one line?`, `You forgot to put \\n at the end of each line`, [`The file is too big`, `You used mode r`, `Python hides new lines`], `write does not add a newline for you.`],
-  [`What is printed?
-
-import os
-with open("s.txt", "w") as f:
-    f.write("hi")
-print(os.path.getsize("s.txt"))`, `2`, [`1`, `3`, `0`], `os.path.getsize gives the size in bytes, and hi is 2 characters.`, `import os
-with open("s.txt", "w") as f:
-    f.write("hi")
-print(os.path.getsize("s.txt"))`],
-  [`What does a plain file name like "data.txt" mean?`, `A file in the current folder the program runs from`, [`A file on the desktop`, `A file on the internet`, `A file in the Python folder`], `It is a relative path.`],
-  [`What is the best habit when you open a file?`, `Use with so the file always gets closed`, [`Never close it`, `Always use mode w`, `Open it twice`], `with closes the file even if the program crashes.`],
+  [`What does the loop with try, continue and break do for safe number input?`, `Keeps asking until the input is valid`, [`Asks exactly once`, `Asks three times`, `Never asks`], `break leaves the loop only when the input is good.`],
+  [`Why use try for a missing file instead of checking first?`, `It handles the missing file and other problems too`, [`It is shorter in every case`, `Checking never works`, `try makes the file`], `try covers errors you did not think of.`],
 ]

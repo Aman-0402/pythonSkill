@@ -1,21 +1,21 @@
-// Session 24: Matplotlib
+// Session 24: Seaborn
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`How do we normally import Matplotlib's drawing module?`, `import matplotlib.pyplot as plt`, [`import matplotlib as plot`, `import plt`, `from pyplot import matplotlib`], `plt is the common short name.`],
-  [`Which chart suits change over time?`, `Line`, [`Pie`, `Histogram`, `Box plot`], `Lines show a trend.`],
-  [`Which chart suits comparing categories?`, `Bar`, [`Line`, `Scatter`, `Histogram`], `One bar per category.`],
-  [`What does plt.show() do on your own computer?`, `Displays the chart`, [`Saves the chart`, `Deletes the chart`, `Adds a title`], `Everything before it is drawing on the page.`],
-  [`Which pair names the axes?`, `plt.xlabel and plt.ylabel`, [`plt.title and plt.legend`, `plt.grid and plt.show`, `plt.xaxis and plt.yaxis`], `Always add them, with units.`],
-  [`What must you add for plt.legend() to show names?`, `label= in each plot call`, [`title= in plt.show`, `name= in plt.legend only`, `Nothing at all`], `The legend reads the labels.`],
-  [`What does the format string "ro--" mean?`, `Red, circle markers, dashed line`, [`Round orange line`, `Rows and columns`, `Red outline only`], `Colour, marker, line style.`],
-  [`Why should bars start at 0?`, `Otherwise small differences look huge`, [`Matplotlib requires it`, `It makes them load faster`, `Bars cannot be negative`], `Use plt.ylim(0, 100) to fix the range.`],
-  [`Which call makes horizontal bars?`, `plt.barh`, [`plt.hbar`, `plt.bar(side=True)`, `plt.flatbar`], `It is easier to read with long names.`],
-  [`What does autopct="%1.1f%%" do in a pie?`, `Prints each slice's percentage`, [`Rotates the pie`, `Colours the slices`, `Makes the pie round`], `One decimal place and a percent sign.`],
-  [`When is a pie a poor choice?`, `With many categories`, [`With 3 categories`, `When parts add up to a whole`, `When you have labels`], `Use a bar chart instead.`],
-  [`What does bins=5 do in plt.hist?`, `Cuts the range into 5 pieces`, [`Draws 5 charts`, `Keeps 5 values`, `Makes the bars 5 wide`], `Each bar counts the values in one piece.`],
-  [`How does a histogram differ from a bar chart?`, `It shows how one number is spread`, [`It has no bars`, `It compares categories`, `It only shows time`], `A bar chart compares categories.`],
-  [`What does plt.subplots(1, 2) make?`, `One row and two columns of charts`, [`Two rows and one column`, `Twelve charts`, `One chart with two lines`], `axes[0] and axes[1] are the two charts.`],
-  [`On an ax object, which sets the title?`, `ax.set_title("...")`, [`ax.title("...")`, `ax.plt_title("...")`, `ax.head("...")`], `Likewise set_xlabel and set_ylabel.`],
-  [`When should you call savefig on your own computer?`, `Before plt.show()`, [`After plt.show()`, `Before plotting`, `Only inside a loop`], `After show you may save a blank picture.`],
+  [`What is Seaborn built on top of?`, `Matplotlib`, [`Excel`, `SQL`, `Django`], `So plt.title and plt.savefig still work.`],
+  [`How do we normally import Seaborn?`, `import seaborn as sns`, [`import seaborn as sb`, `import sea as sns`, `from seaborn import plt`], `sns is the convention.`],
+  [`What does sns.set_theme() do?`, `Gives charts a cleaner look`, [`Draws a chart`, `Loads the data`, `Saves the chart`], `Call it once at the top.`],
+  [`How do you give Seaborn its data?`, `data=df with column names as text`, [`A list of lists only`, `A file name`, `A dictionary of charts`], `For example x="marks".`],
+  [`What does the line inside a box plot show?`, `The median`, [`The mean`, `The maximum`, `The minimum`], `It is the middle value.`],
+  [`What does the box itself show?`, `The middle half of the values`, [`All the values`, `Only the outliers`, `The average`], `From the 25% mark to the 75% mark.`],
+  [`What are the dots beyond the whiskers?`, `Outliers`, [`The median`, `Missing values`, `Errors in the chart`], `Unusually high or low values.`],
+  [`What does hue="city" do?`, `Colours the marks by city`, [`Sorts by city`, `Filters to one city`, `Removes the city`], `A legend is added as well.`],
+  [`What does sns.regplot add to a scatter plot?`, `A best-fit line`, [`A title`, `A grid`, `A second chart`], `It makes the trend easy to see.`],
+  [`What range can a correlation take?`, `-1 to +1`, [`0 to 100`, `0 to 1`, `Any number`], `0 means no straight-line link.`],
+  [`Days absent and marks show -0.7. What does that mean?`, `More absences go with lower marks`, [`More absences cause higher marks`, `There is no link`, `The data is wrong`], `A negative correlation means one rises as the other falls.`],
+  [`What is always on the diagonal of a correlation table?`, `1`, [`0`, `-1`, `The mean`], `A column compared with itself.`],
+  [`Which option writes the numbers on a heatmap?`, `annot=True`, [`numbers=True`, `text=True`, `show=True`], `fmt=".2f" sets the decimals.`],
+  [`Why is df.corr(numeric_only=True) useful?`, `It skips text columns`, [`It rounds the answers`, `It sorts the table`, `It removes blanks`], `Newer pandas fails on text otherwise.`],
+  [`What does sns.countplot need?`, `Only a category column`, [`A number column`, `Two number columns`, `A correlation table`], `It does the counting for you.`],
+  [`What does correlation prove about cause?`, `Nothing by itself`, [`That one causes the other`, `That the data is random`, `That the chart is right`], `Two things moving together does not prove cause.`],
 ]

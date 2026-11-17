@@ -1,4 +1,4 @@
-// Session 6: Loop Practice
+// Session 6: Lists
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 // runs the code and prints everything it printed on one line, so a multi-line output can be checked as one answer
@@ -9,145 +9,174 @@ ${code.split('\n').map((l) => '    ' + l).join('\n')}
 print(" ".join(buf.getvalue().split()))`
 
 export default [
-  [`In a nested loop, how often does the inner loop run for each round of the outer loop?`, `From start to finish, every time`, [`Only once`, `Only in the first round`, `Never`], `For every round of the outer loop, the inner loop runs completely.`],
-  [`How many lines are printed?
+  [`What is a list in Python?`, `An ordered collection of items inside square brackets`, [`A single number with decimals`, `A block of text inside quotes`, `A loop that repeats`], `One variable can hold many values in a list.`],
+  [`Which of these is a list?`, `[10, 20, 30]`, [`(10, 20, 30)`, `"10, 20, 30"`, `{10 20 30}`], `Lists are written with square brackets, with commas between the items.`],
+  [`Which statements about lists are true?`, `They are ordered, they can hold mixed types, and they can be changed`, [`They cannot hold text`, `They cannot be changed after creation`, `Every item must have a different value`, `They can only hold numbers`], `Lists are ordered, allow duplicates and mixed types, and are mutable.`],
+  [`What does len([10, 20, 30]) give?`, `3`, [`2`, `30`, `60`], `len() gives the number of items.`, `print(len([10, 20, 30]))`],
+  [`What does list("Python") give?`, `['P', 'y', 't', 'h', 'o', 'n']`, [`['Python']`, `"Python"`, `['P', 'y', 't', 'h', 'o']`], `list() turns the characters of a string into separate items.`, `print(list("Python"))`],
+  [`What is the index of the first item in a list?`, `0`, [`1`, `-1`, `It depends on the list`], `Indexing starts from 0, like strings.`],
+  [`What does fruits[-1] give?
 
-for i in range(1, 3):
-    for j in range(1, 4):
-        print(i, j)`, `6`, [`3`, `5`, `9`], `2 outer rounds times 3 inner rounds is 6.`, `count = 0
-for i in range(1, 3):
-    for j in range(1, 4):
-        count += 1
-print(count)`],
-  [`In a pattern program, what does the outer loop usually control?`, `The rows`, [`The columns only`, `The colours`, `The file name`], `The outer loop counts the rows, and the inner part prints what is inside each row.`],
-  [`What does print("*", end="") do?`, `Prints a star and stays on the same line`, [`Prints a star and starts a new line`, `Prints nothing`, `Prints the word end`], `end="" removes the new line that print normally adds.`],
-  [`Why is an empty print() used after the inner loop in a star rectangle?`, `To move to a new line after each row`, [`To print a blank star`, `To stop the program`, `To start a new loop`], `Without it the whole pattern would be on one line.`],
+fruits = ["apple", "banana", "mango", "kiwi"]`, `kiwi`, [`apple`, `mango`, `An error`], `-1 is the last item.`, `fruits = ["apple", "banana", "mango", "kiwi"]
+print(fruits[-1])`],
+  [`What does fruits[2] give?
+
+fruits = ["apple", "banana", "mango", "kiwi"]`, `mango`, [`banana`, `kiwi`, `apple`], `Index 0 is apple, 1 is banana and 2 is mango.`, `fruits = ["apple", "banana", "mango", "kiwi"]
+print(fruits[2])`],
+  [`What error appears for fruits[4] when the list has 4 items?`, `IndexError`, [`TypeError`, `ValueError`, `NameError`], `The valid indexes are 0 to 3.`],
+  [`Lists are mutable. Which line proves it?`, `fruits[1] = "orange"`, [`s[0] = "J" on a string`, `len(fruits)`, `print(fruits)`], `You can replace an item by assigning to its index. Strings cannot be changed this way.`],
+  [`What does nums[1:4] give?
+
+nums = [10, 20, 30, 40, 50, 60]`, `[20, 30, 40]`, [`[10, 20, 30, 40]`, `[20, 30, 40, 50]`, `[10, 20, 30]`], `The stop index is not included.`, `nums = [10, 20, 30, 40, 50, 60]
+print(nums[1:4])`],
+  [`What does nums[::-1] give?
+
+nums = [10, 20, 30]`, `[30, 20, 10]`, [`[10, 20, 30]`, `[30]`, `[20, 10]`], `A step of -1 reverses the list.`, `nums = [10, 20, 30]
+print(nums[::-1])`],
+  [`What does nums[-2:] give?
+
+nums = [10, 20, 30, 40, 50, 60]`, `[50, 60]`, [`[10, 20]`, `[60]`, `[40, 50, 60]`], `-2 means the second item from the end, and the missing stop means to the end.`, `nums = [10, 20, 30, 40, 50, 60]
+print(nums[-2:])`],
+  [`What does nums[:] do?`, `Makes a copy of the whole list`, [`Deletes the list`, `Reverses the list`, `Gives an error`], `A slice gives a new list, so nums[:] is a copy.`],
   [`What is printed?
 
-for row in range(3):
-    for col in range(5):
-        print("*", end="")
-    print()`, `***** ***** *****`, [`*****`, `* * * * *`, `*** ***`], `It prints a rectangle of 3 rows with 5 stars each.`, flat(`for row in range(3):
-    for col in range(5):
-        print("*", end="")
-    print()`)],
-  [`How many stars are printed in the last row?
-
-for i in range(1, 6):
-    print("*" * i)`, `5`, [`6`, `1`, `4`], `Row i has i stars, and the last value of i is 5.`, `for i in range(1, 6):
-    row = "*" * i
-print(len(row))`],
-  [`Which loop prints an inverted triangle that starts with 5 stars and ends with 1?`, `for i in range(5, 0, -1): print("*" * i)`, [`for i in range(1, 6): print("*" * i)`, `for i in range(5): print("*" * i)`, `for i in range(0, 5, -1): print("*" * i)`], `Counting down from 5 to 1 makes the rows shrink.`],
+nums = [10, 20, 30, 40, 50]
+nums[1:3] = [21, 31]
+print(nums)`, `[10, 21, 31, 40, 50]`, [`[10, 21, 31, 30, 40, 50]`, `[21, 31]`, `[10, 20, 21, 31, 40, 50]`], `Assigning to a slice replaces those items.`, `nums = [10, 20, 30, 40, 50]
+nums[1:3] = [21, 31]
+print(nums)`],
+  [`Which method adds an item at the end of a list?`, `append()`, [`insert()`, `add()`, `push()`], `append(x) adds x at the end.`],
+  [`What does fruits.insert(1, "kiwi") do?`, `Adds kiwi at position 1`, [`Adds kiwi at the end`, `Replaces the item at position 1`, `Removes kiwi`], `insert(i, x) puts x at position i and moves the rest along.`],
   [`What is printed?
 
-for i in range(1, 4):
-    print(str(i) * i)`, `1 22 333`, [`1 2 3`, `1 12 123`, `111 222 333`], `Row i repeats the text of i, i times.`, flat(`for i in range(1, 4):
-    print(str(i) * i)`)],
+fruits = ["apple", "banana"]
+fruits.extend(["grapes", "orange"])
+print(fruits)`, `['apple', 'banana', 'grapes', 'orange']`, [`['apple', 'banana', ['grapes', 'orange']]`, `['grapes', 'orange']`, `['apple', 'grapes', 'banana', 'orange']`], `extend() adds every item of another list at the end.`, `fruits = ["apple", "banana"]
+fruits.extend(["grapes", "orange"])
+print(fruits)`],
+  [`What is the difference between a and b after this code?
+
+a = [1, 2]
+a.append([3, 4])
+
+b = [1, 2]
+b.extend([3, 4])`, `append gives [1, 2, [3, 4]] and extend gives [1, 2, 3, 4]`, [`Both give [1, 2, 3, 4]`, `append gives [1, 2, 3, 4] and extend gives [1, 2, [3, 4]]`, `Both give [1, 2, [3, 4]]`], `append adds one item, which here is a list. extend adds each item.`, `a = [1, 2]
+a.append([3, 4])
+b = [1, 2]
+b.extend([3, 4])
+print("append gives", a, "and extend gives", b)`],
   [`What is printed?
 
-for i in range(1, 4):
-    for j in range(1, i + 1):
-        print(j, end=" ")
-    print()`, `1 1 2 1 2 3`, [`1 2 3 1 2 3 1 2 3`, `1 1 1 2 2 2`, `1 2 3`], `Row i prints the numbers from 1 to i.`, flat(`for i in range(1, 4):
-    for j in range(1, i + 1):
-        print(j, end=" ")
-    print()`)],
-  [`How many spaces come before the star in the first row?
-
-n = 4
-for i in range(1, n + 1):
-    print(" " * (n - i) + "*" * (2 * i - 1))`, `3`, [`4`, `0`, `1`], `The first row needs n - i spaces: 4 - 1 is 3.`, `n = 4
-i = 1
-print(n - i)`],
-  [`In a pyramid, how many stars are in row i?`, `2 * i - 1`, [`i`, `2 * i`, `i * i`], `The rows have 1, 3, 5, 7 ... stars, which are the odd numbers.`],
-  [`How many stars are in the last row?
-
-n = 4
-for i in range(1, n + 1):
-    print(" " * (n - i) + "*" * (2 * i - 1))`, `7`, [`8`, `4`, `5`], `2 * 4 - 1 is 7.`, `i = 4
-print(len("*" * (2 * i - 1)))`],
-  [`What is the factorial of 5?`, `120`, [`25`, `15`, `100`], `5 x 4 x 3 x 2 x 1 is 120.`, `fact = 1
-for i in range(1, 6):
-    fact *= i
-print(fact)`],
-  [`What is the factorial of 0, by definition?`, `1`, [`0`, `Undefined`, `-1`], `0! = 1 by definition.`],
-  [`Why must the variable fact start at 1 and not 0 in a factorial program?`, `Because anything multiplied by 0 stays 0`, [`Because 1 is faster than 0`, `Because loops cannot start at 0`, `Because fact is a keyword`], `The product starts from 1 so the multiplication works.`],
-  [`In a program that works out several factorials with a loop inside a loop, where should fact = 1 be written?`, `Inside the outer loop, before the inner loop`, [`Before the outer loop`, `After the outer loop`, `Inside the inner loop after the multiplication`], `It must be reset for every number, or the values keep growing across rounds.`],
-  [`What is the factorial of 6?`, `720`, [`120`, `360`, `5040`], `6! = 6 x 120 = 720.`, `fact = 1
-for i in range(1, 7):
-    fact *= i
-print(fact)`],
-  [`Which of these is a prime number?`, `29`, [`27`, `21`, `25`], `29 has no divisors other than 1 and itself. 27, 21 and 25 are divisible by 3, 3 and 5.`],
-  [`Is 1 a prime number?`, `No`, [`Yes`, `Only in Python`, `It depends on the number system`], `A prime number must be greater than 1.`],
-  [`Which number is the only even prime number?`, `2`, [`4`, `0`, `6`], `Every other even number is divisible by 2.`],
-  [`In a prime check, why is break used when a divisor is found?`, `One divisor is enough to know the number is not prime`, [`To make the loop longer`, `To print the number`, `To start the loop again`], `There is no need to keep checking after the first divisor.`],
-  [`In the prime program, what does the flag is_prime = True and then is_prime = False do?`, `It remembers the result of the search for a divisor`, [`It prints the answer`, `It stops the loop`, `It converts the number to text`], `The flag starts True and flips to False if a divisor is found.`],
-  [`Up to which value is it enough to check divisors when testing if n is prime?`, `The square root of n`, [`n divided by 2 only`, `n multiplied by 2`, `n squared`], `A divisor can only be as large as the square root of n, so the loop can stop there.`],
-  [`How many prime numbers are there from 1 to 30?`, `10`, [`9`, `11`, `12`], `They are 2, 3, 5, 7, 11, 13, 17, 19, 23 and 29.`, `count = 0
-for n in range(2, 31):
-    if all(n % i != 0 for i in range(2, n)):
-        count += 1
-print(count)`],
+nums = [10, 20, 30, 20, 40]
+nums.remove(20)
+print(nums)`, `[10, 30, 20, 40]`, [`[10, 30, 40]`, `[10, 20, 30, 40]`, `[10, 20, 30, 20]`], `remove(x) removes only the first x.`, `nums = [10, 20, 30, 20, 40]
+nums.remove(20)
+print(nums)`],
+  [`What does pop() do with no number?`, `Removes and returns the last item`, [`Removes and returns the first item`, `Removes every item`, `Returns None and changes nothing`], `pop(i) takes the item at position i instead.`],
   [`What is printed?
 
-a, b = 0, 1
-for _ in range(10):
-    print(a, end=" ")
-    a, b = b, a + b`, `0 1 1 2 3 5 8 13 21 34`, [`1 2 3 4 5 6 7 8 9 10`, `0 1 2 3 5 8 13 21 34 55`, `1 1 2 4 8 16 32 64 128 256`], `Each number is the sum of the two before it.`, flat(`a, b = 0, 1
-for _ in range(10):
-    print(a, end=" ")
-    a, b = b, a + b`)],
-  [`In the Fibonacci program, what does a, b = b, a + b do?`, `Updates both values at once`, [`Swaps a and b only`, `Adds a and b to a list`, `Stops the loop`], `The next term becomes b and the new b is the sum, so no third variable is needed.`],
-  [`In this loop, what is the underscore?
+nums = [10, 30, 20, 40]
+last = nums.pop()
+print(last)`, `40`, [`10`, `20`, `[10, 30, 20]`], `pop() returns the item it removes.`, `nums = [10, 30, 20, 40]
+last = nums.pop()
+print(last)`],
+  [`What does nums.clear() do?`, `Removes every item from the list`, [`Removes only the last item`, `Deletes the variable nums`, `Sorts the list`], `The list stays, but it becomes empty.`],
+  [`What error does the second line cause?
 
-for _ in range(10):
-    print("Hi")`, `A loop variable that we do not use`, [`A keyword`, `A string`, `An error`], `_ is a common name for a value you do not need.`],
-  [`Which loop is the better choice for printing exactly 10 Fibonacci terms?`, `A for loop with range(10)`, [`A while loop with no limit`, `An if statement`, `A comment`], `You know the number of terms in advance.`],
+nums = [1, 2, 3]
+nums.remove(10)`, `ValueError`, [`IndexError`, `TypeError`, `KeyError`], `You can check with 10 in nums before removing.`],
+  [`What does colors.index("blue") give?
+
+colors = ["red", "green", "blue", "green"]`, `2`, [`3`, `1`, `-1`], `index() gives the position of the first match.`, `colors = ["red", "green", "blue", "green"]
+print(colors.index("blue"))`],
+  [`What does colors.count("green") give?
+
+colors = ["red", "green", "blue", "green"]`, `2`, [`1`, `3`, `4`], `count() gives how many times the item appears.`, `colors = ["red", "green", "blue", "green"]
+print(colors.count("green"))`],
+  [`What does "pink" in colors give?
+
+colors = ["red", "green", "blue"]`, `False`, [`True`, `None`, `An error`], `in checks whether a value is present in the list.`, `colors = ["red", "green", "blue"]
+print("pink" in colors)`],
   [`What is printed?
 
-n = 1221
-rev = 0
-while n > 0:
-    rev = rev * 10 + n % 10
-    n //= 10
-print(rev)`, `1221`, [`1212`, `2112`, `1122`], `1221 reads the same forwards and backwards, so it is a palindrome number.`, `n = 1221
-rev = 0
-while n > 0:
-    rev = rev * 10 + n % 10
-    n //= 10
-print(rev)`],
+nums = [5, 2, 9, 1]
+nums.sort(reverse=True)
+print(nums)`, `[9, 5, 2, 1]`, [`[1, 2, 5, 9]`, `[5, 2, 9, 1]`, `[1, 9, 2, 5]`], `reverse=True sorts from the biggest to the smallest.`, `nums = [5, 2, 9, 1]
+nums.sort(reverse=True)
+print(nums)`],
+  [`What is the difference between sort() and sorted()?`, `sort() changes the list, sorted() gives a new sorted list`, [`They are exactly the same`, `sort() gives a new list, sorted() changes the list`, `sorted() only works on strings`], `sorted() leaves the original list alone.`],
   [`What is printed?
 
-n = 123
-rev = 0
-while n > 0:
-    rev = rev * 10 + n % 10
-    n //= 10
-print(rev)`, `321`, [`123`, `132`, `213`], `The digits are taken from the end one by one.`, `n = 123
-rev = 0
-while n > 0:
-    rev = rev * 10 + n % 10
-    n //= 10
-print(rev)`],
-  [`What is a palindrome number?`, `A number that reads the same forwards and backwards`, [`A number with only even digits`, `A number divisible by itself`, `A number with 3 digits`], `For example 121 and 1221.`],
+marks = [72, 85, 60, 91]
+print(len(marks), min(marks), max(marks), sum(marks))`, `4 60 91 308`, [`4 72 91 308`, `4 60 91 240`, `3 60 91 308`], `len is 4, the smallest is 60, the biggest is 91, and the total is 308.`, `marks = [72, 85, 60, 91]
+print(len(marks), min(marks), max(marks), sum(marks))`],
+  [`What is average after this code?
+
+marks = [72, 85, 60, 91]
+average = sum(marks) / len(marks)`, `77.0`, [`77`, `308`, `76.5`], `308 divided by 4 is 77.0, as a float.`, `marks = [72, 85, 60, 91]
+print(sum(marks) / len(marks))`],
   [`What is printed?
 
-a, b = 48, 18
-while b != 0:
-    a, b = b, a % b
-print(a)`, `6`, [`3`, `9`, `12`], `This is the Euclid method. The last non-zero value is 6.`, `a, b = 48, 18
-while b != 0:
-    a, b = b, a % b
+nums = [3, 1, 2]
+result = nums.sort()
+print(result)`, `None`, [`[1, 2, 3]`, `[3, 1, 2]`, `An error`], `sort() changes the list and returns None. Do not write nums = nums.sort().`, `nums = [3, 1, 2]
+result = nums.sort()
+print(result)`],
+  [`What does [1, 2, 3] + [4, 5] give?`, `[1, 2, 3, 4, 5]`, [`[5, 7, 3]`, `[[1, 2, 3], [4, 5]]`, `An error`], `+ joins two lists into a new one.`, `print([1, 2, 3] + [4, 5])`],
+  [`What does [4, 5] * 3 give?`, `[4, 5, 4, 5, 4, 5]`, [`[12, 15]`, `[4, 5, 3]`, `[[4, 5], 3]`], `* repeats a list.`, `print([4, 5] * 3)`],
+  [`What is printed?
+
+a = [1, 2, 3]
+b = a
+b.append(4)
+print(a)`, `[1, 2, 3, 4]`, [`[1, 2, 3]`, `[4]`, `An error`], `b = a does not copy the list. Both names point to the same list.`, `a = [1, 2, 3]
+b = a
+b.append(4)
 print(a)`],
-  [`Which mistake puts the whole pattern on one line?`, `Forgetting print() after the inner loop`, [`Using range(1, 6)`, `Using a colon`, `Using 4 spaces`], `The empty print() at the outer loop level ends each row.`],
-  [`Which range gives the numbers from 1 to n including n?`, `range(1, n + 1)`, [`range(1, n)`, `range(n)`, `range(1, n - 1)`], `The stop number is never included.`],
+  [`Which line makes a real copy of the list a?`, `a.copy()`, [`b = a`, `a == a`, `len(a)`], `a[:] also makes a copy.`],
+  [`Which loop goes through every item of a list called fruits?`, `for fruit in fruits:`, [`for fruit of fruits`, `for (fruit in fruits)`, `loop fruit in fruits:`], `The loop variable takes one item at a time.`],
+  [`What does enumerate(fruits) give you in a loop?`, `The index and the item together`, [`Only the items`, `Only the indexes in reverse`, `The length of the list`], `for i, fruit in enumerate(fruits): gives both.`],
   [`What is printed?
 
-for i in range(1, 4):
-    for j in range(i):
-        print(i, end=" ")
-    print()`, `1 2 2 3 3 3`, [`1 2 3`, `1 1 1 2 2 2`, `1 22 333`], `Row i prints the number i, i times.`, flat(`for i in range(1, 4):
-    for j in range(i):
-        print(i, end=" ")
-    print()`)],
+squares = []
+for n in range(1, 6):
+    squares.append(n * n)
+print(squares)`, `[1, 4, 9, 16, 25]`, [`[1, 2, 3, 4, 5]`, `[0, 1, 4, 9, 16]`, `[2, 4, 6, 8, 10]`], `Start with an empty list, then append inside the loop.`, `squares = []
+for n in range(1, 6):
+    squares.append(n * n)
+print(squares)`],
+  [`What is evens after this loop?
+
+nums = [4, 7, 10, 3, 8]
+evens = []
+for n in nums:
+    if n % 2 == 0:
+        evens.append(n)`, `[4, 10, 8]`, [`[7, 3]`, `[4, 7, 10, 3, 8]`, `[10, 8]`], `Only items with n % 2 == 0 are appended.`, `nums = [4, 7, 10, 3, 8]
+evens = []
+for n in nums:
+    if n % 2 == 0:
+        evens.append(n)
+print(evens)`],
+  [`What does [n * n for n in range(1, 6)] give?`, `[1, 4, 9, 16, 25]`, [`[1, 2, 3, 4, 5]`, `[2, 4, 6, 8, 10]`, `An error`], `This is a list comprehension, a one-line way to build a list.`, `print([n * n for n in range(1, 6)])`],
+  [`What does matrix[1][2] give?
+
+matrix = [[1, 2, 3], [4, 5, 6]]`, `6`, [`2`, `3`, `5`], `matrix[1] is the second row [4, 5, 6], and index 2 is its third item.`, `matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix[1][2])`],
+  [`What is printed?
+
+matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix[0])`, `[1, 2, 3]`, [`1`, `[1, 4]`, `[[1, 2, 3]]`], `matrix[0] is the first row.`, `matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix[0])`],
+  [`What is printed?
+
+nums = [10, 20, 30, 40, 50]
+nums.append(60)
+nums.pop(0)
+print(len(nums))`, `5`, [`4`, `6`, `7`], `Appending makes 6 items, and pop(0) removes one, so 5 remain.`, `nums = [10, 20, 30, 40, 50]
+nums.append(60)
+nums.pop(0)
+print(len(nums))`],
+  [`True or false: this is the correct way to add 5 to nums.
+
+nums = nums.append(5)`, `False`, [`True`], `append() returns None, so nums would become None. Just write nums.append(5).`],
 ]

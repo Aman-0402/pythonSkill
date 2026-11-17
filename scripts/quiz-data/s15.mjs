@@ -1,125 +1,100 @@
-// Session 15: Exception Handling
+// Session 15: NumPy Basics
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`What is an exception?`, `An error that happens while the program is running`, [`A comment in the code`, `A kind of loop`, `A way to import a module`], `If nothing handles it, the program stops.`],
-  [`What error does print(10 / 0) cause?`, `ZeroDivisionError`, [`ValueError`, `TypeError`, `NameError`], `You cannot divide by zero.`],
-  [`Does the line after a crashing line still run if nothing handles the error?`, `No, the program stops`, [`Yes, always`, `Only if it is a print`, `Only the first time`], `An unhandled exception ends the program.`],
-  [`When does a SyntaxError appear?`, `Before the program runs, because Python cannot read the code`, [`Only when the program divides by zero`, `Only when a file is missing`, `Only at the end`], `The code itself is broken.`],
-  [`Can a try block in the same file catch a SyntaxError?`, `No`, [`Yes, always`, `Only with finally`, `Only with raise`], `A SyntaxError happens before the program runs.`],
-  [`Which keyword holds the risky code?`, `try`, [`except`, `finally`, `raise`], `try holds the code that might fail.`],
-  [`Which keyword holds the plan for an error?`, `except`, [`try`, `else`, `assert`], `except runs when the matching error happens.`],
-  [`What is printed?
+  [`What is NumPy?`, `A package for working with numbers in bulk using arrays`, [`A text editor`, `A built-in Python loop`, `A website for Python news`], `Its main tool is the array.`],
+  [`How do we normally import NumPy?`, `import numpy as np`, [`import np as numpy`, `from numpy import np`, `include numpy`], `np is the common short name.`],
+  [`Which command installs NumPy on your computer?`, `pip install numpy`, [`import numpy`, `python numpy`, `np install`], `pip is run in the terminal.`],
+  [`Why are NumPy arrays faster than lists for big data?`, `The loops run in fast compiled code`, [`They store fewer numbers`, `They skip the maths`, `They run on the internet`], `One array operation replaces a slow Python loop.`],
+  [`What does np.array([1, 2, 3]) * 2 give?`, `[2 4 6]`, [`[1, 2, 3, 1, 2, 3]`, `[1 2 3 2]`, `12`], `The array doubles every item.`, `import numpy as np
+print(np.array([1, 2, 3]) * 2)`],
+  [`What does [1, 2, 3] * 2 give for a plain list?`, `[1, 2, 3, 1, 2, 3]`, [`[2, 4, 6]`, `[1, 2, 3, 2]`, `An error`], `A list is repeated, not multiplied.`, `print([1, 2, 3] * 2)`],
+  [`What do we call maths done on every item with no loop?`, `Vectorised (element-wise) maths`, [`Recursion`, `Slicing`, `Shuffling`], `It is one of the main reasons to use NumPy.`],
+  [`What must be true about all items in a NumPy array?`, `They share one data type`, [`They must be text`, `They must be positive`, `They must be different`], `That is what makes arrays fast and compact.`],
+  [`What does print(np.array([1, 2, 3]) + np.array([10, 20, 30])) show?`, `[11 22 33]`, [`[1 2 3 10 20 30]`, `[10 40 90]`, `66`], `Arrays of the same shape are added item by item.`, `import numpy as np
+print(np.array([1, 2, 3]) + np.array([10, 20, 30]))`],
+  [`What does np.zeros(5) make?`, `[0. 0. 0. 0. 0.]`, [`[0 0 0 0 0]`, `[0. 0. 0. 0.]`, `[1. 1. 1. 1. 1.]`], `zeros makes floats by default.`, `import numpy as np
+print(np.zeros(5))`],
+  [`What shape does np.ones((2, 3)) have?`, `(2, 3)`, [`(3, 2)`, `(6,)`, `(2,)`], `2 rows and 3 columns.`, `import numpy as np
+print(np.ones((2, 3)).shape)`],
+  [`What does np.arange(0, 10, 2) give?`, `[0 2 4 6 8]`, [`[0 2 4 6 8 10]`, `[2 4 6 8 10]`, `[0 1 2 3 4]`], `The stop value 10 is not included.`, `import numpy as np
+print(np.arange(0, 10, 2))`],
+  [`What does np.linspace(0, 1, 5) give?`, `[0.   0.25 0.5  0.75 1.  ]`, [`[0 1 2 3 4]`, `[0.2 0.4 0.6 0.8 1. ]`, `[0. 1.]`], `linspace gives 5 evenly spaced numbers including both ends.`, `import numpy as np
+print(np.linspace(0, 1, 5))`],
+  [`What does a.ndim give for a table with rows and columns?`, `2`, [`1`, `3`, `the number of rows`], `A table has 2 dimensions.`, `import numpy as np
+print(np.array([[1, 2], [3, 4]]).ndim)`],
+  [`What is the shape of np.array([[1, 2, 3], [4, 5, 6]])?`, `(2, 3)`, [`(3, 2)`, `(6,)`, `(2,)`], `2 rows and 3 columns.`, `import numpy as np
+print(np.array([[1, 2, 3], [4, 5, 6]]).shape)`],
+  [`What is the size of an array with shape (4, 5)?`, `20`, [`9`, `4`, `5`], `size is the total number of items, 4 times 5.`, `import numpy as np
+print(np.zeros((4, 5)).size)`],
+  [`What is the shape of np.array([1, 2, 3])?`, `(3,)`, [`(3)`, `(1, 3)`, `(3, 1)`], `A tuple with one item needs a comma.`, `import numpy as np
+print(np.array([1, 2, 3]).shape)`],
+  [`What is the shape of np.array([[1], [2], [3]])?`, `(3, 1)`, [`(1, 3)`, `(3,)`, `(3, 3)`], `3 rows and 1 column.`, `import numpy as np
+print(np.array([[1], [2], [3]]).shape)`],
+  [`What is the dtype of np.array([1.5, 2.5, 3.5])?`, `float64`, [`int64`, `float8`, `str`], `Decimals are float64 by default.`, `import numpy as np
+print(np.array([1.5, 2.5, 3.5]).dtype)`],
+  [`What is the dtype of np.array([True, False])?`, `bool`, [`int8`, `str`, `float64`], `True and False make a bool array.`, `import numpy as np
+print(np.array([True, False]).dtype)`],
+  [`What does np.array([1, 2.5, 3]) show?`, `[1.  2.5 3. ]`, [`[1 2.5 3]`, `[1, 2.5, 3]`, `['1' '2.5' '3']`], `Ints and floats become floats.`, `import numpy as np
+print(np.array([1, 2.5, 3]))`],
+  [`What do you get when you mix numbers and text in one array?`, `All items become text`, [`All items become 0`, `An error`, `Numbers stay numbers`], `NumPy picks one type that fits everything.`],
+  [`What does np.array([1.9, 2.5, 3.1]).astype(int) give?`, `[1 2 3]`, [`[2 2 3]`, `[2 3 3]`, `[1.9 2.5 3.1]`], `astype to int cuts off the decimals and does not round.`, `import numpy as np
+print(np.array([1.9, 2.5, 3.1]).astype(int))`],
+  [`What does np.arange(1, 13).reshape(3, 4) make?`, `A table with 3 rows and 4 columns`, [`A table with 4 rows and 3 columns`, `An error`, `A list of 12 lists`], `reshape keeps the same numbers.`],
+  [`Which reshape fails for an array with 12 items?`, `reshape(5, 3)`, [`reshape(3, 4)`, `reshape(2, 6)`, `reshape(12, 1)`], `5 times 3 is 15, not 12.`],
+  [`What does -1 mean in a.reshape(3, -1)?`, `Work this size out for me`, [`Make the array negative`, `Reverse the array`, `Remove the last item`], `NumPy works out the missing size.`],
+  [`What does a.T do?`, `Swaps the rows and columns`, [`Sorts the array`, `Adds a total`, `Deletes the first row`], `T is the transpose.`],
+  [`What is a[-1]?
 
-try:
-    print("A")
-    print(5 / 0)
-    print("B")
-except ZeroDivisionError:
-    print("C")`, `A then C`, [`A then B then C`, `A then B`, `C only`], `B is skipped because the error happens before it.`],
-  [`If no error happens in the try block, what happens to the except block?`, `It is skipped`, [`It runs anyway`, `It runs twice`, `It gives an error`], `except only runs after a matching error.`],
-  [`What does as e give in except ValueError as e?`, `A name for the error object, so you can print its message`, [`The line number`, `The file name`, `A copy of the program`], `Printing e shows Python's own message.`],
-  [`What is printed?
+import numpy as np
 
-try:
-    int("abc")
-except ValueError as e:
-    print(type(e).__name__)`, `ValueError`, [`int`, `str`, `Error`], `It is the name of the error type.`, `try:
-    int("abc")
-except ValueError as e:
-    print(type(e).__name__)`],
-  [`What error does int("abc") cause?`, `ValueError`, [`TypeError`, `NameError`, `KeyError`], `The type is right (text) but the value is not a number.`],
-  [`What error does "5" + 3 cause?`, `TypeError`, [`ValueError`, `SyntaxError`, `NameError`], `You cannot add text and a number.`],
-  [`What error does print(total) cause when total was never made?`, `NameError`, [`TypeError`, `KeyError`, `ValueError`], `The name does not exist.`],
-  [`What error does [1, 2][5] cause?`, `IndexError`, [`KeyError`, `ValueError`, `TypeError`], `The position is out of range.`],
-  [`What error does {"a": 1}["b"] cause?`, `KeyError`, [`IndexError`, `NameError`, `ValueError`], `The key is not in the dictionary.`],
-  [`What error does "hi".push(1) cause?`, `AttributeError`, [`TypeError`, `NameError`, `KeyError`], `A string has no method called push.`],
-  [`What error does open("nope.txt") cause when the file is missing?`, `FileNotFoundError`, [`NameError`, `ValueError`, `ModuleNotFoundError`], `Reading a missing file fails.`],
-  [`What error does import mathh cause?`, `ModuleNotFoundError`, [`NameError`, `ImportantError`, `FileNotFoundError`], `No module has that name.`],
-  [`Which error means the spaces at the start of a line are wrong?`, `IndentationError`, [`SpaceError`, `TabError only`, `NameError`], `Python uses indentation to know the blocks.`],
-  [`In except (ValueError, TypeError):, what do the brackets do?`, `Handle both errors with one plan`, [`Handle only the first error`, `Make an error`, `Skip the try block`], `A tuple of error names matches any of them.`],
-  [`How does Python pick among several except blocks?`, `It runs the first one that matches, checking in order`, [`It runs all of them`, `It runs the last one`, `It picks at random`], `Put the specific error before the general one.`],
-  [`What is printed?
+a = np.array([10, 20, 30, 40, 50])`, `50`, [`10`, `40`, `An error`], `Negative positions count from the end.`, `import numpy as np
+print(np.array([10, 20, 30, 40, 50])[-1])`],
+  [`What is a[1, 2]?
 
-try:
-    int("x")
-except Exception:
-    print("general")
-except ValueError:
-    print("specific")`, `general`, [`specific`, `general then specific`, `Nothing`], `Exception matches first, so ValueError can never run.`, `try:
-    int("x")
-except Exception:
-    print("general")
-except ValueError:
-    print("specific")`],
-  [`When does the else block of a try statement run?`, `Only when there was no error`, [`Only when there was an error`, `Always`, `Never`], `else holds the code for when all went well.`],
-  [`When does the finally block run?`, `Always, whether there was an error or not`, [`Only when there is an error`, `Only when there is no error`, `Never`], `It is for clean-up.`],
-  [`What is printed?
+import numpy as np
 
-try:
-    print(10 / 2)
-except ZeroDivisionError:
-    print("error")
-else:
-    print("ok")
-finally:
-    print("done")`, `5.0 then ok then done`, [`5.0 then done`, `error then done`, `ok then done`], `No error, so else runs, and finally always runs.`],
-  [`What is printed?
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])`, `6`, [`4`, `8`, `2`], `Row 1, column 2.`, `import numpy as np
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(a[1, 2])`],
+  [`What is a[2]?
 
-try:
-    print(10 / 0)
-except ZeroDivisionError:
-    print("error")
-else:
-    print("ok")
-finally:
-    print("done")`, `error then done`, [`error then ok then done`, `ok then done`, `done only`], `else is skipped after an error, and finally still runs.`],
-  [`What does a function print when try returns a value and finally has a print?`, `The finally print runs before the value comes back`, [`The finally print is skipped`, `Only the return value is shown`, `An error appears`], `finally runs even when try has a return.`],
-  [`What is the main job of finally?`, `Clean-up such as closing a file`, [`Catching errors`, `Making loops`, `Importing modules`], `It runs no matter what.`],
-  [`What does the raise keyword do?`, `Makes an exception on purpose`, [`Catches an exception`, `Ends the program silently`, `Repeats the try block`], `Use it when your code finds something wrong.`],
-  [`Which error fits raise when a function gets age -3?`, `ValueError`, [`NameError`, `SyntaxError`, `IndexError`], `The type is right but the value is not acceptable.`],
-  [`Which part catches the error: the function that raises it or the code that calls it?`, `The code that calls it decides and catches`, [`The function that raises it`, `Python catches it by itself`, `Nobody can catch it`], `The function raises, the caller handles.`],
-  [`What does a custom exception class inherit from?`, `Exception`, [`int`, `str`, `print`], `class MyError(Exception): pass makes a new error type.`],
-  [`What is wrong with a bare except: that has no error name?`, `It catches every error, even your own typing mistakes`, [`It is a syntax error`, `It only catches ValueError`, `It runs faster`], `You never learn what really went wrong.`],
-  [`What is better than a bare except?`, `except Exception as e, then print or log e`, [`except: pass`, `Removing try`, `A longer try block`], `At least you see the error message.`],
-  [`Why is except: pass a bad habit?`, `It hides bugs without any message`, [`It makes the file bigger`, `It stops the program`, `It is not allowed`], `The error is thrown away without a word.`],
-  [`How big should a try block be?`, `Small, only the line that can fail`, [`As big as the whole program`, `Always 10 lines`, `It does not matter`], `A small block shows exactly what failed.`],
-  [`Which line of a traceback should you read first?`, `The last line`, [`The first line`, `The middle line`, `Any line`], `It names the error and gives the reason.`],
-  [`What do the File ... line N lines of a traceback show?`, `The chain of calls that led to the error`, [`The list of imported modules`, `The variables`, `The output so far`], `The last step is where it crashed.`],
-  [`What does print(type(x)) help you find?`, `Which type a value really has, which solves many TypeError problems`, [`The size of x`, `The name of the file`, `The line number`], `Text and numbers are easy to mix up.`],
-  [`What is print debugging?`, `Printing values to see what the program is doing`, [`Deleting all print lines`, `Using only the debugger`, `Printing the whole file`], `Remove the debug prints when you are done.`],
-  [`What is an off by one error?`, `Counting one step too many or too few, such as forgetting that range(5) stops at 4`, [`Using one line too many`, `Writing one extra space`, `Missing one import`], `Check your start and end values.`],
-  [`What does assert square(5) == 25 do when it is true?`, `Nothing, the program carries on`, [`Prints True`, `Stops the program`, `Raises an error`], `assert only complains when the condition is false.`],
-  [`What error does a failing assert raise?`, `AssertionError`, [`ValueError`, `TypeError`, `TestError`], `You can add a message after a comma.`],
-  [`When should you use try and except instead of assert?`, `For problems that can happen in real use, like bad input or a missing file`, [`To test your own code`, `Never`, `Only inside loops`], `assert is for checking your own code.`],
-  [`What is printed?
+import numpy as np
 
-def to_number(text):
-    try:
-        return float(text)
-    except ValueError:
-        return None
-print(to_number("hello"))`, `None`, [`0`, `An error`, `hello`], `The except block returns None instead of crashing.`, `def to_number(text):
-    try:
-        return float(text)
-    except ValueError:
-        return None
-print(to_number("hello"))`],
-  [`What is printed?
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])`, `[7 8 9]`, [`[3 6 9]`, `9`, `[1 2 3]`], `One index gives a whole row.`, `import numpy as np
+a = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(a[2])`],
+  [`What does a[2:5] give?
 
-total = 0
-for line in ["80", "abc", "95"]:
-    try:
-        total += int(line)
-    except ValueError:
-        pass
-print(total)`, `175`, [`0`, `An error`, `80`], `The abc line is skipped and the loop carries on.`, `total = 0
-for line in ["80", "abc", "95"]:
-    try:
-        total += int(line)
-    except ValueError:
-        pass
-print(total)`],
-  [`What does the loop with try, continue and break do for safe number input?`, `Keeps asking until the input is valid`, [`Asks exactly once`, `Asks three times`, `Never asks`], `break leaves the loop only when the input is good.`],
-  [`Why use try for a missing file instead of checking first?`, `It handles the missing file and other problems too`, [`It is shorter in every case`, `Checking never works`, `try makes the file`], `try covers errors you did not think of.`],
+import numpy as np
+
+a = np.arange(10, 100, 10)`, `[30 40 50]`, [`[30 40 50 60]`, `[20 30 40]`, `[20 30 40 50 60]`], `Positions 2, 3 and 4, with the stop not included.`, `import numpy as np
+a = np.arange(10, 100, 10)
+print(a[2:5])`],
+  [`What does a[::-1] do?`, `Reverses the array`, [`Sorts it`, `Removes the last item`, `Makes it empty`], `A step of -1 goes backwards.`],
+  [`What does a[::2] give for np.arange(10, 100, 10)?`, `[10 30 50 70 90]`, [`[20 40 60 80]`, `[10 20]`, `[10 30 50 70]`], `Every second item.`, `import numpy as np
+print(np.arange(10, 100, 10)[::2])`],
+  [`What is a after this code?
+
+import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])
+part = a[1:4]
+part[0] = 99`, `[ 1 99  3  4  5]`, [`[1 2 3 4 5]`, `[99  2  3  4  5]`, `[99  3  4]`], `A slice is a view, so the original changes too.`, `import numpy as np
+a = np.array([1, 2, 3, 4, 5])
+part = a[1:4]
+part[0] = 99
+print(a)`],
+  [`What does a[:, 0] give for a 2D array?`, `The first column`, [`The first row`, `The first item`, `The whole array`], `All rows, column 0.`],
+  [`What does a[1, :] give for a 2D array?`, `The second row`, [`The second column`, `The first row`, `One item`], `Row 1, all columns.`],
+  [`What does a[0:2, 1:3] give for np.arange(1, 17).reshape(4, 4)?`, `[[2 3] [6 7]]`, [`[[1 2] [5 6]]`, `[[2 3 4] [6 7 8]]`, `[[2 3]]`], `Rows 0 and 1, columns 1 and 2.`],
+  [`What does marks[marks > 80] do for a NumPy array?`, `Keeps only the items bigger than 80`, [`Sets every item to 80`, `Sorts the array`, `Counts the items`], `The True and False mask works as a filter.`],
+  [`Which operators join array conditions?`, `& for and, | for or, with each condition in brackets`, [`and, or, without brackets`, `&& and ||`, `+ and -`], `The words and and or do not work on whole arrays.`],
+  [`What does (marks > 70).sum() count?`, `How many items are bigger than 70`, [`The total of all marks`, `The biggest mark`, `The number of rows`], `True counts as 1.`],
+  [`What does a[[0, 2, 4]] do?`, `Picks the items at positions 0, 2 and 4`, [`Picks items 0 to 4`, `Makes three copies of a`, `Gives an error`], `A list of positions is called fancy indexing.`],
+  [`What does a.sum(axis=0) do for a 2D array?`, `Adds down each column`, [`Adds across each row`, `Adds everything into one number`, `Gives an error`], `axis=0 works down the columns, one answer per column.`],
+  [`What does a.sum(axis=1) give for [[1, 2, 3], [4, 5, 6]]?`, `[ 6 15]`, [`[5 7 9]`, `21`, `[ 3 15]`], `axis=1 adds across each row.`, `import numpy as np
+print(np.array([[1, 2, 3], [4, 5, 6]]).sum(axis=1))`],
+  [`What does a.argmax() give?`, `The position of the biggest item`, [`The biggest item`, `The sum`, `The number of items`], `argmax gives the index, not the value.`],
+  [`What error does np.array([1, 2, 3]) + np.array([1, 2, 3, 4]) cause?`, `ValueError, the shapes do not match`, [`NameError`, `SyntaxError`, `No error`], `Shapes (3,) and (4,) cannot be combined.`],
 ]

@@ -1,127 +1,143 @@
-// Session 8: Tuples and Sets
+// Session 8: Dictionaries
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`What is a tuple in Python?`, `An ordered collection in round brackets that cannot be changed`, [`An ordered collection in square brackets that can be changed`, `A collection of unique items with no order`, `A block of text inside quotes`], `A tuple looks like a list but is immutable.`],
-  [`Which of these is a tuple?`, `(10, 20, 30)`, [`[10, 20, 30]`, `{10, 20, 30}`, `"10, 20, 30"`], `Tuples use round brackets.`],
-  [`What does type((3, 4)) show?`, `<class 'tuple'>`, [`<class 'list'>`, `<class 'set'>`, `<class 'int'>`], `Round brackets with commas make a tuple.`, `print(type((3, 4)))`],
-  [`What is the type of (5)?`, `int`, [`tuple`, `list`, `str`], `Brackets alone do not make a tuple. The comma does, so (5,) is the tuple.`, `print(type((5)).__name__)`],
-  [`What is the type of (5,)?`, `tuple`, [`int`, `list`, `set`], `The trailing comma makes it a one-item tuple.`, `print(type((5,)).__name__)`],
-  [`What does tuple("abc") give?`, `('a', 'b', 'c')`, [`('abc',)`, `['a', 'b', 'c']`, `{'a', 'b', 'c'}`], `tuple() turns the characters of a string into separate items.`, `print(tuple("abc"))`],
-  [`What does days[-1] give?
+  [`What is a dictionary in Python?`, `A collection of key-value pairs`, [`An ordered list of numbers only`, `A collection of unique items with no keys`, `A block of text inside quotes`], `A dictionary stores values that you find by their keys.`],
+  [`What does type({}) show?`, `<class 'dict'>`, [`<class 'set'>`, `<class 'list'>`, `<class 'tuple'>`], `Empty curly brackets make a dictionary, not a set.`, `print(type({}))`],
+  [`How do you find a value in a dictionary?`, `By its key`, [`By its position number`, `By its length`, `By its type`], `A dictionary looks values up by key, a list by position.`],
+  [`Which of these can NOT be a dictionary key?`, `A list`, [`A string`, `A number`, `A tuple`], `Keys must be immutable, and a list can change.`],
+  [`What error appears here?
 
-days = ("Mon", "Tue", "Wed", "Thu", "Fri")`, `Fri`, [`Mon`, `Thu`, `An error`], `-1 is the last item, as in lists.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
-print(days[-1])`],
-  [`What does days[1:3] give?
-
-days = ("Mon", "Tue", "Wed", "Thu", "Fri")`, `('Tue', 'Wed')`, [`('Mon', 'Tue', 'Wed')`, `('Tue', 'Wed', 'Thu')`, `['Tue', 'Wed']`], `The stop index is not included, and slicing a tuple gives a tuple.`, `days = ("Mon", "Tue", "Wed", "Thu", "Fri")
-print(days[1:3])`],
-  [`What does (1, 2, 2, 3, 2).count(2) give?`, `3`, [`2`, `1`, `5`], `count() says how many times 2 appears.`, `print((1, 2, 2, 3, 2).count(2))`],
-  [`What does (1, 2, 2, 3, 2).index(3) give?`, `3`, [`4`, `2`, `1`], `index() gives the position of the first match, and 3 is at index 3.`, `print((1, 2, 2, 3, 2).index(3))`],
-  [`Which are the only two tuple methods?`, `count() and index()`, [`append() and remove()`, `add() and discard()`, `sort() and reverse()`], `A tuple cannot change, so it only has methods that read.`],
-  [`What happens here?
-
-t = (10, 20, 30)
-t[0] = 99`, `TypeError`, [`t becomes (99, 20, 30)`, `IndexError`, `NameError`], `Tuples are immutable, so item assignment is not allowed.`],
-  [`What happens here?
-
-t = (10, 20, 30)
-t.append(40)`, `AttributeError`, [`t becomes (10, 20, 30, 40)`, `TypeError`, `ValueError`], `A tuple has no append method.`],
-  [`What does immutable mean?`, `It cannot be changed after it is created`, [`It cannot be printed`, `It can only hold numbers`, `It is stored in a file`], `Tuples, strings and numbers are immutable.`],
+d = {[1, 2]: "x"}`, `TypeError`, [`KeyError`, `ValueError`, `NameError`], `A list is unhashable, so it cannot be a key.`],
   [`What is printed?
 
-t = (10, 20, 30)
-t = t + (40,)
-print(t)`, `(10, 20, 30, 40)`, [`(10, 20, 30, (40,))`, `(40, 10, 20, 30)`, `An error`], `You cannot change a tuple, but you can build a new one and reuse the name.`, `t = (10, 20, 30)
-t = t + (40,)
-print(t)`],
+d = {"a": 1, "b": 2, "a": 3}
+print(d)`, `{'a': 3, 'b': 2}`, [`{'a': 1, 'b': 2}`, `{'a': 1, 'b': 2, 'a': 3}`, `An error`], `A repeated key keeps only the last value.`, `d = {"a": 1, "b": 2, "a": 3}
+print(d)`],
   [`What is printed?
 
-t = (1, [2, 3])
-t[1].append(4)
-print(t)`, `(1, [2, 3, 4])`, [`(1, [2, 3])`, `An error`, `(1, 2, 3, 4)`], `The tuple keeps the same list, and the list itself can still change.`, `t = (1, [2, 3])
-t[1].append(4)
-print(t)`],
-  [`What does (1, 2) + (3, 4) give?`, `(1, 2, 3, 4)`, [`(4, 6)`, `((1, 2), (3, 4))`, `[1, 2, 3, 4]`], `+ joins two tuples into a new one.`, `print((1, 2) + (3, 4))`],
+d = {"a": 1, "b": 2, "a": 3}
+print(len(d))`, `2`, [`3`, `1`, `6`], `The two "a" keys count as one.`, `d = {"a": 1, "b": 2, "a": 3}
+print(len(d))`],
+  [`What does dict(x=1, y=2) give?`, `{'x': 1, 'y': 2}`, [`{x: 1, y: 2}`, `(x, 1, y, 2)`, `An error`], `dict() with names builds the same dictionary as {"x": 1, "y": 2}.`, `print(dict(x=1, y=2))`],
+  [`What does student["age"] give?
+
+student = {"name": "Aman", "age": 20}`, `20`, [`age`, `Aman`, `An error`], `Put the key in square brackets to get its value.`, `student = {"name": "Aman", "age": 20}
+print(student["age"])`],
+  [`What error appears for student["city"] when the key "city" does not exist?`, `KeyError`, [`IndexError`, `TypeError`, `NameError`], `Reading a missing key gives a KeyError.`],
+  [`What does student.get("city") give?
+
+student = {"name": "Aman", "age": 20}`, `None`, [`An error`, `An empty string`, `0`], `get() returns None instead of an error.`, `student = {"name": "Aman"}
+print(student.get("city"))`],
+  [`What does student.get("city", "Unknown") give?
+
+student = {"name": "Aman", "age": 20}`, `Unknown`, [`None`, `city`, `An error`], `The second argument is the default value.`, `student = {"name": "Aman"}
+print(student.get("city", "Unknown"))`],
+  [`What does "Aman" in {"name": "Aman"} give?`, `False`, [`True`, `name`, `An error`], `in checks the keys, and "Aman" is a value.`, `print("Aman" in {"name": "Aman"})`],
+  [`What does "name" in {"name": "Aman"} give?`, `True`, [`False`, `Aman`, `An error`], `"name" is a key, so in finds it.`, `print("name" in {"name": "Aman"})`],
   [`What is printed?
 
-x, y = (3, 4)
-print(x + y)`, `7`, [`34`, `(3, 4)`, `An error`], `Unpacking puts 3 in x and 4 in y.`, `x, y = (3, 4)
-print(x + y)`],
-  [`What happens here?
-
-a, b = (1, 2, 3)`, `ValueError`, [`a is 1 and b is 2`, `TypeError`, `a is 1 and b is (2, 3)`], `The number of variables must match the number of items.`],
+d = {"a": 1}
+d["b"] = 2
+print(d)`, `{'a': 1, 'b': 2}`, [`{'a': 1}`, `{'b': 2}`, `An error`], `Assigning to a new key adds a pair.`, `d = {"a": 1}
+d["b"] = 2
+print(d)`],
   [`What is printed?
 
-a, b = 1, 2
-a, b = b, a
-print(a, b)`, `2 1`, [`1 2`, `2 2`, `1 1`], `Python can swap two variables in one line, with no third variable.`, `a, b = 1, 2
-a, b = b, a
-print(a, b)`],
-  [`What are first and rest after this line?
+d = {"a": 1}
+d["a"] = 10
+print(d)`, `{'a': 10}`, [`{'a': 1, 'a': 10}`, `{'a': 1}`, `An error`], `Assigning to an existing key changes its value.`, `d = {"a": 1}
+d["a"] = 10
+print(d)`],
+  [`What does the second line do to d?
 
-first, *rest = (1, 2, 3, 4)`, `1 and [2, 3, 4]`, [`1 and (2, 3, 4)`, `1 and 2`, `(1, 2, 3, 4) and []`], `The starred variable collects the extra items into a list.`, `first, *rest = (1, 2, 3, 4)
-print(first, "and", rest)`],
-  [`What is mid after this line?
+d = {"a": 1}
+d.update({"b": 2, "c": 3})`, `Adds both pairs`, [`Replaces the whole dictionary`, `Adds only the first pair`, `Gives an error`], `update() adds many pairs, and replaces the values of keys that exist.`],
+  [`What does d.setdefault("a", 99) give?
 
-a, *mid, z = (1, 2, 3, 4, 5)`, `[2, 3, 4]`, [`(2, 3, 4)`, `[1, 5]`, `2`], `The star takes everything between the first and the last.`, `a, *mid, z = (1, 2, 3, 4, 5)
-print(mid)`],
-  [`How many starred variables are allowed in one unpacking?`, `Only one`, [`As many as you like`, `Two`, `None`], `With two stars Python could not tell how to split the items.`],
-  [`What type does min_max give back?
+d = {"a": 1}`, `1`, [`99`, `None`, `An error`], `The key exists, so setdefault keeps the old value and returns it.`, `d = {"a": 1}
+print(d.setdefault("a", 99))`],
+  [`What does d.pop("a") give?
 
-def min_max(nums):
-    return min(nums), max(nums)`, `tuple`, [`list`, `set`, `Two separate values`], `Returning several values with commas returns one tuple.`, `def f(nums):
-    return min(nums), max(nums)
-print(type(f([1, 2])).__name__)`],
+d = {"a": 1, "b": 2}`, `1`, [`a`, `{'b': 2}`, `None`], `pop() removes the key and returns its value.`, `d = {"a": 1, "b": 2}
+print(d.pop("a"))`],
+  [`What does d.pop("z", "not found") give?
+
+d = {"a": 1}`, `not found`, [`An error`, `None`, `z`], `With a default value there is no error.`, `d = {"a": 1}
+print(d.pop("z", "not found"))`],
+  [`What does popitem() remove?`, `The last pair added`, [`The first pair`, `A random value`, `Every pair`], `popitem() removes and returns the last (key, value) pair.`],
+  [`Which statement removes the key "b" from d?`, `del d["b"]`, [`d.remove("b")`, `d.delete("b")`, `d["b"].clear()`], `del d[key] removes the pair.`],
+  [`What does d.clear() do?`, `Removes every pair`, [`Removes only the last pair`, `Deletes the variable d`, `Copies d`], `The dictionary stays but becomes empty.`],
+  [`What does list(marks.keys()) give?
+
+marks = {"maths": 90, "science": 85}`, `['maths', 'science']`, [`[90, 85]`, `[('maths', 90), ('science', 85)]`, `['maths', 90]`], `keys() gives the keys.`, `marks = {"maths": 90, "science": 85}
+print(list(marks.keys()))`],
+  [`What does list(marks.values()) give?
+
+marks = {"maths": 90, "science": 85}`, `[90, 85]`, [`['maths', 'science']`, `[('maths', 90), ('science', 85)]`, `[175]`], `values() gives the values.`, `marks = {"maths": 90, "science": 85}
+print(list(marks.values()))`],
+  [`What does list(marks.items()) give?
+
+marks = {"maths": 90, "science": 85}`, `[('maths', 90), ('science', 85)]`, [`['maths', 'science']`, `[90, 85]`, `{'maths': 90, 'science': 85}`], `items() gives (key, value) pairs as tuples.`, `marks = {"maths": 90, "science": 85}
+print(list(marks.items()))`],
+  [`What does sum(marks.values()) give?
+
+marks = {"maths": 90, "science": 85, "english": 78}`, `253`, [`3`, `90`, `175`], `It adds up all the values.`, `marks = {"maths": 90, "science": 85, "english": 78}
+print(sum(marks.values()))`],
+  [`What does sorted(marks) give?
+
+marks = {"maths": 90, "science": 85, "english": 78}`, `['english', 'maths', 'science']`, [`[78, 85, 90]`, `['maths', 'science', 'english']`, `[('english', 78), ('maths', 90), ('science', 85)]`], `sorted() on a dictionary sorts its keys and gives a list.`, `marks = {"maths": 90, "science": 85, "english": 78}
+print(sorted(marks))`],
+  [`What does a plain for loop over a dictionary give each time?`, `A key`, [`A value`, `A (key, value) pair`, `An index number`], `Looping goes through the keys. Use items() for both.`],
+  [`Which loop gives both the key and the value?`, `for k, v in d.items():`, [`for k, v in d:`, `for k, v in d.keys():`, `for k in d.values():`], `items() gives pairs, and the loop unpacks them.`],
+  [`What does max(marks, key=marks.get) give?
+
+marks = {"maths": 90, "science": 85, "english": 78}`, `maths`, [`90`, `science`, `english`], `It gives the key whose value is the biggest.`, `marks = {"maths": 90, "science": 85, "english": 78}
+print(max(marks, key=marks.get))`],
   [`What is printed?
 
-for i, ch in enumerate("ab"):
-    print(i, ch)`, `0 a 1 b`, [`a b`, `0 1`, `1 a 2 b`], `enumerate gives (index, item) tuples, and the loop unpacks them.`, `print(" ".join(f"{i} {ch}" for i, ch in enumerate("ab")))`],
-  [`What is a set in Python?`, `A collection of unique items with no order`, [`An ordered collection that allows duplicates`, `A collection that cannot be changed`, `A block of text`], `Sets remove duplicates and have no order.`],
-  [`Which of these is a set?`, `{1, 2, 3}`, [`[1, 2, 3]`, `(1, 2, 3)`, `"1, 2, 3"`], `Sets are written with curly brackets.`],
+a = {"x": 1}
+b = a
+b["x"] = 99
+print(a)`, `{'x': 99}`, [`{'x': 1}`, `{'x': 1, 'x': 99}`, `An error`], `b = a does not copy. Both names point to the same dictionary.`, `a = {"x": 1}
+b = a
+b["x"] = 99
+print(a)`],
+  [`Which line makes a real copy of a dictionary a?`, `a.copy()`, [`b = a`, `a.same()`, `a[:]`], `copy() makes a new dictionary.`],
+  [`What does {"x": 1, "y": 2} | {"y": 20, "z": 30} give?`, `{'x': 1, 'y': 20, 'z': 30}`, [`{'x': 1, 'y': 2, 'z': 30}`, `{'x': 1, 'y': 22, 'z': 30}`, `An error`], `When the same key is in both, the second dictionary wins.`, `print({"x": 1, "y": 2} | {"y": 20, "z": 30})`],
+  [`What does students["Ankit"]["city"] read when students is a dictionary of dictionaries?`, `The city of Ankit`, [`The first letter of Ankit`, `The index of the city`, `Nothing, it is an error`], `The first brackets find Ankit's dictionary and the second find the city inside it.`],
+  [`What does students["Aman"]["age"] = 21 do?`, `Changes Aman's age inside the nested dictionary`, [`Adds a new student`, `Replaces the whole students dictionary`, `Gives an error`], `Each pair of brackets goes one level deeper.`],
+  [`What is a list of dictionaries good for?`, `Storing rows of data, one dictionary per row`, [`Sorting numbers`, `Removing duplicates`, `Making a set`], `For example one dictionary for each student.`],
   [`What is printed?
 
-s = {3, 1, 2, 3, 1}
-print(len(s))`, `3`, [`5`, `2`, `6`], `The duplicates are removed, leaving 1, 2 and 3.`, `s = {3, 1, 2, 3, 1}
-print(len(s))`],
-  [`How do you make an empty set?`, `set()`, [`{}`, `[]`, `()`], `{} is an empty dictionary.`],
-  [`What does sorted(set([5, 3, 5, 1, 3])) give?`, `[1, 3, 5]`, [`[5, 3, 5, 1, 3]`, `[1, 3, 3, 5, 5]`, `{1, 3, 5}`], `set() removes duplicates and sorted() puts the result in order, as a list.`, `print(sorted(set([5, 3, 5, 1, 3])))`],
-  [`What happens here?
-
-s = {1, 2, 3}
-print(s[0])`, `TypeError`, [`1`, `IndexError`, `{1}`], `Sets have no order, so they cannot be indexed.`],
-  [`What happens here?
-
-s = {[1, 2], 3}`, `TypeError, a list cannot go inside a set`, [`A set with a list and 3`, `The list is removed`, `NameError`], `Set items must be immutable, so a tuple (1, 2) is fine but a list is not.`],
-  [`What is printed? print(2 in {1, 2, 3})`, `True`, [`False`, `2`, `An error`], `in checks membership, and it is very fast for sets.`, `print(2 in {1, 2, 3})`],
-  [`What is the difference between remove() and discard()?`, `remove() gives an error if the item is missing, discard() does not`, [`discard() gives an error if the item is missing, remove() does not`, `They are exactly the same`, `remove() removes all items`], `Use discard() when you are not sure the item is in the set.`],
+scores = {"Aman": [90, 80]}
+scores["Aman"].append(70)
+print(scores["Aman"])`, `[90, 80, 70]`, [`[70]`, `[90, 80]`, `An error`], `The value is a list, so list methods work on it.`, `scores = {"Aman": [90, 80]}
+scores["Aman"].append(70)
+print(scores["Aman"])`],
   [`What is printed?
 
-s = {1, 2}
-s.add(3)
-s.add(2)
-print(s)`, `{1, 2, 3}`, [`{1, 2, 3, 2}`, `{1, 2}`, `{3}`], `Adding an item that is already there changes nothing.`, `s = {1, 2}
-s.add(3)
-s.add(2)
-print(s)`],
-  [`What does {1, 2, 3, 4} | {3, 4, 5, 6} give?`, `{1, 2, 3, 4, 5, 6}`, [`{3, 4}`, `{1, 2}`, `{1, 2, 5, 6}`], `| is union, everything in either set.`, `print({1, 2, 3, 4} | {3, 4, 5, 6})`],
-  [`What does {1, 2, 3, 4} & {3, 4, 5, 6} give?`, `{3, 4}`, [`{1, 2, 3, 4, 5, 6}`, `{1, 2}`, `{1, 2, 5, 6}`], `& is intersection, only what is in both.`, `print({1, 2, 3, 4} & {3, 4, 5, 6})`],
-  [`What does {1, 2, 3, 4} - {3, 4, 5, 6} give?`, `{1, 2}`, [`{5, 6}`, `{3, 4}`, `{1, 2, 5, 6}`], `- is difference, in the first set but not in the second.`, `print({1, 2, 3, 4} - {3, 4, 5, 6})`],
-  [`What does {1, 2, 3, 4} ^ {3, 4, 5, 6} give?`, `{1, 2, 5, 6}`, [`{3, 4}`, `{1, 2, 3, 4, 5, 6}`, `{1, 2}`], `^ is symmetric difference, in one set but not in both.`, `print({1, 2, 3, 4} ^ {3, 4, 5, 6})`],
-  [`What does {1, 2} <= {1, 2, 3} check?`, `Whether the first set is a subset of the second`, [`Whether they have nothing in common`, `Whether the first set is bigger`, `Whether they are equal`], `<= is the same as issubset().`],
-  [`What does {1, 2}.isdisjoint({3, 4}) give?`, `True`, [`False`, `{}`, `An error`], `The two sets have nothing in common, so they are disjoint.`, `print({1, 2}.isdisjoint({3, 4}))`],
-  [`What does a |= {4} do to the set a?`, `Adds 4 to a in place`, [`Makes a new set and leaves a alone`, `Removes 4 from a`, `Gives an error`], `|= is the in-place union.`],
-  [`What is a frozenset?`, `An immutable set`, [`A set with no items`, `A set that keeps its order`, `A list of sets`], `It cannot be changed, so add() gives an error.`],
-  [`What is printed?
+word = "banana"
+count = {}
+for ch in word:
+    count[ch] = count.get(ch, 0) + 1
+print(count)`, `{'b': 1, 'a': 3, 'n': 2}`, [`{'b': 1, 'a': 1, 'n': 1}`, `{'a': 3, 'b': 1, 'n': 2, 'a': 1}`, `{'b': 1, 'a': 2, 'n': 3}`], `Each letter is a key and its count is the value.`, `word = "banana"
+count = {}
+for ch in word:
+    count[ch] = count.get(ch, 0) + 1
+print(count)`],
+  [`Why does count.get(ch, 0) + 1 work for a new letter?`, `get() gives 0 when the key is missing, so the first count is 1`, [`get() gives None, which can be added`, `get() creates the key with value 1`, `It does not work, it gives an error`], `The default 0 avoids a KeyError for the first time a letter is seen.`],
+  [`What does len(count) give?
 
-a = [1, 2, 3, 3]
-b = [3, 4, 5]
-print(sorted(set(a) & set(b)))`, `[3]`, [`[3, 3]`, `[1, 2, 3, 4, 5]`, `[1, 2]`], `The only common item is 3.`, `a = [1, 2, 3, 3]
-b = [3, 4, 5]
-print(sorted(set(a) & set(b)))`],
-  [`Which one is the best to remove duplicates from a list?`, `Convert it to a set`, [`Convert it to a tuple`, `Use append()`, `Use sorted() alone`], `A set keeps only unique items. Use sorted() on the result if you need an order.`],
-  [`Which collection is best for checking quickly whether an item is present?`, `A set`, [`A tuple`, `A list`, `A string`], `Membership checks on a set are very fast.`],
-  [`Which collections keep the order of their items?`, `Lists and tuples`, [`Sets and tuples`, `Lists and sets`, `Only lists`], `Sets have no order.`],
-  [`True or false: a tuple can never contain a list.`, `False`, [`True`], `A tuple can hold a list. The list can still change, but the tuple keeps the same list.`],
-  [`True or false: a set can contain a tuple such as (1, 2).`, `True`, [`False`], `A tuple is immutable, so it is allowed inside a set.`],
+count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}`, `5`, [`8`, `3`, `1`], `It counts the different words, not the total number of words.`, `count = {'the': 3, 'cat': 1, 'and': 2, 'dog': 1, 'bird': 1}
+print(len(count))`],
+  [`Which method turns a sentence into a list of words, ready for counting?`, `split()`, [`join()`, `strip()`, `count()`], `"a b c".split() gives ['a', 'b', 'c'].`],
+  [`What does groups.setdefault("a", []).append("apple") do?`, `Adds apple to the list stored under the key "a", making the list first if needed`, [`Replaces the list under "a" with apple`, `Gives an error if "a" is missing`, `Counts the words`], `setdefault gives a list to append to, even for a new key.`],
+  [`What does {n: n * n for n in range(1, 4)} give?`, `{1: 1, 2: 4, 3: 9}`, [`[1, 4, 9]`, `{1, 4, 9}`, `{1: 2, 2: 4, 3: 6}`], `This is a dictionary comprehension.`, `print({n: n * n for n in range(1, 4)})`],
+  [`What does {v: k for k, v in {"a": 1, "b": 2}.items()} give?`, `{1: 'a', 2: 'b'}`, [`{'a': 1, 'b': 2}`, `{'a', 'b'}`, `An error`], `It swaps keys and values.`, `print({v: k for k, v in {"a": 1, "b": 2}.items()})`],
+  [`True or false: a dictionary keeps the order in which pairs were added.`, `True`, [`False`], `Dictionaries remember their insertion order.`],
+  [`True or false: "x" in d checks the values of d.`, `False`, [`True`], `in checks the keys.`],
+  [`Which one would you use for a phone book?`, `A dictionary`, [`A tuple`, `A set`, `A list of numbers`], `You look up a number by a name, which is a key.`],
+  [`Which one is best for the unique words in a story?`, `A set`, [`A dictionary`, `A tuple`, `A string`], `A set keeps each item only once.`],
+  [`How do you make an empty dictionary?`, `{}`, [`set()`, `[]`, `()`], `{} is an empty dictionary, and set() is an empty set.`],
 ]

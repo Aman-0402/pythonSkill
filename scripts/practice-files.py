@@ -54,8 +54,8 @@ def program(session, label):
     return next(b['code'] for b in blocks(session) if b.get('label', '').startswith(label)).rstrip() + '\n'
 
 
-shop = next(b['code'] for b in blocks(26) if 'def make_orders' in b['code']).split('orders = make_orders()')[0]
-clean = next(b['code'] for b in blocks(27) if 'def clean_orders' in b['code'])
+shop = next(b['code'] for b in blocks(25) if 'def make_orders' in b['code']).split('orders = make_orders()')[0]
+clean = next(b['code'] for b in blocks(26) if 'def clean_orders' in b['code'])
 clean = clean[clean.index('def clean_orders'):clean.index('raw_orders = make_orders()')]
 space = {}
 exec(shop + '\n' + clean, space)
@@ -74,23 +74,23 @@ csv(pd.DataFrame({
     'maths': [85, 90, 78, 92, 66, np.nan],
     'science': [78, 88, np.nan, 95, 70, 81],
 }).astype({'maths': 'Int64', 'science': 'Int64'}), 'pandas/students.csv')
-add('Pandas', 'pandas/students.csv', '18 to 20', '6 students with two blank marks: read_csv, head, info, describe, filters')
+add('Pandas', 'pandas/students.csv', '17 to 19', '6 students with two blank marks: read_csv, head, info, describe, filters')
 
 write('pandas/marks_semicolon.csv', 'name;maths\nAman;85\nAnkit;90\nNeha;78\n')
-add('Pandas', 'pandas/marks_semicolon.csv', '19', 'values split by semicolons: use sep=";"')
+add('Pandas', 'pandas/marks_semicolon.csv', '18', 'values split by semicolons: use sep=";"')
 write('pandas/marks_no_header.csv', 'Aman,85\nAnkit,90\nNeha,78\n')
-add('Pandas', 'pandas/marks_no_header.csv', '19', 'no title line: use header=None and names=[...]')
+add('Pandas', 'pandas/marks_no_header.csv', '18', 'no title line: use header=None and names=[...]')
 write('pandas/marks_tab.tsv', 'name\tmaths\nAman\t85\nAnkit\t90\nNeha\t78\n')
-add('Pandas', 'pandas/marks_tab.tsv', '19', 'values split by tabs: use sep="\\t"')
+add('Pandas', 'pandas/marks_tab.tsv', '18', 'values split by tabs: use sep="\\t"')
 write('pandas/marks_with_dash.csv', 'name,maths\nAman,85\nAnkit,-\nNeha,NA\n')
-add('Pandas', 'pandas/marks_with_dash.csv', '19', 'a dash for a missing value: use na_values=["-"]')
+add('Pandas', 'pandas/marks_with_dash.csv', '18', 'a dash for a missing value: use na_values=["-"]')
 write('pandas/joined_dates.csv', 'name,joined\nAman,2024-01-15\nAnkit,2023-11-30\nNeha,2024-03-02\n')
-add('Pandas', 'pandas/joined_dates.csv', '19, 21', 'a date column: use parse_dates=["joined"]')
+add('Pandas', 'pandas/joined_dates.csv', '18, 20', 'a date column: use parse_dates=["joined"]')
 
 with pd.ExcelWriter(OUT / 'pandas/marks.xlsx') as writer:
     pd.DataFrame({'name': ['Aman', 'Ankit', 'Neha', 'Rohit'], 'maths': [85, 90, 78, 92], 'science': [78, 88, 70, 95]}).to_excel(writer, sheet_name='Term 1', index=False)
     pd.DataFrame({'name': ['Aman', 'Ankit', 'Neha', 'Rohit'], 'maths': [90, 95, 82, 89], 'science': [80, 91, 74, 97]}).to_excel(writer, sheet_name='Term 2', index=False)
-add('Pandas', 'pandas/marks.xlsx', '19', 'an Excel file with two sheets, Term 1 and Term 2')
+add('Pandas', 'pandas/marks.xlsx', '18', 'an Excel file with two sheets, Term 1 and Term 2')
 
 csv(pd.DataFrame({
     'Student Name': ['Aman', 'ankit ', 'Neha', 'Aman', 'ROHIT', 'Priya', 'Sana', 'Neha'],
@@ -99,7 +99,7 @@ csv(pd.DataFrame({
     'Maths': [85, 90, np.nan, 85, 92, 66, np.nan, np.nan],
     'Science': [78, 88, 70, 78, 95, 70, 81, 70],
 }), 'pandas/students_messy.csv')
-add('Pandas', 'pandas/students_messy.csv', '21', 'the messy table to clean: blanks, repeats, spaces, mixed capitals')
+add('Pandas', 'pandas/students_messy.csv', '20', 'the messy table to clean: blanks, repeats, spaces, mixed capitals')
 
 csv(pd.DataFrame({
     'name': ['Aman', 'Ankit', 'Neha', 'Rohit', 'Priya', 'Sana', 'Kabir', 'Isha'],
@@ -108,7 +108,7 @@ csv(pd.DataFrame({
     'maths': [85, 90, 78, 92, 66, 74, 81, 95],
     'science': [78, 88, 70, 95, 70, 81, 79, 91],
 }), 'pandas/class_students.csv')
-add('Pandas', 'pandas/class_students.csv', '20, 22', '8 clean students: groupby, agg, pivot_table')
+add('Pandas', 'pandas/class_students.csv', '19, 21', '8 clean students: groupby, agg, pivot_table')
 
 sales = pd.DataFrame({
     'month': ['Jan', 'Jan', 'Jan', 'Feb', 'Feb', 'Feb', 'Mar', 'Mar', 'Mar'],
@@ -117,18 +117,18 @@ sales = pd.DataFrame({
     'price': [5, 350, 800] * 3,
 })
 csv(sales, 'pandas/sales.csv')
-add('Pandas', 'pandas/sales.csv', '22', 'three months of sales for the sales summary')
+add('Pandas', 'pandas/sales.csv', '21', 'three months of sales for the sales summary')
 
 csv(pd.DataFrame({'id': [1, 2, 3, 4], 'name': ['Aman', 'Ankit', 'Neha', 'Rohit'], 'city': ['Delhi', 'Mumbai', 'Delhi', 'Pune']}), 'pandas/merge_students.csv')
-add('Pandas', 'pandas/merge_students.csv', '23', 'the left table for merge')
+add('Pandas', 'pandas/merge_students.csv', '22', 'the left table for merge')
 csv(pd.DataFrame({'id': [1, 2, 3, 5], 'maths': [85, 90, 78, 60]}), 'pandas/merge_marks.csv')
-add('Pandas', 'pandas/merge_marks.csv', '23', 'the right table for merge; ids 4 and 5 do not match')
+add('Pandas', 'pandas/merge_marks.csv', '22', 'the right table for merge; ids 4 and 5 do not match')
 csv(pd.DataFrame({'id': [1, 1, 2, 2, 2], 'test': ['T1', 'T2', 'T1', 'T2', 'T3'], 'score': [80, 90, 70, 75, 95]}), 'pandas/merge_tests.csv')
-add('Pandas', 'pandas/merge_tests.csv', '23', 'one student, many tests: a one-to-many merge')
+add('Pandas', 'pandas/merge_tests.csv', '22', 'one student, many tests: a one-to-many merge')
 csv(pd.DataFrame({'item': ['pen', 'book'], 'qty': [10, 2]}), 'pandas/sales_jan.csv')
-add('Pandas', 'pandas/sales_jan.csv', '23', 'stack this with sales_feb.csv using concat')
+add('Pandas', 'pandas/sales_jan.csv', '22', 'stack this with sales_feb.csv using concat')
 csv(pd.DataFrame({'item': ['pen', 'bag'], 'qty': [15, 1]}), 'pandas/sales_feb.csv')
-add('Pandas', 'pandas/sales_feb.csv', '23', 'stack this with sales_jan.csv using concat')
+add('Pandas', 'pandas/sales_feb.csv', '22', 'stack this with sales_jan.csv using concat')
 
 # ---------- charts ----------
 csv(pd.DataFrame({
@@ -137,7 +137,7 @@ csv(pd.DataFrame({
     'books': [20, 25, 30, 28, 35, 40],
     'bags': [10, 8, 12, 15, 11, 18],
 }), 'charts/monthly_sales.csv')
-add('Charts', 'charts/monthly_sales.csv', '24', 'six months of sales: line, bar and pie charts')
+add('Charts', 'charts/monthly_sales.csv', '23', 'six months of sales: line, bar and pie charts')
 
 rng = np.random.default_rng(7)
 n = 60
@@ -145,21 +145,21 @@ hours = rng.uniform(1, 8, n).round(1)
 study = pd.DataFrame({'city': rng.choice(['Delhi', 'Mumbai', 'Pune'], n), 'gender': rng.choice(['F', 'M'], n), 'hours': hours, 'absent': rng.integers(0, 10, n)})
 study['marks'] = (35 + hours * 6 - study['absent'] * 1.5 + rng.normal(0, 6, n)).clip(0, 100).round(0).astype(int)
 csv(study, 'charts/study_hours.csv')
-add('Charts', 'charts/study_hours.csv', '24, 25', '60 students from the Seaborn lesson: box plot, scatter plot, heatmap, correlation')
+add('Charts', 'charts/study_hours.csv', '23, 24', '60 students from the Seaborn lesson: box plot, scatter plot, heatmap, correlation')
 
-# ---------- file handling (session 14 and 15) ----------
+# ---------- file handling (session 13 and 14) ----------
 write('file-handling/marks.csv', 'name,maths,science\nAman,85,78\nAnkit,90,88\nNeha,78,70\n')
-add('File handling', 'file-handling/marks.csv', '14, 18', 'read it with the csv module, then with pandas')
+add('File handling', 'file-handling/marks.csv', '13, 17', 'read it with the csv module, then with pandas')
 write('file-handling/people.csv', 'name,age,city\nAman,20,Delhi\nNeha,21,Pune\n')
-add('File handling', 'file-handling/people.csv', '14', 'a CSV to read with csv.DictReader')
+add('File handling', 'file-handling/people.csv', '13', 'a CSV to read with csv.DictReader')
 write('file-handling/marks.txt', 'Aman 85\nAnkit 90\nNeha 78\nRohit 92\n')
-add('File handling', 'file-handling/marks.txt', '14', 'one student per line: split each line')
+add('File handling', 'file-handling/marks.txt', '13', 'one student per line: split each line')
 write('file-handling/poem.txt', 'Twinkle twinkle little star\nHow I wonder what you are\nUp above the world so high\nLike a diamond in the sky\n')
-add('File handling', 'file-handling/poem.txt', '14', 'count the lines and the words')
+add('File handling', 'file-handling/poem.txt', '13', 'count the lines and the words')
 write('file-handling/todo.txt', 'buy milk\nfinish homework\ncall a friend\n')
-add('File handling', 'file-handling/todo.txt', '14', 'the list used by todo.py')
+add('File handling', 'file-handling/todo.txt', '13', 'the list used by todo.py')
 write('file-handling/scores.txt', '85\n90\nabsent\n78\n')
-add('File handling', 'file-handling/scores.txt', '15', 'one bad line on purpose: catch the ValueError')
+add('File handling', 'file-handling/scores.txt', '14', 'one bad line on purpose: catch the ValueError')
 
 # ---------- programs that need your own computer ----------
 programs = [
@@ -174,32 +174,32 @@ for path, session, label, nth, what in programs:
     write(f'programs/{path}', code)
     add('Programs', f'programs/{path}', str(session), what)
 for path, session, label, what in [
-    ('session-10/marks_manager.py', 10, 'marks_manager.py', 'the marks manager project'),
-    ('session-10/contact_book.py', 10, 'contact_book.py', 'the contact book project'),
-    ('session-11/read_number.py', 11, 'read_number.py', 'a function that keeps asking until the input is valid'),
-    ('session-13/shapes.py', 13, 'File 1: shapes.py', 'your own module'),
-    ('session-13/main.py', 13, 'File 2: main.py', 'imports shapes.py from the same folder'),
-    ('session-13/my_project/main.py', 13, 'main.py', 'imports from the tools package'),
-    ('session-14/todo.py', 14, 'todo.py', 'a to-do list saved in todo.txt'),
-    ('session-15/safe_input.py', 15, 'safe_input.py', 'input() made safe with try and except'),
+    ('session-09/marks_manager.py', 9, 'marks_manager.py', 'the marks manager project'),
+    ('session-09/contact_book.py', 9, 'contact_book.py', 'the contact book project'),
+    ('session-10/read_number.py', 10, 'read_number.py', 'a function that keeps asking until the input is valid'),
+    ('session-12/shapes.py', 12, 'File 1: shapes.py', 'your own module'),
+    ('session-12/main.py', 12, 'File 2: main.py', 'imports shapes.py from the same folder'),
+    ('session-12/my_project/main.py', 12, 'main.py', 'imports from the tools package'),
+    ('session-13/todo.py', 13, 'todo.py', 'a to-do list saved in todo.txt'),
+    ('session-14/safe_input.py', 14, 'safe_input.py', 'input() made safe with try and except'),
 ]:
     write(f'programs/{path}', program(session, label))
     add('Programs', f'programs/{path}', str(session), what)
-write('programs/session-13/my_project/tools/__init__.py', '')
-write('programs/session-13/my_project/tools/maths.py', 'def double(x):\n    return x * 2\n')
-add('Programs', 'programs/session-13/my_project/tools/maths.py', '13', 'a module inside the tools package')
-write('programs/session-13/my_project/tools/text.py', 'def shout(text):\n    return text.upper() + "!"\n')
-add('Programs', 'programs/session-13/my_project/tools/text.py', '13', 'a module inside the tools package')
+write('programs/session-12/my_project/tools/__init__.py', '')
+write('programs/session-12/my_project/tools/maths.py', 'def double(x):\n    return x * 2\n')
+add('Programs', 'programs/session-12/my_project/tools/maths.py', '12', 'a module inside the tools package')
+write('programs/session-12/my_project/tools/text.py', 'def shout(text):\n    return text.upper() + "!"\n')
+add('Programs', 'programs/session-12/my_project/tools/text.py', '12', 'a module inside the tools package')
 
 # ---------- capstone ----------
 csv(orders_raw, 'capstone/data/raw/orders.csv')
-add('Capstone', 'capstone/data/raw/orders.csv', '26 to 29', 'the messy online shop orders, 308 rows. Never edit this one by hand')
+add('Capstone', 'capstone/data/raw/orders.csv', '25 to 28', 'the messy online shop orders, 308 rows. Never edit this one by hand')
 csv(orders_clean, 'capstone/data/clean/orders_clean.csv')
-add('Capstone', 'capstone/data/clean/orders_clean.csv', '27 to 29', 'the same orders after clean_orders, 298 rows, to check your own result')
+add('Capstone', 'capstone/data/clean/orders_clean.csv', '26 to 28', 'the same orders after clean_orders, 298 rows, to check your own result')
 write('capstone/requirements.txt', 'pandas\nnumpy\nmatplotlib\nseaborn\nopenpyxl\nnotebook\n')
-add('Capstone', 'capstone/requirements.txt', '29', 'install everything with: pip install -r requirements.txt')
-write('capstone/README.md', next(b['code'] for b in blocks(29) if b.get('label', '').startswith('README.md')).rstrip() + '\n')
-add('Capstone', 'capstone/README.md', '29', 'a README template to fill in')
+add('Capstone', 'capstone/requirements.txt', '28', 'install everything with: pip install -r requirements.txt')
+write('capstone/README.md', next(b['code'] for b in blocks(28) if b.get('label', '').startswith('README.md')).rstrip() + '\n')
+add('Capstone', 'capstone/README.md', '28', 'a README template to fill in')
 
 
 def md(*lines):
@@ -233,7 +233,7 @@ notebook = {
     ],
 }
 write('capstone/notebook.ipynb', json.dumps(notebook, indent=1) + '\n')
-add('Capstone', 'capstone/notebook.ipynb', '27 to 29', 'a starter notebook in the layout from session 29')
+add('Capstone', 'capstone/notebook.ipynb', '26 to 28', 'a starter notebook in the layout from session 28')
 
 # ---------- the guide, the website's list, and the zip ----------
 lines = ['PYTHON PRACTICE FILES', '=====================', '',

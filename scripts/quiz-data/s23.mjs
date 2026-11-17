@@ -1,21 +1,21 @@
-// Session 23: Sorting, Merging and Joining
+// Session 23: Matplotlib
 // [question, right answer, [wrong answers], explanation, optional Python that prints the right answer]
 
 export default [
-  [`How do you sort by maths with the highest first?`, `df.sort_values("maths", ascending=False)`, [`df.sort("maths", high=True)`, `df.order("maths")`, `df.sort_values("maths", reverse=True)`], `ascending=False puts the biggest first.`],
-  [`What does sort_values(["city", "maths"]) do with ties in city?`, `Uses maths to break them`, [`Removes them`, `Leaves a blank`, `Gives an error`], `The list gives the order of sorting.`],
-  [`What does reset_index(drop=True) do after sorting?`, `Renumbers the rows and forgets the old numbers`, [`Sorts the rows again`, `Drops the first row`, `Adds a new index column`], `Without drop=True the old index becomes a column.`],
-  [`Which gives the top 2 rows by maths?`, `df.nlargest(2, "maths")`, [`df.top(2, "maths")`, `df.max(2)`, `df.head("maths", 2)`], `It is quicker than sort plus head.`],
-  [`Two students tie on the top mark. What rank do both get with method="min"?`, `1`, [`1.5`, `2`, `0`], `The default method would give both 1.5.`],
-  [`What does pd.concat([jan, feb]) do?`, `Stacks the rows of the two tables`, [`Matches the rows by id`, `Adds the numbers together`, `Compares the tables`], `The tables go in a list.`],
-  [`Why use ignore_index=True in concat?`, `To renumber the rows from 0`, [`To ignore the columns`, `To remove duplicates`, `To keep the old numbers`], `Otherwise you see 0, 1, 0, 1.`],
-  [`In concat, what happens to a column found in only one table?`, `It is filled with NaN for the other rows`, [`It is dropped`, `It causes an error`, `It is filled with 0`], `Columns are matched by name.`],
-  [`Which is the default kind of join in merge?`, `inner`, [`left`, `right`, `outer`], `Inner keeps only keys found in both tables.`],
-  [`Which how= keeps every row of the left table?`, `left`, [`inner`, `right`, `cross`], `Rows with no match get NaN.`],
-  [`Which how= keeps every row of both tables?`, `outer`, [`inner`, `left`, `both`], `It is useful for finding what does not match.`],
-  [`What does indicator=True add to a merge?`, `A _merge column saying where each row came from`, [`A row number`, `A chart`, `A count of matches`], `It shows both, left_only or right_only.`],
-  [`When the key has a different name in each table, what do you use?`, `left_on and right_on`, [`on_left and on_right`, `key1 and key2`, `rename_on`], `Both columns stay, so drop the extra one.`],
-  [`What do the _x and _y endings after a merge mean?`, `Both tables had a column with that name`, [`The columns are x and y axes`, `The merge failed`, `The rows were doubled`], `Use suffixes= for clearer names.`],
-  [`Why can a merge give more rows than the left table?`, `The right table has repeated keys`, [`merge adds blank rows`, `Inner joins always grow`, `It cannot`], `Check len() before and after.`],
-  [`What does df.apply(f, axis=1) call f on?`, `Each row`, [`Each column`, `Each cell`, `The whole table once`], `Use row["maths"] inside the function.`],
+  [`How do we normally import Matplotlib's drawing module?`, `import matplotlib.pyplot as plt`, [`import matplotlib as plot`, `import plt`, `from pyplot import matplotlib`], `plt is the common short name.`],
+  [`Which chart suits change over time?`, `Line`, [`Pie`, `Histogram`, `Box plot`], `Lines show a trend.`],
+  [`Which chart suits comparing categories?`, `Bar`, [`Line`, `Scatter`, `Histogram`], `One bar per category.`],
+  [`What does plt.show() do on your own computer?`, `Displays the chart`, [`Saves the chart`, `Deletes the chart`, `Adds a title`], `Everything before it is drawing on the page.`],
+  [`Which pair names the axes?`, `plt.xlabel and plt.ylabel`, [`plt.title and plt.legend`, `plt.grid and plt.show`, `plt.xaxis and plt.yaxis`], `Always add them, with units.`],
+  [`What must you add for plt.legend() to show names?`, `label= in each plot call`, [`title= in plt.show`, `name= in plt.legend only`, `Nothing at all`], `The legend reads the labels.`],
+  [`What does the format string "ro--" mean?`, `Red, circle markers, dashed line`, [`Round orange line`, `Rows and columns`, `Red outline only`], `Colour, marker, line style.`],
+  [`Why should bars start at 0?`, `Otherwise small differences look huge`, [`Matplotlib requires it`, `It makes them load faster`, `Bars cannot be negative`], `Use plt.ylim(0, 100) to fix the range.`],
+  [`Which call makes horizontal bars?`, `plt.barh`, [`plt.hbar`, `plt.bar(side=True)`, `plt.flatbar`], `It is easier to read with long names.`],
+  [`What does autopct="%1.1f%%" do in a pie?`, `Prints each slice's percentage`, [`Rotates the pie`, `Colours the slices`, `Makes the pie round`], `One decimal place and a percent sign.`],
+  [`When is a pie a poor choice?`, `With many categories`, [`With 3 categories`, `When parts add up to a whole`, `When you have labels`], `Use a bar chart instead.`],
+  [`What does bins=5 do in plt.hist?`, `Cuts the range into 5 pieces`, [`Draws 5 charts`, `Keeps 5 values`, `Makes the bars 5 wide`], `Each bar counts the values in one piece.`],
+  [`How does a histogram differ from a bar chart?`, `It shows how one number is spread`, [`It has no bars`, `It compares categories`, `It only shows time`], `A bar chart compares categories.`],
+  [`What does plt.subplots(1, 2) make?`, `One row and two columns of charts`, [`Two rows and one column`, `Twelve charts`, `One chart with two lines`], `axes[0] and axes[1] are the two charts.`],
+  [`On an ax object, which sets the title?`, `ax.set_title("...")`, [`ax.title("...")`, `ax.plt_title("...")`, `ax.head("...")`], `Likewise set_xlabel and set_ylabel.`],
+  [`When should you call savefig on your own computer?`, `Before plt.show()`, [`After plt.show()`, `Before plotting`, `Only inside a loop`], `After show you may save a blank picture.`],
 ]
