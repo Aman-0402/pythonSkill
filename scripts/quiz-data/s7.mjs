@@ -35,13 +35,6 @@ t = t + (40,)
 print(t)`, `(10, 20, 30, 40)`, [`(10, 20, 30, (40,))`, `(40, 10, 20, 30)`, `An error`], `You cannot change a tuple, but you can build a new one and reuse the name.`, `t = (10, 20, 30)
 t = t + (40,)
 print(t)`],
-  [`What is printed?
-
-t = (1, [2, 3])
-t[1].append(4)
-print(t)`, `(1, [2, 3, 4])`, [`(1, [2, 3])`, `An error`, `(1, 2, 3, 4)`], `The tuple keeps the same list, and the list itself can still change.`, `t = (1, [2, 3])
-t[1].append(4)
-print(t)`],
   [`What does (1, 2) + (3, 4) give?`, `(1, 2, 3, 4)`, [`(4, 6)`, `((1, 2), (3, 4))`, `[1, 2, 3, 4]`], `+ joins two tuples into a new one.`, `print((1, 2) + (3, 4))`],
   [`What is printed?
 
@@ -108,10 +101,6 @@ print(s)`],
   [`What does {1, 2, 3, 4} & {3, 4, 5, 6} give?`, `{3, 4}`, [`{1, 2, 3, 4, 5, 6}`, `{1, 2}`, `{1, 2, 5, 6}`], `& is intersection, only what is in both.`, `print({1, 2, 3, 4} & {3, 4, 5, 6})`],
   [`What does {1, 2, 3, 4} - {3, 4, 5, 6} give?`, `{1, 2}`, [`{5, 6}`, `{3, 4}`, `{1, 2, 5, 6}`], `- is difference, in the first set but not in the second.`, `print({1, 2, 3, 4} - {3, 4, 5, 6})`],
   [`What does {1, 2, 3, 4} ^ {3, 4, 5, 6} give?`, `{1, 2, 5, 6}`, [`{3, 4}`, `{1, 2, 3, 4, 5, 6}`, `{1, 2}`], `^ is symmetric difference, in one set but not in both.`, `print({1, 2, 3, 4} ^ {3, 4, 5, 6})`],
-  [`What does {1, 2} <= {1, 2, 3} check?`, `Whether the first set is a subset of the second`, [`Whether they have nothing in common`, `Whether the first set is bigger`, `Whether they are equal`], `<= is the same as issubset().`],
-  [`What does {1, 2}.isdisjoint({3, 4}) give?`, `True`, [`False`, `{}`, `An error`], `The two sets have nothing in common, so they are disjoint.`, `print({1, 2}.isdisjoint({3, 4}))`],
-  [`What does a |= {4} do to the set a?`, `Adds 4 to a in place`, [`Makes a new set and leaves a alone`, `Removes 4 from a`, `Gives an error`], `|= is the in-place union.`],
-  [`What is a frozenset?`, `An immutable set`, [`A set with no items`, `A set that keeps its order`, `A list of sets`], `It cannot be changed, so add() gives an error.`],
   [`What is printed?
 
 a = [1, 2, 3, 3]
