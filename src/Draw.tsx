@@ -44,7 +44,8 @@ const SHAPE_TOOLS = ['line', 'arrow', 'rect', 'ellipse']
 
 // Code boxes call this to show their code on the white screen
 // run: show a Run button and print the output under the code. full: a dark full-screen code view instead of the white screen.
-export type BoardOptions = { run?: boolean; full?: boolean }
+// onChange: called with the new code when the student edits it on the board, so the code box behind it stays in step.
+export type BoardOptions = { run?: boolean; full?: boolean; onChange?: (code: string) => void }
 type BoardCode = BoardOptions & { code: string; title?: string }
 export function openBoard(code: string, title?: string, options: BoardOptions = {}) {
   window.dispatchEvent(new CustomEvent('open-board', { detail: { code, title, ...options } }))
@@ -205,6 +206,7 @@ export default function Draw() {
   const [boardCode, setBoardCode] = useState<BoardCode | null>(null)
   const [boardOut, setBoardOut] = useState<PyResult | null>(null) // what the code printed when Run was pressed on the board
   const [boardStatus, setBoardStatus] = useState<'idle' | 'loading' | 'running'>('idle')
+  const [editing, setEditing] = useState(false) // the code on the board can be typed in
   const [codeT, setCodeT] = useState({ x: 0, y: 0, s: 1 }) // where the code sits on the board, and its zoom
   const [codeSel, setCodeSel] = useState(false)
   const [, bump] = useState(0)
@@ -289,6 +291,7 @@ export default function Draw() {
       setEdit(null)
       setBoardCode(d)
       setBoardOut(null)
+      setEditing(false)
       if (d.full) setColor((c) => (c === COLORS[4] ? COLORS[3] : c)) // dark ink would vanish on the dark screen
       setPen(false)
       setOpen(true)
@@ -616,6 +619,10 @@ export default function Draw() {
     setBoardOut(await runPython(boardCode.code, setBoardStatus))
     setBoardStatus('idle')
   }
+  const editBoardCode = (code: string) => {
+    setBoardCode((b) => (b ? { ...b, code } : b))
+    boardCode?.onChange?.(code)
+  }
 
   const canvasClass = (extra: string) => 'draw-layer' + extra + ' tool-' + tool
   const px = edit ? textPx(edit.item?.size ?? size) : 0
@@ -628,7 +635,33 @@ export default function Draw() {
           {boardCode && (
             <div ref={codeRef} className={'draw-board-code' + (codeSel ? ' sel' : '')} style={{ transform: `translate(${codeT.x}px, ${codeT.y}px) scale(${codeT.s})` }}>
               {boardCode.title && <p>{boardCode.title}</p>}
-              <pre><Code code={boardCode.code} label={boardCode.title} /></pre>
+              {editing && boardCode.run ? (
+                <div className="board-edit">
+                  <pre aria-hidden="true"><Code code={boardCode.code + '\n'} /></pre>
+                  <textarea
+                    autoFocus
+                    value={boardCode.code}
+                    spellCheck={false}
+                    wrap="off"
+                    aria-label="Python code you can edit and run"
+                    onChange={(e) => editBoardCode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Tab') {
+                        e.preventDefault()
+                        const el = e.currentTarget
+                        const { selectionStart: a, selectionEnd: b } = el
+                        editBoardCode(boardCode.code.slice(0, a) + '    ' + boardCode.code.slice(b))
+                        requestAnimationFrame(() => el.setSelectionRange(a + 4, a + 4))
+                      } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault()
+                        runOnBoard()
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <pre><Code code={boardCode.code} label={boardCode.title} /></pre>
+              )}
               {boardOut && (
                 <div className={'draw-board-out' + (boardOut.error ? ' err' : '')}>
                   <span>{boardOut.error ? 'Error' : 'Output'}</span>
@@ -641,13 +674,20 @@ export default function Draw() {
               {codeSel && <span className="draw-handle" style={{ width: 16 / codeT.s, height: 16 / codeT.s, right: -8 / codeT.s, bottom: -8 / codeT.s }} />}
             </div>
           )}
-          <canvas ref={boardCanvas} className={canvasClass(' board live')} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
-          <button className="draw-board-close" onClick={() => setBoard(false)}>✕ {boardCode?.full ? 'Close' : 'Close board'}</button>
-          {boardCode?.run && (
-            <button className="draw-board-close draw-board-run" onClick={runOnBoard} disabled={boardStatus !== 'idle'}>
-              {boardStatus === 'loading' ? 'Loading Python…' : boardStatus === 'running' ? 'Running…' : boardOut ? '▶ Run again' : '▶ Run'}
-            </button>
-          )}
+          <canvas ref={boardCanvas} className={canvasClass(' board live' + (editing ? ' no-ink' : ''))} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onDoubleClick={onDouble} onWheel={onWheel} />
+          <div className="draw-board-btns">
+            <button className="draw-board-close" onClick={() => setBoard(false)}>✕ {boardCode?.full ? 'Close' : 'Close board'}</button>
+            {boardCode?.run && (
+              <button className="draw-board-close draw-board-run" onClick={runOnBoard} disabled={boardStatus !== 'idle'}>
+                {boardStatus === 'loading' ? 'Loading Python…' : boardStatus === 'running' ? 'Running…' : boardOut ? '▶ Run again' : '▶ Run'}
+              </button>
+            )}
+            {boardCode?.run && (
+              <button className={'draw-board-close draw-board-edit' + (editing ? ' on' : '')} onClick={() => setEditing((v) => !v)} title="Type in the code here, then press Run (Ctrl+Enter). Press again to go back to drawing.">
+                {editing ? '✓ Done editing' : '✎ Edit code'}
+              </button>
+            )}
+          </div>
         </div>
       )}
       {edit && (

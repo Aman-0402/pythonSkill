@@ -24,7 +24,7 @@ export default function TryIt({ code, label }: { code: string; label?: string })
       <figcaption>
         <span>{label ?? 'Try it'}</span>
         <span className="try-actions">
-          <button type="button" className="try-reset icon-btn" aria-label="Full screen" onClick={() => openBoard(source, label, { run: true, full: true })} title="Show this code full screen, run it and see the output, and draw on it to explain">
+          <button type="button" className="try-reset icon-btn" aria-label="Full screen" onClick={() => openBoard(source, label, { run: true, full: true, onChange: setSource })} title="Show this code full screen, run it and see the output, and draw on it to explain">
             <i>⛶</i> <span>Full screen</span>
           </button>
           <button type="button" className="try-reset icon-btn" aria-label="Board" onClick={() => openBoard(source, label, { run: true })} title="Show this code on a white screen to explain it">

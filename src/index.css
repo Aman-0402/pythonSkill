@@ -683,7 +683,7 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .draw-board-code p { margin: 0 0 12px; font: 600 1rem var(--mono); color: #6b7a90; }
 .draw-board-code pre { margin: 0; font: clamp(1.4rem, 2.6vw, 2.4rem)/1.7 var(--mono); }
 .draw-board-close { position: absolute; top: 14px; left: 14px; z-index: 3; padding: 8px 16px; font: 600 0.9rem var(--body); color: #fff; background: #10203a; border: 0; border-radius: 999px; cursor: pointer; }
-.draw-board-run { left: 150px; background: #16a34a; }
+.draw-board-run { background: #16a34a; }
 .draw-board-run:disabled { opacity: 0.65; cursor: default; }
 .draw-board.full { background: #1e1e1e; }
 .draw-board.full .draw-board-code { color: #d4d4d4; }
@@ -731,7 +731,18 @@ body { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; 
 .draw-text { position: fixed; z-index: 120; min-width: 140px; margin: 0; padding: 0; background: transparent; border: 0; outline: 2px dashed #2563eb; outline-offset: 3px; resize: none; overflow: hidden; field-sizing: content; white-space: pre; }
 .draw-text::placeholder { color: #94a3b8; }
 @media print { .draw-panel, .draw-layer, .draw-text { display: none; } }
-.draw-board.full .draw-board-run { left: 112px; }
+.draw-board-btns { position: absolute; top: 14px; left: 14px; z-index: 3; display: flex; flex-wrap: wrap; gap: 8px; }
+.draw-board-btns .draw-board-close { position: static; }
+.draw-board .draw-board-btns .draw-board-edit { background: #7c3aed; }
+.draw-board .draw-board-btns .draw-board-edit.on { background: #f59e0b; color: #1b1300; }
+.draw-layer.no-ink { pointer-events: none; }
+.board-edit { display: grid; min-width: 14ch; font: clamp(1.4rem, 2.6vw, 2.4rem)/1.7 var(--mono); }
+.draw-board.full .board-edit { font-size: clamp(1.8rem, 3.2vw, 3rem); }
+.board-edit > pre, .board-edit > textarea { grid-area: 1 / 1; margin: 0; padding: 0; font: inherit; line-height: inherit; tab-size: 4; white-space: pre; }
+.board-edit > pre { pointer-events: none; }
+.board-edit > textarea { position: relative; z-index: 1; width: 100%; height: 100%; resize: none; overflow: hidden; border: 0; outline: 2px dashed #f59e0b; outline-offset: 10px; background: transparent; color: transparent; caret-color: #fff; }
+.draw-board:not(.full) .board-edit > textarea { caret-color: #0f1b2d; }
+.board-edit > textarea::selection { color: transparent; background: rgba(38, 79, 120, 0.55); }
 
 /* Quick quiz slides */
 .quiz { display: grid; gap: 18px; }
