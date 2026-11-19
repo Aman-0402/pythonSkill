@@ -3252,41 +3252,6 @@ print(total)`,
 for i in range(len(fruits)):
     print(i, fruits[i])`,
           },
-          { type: 'h3', text: 'When you also need the index: enumerate()' },
-          {
-            type: 'p',
-            text: '`enumerate()` hands you the **index and the item together**, which is shorter and harder to get wrong.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`fruits = ["apple", "banana", "mango"]
-for i, fruit in enumerate(fruits):
-    print(i, fruit)`,
-          },
-          { type: 'h3', text: 'With a while loop' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`fruits = ["apple", "banana", "mango"]
-i = 0
-while i < len(fruits):
-    print(fruits[i])
-    i += 1`,
-          },
-          { type: 'h3', text: 'Building a list in a loop' },
-          {
-            type: 'p',
-            text: 'Start with an **empty list**, then `append()` inside the loop.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`squares = []
-for n in range(1, 6):
-    squares.append(n * n)
-print(squares)`,
-          },
           { type: 'h3', text: 'A shorter way (preview)' },
           {
             type: 'p',

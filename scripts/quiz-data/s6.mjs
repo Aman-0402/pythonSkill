@@ -135,7 +135,6 @@ b.append(4)
 print(a)`],
   [`Which line makes a real copy of the list a?`, `a.copy()`, [`b = a`, `a == a`, `len(a)`], `a[:] also makes a copy.`],
   [`Which loop goes through every item of a list called fruits?`, `for fruit in fruits:`, [`for fruit of fruits`, `for (fruit in fruits)`, `loop fruit in fruits:`], `The loop variable takes one item at a time.`],
-  [`What does enumerate(fruits) give you in a loop?`, `The index and the item together`, [`Only the items`, `Only the indexes in reverse`, `The length of the list`], `for i, fruit in enumerate(fruits): gives both.`],
   [`What is printed?
 
 squares = []
