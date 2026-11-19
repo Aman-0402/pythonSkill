@@ -3588,6 +3588,17 @@ t.append(40)`,
 t = t + (40,)
 print(t)`,
           },
+          { type: 'h3', text: 'Repeat a tuple' },
+          {
+            type: 'p',
+            text: '`*` repeats a tuple. It also makes a **new** tuple.',
+          },
+          {
+            type: 'code',
+            runnable: true,
+            code: raw`a = (1, 2)
+print(a * 3)`,
+          },
         ],
       },
       {
