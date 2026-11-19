@@ -3450,13 +3450,6 @@ print(len(nums))`,
             code: raw`colors = ("red", "green", "blue")
 print(colors)`,
           },
-          { type: 'h3', text: 'A tuple of numbers' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`point = (3, 4)
-print(point)`,
-          },
           { type: 'h3', text: 'A mixed tuple' },
           {
             type: 'p',
@@ -3467,28 +3460,6 @@ print(point)`,
             runnable: true,
             code: raw`mixed = (1, "two", 3.0)
 print(mixed)`,
-          },
-          { type: 'h3', text: 'An empty tuple' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`empty = ()
-print(empty)
-print(len(empty))`,
-          },
-          { type: 'h3', text: 'How many items: len()' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`colors = ("red", "green", "blue")
-print(len(colors))`,
-          },
-          { type: 'h3', text: 'Check the type' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`point = (3, 4)
-print(type(point))`,
           },
           { type: 'h3', text: 'Three facts about a tuple' },
           {
@@ -3521,18 +3492,6 @@ print(type(a))`,
             code: raw`b = (5,)
 print(type(b))`,
           },
-          { type: 'h3', text: 'tuple() from a word' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`print(tuple("abc"))`,
-          },
-          { type: 'h3', text: 'tuple() from a range' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`print(tuple(range(3)))`,
-          },
         ],
       },
       {
@@ -3563,13 +3522,6 @@ print(days[-1])`,
             code: raw`days = ("Mon", "Tue", "Wed", "Thu", "Fri")
 print(days[1:3])`,
           },
-          { type: 'h3', text: 'Reverse a tuple' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`days = ("Mon", "Tue", "Wed", "Thu", "Fri")
-print(days[::-1])`,
-          },
           { type: 'h3', text: 'Is it in the tuple?' },
           {
             type: 'code',
@@ -3598,19 +3550,6 @@ print(t.count(2))`,
             runnable: true,
             code: raw`t = (1, 2, 2, 3, 2)
 print(t.index(3))`,
-          },
-          { type: 'h3', text: 'A tuple has only two methods' },
-          {
-            type: 'p',
-            text: 'Because a tuple cannot change, both methods only **read**.',
-          },
-          {
-            type: 'table',
-            head: ['Method', 'What it does'],
-            rows: [
-              ['`count(x)`', 'how many times `x` appears'],
-              ['`index(x)`', 'position of the **first** `x`'],
-            ],
           },
         ],
       },
@@ -3647,42 +3586,6 @@ t.append(40)`,
             runnable: true,
             code: raw`t = (10, 20, 30)
 t = t + (40,)
-print(t)`,
-          },
-          { type: 'h3', text: 'Join two tuples' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = (1, 2)
-b = (3, 4)
-print(a + b)`,
-          },
-          { type: 'h3', text: 'Repeat a tuple' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = (1, 2)
-print(a * 3)`,
-          },
-          { type: 'h3', text: 'Tuple to list' },
-          {
-            type: 'p',
-            text: 'To change a tuple: turn it into a **list**, change the list.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`t = (3, 1, 2)
-items = list(t)
-items.sort()
-print(items)`,
-          },
-          { type: 'h3', text: 'List back to tuple' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`items = [1, 2, 3]
-t = tuple(items)
 print(t)`,
           },
         ],
@@ -3766,27 +3669,6 @@ print(city)`,
 a, b = b, a
 print(a, b)`,
           },
-          { type: 'h3', text: 'Star: collect the rest' },
-          {
-            type: 'p',
-            text: 'A variable with a **star** `*` takes all the **extra items** as a list.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`first, *rest = (1, 2, 3, 4)
-print(first)
-print(rest)`,
-          },
-          { type: 'h3', text: 'Star in the middle' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a, *mid, z = (1, 2, 3, 4, 5)
-print(a)
-print(mid)
-print(z)`,
-          },
           { type: 'h3', text: 'Unpacking in a for loop' },
           {
             type: 'code',
@@ -3798,17 +3680,8 @@ for n, word in pairs:
           { type: 'h3', text: 'A function can return two values' },
           {
             type: 'p',
-            text: 'It really returns **one tuple**.',
+            text: 'The two values come back as **one tuple**, so we can unpack them.',
           },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`def pair():
-    return 1, 2
-
-print(pair())`,
-          },
-          { type: 'h3', text: 'Catch both values' },
           {
             type: 'code',
             runnable: true,
@@ -3846,13 +3719,6 @@ print(s)`,
             code: raw`s = {3, 1, 2, 3, 1}
 print(s)`,
           },
-          { type: 'h3', text: 'How many items: len()' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`s = {3, 1, 2, 3, 1}
-print(len(s))`,
-          },
           { type: 'h3', text: 'Four facts about a set' },
           {
             type: 'ul',
@@ -3881,22 +3747,6 @@ print(s[0])`,
             runnable: true,
             code: raw`print(type({}))
 print(type(set()))`,
-          },
-          { type: 'h3', text: 'set() from a list' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`print(set([1, 2, 2, 3, 3, 3]))`,
-          },
-          { type: 'h3', text: 'set() from a word' },
-          {
-            type: 'p',
-            text: 'How many **different letters** are in "hello"?',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`print(len(set("hello")))`,
           },
           { type: 'h3', text: 'Remove duplicates from a list' },
           {
@@ -3928,28 +3778,6 @@ print(list(set(nums)))`,
 print(2 in s)
 print(9 in s)`,
           },
-          { type: 'h3', text: 'Loop over a set' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`s = {1, 2, 3}
-for n in s:
-    print(n)`,
-          },
-          { type: 'h3', text: 'A list cannot go inside a set' },
-          {
-            type: 'code',
-            label: 'Try it: read the error',
-            runnable: true,
-            code: raw`s = {[1, 2], 3}`,
-          },
-          { type: 'h3', text: 'A tuple can' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`s = {(1, 2), 3}
-print(len(s))`,
-          },
         ],
       },
       {
@@ -3967,18 +3795,6 @@ print(len(s))`,
 s.add(3)
 print(s)`,
           },
-          { type: 'h3', text: 'Adding what is already there' },
-          {
-            type: 'p',
-            text: 'Nothing happens, and there is **no error**.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`s = {1, 2, 3}
-s.add(2)
-print(s)`,
-          },
           { type: 'h3', text: 'update(): add many' },
           {
             type: 'code',
@@ -3994,14 +3810,6 @@ print(s)`,
             code: raw`s = {1, 2, 3, 4, 5}
 s.remove(5)
 print(s)`,
-          },
-          { type: 'h3', text: 'remove() of a missing item' },
-          {
-            type: 'code',
-            label: 'Try it: read the error',
-            runnable: true,
-            code: raw`s = {1, 2, 3}
-s.remove(99)`,
           },
           { type: 'h3', text: 'discard(): no error' },
           {
@@ -4086,36 +3894,6 @@ print(a & b)`,
 b = {3, 4, 5, 6}
 print(a - b)`,
           },
-          { type: 'h3', text: 'Difference: the order matters' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = {1, 2, 3, 4}
-b = {3, 4, 5, 6}
-print(b - a)`,
-          },
-          { type: 'h3', text: 'Symmetric difference: in one, not both' },
-          {
-            type: 'p',
-            text: '`a ^ b` gives what is in **only one** of the sets.',
-          },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = {1, 2, 3, 4}
-b = {3, 4, 5, 6}
-print(a ^ b)`,
-          },
-          { type: 'h3', text: 'The same, with methods' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`a = {1, 2, 3, 4}
-b = {3, 4, 5, 6}
-print(a.union(b))
-print(a.intersection(b))
-print(a.difference(b))`,
-          },
           { type: 'h3', text: 'Operations in one table' },
           {
             type: 'table',
@@ -4143,22 +3921,6 @@ print(a.difference(b))`,
             code: raw`maths = {"Aman", "Ankit", "Kabir"}
 science = {"Ankit", "Kabir", "Meera"}
 print(sorted(maths & science))`,
-          },
-          { type: 'h3', text: 'Who is in either class?' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`maths = {"Aman", "Ankit", "Kabir"}
-science = {"Ankit", "Kabir", "Meera"}
-print(sorted(maths | science))`,
-          },
-          { type: 'h3', text: 'Who is only in maths?' },
-          {
-            type: 'code',
-            runnable: true,
-            code: raw`maths = {"Aman", "Ankit", "Kabir"}
-science = {"Ankit", "Kabir", "Meera"}
-print(sorted(maths - science))`,
           },
           { type: 'h3', text: 'Unique letters' },
           {
@@ -4215,7 +3977,7 @@ print(len(set(word)))`,
               'Unpack `(10, 20, 30)` into three variables and print their sum.',
               'Swap two variables without a third variable.',
               'Write a function that returns the minimum and maximum of a list as a tuple.',
-              'Given `(1, 2, 3, 4, 5)`, use `*` to print the first, the last and the middle items.',
+              'Make a tuple of 3 foods and print each one with a loop.',
             ],
           },
           { type: 'h3', text: 'Homework: sets' },
